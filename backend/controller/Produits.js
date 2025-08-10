@@ -18,6 +18,43 @@ module.exports = {
     res.send(product_Data);
   },
 
+  addProduct: async(req,res)=>{
+    try {
+      const {productId,quantityAdd}= req.body;
+      console.log(req.body)
+
+      if (!productId || !quantityAdd || quantityAdd <= 0) {
+        return res.status(400).json({message: 'Invalid product ID or quantity'});
+        
+      }
+
+      // 1.  Get product
+
+      const products = await getOneProduct(productId);
+      const product = products[0]
+
+      // 2. updating the quantity
+
+      const newQuantity = product.quantity + quantityAdd;
+      await updateProduct(productId,newQuantity)
+
+      //3.Return response
+
+      res.status(200).json({
+        message:'quantity added succesfully',
+        product:{ ...product,quantity: newQuantity}
+      })
+
+
+      
+    } catch (error) {
+      console.error(error)
+      res.status(500).json({message:'server error',error:error.message})
+      
+    }
+
+  },
+
   buyProduct: async (req, res) => {
     try {
         const { productId, quantitySold } = req.body;
@@ -29,7 +66,7 @@ module.exports = {
         // 1. Get product
         const products = await getOneProduct(productId);
         if (products.length === 0) {
-            return res.status(404).json({ message: 'Product not found' });
+            return res.status(404).json({ message: 'Product not found or product finished' });
         }
 
         const product = products[0];

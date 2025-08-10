@@ -67,7 +67,7 @@ CREATE TABLE `Product` (
   `quantity` int(11) DEFAULT NULL,
   `cost_price` int(11) NOT NULL,
   `selling_price` int(11) NOT NULL,
-  `category` varchar(255) NOT NULL,
+  `category_id` int(11) DEFAULT NULL,
   `Prod_Description` text DEFAULT NULL,
   `code_bar` varchar(255) DEFAULT NULL,
   `date_of_arrival` date DEFAULT NULL,
@@ -100,6 +100,23 @@ CREATE TABLE `Sales` (
     CONSTRAINT `Sales_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `Product`(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Structure de la table `Category`
+--
+
+CREATE TABLE `Category` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL UNIQUE,
+  `description` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Index for `Category` table
+ALTER TABLE `Category`
+  ADD PRIMARY KEY (`id`);
+
+-- AUTO_INCREMENT for `Category`
+ALTER TABLE `Category`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 
 -- Index pour les tables déchargées
@@ -169,7 +186,7 @@ ALTER TABLE `Factures`
 --
 ALTER TABLE `Product`
   ADD CONSTRAINT `Product_ibfk_1` FOREIGN KEY (`supplier`) REFERENCES `supplier` (`id`);
-
+  ADD CONSTRAINT `Product_fk_category` FOREIGN KEY (`category_id`) REFERENCES `Category`(`id`);
 --
 -- Contraintes pour la table `supplier`
 --
