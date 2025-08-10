@@ -120,6 +120,55 @@ async function getProductsByCategoryId(categoryId) {
   );
   return rows;
 }
+async function getLowStockProductsGlobal(thresholdParam) {
+  let threshold = thresholdParam;
+
+  // Si aucun seuil n'est passé, on prend celui de la table Settings
+  if (typeof threshold === "undefined" || threshold === null) {
+    const [settings] = await pool.query(`SELECT stock_alert_threshold FROM Settings LIMIT 1`);
+    threshold = settings[0]?.stock_alert_threshold ?? 5; // 5 par défaut si Settings vide
+  }
+ console.log("Seuil utilisé dans la fonction:", threshold);
+  // Vérifie les produits
+  const [products] = await pool.query(
+    "SELECT * FROM Product WHERE quantity <= ?",
+    [threshold]
+  );
+  console.log("Low stock products:", products);
+  return { threshold, products };
+}
+async function checkLowStock(productId) {
+  // Récupérer le seuil global
+  const [settings] = await pool.query(`SELECT stock_alert_threshold FROM Settings LIMIT 1`);
+  const threshold = settings[0]?.stock_alert_threshold || 0;
+
+  // Récupérer le produit
+  const [product] = await pool.query(
+    `SELECT Prod_name, quantity FROM Product WHERE id = ?`,
+    [productId]
+  );
+
+  if (!product.length) return { alert: false };
+
+  const prod = product[0];
+  return {
+    alert: prod.quantity <= threshold,
+    product: prod,
+    threshold
+  };
+}
+async function getOutOfStockProducts() {
+  const [products] = await pool.query(
+    "SELECT * FROM Product WHERE quantity = 0"
+  );
+  return products;
+}
+
+
+module.exports = {
+  // ... autres fonctions
+  checkLowStock
+};
 
 module.exports = {
   getProduct,
@@ -130,4 +179,7 @@ module.exports = {
   updateProductQuantity,
   createSale,
   getProductsByCategoryId,
+  getLowStockProductsGlobal,
+  checkLowStock,
+  getOutOfStockProducts,
 };

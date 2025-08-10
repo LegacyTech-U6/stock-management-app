@@ -6,7 +6,10 @@ const {
   updateProduct,
   updateProductQuantity,
   createSale,
-  getProductsByCategoryId
+  getProductsByCategoryId,
+  getLowStockProductsGlobal,
+  checkLowStock,
+  getOutOfStockProducts,
 } = require("../models/dbConfig");
 module.exports = {
   get: async (req, res, next) => {
@@ -84,12 +87,21 @@ module.exports = {
       // 4. Record sale
       const totalPrice = product.selling_price * quantitySold;
       await createSale(productId, quantitySold, totalPrice);
+      // 5. Vérifier le seuil global
+      const lowStockCheck = await checkLowStock(productId);
+      if (lowStockCheck.alert) {
+        console.log(
+          `⚠️ ALERTE : Le produit "${lowStockCheck.product.Prod_name}" est presque en rupture (${lowStockCheck.product.quantity} restants, seuil = ${lowStockCheck.threshold})`
+        );
+        // Ici tu peux renvoyer aussi l'alerte dans la réponse
+      }
 
-      // 4. Return response
+      // 6. Return response
       res.status(200).json({
         message: "Purchase successful",
         product: { ...product, quantity: newQuantity },
         sale: { productId, quantitySold, totalPrice },
+        lowStockAlert: lowStockCheck.alert,
       });
     } catch (err) {
       console.error(err);
@@ -171,18 +183,64 @@ module.exports = {
       res.status(500).send("Erreur lors de la suppression du produits");
     }
   },
-  getProductsByCategory: async  (req, res)=> {
+  getProductsByCategory: async (req, res) => {
+    try {
+      const categoryId = parseInt(req.params.categoryId);
+      if (isNaN(categoryId)) {
+        return res.status(400).json({ message: "Invalid category ID" });
+      }
+
+      const products = await getProductsByCategoryId(categoryId);
+      res.json(products);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Server error", error: err.message });
+    }
+  },
+  checkLowStockGlobal: async (req, res) => {
+    console.log('Route checkLowStockGlobal appelée');
+    try {
+      const thresholdParam = req.query.threshold
+        ? parseInt(req.query.threshold)
+        : undefined;
+      console.log("Threshold reçu en query:", thresholdParam);
+      const { threshold, products } = await getLowStockProductsGlobal(
+        thresholdParam
+      );
+      console.log("Produits récupérés dans le contrôleur:", products);
+      if (products.length === 0) {
+        return res.json({
+          message: "All products have sufficient stock",
+          threshold,
+        });
+      }
+      res.json({
+        message: `Some products are below the stock threshold of ${threshold}`,
+        products,
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+  checkOutOfStockGlobal: async (req, res) => {
+  console.log('Route checkOutOfStockGlobal appelée');
   try {
-    const categoryId = parseInt(req.params.categoryId);
-    if (isNaN(categoryId)) {
-      return res.status(400).json({ message: 'Invalid category ID' });
+    const products = await getOutOfStockProducts();
+
+    if (products.length === 0) {
+      return res.json({
+        message: "All products have stock available",
+        products: [],
+      });
     }
 
-    const products = await getProductsByCategoryId(categoryId);
-    res.json(products);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error', error: err.message });
+    res.json({
+      message: "Some products are out of stock",
+      products,
+    });
+  } catch (error) {
+    console.error('Erreur dans checkOutOfStockGlobal:', error);
+    res.status(500).json({ error: error.message });
   }
 }
 

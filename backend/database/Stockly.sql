@@ -78,6 +78,10 @@ CREATE TABLE `Product` (
 -- --------------------------------------------------------
 
 --
+CREATE TABLE Settings (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  stock_alert_threshold INT NOT NULL DEFAULT 5
+);
 -- Structure de la table `supplier`
 --
 
