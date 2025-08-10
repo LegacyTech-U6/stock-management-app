@@ -1,5 +1,5 @@
 // models/categoryModel.js
-const pool = require('../config/db');
+const {pool} = require('../config/db');
 
 async function getAllCategories() {
   const [rows] = await pool.query(`SELECT * FROM Category ORDER BY name`);

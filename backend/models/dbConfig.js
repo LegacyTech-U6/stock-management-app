@@ -1,5 +1,4 @@
-
-const {pool} = require('../config/db');
+const { pool } = require("../config/db");
 
 async function getProduct() {
   const results = await pool.query("SELECT * FROM Product");
@@ -13,51 +12,55 @@ async function getOneProduct(id) {
   return rows;
 }
 async function updateProductQuantity(id, newQuantity) {
-    const [result] = await pool.query(`UPDATE Product SET quantity = ? WHERE id = ?`, [newQuantity, id]);
-    return result; // contains affectedRows, etc.
+  const [result] = await pool.query(
+    `UPDATE Product SET quantity = ? WHERE id = ?`,
+    [newQuantity, id]
+  );
+  return result; // contains affectedRows, etc.
 }
 async function createSale(productId, quantitySold, totalPrice) {
-    const [result] = await pool.query(
-        `INSERT INTO Sales (product_id, quantity_sold, total_price) VALUES (?, ?, ?)`,
-        [productId, quantitySold, totalPrice]
-    );
-    return result;
+  const [result] = await pool.query(
+    `INSERT INTO Sales (product_id, quantity_sold, total_price) VALUES (?, ?, ?)`,
+    [productId, quantitySold, totalPrice]
+  );
+  return result;
 }
 async function createProduct(
   Prod_name,
   quantity,
   cost_price,
   selling_price,
-  category,
+  category_id, // <-- change here
   Prod_Description,
   code_bar,
-  date_of_arival,
+  date_of_arrival, // <-- fix spelling
   supplier,
-  prod_image
+  Prod_image
 ) {
   const [results] = await pool.query(
     `INSERT INTO Product (
-  Prod_name,
-  quantity,
-  cost_price,
-  selling_price,
-  category,
-  Prod_Description,
-  code_bar,
-  date_of_arrival,
-  supplier,
-  Prod_image) VALUES(?,?,?,?,?,?,?,?,?,?)`,
+      Prod_name,
+      quantity,
+      cost_price,
+      selling_price,
+      category_id,
+      Prod_Description,
+      code_bar,
+      date_of_arrival,
+      supplier,
+      Prod_image
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       Prod_name,
       quantity,
       cost_price,
       selling_price,
-      category,
+      category_id, // <-- change here
       Prod_Description,
       code_bar,
-      date_of_arival,
+      date_of_arrival, // <-- fix spelling
       supplier,
-      prod_image,
+      Prod_image,
     ]
   );
   return getProduct();
@@ -81,7 +84,7 @@ async function updateProduct(
       quantity = ?,
       cost_price = ?,
       selling_price = ?,
-      category = ?,
+      category_id = ?,
       Prod_Description = ?,
       code_bar = ?,
       date_of_arrival = ?,
@@ -110,6 +113,14 @@ async function deleteProduct(id) {
   return result.affectedRows > 0;
 }
 
+async function getProductsByCategoryId(categoryId) {
+  const [rows] = await pool.query(
+    `SELECT * FROM Product WHERE category_id = ? ORDER BY Prod_name`,
+    [categoryId]
+  );
+  return rows;
+}
+
 module.exports = {
   getProduct,
   createProduct,
@@ -117,5 +128,6 @@ module.exports = {
   deleteProduct,
   updateProduct,
   updateProductQuantity,
-  createSale
+  createSale,
+  getProductsByCategoryId,
 };
