@@ -11,6 +11,7 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
+DROP DATABASE IF EXISTS Stockly;
 CREATE DATABASE IF NOT EXISTS Stockly;
 USE Stockly;
 
@@ -87,7 +88,20 @@ CREATE TABLE `supplier` (
   `phone_number` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
+
+
+CREATE TABLE `Sales` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `product_id` INT(11) NOT NULL,
+    `quantity_sold` INT(11) NOT NULL,
+    `total_price` DECIMAL(10,2) NOT NULL,
+    `sale_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `Sales_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `Product`(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+
 -- Index pour les tables déchargées
 --
 
@@ -148,6 +162,7 @@ ALTER TABLE `supplier`
 --
 ALTER TABLE `Factures`
   ADD CONSTRAINT `Factures_ibfk_1` FOREIGN KEY (`clien_id`) REFERENCES `Client` (`id`);
+
 
 --
 -- Contraintes pour la table `Product`

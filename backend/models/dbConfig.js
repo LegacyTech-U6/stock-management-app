@@ -27,8 +27,19 @@ async function getOneProduct(id) {
   const rows = result[0];
   return rows;
 }
+async function updateProductQuantity(id, newQuantity) {
+    const [result] = await pool.query(`UPDATE Product SET quantity = ? WHERE id = ?`, [newQuantity, id]);
+    return result; // contains affectedRows, etc.
+}
+async function createSale(productId, quantitySold, totalPrice) {
+    const [result] = await pool.query(
+        `INSERT INTO Sales (product_id, quantity_sold, total_price) VALUES (?, ?, ?)`,
+        [productId, quantitySold, totalPrice]
+    );
+    return result;
+}
 async function createProduct(
-  prod_name,
+  Prod_name,
   quantity,
   cost_price,
   selling_price,
@@ -52,7 +63,7 @@ async function createProduct(
   supplier,
   Prod_image) VALUES(?,?,?,?,?,?,?,?,?,?)`,
     [
-      prod_name,
+      Prod_name,
       quantity,
       cost_price,
       selling_price,
@@ -120,4 +131,6 @@ module.exports = {
   getOneProduct,
   deleteProduct,
   updateProduct,
+  updateProductQuantity,
+  createSale
 };

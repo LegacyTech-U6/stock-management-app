@@ -4,6 +4,8 @@ const {
   getOneProduct,
   deleteProduct,
   updateProduct,
+  updateProductQuantity,
+  createSale
 } = require("../models/dbConfig");
 module.exports = {
   get: async (req, res, next) => {
@@ -16,9 +18,52 @@ module.exports = {
     res.send(product_Data);
   },
 
+  buyProduct: async (req, res) => {
+    try {
+        const { productId, quantitySold } = req.body;
+
+        if (!productId || !quantitySold || quantitySold <= 0) {
+            return res.status(400).json({ message: 'Invalid product ID or quantity' });
+        }
+
+        // 1. Get product
+        const products = await getOneProduct(productId);
+        if (products.length === 0) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        const product = products[0];
+
+        // 2. Check stock
+        if (product.quantity < quantitySold) {
+            return res.status(400).json({ message: 'Not enough stock available' });
+        }
+
+        // 3. Update quantity
+        const newQuantity = product.quantity - quantitySold;
+        await updateProductQuantity(productId, newQuantity);
+
+        // 4. Record sale
+        const totalPrice = product.selling_price * quantitySold;
+        await createSale(productId, quantitySold, totalPrice);
+
+        // 4. Return response
+        res.status(200).json({
+            message: 'Purchase successful',
+            product: { ...product, quantity: newQuantity },
+            sale: { productId, quantitySold, totalPrice }
+
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error', error: err.message });
+    }
+},
+
   post: async (req, res) => {
     const {
-      prod_name,
+      Prod_name,
       quantity,
       cost_price,
       selling_price,
@@ -30,7 +75,7 @@ module.exports = {
       prod_image,
     } = req.body;
     const product = await createProduct(
-      prod_name,
+      Prod_name,
       quantity,
       cost_price,
       selling_price,
@@ -46,7 +91,7 @@ module.exports = {
   updated: async (req, res) => {
     const id = req.params.id;
     const {
-      prod_name,
+      Prod_name,
       quantity,
       cost_price,
       selling_price,
@@ -63,7 +108,7 @@ module.exports = {
       console.log("Updating product with id:", id);
       const updatedProduct = await updateProduct(
         id,
-        prod_name,
+        Prod_name,
         quantity,
         cost_price,
         selling_price,
