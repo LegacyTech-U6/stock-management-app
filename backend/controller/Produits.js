@@ -10,6 +10,7 @@ const {
   getLowStockProductsGlobal,
   checkLowStock,
   getOutOfStockProducts,
+  getSales,
 } = require("../models/dbConfig");
 module.exports = {
   get: async (req, res, next) => {
@@ -242,6 +243,17 @@ module.exports = {
     console.error('Erreur dans checkOutOfStockGlobal:', error);
     res.status(500).json({ error: error.message });
   }
+},
+getsales: async (req, res) => {
+  try {
+    const sales = await getSales();
+    if (sales.length === 0) {
+      return res.json({ message: "No sales data available" });
+    }
+    res.json({ sales });
+  } catch (error) {
+    console.error('Erreur dans getsales:', error);
+    res.status(500).json({ error: error.message });
+  }
 }
-
 };

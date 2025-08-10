@@ -1,3 +1,4 @@
+const { get } = require("jquery");
 const { pool } = require("../config/db");
 
 async function getProduct() {
@@ -24,6 +25,10 @@ async function createSale(productId, quantitySold, totalPrice) {
     [productId, quantitySold, totalPrice]
   );
   return result;
+}
+async function getSales() {
+  const [rows] = await pool.query(`SELECT * FROM Sales`);
+  return rows;
 }
 async function createProduct(
   Prod_name,
@@ -182,4 +187,5 @@ module.exports = {
   getLowStockProductsGlobal,
   checkLowStock,
   getOutOfStockProducts,
+  getSales,
 };

@@ -6,6 +6,7 @@ router.post('/',ProductController.post)
 router.get('/',ProductController.get)
 router.get('/low-stock', ProductController.checkLowStockGlobal);
 router.get('/out-of-stock', ProductController.checkOutOfStockGlobal);
+router.get('/sales', ProductController.getsales);
 router.get("/:id",ProductController.get2)
 router.get('/category/:categoryId',ProductController.getProductsByCategory)
 
