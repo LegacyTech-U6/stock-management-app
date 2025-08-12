@@ -1,5 +1,6 @@
-const { get } = require("jquery");
 const { pool } = require("../config/db");
+
+//In this file we deal with the functions and queries to manipule the product tables
 
 async function getProduct() {
   const results = await pool.query("SELECT * FROM Product");
@@ -130,10 +131,12 @@ async function getLowStockProductsGlobal(thresholdParam) {
 
   // Si aucun seuil n'est passé, on prend celui de la table Settings
   if (typeof threshold === "undefined" || threshold === null) {
-    const [settings] = await pool.query(`SELECT stock_alert_threshold FROM Settings LIMIT 1`);
+    const [settings] = await pool.query(
+      `SELECT stock_alert_threshold FROM Settings LIMIT 1`
+    );
     threshold = settings[0]?.stock_alert_threshold ?? 5; // 5 par défaut si Settings vide
   }
- console.log("Seuil utilisé dans la fonction:", threshold);
+  console.log("Seuil utilisé dans la fonction:", threshold);
   // Vérifie les produits
   const [products] = await pool.query(
     "SELECT * FROM Product WHERE quantity <= ?",
@@ -144,7 +147,9 @@ async function getLowStockProductsGlobal(thresholdParam) {
 }
 async function checkLowStock(productId) {
   // Récupérer le seuil global
-  const [settings] = await pool.query(`SELECT stock_alert_threshold FROM Settings LIMIT 1`);
+  const [settings] = await pool.query(
+    `SELECT stock_alert_threshold FROM Settings LIMIT 1`
+  );
   const threshold = settings[0]?.stock_alert_threshold || 0;
 
   // Récupérer le produit
@@ -159,7 +164,7 @@ async function checkLowStock(productId) {
   return {
     alert: prod.quantity <= threshold,
     product: prod,
-    threshold
+    threshold,
   };
 }
 async function getOutOfStockProducts() {
@@ -169,10 +174,9 @@ async function getOutOfStockProducts() {
   return products;
 }
 
-
 module.exports = {
   // ... autres fonctions
-  checkLowStock
+  checkLowStock,
 };
 
 module.exports = {
