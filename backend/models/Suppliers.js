@@ -8,7 +8,13 @@ async function getAllsupplier() {
 
     return row;
 }
-
+async function createSupplier(supplier_name, supplier_address, phone_number) {
+    const result = await pool.query(
+        `INSERT INTO supplier (supplier_name, supplier_address, phone_number) VALUES (?, ?, ?)`,
+        [supplier_name, supplier_address, phone_number]
+    );
+    return result.insertId,getAllsupplier();
+}
 async function getOnesupplier(id) {
     const results = await pool.query(`SELECT * FROM supplier WHERE id = ?`, [id]);
 
@@ -47,5 +53,6 @@ async function updateSuppliers(
     getOnesupplier,
     updateSuppliers,
     deleteSupplier,
-    getProductBySuppliers
+    getProductBySuppliers,
+    createSupplier
  }

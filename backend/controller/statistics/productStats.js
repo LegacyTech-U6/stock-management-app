@@ -1,4 +1,4 @@
-const { getProductSalesStats,getSalesReportByPeriod } = require("../../models/statistics/stats");
+const { getProductSalesStats,getSalesReportByPeriod ,getBestCategory,bestProductByCategory} = require("../../models/statistics/stats");
 
 module.exports = {
   productSales: async (req, res) => {
@@ -32,6 +32,35 @@ module.exports = {
       res.json({ period, report });
     } catch (error) {
       console.error("Erreur getSalesReport:", error);
+      res.status(500).json({ error: error.message });
+    }
+  },
+  getBestCategory: async (req, res) => {
+    try {
+      const bestCategory = await getBestCategory();
+
+      if (bestCategory.length === 0) {
+        return res.json({ message: "No sales data available" });
+      }
+
+      res.json({ bestCategory });
+    } catch (error) {
+      console.error("Erreur getBestCategory:", error);
+      res.status(500).json({ error: error.message });
+    }
+  },
+  getBestByCategory: async (req, res) => {
+    try {
+      const categoryId = req.params.id;
+      const bestProducts = await bestProductByCategory(categoryId);
+
+      if (bestProducts.length === 0) {
+        return res.json({ message: "No products found for this category" });
+      }
+
+      res.json({ bestProducts });
+    } catch (error) {
+      console.error("Erreur getBestByCategory:", error);
       res.status(500).json({ error: error.message });
     }
   },
