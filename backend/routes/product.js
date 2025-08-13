@@ -1,8 +1,9 @@
 const express = require('express')
 const router = express.Router()
 const ProductController= require("../controller/Produits")
+const validateProduct = require("../middleware/validateProduct")
 // router.get("/",ProductController.get);
-router.post('/',ProductController.post)
+router.post('/',validateProduct,ProductController.post)
 router.get('/',ProductController.get)
 router.get('/low-stock', ProductController.checkLowStockGlobal);
 router.get('/out-of-stock', ProductController.checkOutOfStockGlobal);

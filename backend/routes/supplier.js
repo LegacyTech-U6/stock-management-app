@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { validateSupplier } = require("../middleware/validateSupplier"); 
 const {
   get,
   getOne,
@@ -10,7 +11,7 @@ const {
 } = require("../controller/suppliers");
 
 router.get("/", get);
-router.post("/", createSupplier);
+router.post("/", validateSupplier, createSupplier);
 router.get("/:id", getOne);
 router.put("/:id", modifySupplier);
 router.delete("/:id", deleteSupplier);
