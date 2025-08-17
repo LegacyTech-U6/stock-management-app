@@ -7,7 +7,7 @@ const validateSupplier = [
     body('supplier_address')
     .optional()
     .isLength({ max: 255 }).withMessage('L’adresse du fournisseur ne doit pas dépasser 255 caractères'),
-  body('phone_number')
+    body('phone_number')
     .notEmpty().withMessage('Le numéro de téléphone est obligatoire')
     .isMobilePhone('any').withMessage('Le numéro de téléphone doit être valide'),
     // Middleware final pour gérer les erreurs
