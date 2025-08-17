@@ -155,7 +155,7 @@ module.exports = {
     console.log(req.body);
     try {
       console.log("Updating product with id:", id);
-      const updatedProduct = await updateProduct(
+      const updatedProduct = await updateProduct(  
         id,
         Prod_name,
         quantity,

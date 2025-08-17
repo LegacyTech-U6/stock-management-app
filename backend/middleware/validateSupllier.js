@@ -19,3 +19,5 @@ const validateSupplier = [
       next();
     }
 ];
+
+module.exports = validateSupplier;

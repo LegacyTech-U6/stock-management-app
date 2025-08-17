@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { validateSupplier } = require("../middleware/validateSupplier"); 
+const  validateSupplier  = require("../middleware/validateSupllier"); 
 const {
   get,
   getOne,
