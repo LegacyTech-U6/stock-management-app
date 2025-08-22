@@ -44,16 +44,35 @@ CREATE TABLE `Client` (
 --
 
 CREATE TABLE `Factures` (
-  `id` int(11) NOT NULL,
-  `clien_id` int(11) DEFAULT NULL,
-  `date_of_creation` datetime DEFAULT current_timestamp(),
-  `date_echeance` date DEFAULT NULL,
-  `total_hors_reduction` int(11) DEFAULT NULL,
-  `reduction_type` varchar(255) DEFAULT NULL,
-  `reduction` int(11) DEFAULT NULL,
-  `tva` int(11) DEFAULT NULL,
-  `total` int(11) DEFAULT NULL
+  `id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `client_id` INT(11) NOT NULL,
+  `user_id` INT(11) DEFAULT NULL,
+  `date_of_creation` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `date_echeance` DATE DEFAULT NULL,
+  `status` ENUM('en_attente', 'payee', 'annulee') DEFAULT 'en_attente',
+  `mode_paiement` VARCHAR(50) DEFAULT NULL,
+  `total_hors_reduction` INT(11) DEFAULT NULL,
+  `reduction_type` VARCHAR(255) DEFAULT NULL,
+  `reduction` INT(11) DEFAULT NULL,
+  `tva` INT(11) DEFAULT NULL,
+  `total` INT(11) DEFAULT NULL,
+  `notes` TEXT DEFAULT NULL,
+  FOREIGN KEY (`client_id`) REFERENCES Clients(id) ON DELETE CASCADE,
+  FOREIGN KEY (`user_id`) REFERENCES Users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+CREATE TABLE FactureItems (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  facture_id INT NOT NULL,
+  product_id INT NOT NULL,
+  quantity INT NOT NULL,
+  unit_price INT NOT NULL,
+  tva INT DEFAULT 0,
+  total_item INT GENERATED ALWAYS AS (quantity * unit_price * (1 + tva / 100)) STORED,
+  FOREIGN KEY (facture_id) REFERENCES Factures(id) ON DELETE CASCADE,
+  FOREIGN KEY (product_id) REFERENCES Product(id)
+);
 
 -- --------------------------------------------------------
 

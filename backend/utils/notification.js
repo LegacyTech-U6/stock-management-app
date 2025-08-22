@@ -19,7 +19,7 @@ async function sendWhatsApp(to, message) {
 
 // --- Email ---
 const transporter = nodemailer.createTransport({
-    host: 'smtp.example.com',
+    host: 'smtp.gmail.com',
     port: 587,
     secure: false,
     auth: { user: 'stockly@example.com', pass: 'motdepasse' },

@@ -12,6 +12,10 @@ const {
   getOutOfStockProducts,
   getSales,
 } = require("../models/dbConfig");
+const { createOrder } = require("../models/Orders");
+const { getOnesupplier } = require("../models/Suppliers");
+const express = require("express");
+const router = express.Router();
 module.exports = {
   get: async (req, res, next) => {
     const products_Data = await getProduct();
@@ -60,7 +64,7 @@ module.exports = {
     try {
       const { productId, quantitySold } = req.body;
 
-      if (!productId || !quantitySold  <= 0) {
+      if (!productId || !quantitySold <= 0) {
         return res
           .status(400)
           .json({ message: "Invalid product ID or quantity" });
@@ -155,7 +159,7 @@ module.exports = {
     console.log(req.body);
     try {
       console.log("Updating product with id:", id);
-      const updatedProduct = await updateProduct(  
+      const updatedProduct = await updateProduct(
         id,
         Prod_name,
         quantity,
@@ -199,7 +203,7 @@ module.exports = {
     }
   },
   checkLowStockGlobal: async (req, res) => {
-    console.log('Route checkLowStockGlobal appelée');
+    console.log("Route checkLowStockGlobal appelée");
     try {
       const thresholdParam = req.query.threshold
         ? parseInt(req.query.threshold)
@@ -224,36 +228,55 @@ module.exports = {
     }
   },
   checkOutOfStockGlobal: async (req, res) => {
-  console.log('Route checkOutOfStockGlobal appelée');
-  try {
-    const products = await getOutOfStockProducts();
+    console.log("Route checkOutOfStockGlobal appelée");
+    try {
+      const products = await getOutOfStockProducts();
 
-    if (products.length === 0) {
-      return res.json({
-        message: "All products have stock available",
-        products: [],
-      });
-    }
+      if (products.length === 0) {
+        return res.json({
+          message: "All products have stock available",
+          products: [],
+        });
+      }
+      const quantity = 5;
+      let orders = [];
+for (let i = 0; i < products.length; i++) {
+  const product = await getOneProduct(products[i].id);
+  if (!product) {
+    return res.status(404).json({ success: false, message: "Produit introuvable" });
+  }
 
-    res.json({
-      message: "Some products are out of stock",
-      products,
-    });
-  } catch (error) {
-    console.error('Erreur dans checkOutOfStockGlobal:', error);
-    res.status(500).json({ error: error.message });
+  const supplier = await getOnesupplier(products[i].id);
+  if (!supplier) {
+    return res.status(404).json({ success: false, message: "Fournisseur introuvable" });
   }
-},
-getsales: async (req, res) => {
-  try {
-    const sales = await getSales();
-    if (sales.length === 0) {
-      return res.json({ message: "No sales data available" });
-    }
-    res.json({ sales });
-  } catch (error) {
-    console.error('Erreur dans getsales:', error);
-    res.status(500).json({ error: error.message });
-  }
+
+  const order = await createOrder(product.id, supplier.id, quantity);
+  orders.push(order);
 }
+
+
+     res.json({
+  message: "Some products are out of stock",
+  products,
+  orders,
+});
+
+    } catch (error) {
+      console.error("Erreur dans checkOutOfStockGlobal:", error);
+      res.status(500).json({ error: error.message });
+    }
+  },
+  getsales: async (req, res) => {
+    try {
+      const sales = await getSales();
+      if (sales.length === 0) {
+        return res.json({ message: "No sales data available" });
+      }
+      res.json({ sales });
+    } catch (error) {
+      console.error("Erreur dans getsales:", error);
+      res.status(500).json({ error: error.message });
+    }
+  },
 };
