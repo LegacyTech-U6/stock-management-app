@@ -1,11 +1,25 @@
 const { pool } = require("../config/db");
-const {createSale,updateProductQuantity,getOneProduct} = require("../models/dbConfig")
-
+const {
+  createSale,
+  updateProductQuantity,
+  getOneProduct,
+} = require("../models/dbConfig");
 
 // --- Facture ---
 
 // Créer une facture et ses lignes
-async function createInvoice(client_id, items = [], reduction = 0, tva = 0) {
+async function createInvoice(
+  client_id,
+  items = [],
+  reduction = 0,
+  reduction_type,
+  notes,
+  mode_paiement = 'espece',
+  date_of_creation,
+  status = 'en_attente',
+  date_echeance,
+  tva = 0
+) {
   try {
     // 1. Calcul total hors réduction
     let total_hors_reduction = 0;
@@ -18,16 +32,28 @@ async function createInvoice(client_id, items = [], reduction = 0, tva = 0) {
 
     // 3. Insérer dans Factures
     const [factureResult] = await pool.query(
-      `INSERT INTO Factures (client_id, total_hors_reduction, reduction, tva, total, status)
-       VALUES (?, ?, ?, ?, ?, 'en_attente')`,
-      [client_id, total_hors_reduction, reduction, tva, total]
+      `INSERT INTO Factures (client_id, total_hors_reduction,date_of_creation,date_echeance,mode_paiement, reduction_type,reduction, tva, total, status,notes)
+       VALUES (?, ?, ?, ?, ?,?,? ,?,?'?',?)`,
+      [
+        client_id,
+        total_hors_reduction,
+        date_of_creation,
+        date_echeance,
+        mode_paiement,
+        reduction_type,
+        reduction,
+        tva,
+        total,
+        status,
+        notes,
+      ]
     );
     const factureId = factureResult.insertId;
 
     // 4. Insérer les lignes dans facture_items
     for (const item of items) {
       await pool.query(
-        `INSERT INTO facture_items (facture_id, product_id, quantity, unit_price, vat, discount)
+        `INSERT INTO facture_items (facture_id, product_id, quantity, unit_price, tva, discount)
          VALUES (?, ?, ?, ?, ?, ?)`,
         [
           factureId,
@@ -64,10 +90,16 @@ async function getAllInvoices() {
 
 // Récupérer une facture par ID avec ses lignes
 async function getInvoiceById(id) {
-  const [factureRows] = await pool.query(`SELECT * FROM Factures WHERE id = ?`, [id]);
+  const [factureRows] = await pool.query(
+    `SELECT * FROM Factures WHERE id = ?`,
+    [id]
+  );
   if (factureRows.length === 0) return null;
 
-  const [items] = await pool.query(`SELECT * FROM facture_items WHERE facture_id = ?`, [id]);
+  const [items] = await pool.query(
+    `SELECT * FROM facture_items WHERE facture_id = ?`,
+    [id]
+  );
   return { ...factureRows[0], items };
 }
 

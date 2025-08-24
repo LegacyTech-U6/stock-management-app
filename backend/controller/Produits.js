@@ -64,7 +64,8 @@ module.exports = {
     try {
       const { productId, quantitySold } = req.body;
 
-      if (!productId || !quantitySold <= 0) {
+      
+        if (!productId || !quantitySold || quantitySold <= 0) {
         return res
           .status(400)
           .json({ message: "Invalid product ID or quantity" });
