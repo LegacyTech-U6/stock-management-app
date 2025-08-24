@@ -85,7 +85,7 @@ CREATE TABLE `FactureItems` (
   `unit_price` INT(11) NOT NULL,
   `tva` INT(11) DEFAULT 0,
   `discount` INT(11) DEFAULT 0,
-  `total_item` INT GENERATED ALWAYS AS (quantity * unit_price * (1 + tva / 100)) STORED,
+  `total_item` INT GENERATED ALWAYS AS ((quantity * unit_price * (1 + tva / 100))-discount) STORED,
   PRIMARY KEY (`id`),
   CONSTRAINT `FactureItems_fk_facture` FOREIGN KEY (`facture_id`) REFERENCES `Factures`(`id`) ON DELETE CASCADE,
   CONSTRAINT `FactureItems_fk_product` FOREIGN KEY (`product_id`) REFERENCES `Product`(`id`)

@@ -14,9 +14,9 @@ async function createInvoice(
   reduction = 0,
   reduction_type,
   notes,
-  mode_paiement = 'espece',
+  mode_paiement = "espece",
   date_of_creation,
-  status = 'en_attente',
+  status = "en_attente",
   date_echeance,
   tva = 0
 ) {
@@ -32,8 +32,8 @@ async function createInvoice(
 
     // 3. Insérer dans Factures
     const [factureResult] = await pool.query(
-      `INSERT INTO Factures (client_id, total_hors_reduction,date_of_creation,date_echeance,mode_paiement, reduction_type,reduction, tva, total, status,notes)
-       VALUES (?, ?, ?, ?, ?,?,? ,?,?'?',?)`,
+      `INSERT INTO Factures (client_id, total_hors_reduction, date_of_creation, date_echeance, mode_paiement, reduction_type, reduction, tva, total, status, notes)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         client_id,
         total_hors_reduction,
@@ -53,7 +53,7 @@ async function createInvoice(
     // 4. Insérer les lignes dans facture_items
     for (const item of items) {
       await pool.query(
-        `INSERT INTO facture_items (facture_id, product_id, quantity, unit_price, tva, discount)
+        `INSERT INTO FactureItems (facture_id, product_id, quantity, unit_price, tva, discount)
          VALUES (?, ?, ?, ?, ?, ?)`,
         [
           factureId,
@@ -84,8 +84,17 @@ async function createInvoice(
 
 // Récupérer toutes les factures
 async function getAllInvoices() {
-  const [rows] = await pool.query(`SELECT * FROM Factures ORDER BY id DESC`);
-  return rows;
+  const [factures] = await pool.query(
+    `SELECT * FROM Factures ORDER BY id DESC`
+  );
+  for (const facture of factures) {
+    const [items] = await pool.query(
+      `SELECT * FROM FactureItems WHERE facture_id = ?`,
+      [facture.id]
+    );
+    facture.items = items;
+  }
+  return factures;
 }
 
 // Récupérer une facture par ID avec ses lignes
