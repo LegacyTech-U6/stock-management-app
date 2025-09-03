@@ -21,10 +21,19 @@ async function updateProductQuantity(id, newQuantity) {
   return result; // contains affectedRows, etc.
 }
 async function createSale(productId, quantitySold, totalPrice) {
-  const [result] = await pool.query(
-    `INSERT INTO Sales (product_id, quantity_sold, total_price) VALUES (?, ?, ?)`,
-    [productId, quantitySold, totalPrice]
+ 
+  const profits = await getOneProduct(productId)
+
+  let total_profit = 0
+  for (let profit of profits) {
+    total_profit = profit.selling_price - profit.cost_price
+    
+  }
+   const [result] = await pool.query(
+    `INSERT INTO Sales (product_id, quantity_sold, total_price , total_profit) VALUES (?, ?, ?, ?)`,
+    [productId, quantitySold, totalPrice, total_profit]
   );
+
   return result;
 }
 async function getSales() {

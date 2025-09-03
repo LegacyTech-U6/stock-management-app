@@ -96,6 +96,7 @@ CREATE TABLE `Sales` (
   `product_id` INT(11) NOT NULL,
   `quantity_sold` INT(11) NOT NULL,
   `total_price` DECIMAL(10, 2) NOT NULL,
+  `total_profit` DECIMAL(22) NOT NULL
   `sale_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   CONSTRAINT `Sales_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `Product`(`id`) ON DELETE CASCADE
