@@ -89,12 +89,12 @@ async function updateProduct(
   category,
   Prod_Description,
   code_bar,
-  date_of_arival,
+  date_of_arrival,
   supplier,
   prod_image
 ) {
-  const [result] = await pool.query(
-    `UPDATE Product SET
+  let query = `
+    UPDATE Product SET
       Prod_name = ?,
       quantity = ?,
       cost_price = ?,
@@ -103,26 +103,33 @@ async function updateProduct(
       Prod_Description = ?,
       code_bar = ?,
       date_of_arrival = ?,
-      supplier = ?,
-      Prod_image = ?
-    WHERE id = ?`,
-    [
-      prod_name,
-      quantity,
-      cost_price,
-      selling_price,
-      category,
-      Prod_Description,
-      code_bar,
-      date_of_arival,
-      supplier,
-      prod_image,
-      id,
-    ]
-  );
-  // Optionally, return true/false or the updated product
+      supplier = ?
+  `;
+  const values = [
+    prod_name,
+    quantity,
+    cost_price,
+    selling_price,
+    category,
+    Prod_Description,
+    code_bar,
+    date_of_arrival,
+    supplier,
+  ];
+
+  if (prod_image) {
+    query += `, Prod_image = ?`;
+    values.push(prod_image);
+  }
+
+  query += ` WHERE id = ?`;
+  values.push(id);
+
+  const [result] = await pool.query(query, values);
   return result.affectedRows > 0;
 }
+
+
 async function deleteProduct(id) {
   const result = await pool.query(`DELETE FROM Product WHERE id = ?`, [id]);
   return result.affectedRows > 0;

@@ -12,6 +12,8 @@ const {
   getOutOfStockProducts,
   getSales,
 } = require("../models/dbConfig");
+const fs = require("fs");
+const path = require("path");
 const { createOrder } = require("../models/Orders");
 const { getOnesupplier } = require("../models/Suppliers");
 const express = require("express");
@@ -64,8 +66,7 @@ module.exports = {
     try {
       const { productId, quantitySold } = req.body;
 
-      
-        if (!productId || !quantitySold || quantitySold <= 0) {
+      if (!productId || !quantitySold || quantitySold <= 0) {
         return res
           .status(400)
           .json({ message: "Invalid product ID or quantity" });
@@ -116,52 +117,8 @@ module.exports = {
   },
 
   post: async (req, res) => {
-    const {
-      Prod_name,
-      quantity,
-      cost_price,
-      selling_price,
-      category_id,
-      Prod_Description,
-      code_bar,
-      date_of_arival,
-      supplier,
-      prod_image,
-    } = req.body;
-    const product = await createProduct(
-      Prod_name,
-      quantity,
-      cost_price,
-      selling_price,
-      category_id,
-      Prod_Description,
-      code_bar,
-      date_of_arival,
-      supplier,
-      prod_image
-    );
-    res.status(201).send(product);
-  },
-  updated: async (req, res) => {
-    const id = req.params.id;
-    const {
-      Prod_name,
-      quantity,
-      cost_price,
-      selling_price,
-      category_id,
-      Prod_Description,
-      code_bar,
-      date_of_arival,
-      supplier,
-      prod_image,
-    } = req.body;
-    console.log("information received");
-    console.log(req.body);
     try {
-      console.log("Updating product with id:", id);
-      const updatedProduct = await updateProduct(
-        id,
+      const {
         Prod_name,
         quantity,
         cost_price,
@@ -169,25 +126,132 @@ module.exports = {
         category_id,
         Prod_Description,
         code_bar,
-        date_of_arival,
+        date_of_arrival,
         supplier,
-        prod_image
-      );
-      console.log(updatedProduct);
+      } = req.body;
 
-      res.status(201).send(updatedProduct);
-    } catch (err) {
-      res.send(err);
+      // Multer adds req.file if image uploadeded
+      const Prod_image = req.file ? `/uploads/${req.file.filename}` : null;
+
+      const newProduct = await createProduct(
+        Prod_name,
+        quantity,
+        cost_price,
+        selling_price,
+        category_id,
+        Prod_Description,
+        code_bar,
+        date_of_arrival,
+        supplier,
+        Prod_image
+      );
+
+      res
+        .status(201)
+        .json({ message: "Product added successfully", product: newProduct });
+    } catch (error) {
+      console.error("Error adding product:", error);
+      res.status(500).json({ error: "Failed to add product" });
+    }
+  },
+  updated: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const {
+        Prod_name,
+        quantity,
+        cost_price,
+        selling_price,
+        category,
+        Prod_Description,
+        code_bar,
+        date_of_arrival,
+        supplier,
+      } = req.body;
+
+      let prod_image = null;
+
+      if (req.file) {
+        // ✅ If a new file is uploaded
+        prod_image = `/uploads/${req.file.filename}`;
+
+        // 1️⃣ Get the old product
+        const oldProduct = await getProductById(id);
+
+        if (oldProduct && oldProduct.Prod_image) {
+          const oldPath = path.join(__dirname, "..", oldProduct.Prod_image);
+
+          // 2️⃣ Delete old image safely
+          fs.unlink(oldPath, (err) => {
+            if (err) {
+              console.error("⚠️ Failed to delete old image:", err);
+            } else {
+              console.log("🗑 Old image deleted:", oldPath);
+            }
+          });
+        }
+      }
+
+      // 3️⃣ Update product in DB
+      const updated = await updateProduct(
+        id,
+        Prod_name,
+        quantity,
+        cost_price,
+        selling_price,
+        category,
+        Prod_Description,
+        code_bar,
+        date_of_arrival,
+        supplier,
+        prod_image // null if no new image
+      );
+
+      if (!updated) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+
+      res.json({ message: "Product updated successfully" });
+    } catch (error) {
+      console.error("❌ Error updating product:", error);
+      res.status(500).json({ error: "Failed to update product" });
     }
   },
   delete: async (req, res) => {
-    const id = req.params.id;
-    try {
-      const supprimer = await deleteProduct(id);
-      res.status(200).send("Produit supprimer avec success");
-    } catch (error) {
-      res.status(500).send("Erreur lors de la suppression du produits");
+     try {
+    const { id } = req.params;
+
+    // 1️⃣ Get product from DB
+    const product = await getProductById(id);
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
     }
+
+    // 2️⃣ Delete product from DB
+    const deleted = await deleteProduct(id);
+
+    if (!deleted) {
+      return res.status(500).json({ message: "Failed to delete product" });
+    }
+
+    // 3️⃣ Remove image file if exists
+    if (product.Prod_image) {
+      const filePath = path.join(__dirname, "..", product.Prod_image);
+      fs.unlink(filePath, (err) => {
+        if (err) {
+          console.error("⚠️ Failed to delete image:", err);
+        } else {
+          console.log("🗑 Image deleted:", filePath);
+        }
+      });
+    }
+
+    res.json({ message: "Product deleted successfully" });
+  } catch (error) {
+    console.error("❌ Error deleting product:", error);
+    res.status(500).json({ error: "Failed to delete product" });
+  }
   },
   getProductsByCategory: async (req, res) => {
     try {
@@ -241,28 +305,30 @@ module.exports = {
       }
       const quantity = 5;
       let orders = [];
-for (let i = 0; i < products.length; i++) {
-  const product = await getOneProduct(products[i].id);
-  if (!product) {
-    return res.status(404).json({ success: false, message: "Produit introuvable" });
-  }
+      for (let i = 0; i < products.length; i++) {
+        const product = await getOneProduct(products[i].id);
+        if (!product) {
+          return res
+            .status(404)
+            .json({ success: false, message: "Produit introuvable" });
+        }
 
-  const supplier = await getOnesupplier(products[i].id);
-  if (!supplier) {
-    return res.status(404).json({ success: false, message: "Fournisseur introuvable" });
-  }
+        const supplier = await getOnesupplier(products[i].id);
+        if (!supplier) {
+          return res
+            .status(404)
+            .json({ success: false, message: "Fournisseur introuvable" });
+        }
 
-  const order = await createOrder(product.id, supplier.id, quantity);
-  orders.push(order);
-}
+        const order = await createOrder(product.id, supplier.id, quantity);
+        orders.push(order);
+      }
 
-
-     res.json({
-  message: "Some products are out of stock",
-  products,
-  orders,
-});
-
+      res.json({
+        message: "Some products are out of stock",
+        products,
+        orders,
+      });
     } catch (error) {
       console.error("Erreur dans checkOutOfStockGlobal:", error);
       res.status(500).json({ error: error.message });
