@@ -36,7 +36,7 @@ module.exports = {
         name,
         description
       );
-      res.status(201).json({ message: "Category created", id: newCategoryId });
+      res.status(201).json({ message: "Category added successfully", id: newCategoryId });
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: "Server error", error: err.message });
