@@ -5,7 +5,7 @@ const pool = require("../config/db");
 describe("Product API", () => {
   it("should create a product without image", async () => {
     const res = await request(app)
-      .post("/products/add")
+      .post("/api/products/add")
       .field("Prod_name", "Test Product")
       .field("quantity", 10)
       .field("cost_price", 50)
@@ -22,7 +22,7 @@ describe("Product API", () => {
 
   it("should create a product with image", async () => {
     const res = await request(app)
-      .post("/products/add")
+      .post("/api/products/add")
       .field("Prod_name", "Product with image")
       .field("quantity", 5)
       .field("cost_price", 100)
@@ -39,14 +39,14 @@ describe("Product API", () => {
   });
 
   it("should get all products", async () => {
-    const res = await request(app).get("/products");
+    const res = await request(app).get("/api/products");
     expect(res.statusCode).toBe(200);
     expect(Array.isArray(res.body)).toBe(true);
   });
 
   it("should update a product", async () => {
     const createRes = await request(app)
-      .post("/products/add")
+      .post("/api/products/add")
       .field("Prod_name", "To Update")
       .field("quantity", 5)
       .field("cost_price", 50)
@@ -60,7 +60,7 @@ describe("Product API", () => {
     const productId = createRes.body.product.id;
 
     const res = await request(app)
-      .put(`/products/${productId}`)
+      .put(`/api/products/${productId}`)
       .field("Prod_name", "Updated Name");
 
     expect(res.statusCode).toBe(200);
@@ -69,7 +69,7 @@ describe("Product API", () => {
 
   it("should delete a product", async () => {
     const createRes = await request(app)
-      .post("/products/add")
+      .post("/api/products/add")
       .field("Prod_name", "To Delete")
       .field("quantity", 5)
       .field("cost_price", 50)
@@ -82,7 +82,7 @@ describe("Product API", () => {
 
     const productId = createRes.body.product.id;
 
-    const res = await request(app).delete(`/products/${productId}`);
+    const res = await request(app).delete(`/api/products/${productId}`);
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("message", "Product deleted successfully");
   });

@@ -11,6 +11,22 @@ DROP DATABASE IF EXISTS Stockly;
 CREATE DATABASE IF NOT EXISTS Stockly;
 USE Stockly;
 SET NAMES utf8mb4;
+
+-- -----------------------------
+-- Table users
+-- -----------------------------
+CREATE TABLE `users` (
+    `id` INT(11)  NOT NULL AUTO_INCREMENT,
+    `username` VARCHAR(100) NOT NULL,
+    `Last_name` VARCHAR(100) NOT NULL ,
+    `email` VARCHAR(150) NOT NULL UNIQUE,
+    `telephone` VARCHAR(100) NOT NULL,
+    `role` ENUM('admin','gestionnaire','caissier') DEFAULT 'caissier',
+    `password_hash` VARCHAR(255) NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY(`id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 -- Table Client
 CREATE TABLE `Client` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -96,7 +112,7 @@ CREATE TABLE `Sales` (
   `product_id` INT(11) NOT NULL,
   `quantity_sold` INT(11) NOT NULL,
   `total_price` DECIMAL(10, 2) NOT NULL,
-  `total_profit` DECIMAL(22) NOT NULL
+  `total_profit` DECIMAL(22) NOT NULL,
   `sale_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   CONSTRAINT `Sales_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `Product`(`id`) ON DELETE CASCADE
