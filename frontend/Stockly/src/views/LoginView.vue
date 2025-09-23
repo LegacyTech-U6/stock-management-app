@@ -13,22 +13,22 @@
     <div class=" flex justify-start w-full items-start">
       Welcome back
     </div>
-    <form action="" >
+    <form action="" onsubmit="prevent.default" >
       <div class="space-y-5">
         <div class="center">
           <label for="email" class="font-bold">Email</label>
           <div class="bg-gray-200 rounded py-2 px-1">
-            <input type="text" class="focus:outline-none" placeholder="john@gmail.com" />
+            <input type="text" v-model="username" class="focus:outline-none" placeholder="john@gmail.com" />
           </div>
         </div>
         <div class="space-y-2">
           <label for="passwood" class="font-bold">Password</label>
           <div class="bg-gray-200 rounded py-2 px-1">
-            <input type="text" class="focus:outline-none" placeholder="Create your password" />
+            <input type="text" v-model="password" class="focus:outline-none" placeholder="Create your password" />
           </div>
         </div>
         <div class="flex bg-black hover:bg-white  hover:text-black hover:border-1 w-full rounded-xl justify-center text-center items-center p-2">
-          <button class="text-white ">Create Account</button>
+          <button class="text-white hover:text-black " @click="seConnecter">Create Account</button>
         </div>
         <hr>
         <div class="flex border-1 w-full rounded-xl justify-center text-center items-center p-2">
@@ -38,12 +38,29 @@
             Don't have an account?
         <span class="font-bold"><router-link to="/register"> Sign up</router-link></span>
         </div>
+        <p v-if="authStore.error" class="text-red-900">{{ authStore.error }}</p>
       </div>
     </form>
   </div>
 </div>
   </div>
 </template>
-<script lang="ts">
+<script setup>
+import { ref } from 'vue';
+import { useAuthStore } from "../stores/authStore.js"
+import router from '@/router/index.js';
+const authStore = useAuthStore();
+const username = ref("");
+const password = ref("");
 
+const seConnecter = ()=>{
+  authStore.login(username.value,password.value);
+  console.log(authStore.user)
+  router.push("/about")
+
+}
+
+if(seConnecter){
+  console.log("log in")
+}
 </script>
