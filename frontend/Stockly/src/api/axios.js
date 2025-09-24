@@ -1,29 +1,20 @@
-// api/axios.js
+// src/api/axios.js
 import axios from "axios";
+import { useAuthStore } from "@/stores/authStore"; // adapte le chemin selon ton projet
 
 const API = axios.create({
-  baseURL: "http://localhost:4000/api",
+  baseURL: "http://localhost:4000/api", // ton backend
 });
-// http://localhost:4000/api
-//
+
+// Intercepteur pour ajouter le token automatiquement
 API.interceptors.request.use(
-  async (config) => {
-    const { data, error } = await supabase.auth.getSession();
+  (config) => {
+    const authStore = useAuthStore();
 
-    if (error) {
-      console.error("Erreur récupération token:", error.message);
-      return config;
+    if (authStore.token) {
+      config.headers.Authorization = `Bearer ${authStore.token}`;
     }
 
-    const session = data?.session;
-    if (session?.access_token) {
-      config.headers.Authorization = `Bearer ${session.access_token}`;
-    } else {
-      console.warn("Token Supabase manquant.");
-    }
- // 🐛 Debug : voir les headers envoyés à l’API
-    console.log("🔐 Headers envoyés :", config.headers);
-    console.log("➡️ Requête vers :", config.baseURL + config.url);
     return config;
   },
   (error) => Promise.reject(error)

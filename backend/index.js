@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 
 const app = express();
 const userRoutes = require("./routes/user");
@@ -15,6 +16,12 @@ app.use((req, res, next) => {
   console.log(`Requête reçue : ${req.method} ${req.url}`);
   next();
 });
+app.use(
+  cors({
+    origin: "http://localhost:5173", // ou "*" pour tout autoriser (déconseillé en prod)
+    credentials: true,
+  })
+);
 
 app.use("/app", userRoutes);
 app.use("/api/products", ProductRoute);
@@ -26,4 +33,4 @@ app.use("/api/factures", factureRoutes);
 app.use("/api/client", clientRoute);
 app.use("/api/auth", user);
 
-module.exports = app
+module.exports = app;

@@ -1,148 +1,259 @@
 <template>
   <div
-    class="flex flex-col items-center space-y-5 justify-center h-screen bg-gray-100 "
+    class="flex flex-col items-center justify-center h-screen
+           bg-gradient-to-br from-purple-50 via-white to-blue-50 lg:px-4"
   >
-    <div class="font-bold text-3xl items-start flex justify-center">Join Stockly</div>
-    <p>Create your account to get started</p>
-    <div
-      class="border-none lg:border-5 lg:p-7 p-5 items-center space-y-5 lg:max-w-1/4 sm:w-full bg-white h-5/6 self-center rounded-xl outline-black w-full"
-    >
-    <div class=" flex justify-start w-full items-start">
-      create an account
+    <!-- Titre -->
+    <div class="text-center mb-6">
+      <h1 class="font-extrabold text-3xl text-gray-900">Join Stockly</h1>
+      <p class="text-gray-600">Create your account to get started</p>
     </div>
 
-      <form action="" class="space-y-5">
-        <div class="grid grid-cols-2 gap-1">
-          <div class="text-start space-y-4">
-            <label for="First-name" class="font-bold">First Name</label>
-            <div class="bg-gray-200 rounded py-2 px-1">
-              <input type="text" v-model="user.First_name" class="focus:outline-none" placeholder="John" />
+    <!-- Carte du formulaire -->
+    <div
+      class="w-full lg:max-w-md bg-white rounded-2xl shadow-lg p-8 space-y-6"
+    >
+      <h2 class="text-lg font-semibold text-gray-800">Create an account</h2>
+
+      <!-- Form -->
+      <form class="space-y-5" @submit.prevent="handleRegister">
+        <!-- First + Last name -->
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="font-medium text-gray-700">First Name</label>
+            <div
+              class="bg-gray-100 rounded-lg px-3 py-2 flex items-center
+                     focus-within:ring-2 focus-within:ring-blue-500"
+            >
+              <input
+                type="text"
+                v-model="user.username"
+                class="bg-transparent flex-1 outline-none"
+                placeholder="John"
+              />
             </div>
           </div>
-          <div class="text-start space-y-4">
-            <label for="last-name" class="font-bold">Last Name</label>
-            <div class="bg-gray-200 rounded py-2 px-1">
-              <input type="text" v-model="user.Last_name" class="focus:outline-none" placeholder="Doe" />
+          <div>
+            <label class="font-medium text-gray-700">Last Name</label>
+            <div
+              class="bg-gray-100 rounded-lg px-3 py-2 flex items-center
+                     focus-within:ring-2 focus-within:ring-blue-500"
+            >
+              <input
+                type="text"
+                v-model="user.last_name"
+                class="bg-transparent flex-1 outline-none"
+                placeholder="Doe"
+              />
             </div>
           </div>
         </div>
-        <div class="center">
-          <label for="email" class="font-bold">Email</label>
-          <div class="bg-gray-200 rounded py-2 px-1">
-            <input type="text"  v-model="user.Email" class="focus:outline-none" placeholder="john@gmail.com" />
-          </div>
-        </div>
+
+        <!-- Email -->
         <div>
-          <label for="" class="font-bold">Phone(Optional)</label>
-          <div class="bg-gray-200 rounded py-2 px-1">
-            <input type="text" v-model="user.Phone" class="focus:outline-none" placeholder="+237 675 453 456" />
+          <label class="font-medium text-gray-700">Email</label>
+          <div
+            class="bg-gray-100 rounded-lg px-3 py-2 flex items-center
+                   focus-within:ring-2 focus-within:ring-blue-500"
+          >
+            <input
+              type="email"
+              v-model="user.email"
+              class="bg-transparent flex-1 outline-none"
+              placeholder="john@company.com"
+            />
           </div>
         </div>
-        <div class="grid grid-cols-2 gap-1">
-          <div class="text-start space-y-4">
-            <label for="company" class="font-bold"> Company</label>
-            <div class="bg-gray-200 rounded py-2 px-1">
-              <input type="text" v-model="user.Company" class="focus:outline-none" placeholder="Your company" />
+
+        <!-- Phone -->
+        <div>
+          <label class="font-medium text-gray-700">Phone (Optional)</label>
+          <div
+            class="bg-gray-100 rounded-lg px-3 py-2 flex items-center
+                   focus-within:ring-2 focus-within:ring-blue-500"
+          >
+            <input
+              type="text"
+              v-model="user.telephone"
+              class="bg-transparent flex-1 outline-none"
+              placeholder="+237 675 453 456"
+            />
+          </div>
+        </div>
+
+        <!-- Company + Role -->
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="font-medium text-gray-700">Company</label>
+            <div
+              class="bg-gray-100 rounded-lg px-3 py-2 flex items-center
+                     focus-within:ring-2 focus-within:ring-blue-500"
+            >
+              <input
+                type="text"
+                v-model="user.company"
+                class="bg-transparent flex-1 outline-none"
+                placeholder="Your Company"
+              />
             </div>
           </div>
-          <div class="text-start space-y-4">
-            <label for="role" class="font-bold">Role</label>
-            <div class="bg-gray-200 rounded py-2 px-1">
-              <select name="select" v-model="user.Role" class="focus:outline-none" id="" placeholder="Select role">
-                <option value="">Owner</option>
-                <option value="">manager</option>
-                <option value="">invoice head</option>
+          <div>
+            <label class="font-medium text-gray-700">Role</label>
+            <div
+              class="bg-gray-100 rounded-lg px-3 py-2 flex items-center
+                     focus-within:ring-2 focus-within:ring-blue-500"
+            >
+              <select
+                v-model="user.role"
+                class="bg-transparent flex-1 outline-none"
+              >
+                <option value="">Select role</option>
+                <option value="owner">Owner</option>
+                <option value="manager">Manager</option>
+                <option value="invoice_head">Invoice Head</option>
               </select>
             </div>
           </div>
         </div>
 
-        <div class="space-y-2">
-          <label for="passwood" class="font-bold">Password</label>
-          <div class="bg-gray-200 grid grid-cols-3 rounded py-2 px-1">
-            <input :type="showPassword ? 'text' : 'password'" required v-model="user.password" class="focus:outline-none col-span-2" placeholder="Create your password" />
-            <button type="button" @click="showConfirmPassword = !showConfirmPassword"
-                        class="flex justify-end items-end">
-                        <svg v-if="!showConfirmPassword" class="h-5 w-5 text-gray-400 hover:text-gray-600" fill="none"
-                          stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                        </svg>
-                        <svg v-else class="h-5 w-5 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor"
-                          viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L12 12m-2.122-2.122L7.758 7.758M12 12l2.122 2.122m-2.122-2.122L14.122 9.878m-2.12 2.122L9.88 14.12M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                      </button>
-          </div>
-        </div>
+        <!-- Password -->
         <div>
-          <label for=""  class="font-bold">Confirm Password</label>
-          <div class="bg-gray-200 grid grid-cols-3 rounded py-2 px-1">
-            <input   v-model="user.Confirmed_password" :type="showConfirmPassword ? 'text' : 'password'" required class="focus:outline-none col-span-2" placeholder="Confirm the password" />
-            <button type="button" @click="showConfirmPassword = !showConfirmPassword"
-                        class="flex justify-end items-end">
-                        <svg v-if="!showConfirmPassword" class="h-5 w-5 text-gray-400 hover:text-gray-600" fill="none"
-                          stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                        </svg>
-                        <svg v-else class="h-5 w-5 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor"
-                          viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L12 12m-2.122-2.122L7.758 7.758M12 12l2.122 2.122m-2.122-2.122L14.122 9.878m-2.12 2.122L9.88 14.12M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                      </button>
+          <label class="font-medium text-gray-700">Password</label>
+          <div
+            class="bg-gray-100 rounded-lg px-3 py-2 grid grid-cols-3
+                   items-center focus-within:ring-2 focus-within:ring-blue-500"
+          >
+            <input
+              :type="showPassword ? 'text' : 'password'"
+              v-model="user.password"
+              class="bg-transparent outline-none col-span-2"
+              placeholder="Create your password"
+            />
+            <button
+              type="button"
+              class="text-gray-500 hover:text-gray-800"
+              @click="showPassword = !showPassword"
+            >
+              👁
+            </button>
           </div>
         </div>
 
-        <div class="flex space-x-1">
-          <input type="checkbox" v-model="user.Accepte_terms" name="term" id="" class="bg-gray-200" />
-          <label for="">I agree to the officialTerms of Service and pivacy Policy</label>
+        <!-- Confirm Password -->
+        <div>
+          <label class="font-medium text-gray-700">Confirm Password</label>
+          <div
+            class="bg-gray-100 rounded-lg px-3 py-2 grid grid-cols-3
+                   items-center focus-within:ring-2 focus-within:ring-blue-500"
+          >
+            <input
+              :type="showConfirmPassword ? 'text' : 'password'"
+              v-model="confirmPassword"
+              class="bg-transparent outline-none col-span-2"
+              placeholder="Confirm password"
+            />
+            <button
+              type="button"
+              class="text-gray-500 hover:text-gray-800"
+              @click="showConfirmPassword = !showConfirmPassword"
+            >
+              👁
+            </button>
+          </div>
         </div>
-        <hr />
 
-        <div class="flex bg-black w-full rounded-xl justify-center text-center items-center p-2">
-          <button class="text-white">Create Account</button>
-        </div>
-        <hr />
-        <div class="items-center text-center">
-            Already have an account?
-        <span class="font-bold"><router-link to="/login">Sign in</router-link> </span>
+        <!-- Terms -->
+        <div class="flex items-center space-x-2">
+          <input type="checkbox" v-model="user.accept_terms" />
+          <label class="text-gray-600 text-sm">
+            I agree to the
+            <span class="text-blue-600 hover:underline">Terms of Service</span>
+            and
+            <span class="text-blue-600 hover:underline">Privacy Policy</span>
+          </label>
         </div>
 
+        <!-- Submit -->
+        <button
+          type="submit"
+          class="w-full py-2 rounded-xl bg-black text-white font-semibold
+                 hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600
+                 transition"
+        >
+          Create Account →
+        </button>
+
+        <!-- Error message -->
+        <p v-if="error" class="text-red-600 text-center">{{ error }}</p>
       </form>
-    </div>
-    <div class="bg-gray-200 rounded-xl lg:w-1/4">
-      <div class="p-5 space-y-5">
-        <p class="font-bold">Secure & Private</p>
-        <span> Your data is encrypted and protected with undustry standard security measure </span>
-      </div>
+
+      <!-- Sign in link -->
+      <p class="text-sm text-gray-600 text-center">
+        Already have an account?
+        <router-link
+          to="/login"
+          class="font-semibold text-blue-600 hover:underline"
+        >
+          Sign in
+        </router-link>
+      </p>
     </div>
   </div>
-  <div>yo {{ user}}</div>
 </template>
-<script setup lang="ts">
-import { ref } from 'vue';
+
+<script setup>
+import { ref } from "vue";
+import { useAuthStore } from "@/stores/authStore";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+const authStore = useAuthStore();
+
 const showPassword = ref(false);
 const showConfirmPassword = ref(false);
+
 const user = ref({
-  First_name :"",
-  Last_name:"",
-  Email:"",
-  Phone:"",
-  Company:"",
-  Role:"",
-  password:"",
-  Confirmed_password:"",
-  Accepte_terms:""
+  username: "",
+  last_name: "",
+  email: "",
+  telephone: "",
+  company: "",
+  role: "",
+  password: "",
+  accept_terms: false,
+});
 
-})
+const confirmPassword = ref("");
+const error = ref(null);
 
+const handleRegister = async () => {
+  error.value = null;
 
+  if (user.value.password !== confirmPassword.value) {
+    error.value = "Passwords do not match ❌";
+    return;
+  }
 
+  if (!user.value.accept_terms) {
+    error.value = "You must accept the terms ✅";
+    return;
+  }
+
+  try {
+    await authStore.register(
+      user.value.username,
+      user.value.last_name,
+      user.value.email,
+      user.value.telephone,
+      user.value.role,
+      user.value.password
+    );
+
+    if (!authStore.error) {
+      router.push("/dashboard");
+    }
+  } catch (err) {
+    err.value = "Registration failed";
+  }
+};
 </script>
