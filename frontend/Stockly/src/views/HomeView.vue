@@ -1,4 +1,7 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import BaseButton from '@/components/BaseButton.vue';
+
+</script>
 
 <template>
   <main class="pt-20">
@@ -10,6 +13,17 @@
           Transform your inventory operations with our comprehensive platform featuring 3D product
           displays, real-time analytics, and automated workflows.
         </p>
+
+        <BaseButton text="Start Free Trial" color="bg-black hover:bg-gray-900">
+          <template #svg>
+    <!-- SVG à gauche -->
+    <!-- Par exemple, une flèche -->
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+    </svg>
+  </template>
+
+        </BaseButton>
       </div>
     </section>
   </main>
