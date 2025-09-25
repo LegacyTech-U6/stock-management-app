@@ -3,19 +3,25 @@ import BaseButton from '@/components/BaseButton.vue'
 import AnalyticsChart from '@/assets/icon svg/AnalyticsChart.vue'
 import UsersClients from '@/assets/icon svg/UsersClients.vue'
 import CubeThree from '@/assets/icon svg/CubeThree.vue'
+import analyticsImg from '@/assets/image/WhatsApp Image 2025-07-19 at 19.47.35.jpeg'
+import pastedImg from '@/assets/image/Pasted image.png'
+import dImage from '@/assets/image/WhatsApp Image 2025-07-19 at 19.47.35.jpeg'
+import { ref } from 'vue'
 
 const capacityStockly = [
   {
     title: 'Analytics Dashboard',
-    description: 'Real-time insights into your inventory performance, sales trends, and business metrics.',
-    icon: AnalyticsChart ,
-    image: ''
+    description:
+      'Real-time insights into your inventory performance, sales trends, and business metrics.',
+    icon: AnalyticsChart,
+    image: analyticsImg,
   },
   {
     title: '3D Product Display',
-    description: 'Visualize your inventory in stunning 3D to enhance product management and customer experience.',
-    icon: CubeThree ,
-    image:''
+    description:
+      'Visualize your inventory in stunning 3D to enhance product management and customer experience.',
+    icon: CubeThree,
+    image: dImage,
   },
   // {
   //   title: 'Real-Time Analytics',
@@ -32,23 +38,49 @@ const capacityStockly = [
   {
     title: 'Client Database',
     description: 'Comprehensive customer management with order history and contact information.',
-    icon: UsersClients ,
-    image:''
+    icon: UsersClients,
+    image: pastedImg,
   },
 ]
-
+const selectedFeature = ref<null | (typeof capacityStockly)[0]>(null)
 const advantages = ['14-day free trial', 'No credit card required', 'Cancel anytime']
+const BusinessResult = [
+  {
+    rate: '25%',
+    title: 'Reduce Stock Costs',
+    description: 'Optimize inventory levels and reduce carrying costs by up to 25%',
+  },
+  {
+    rate: '3x',
+    title: 'Faster Processing',
+    description: 'Process orders 3x faster with automated workflows and smart insights',
+  },
+  {
+    rate: '24/7',
+    title: 'Real-time Updates',
+    description: 'Stay informed with instant notifications and live inventory tracking',
+  },
+  {
+    rate: '99.9%',
+    title: 'Secure & Reliable',
+    description: 'Enterprise-grade security with 99.9% uptime guarantee',
+  },
+]
 </script>
 
 <template>
   <main class="pt-20">
     <!-- Hero Section -->
-    <section class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-[500px] lg:min-h-[600px] flex items-center justify-center px-4">
+    <section
+      class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-[500px] lg:min-h-[600px] flex items-center justify-center px-4"
+    >
       <div class="max-w-4xl mx-auto text-center space-y-8">
         <div class="space-y-6">
           <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
             Modern Stock Management
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+            <span
+              class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600"
+            >
               Made Simple
             </span>
           </h1>
@@ -123,7 +155,9 @@ const advantages = ['14-day free trial', 'No credit card required', 'Cancel anyt
               />
             </svg>
             <span class="text-gray-600 text-sm font-medium">{{ advantage }}</span>
-            <span v-if="index < advantages.length - 1" class="hidden sm:block text-gray-300 mx-2">•</span>
+            <span v-if="index < advantages.length - 1" class="hidden sm:block text-gray-300 mx-2"
+              >•</span
+            >
           </div>
         </div>
       </div>
@@ -142,38 +176,74 @@ const advantages = ['14-day free trial', 'No credit card required', 'Cancel anyt
             efficiently with cutting-edge technology.
           </p>
         </div>
-        <div class="grid grid-cols 2">
-
-
-
-        <!-- Features Grid -->
-        <div class="grid grid-cols-1 gap-8">
-          <div
-            v-for="feature in capacityStockly"
-            :key="feature.title"
-            class="group p-8 border border-gray-200 rounded-2xl hover:border-blue-200 hover:shadow-lg transition-all duration-300 bg-white hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50"
-          >
-            <div class="flex items-start space-x-4">
-              <div class="flex-shrink-0 w-12 h-12  rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <component :is="feature.icon" width="24" height="24" class="text-blue-600" />
+        <div class="">
+          <!-- Features Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Features List -->
+            <div class="space-y-4">
+              <div
+                v-for="feature in capacityStockly"
+                :key="feature.title"
+                @click="selectedFeature = feature"
+                :class="[
+                  'group p-6 border-2 rounded-2xl cursor-pointer transition-all duration-300 bg-white',
+                  selectedFeature?.title === feature.title
+                    ? 'border-black bg-gradient-to-br from-blue-50 to-purple-50 shadow-lg'
+                    : 'border-gray-200 hover:border-blue-200 hover:shadow-md hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50',
+                ]"
+              >
+                <div class="flex items-start space-x-4">
+                  <div
+                    :class="[
+                      'flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300',
+                      selectedFeature?.title === feature.title
+                        ? 'bg-black text-white'
+                        : 'bg-gray-100 text-black',
+                    ]"
+                  >
+                    <component
+                      :is="feature.icon"
+                      class="w-6 h-6"
+                      :class="selectedFeature?.title === feature.title ? '#fff' : '#2563eb'"
+                    />
+                  </div>
+                  <div class="flex-1">
+                    <h3
+                      class="text-xl font-semibold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors duration-300"
+                    >
+                      {{ feature.title }}
+                    </h3>
+                    <p class="text-gray-600 leading-relaxed">
+                      {{ feature.description }}
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div class="flex-1">
-                <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors duration-300">
-                  {{ feature.title }}
-                </h3>
-                <p class="text-gray-600 leading-relaxed">
-                  {{ feature.description }}
-                </p>
+            </div>
+            <!-- Feature Image Display -->
+            <div class="flex items-center justify-center">
+              <div
+                v-if="selectedFeature"
+                class="w-full max-w-md rounded-2xl overflow-hidden shadow-xl transition-all duration-500 transform hover:scale-105"
+              >
+                <img
+                  :src="selectedFeature.image"
+                  :alt="selectedFeature.title"
+                  class="w-full h-100 object-cover"
+                />
+              </div>
+              <div
+                v-else
+                class="w-full max-w-md h-64 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center"
+              >
+                <p class="text-gray-500 text-lg">Select a feature to view details</p>
               </div>
             </div>
           </div>
         </div>
-        <div class="flex">
-
-        </div>
-        </div>
       </div>
     </section>
+    <section></section>
   </main>
 </template>
 
