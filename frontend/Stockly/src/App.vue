@@ -9,8 +9,12 @@ import FooTer from './components/FooTer.vue';
 
 
     <div class="wrapper">
+      <div class="items-center">
+        <NavBar />
 
-      <NavBar />
+      </div>
+
+
 
     </div>
   </header>
