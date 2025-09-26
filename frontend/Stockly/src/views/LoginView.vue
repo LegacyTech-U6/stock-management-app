@@ -123,7 +123,7 @@ const seConnecter = async () => {
 
   if (authStore.token) {
     console.log('✅ Connexion réussie :', authStore.user)
-    router.push('/about') // Redirection après login réussi
+    router.push('/client') // Redirection après login réussi
   } else {
     console.warn('❌ Connexion échouée :', authStore.error)
   }
