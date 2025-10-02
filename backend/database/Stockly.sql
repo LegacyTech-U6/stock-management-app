@@ -33,6 +33,8 @@ CREATE TABLE `Client` (
   `client_name` VARCHAR(255) DEFAULT NULL,
   `client_Signature` VARCHAR(255) DEFAULT NULL,
   `client_PhoneNumber` VARCHAR(20) DEFAULT NULL,
+  `location` VARCHAR(255) DEFAULT NULL,
+  `email` VARCHAR(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 -- Table Category
