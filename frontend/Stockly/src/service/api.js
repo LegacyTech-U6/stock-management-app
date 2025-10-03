@@ -46,3 +46,9 @@ export async function deleteProduct(productId) {
   return data
 
 }
+
+export async function createProduct(productData) {
+  const {data} = await API.post('/products',productData)
+  return data
+
+}
