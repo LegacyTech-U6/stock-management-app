@@ -1,5 +1,5 @@
 <template>
-  <div class="border-b border-gray-200 px-6 py-3 pt-20 bg-white flex-shrink-0">
+  <div class="border-b border-gray-200 px-6 py-3 bg-white flex-shrink-0">
         <div class="max-w-7xl mx-auto">
           <button
             @click="goBack"

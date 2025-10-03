@@ -1,27 +1,24 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import NavBar from './components/NavBar.vue';
-import FooTer from './components/FooTer.vue';
+import { useRoute } from 'vue-router'
+import NavBar from './components/NavBar.vue'
+import FooTer from './components/FooTer.vue'
+
+const route = useRoute()
 </script>
 
 <template>
   <header>
-
-
     <div class="wrapper">
       <div class="items-center">
-        <NavBar />
-
+        <NavBar v-if="$route.meta.showNavbarAndFooter !== false" />
       </div>
-
-
-
     </div>
   </header>
 
   <RouterView />
 
-  <FooTer />
+  <FooTer v-if="$route.meta.showNavbarAndFooter !== false"  />
 </template>
 
 <style scoped>

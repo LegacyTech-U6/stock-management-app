@@ -27,6 +27,7 @@ const router = createRouter({
       name: 'product-detail',
       component: () => import('@/views/ProductDetailPage.vue'),
       props: true,
+      meta:{showNavbarAndFooter:false}
     },
     {
       path: '/login',
@@ -42,7 +43,14 @@ const router = createRouter({
       path: '/product',
       name: 'product',
       component: () => import('../views/ProductView.vue'),
+      meta:{showNavbarAndFooter:false}
     },
+    {
+      path:'/steper',
+      name:'steper',
+      component: () => import('../components/SteeperComponent.vue'),
+       meta:{showNavbarAndFooter:false}
+    }
   ],
 })
 
