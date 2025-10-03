@@ -5,7 +5,7 @@ const validateProduct = require("../middleware/validateProduct");
 const upload = require("../middleware/upload");
 
 // Product routes
-router.post('/', validateProduct, ProductController.post);
+router.post('/', ProductController.post);
 router.get('/', ProductController.get);
 router.get('/low-stock', ProductController.checkLowStockGlobal);
 router.get('/out-of-stock', ProductController.checkOutOfStockGlobal);

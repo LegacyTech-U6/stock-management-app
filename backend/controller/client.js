@@ -29,7 +29,6 @@ module.exports = {
     } = req.body;
     if (
       !client_name ||
-      !client_Signature ||
       !client_PhoneNumber ||
       !email ||
       !location

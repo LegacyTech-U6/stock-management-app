@@ -52,7 +52,6 @@
         <div class="bg-white border border-gray-200 rounded-lg p-4">
           <div class="flex items-center gap-2 mb-3">
             <div class="w-8 h-8 bg-purple-50 rounded-full flex items-center justify-center">
-
               <DollarIcon />
             </div>
             <span class="text-xs font-medium text-gray-600">Total Revenue</span>
@@ -87,7 +86,10 @@
       </div>
 
       <!-- Client Cards Grid -->
-      <div v-if="filteredClients.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 pb-8">
+      <div
+        v-if="filteredClients.length > 0"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 pb-8"
+      >
         <ClientCard
           v-for="client in filteredClients"
           :key="client.id"
@@ -99,14 +101,18 @@
 
       <!-- Empty State -->
       <div v-else class="bg-white border border-gray-200 rounded-lg p-12 text-center">
-        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div
+          class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4"
+        >
           <EmptyStateIcon />
         </div>
         <h3 class="text-lg font-semibold text-gray-900 mb-2">
           {{ search ? 'No clients found' : 'No clients yet' }}
         </h3>
         <p class="text-sm text-gray-500 mb-6">
-          {{ search ? 'Try adjusting your search terms' : 'Get started by adding your first client' }}
+          {{
+            search ? 'Try adjusting your search terms' : 'Get started by adding your first client'
+          }}
         </p>
         <button
           v-if="!search"
@@ -125,6 +131,12 @@
         </button>
       </div>
     </div>
+    <FromModal
+      :open="clientStore.isFormOpen"
+      :form="clientStore.clientForm"
+      @submit="handleSubmit"
+      @close="clientStore.fermerFormulaire"
+    />
   </div>
 </template>
 
@@ -136,6 +148,7 @@ import SearchIcon from '@/assets/icon svg/SearchIcon.vue'
 import TickIcon from '@/assets/icon svg/TickIcon.vue'
 import UserGroupIcon from '@/assets/icon svg/userGroupIcon.vue'
 import ClientCard from '@/components/clients/ClientCard.vue'
+import FromModal from '../components/clients/FromModal.vue'
 import { useClientStore } from '@/stores/clientStore'
 import { onMounted, ref, computed } from 'vue'
 
@@ -157,18 +170,21 @@ const filteredClients = computed(() =>
 )
 
 // Active clients count
-const activeClientsCount = computed(() =>
-  clientStore.clients.filter((c) => (c.status || 'active').toLowerCase() === 'active').length
+const activeClientsCount = computed(
+  () => clientStore.clients.filter((c) => (c.status || 'active').toLowerCase() === 'active').length,
 )
 
 // Total revenue calculation
 const totalRevenue = computed(() =>
-  clientStore.clients.reduce((sum, client) => sum + (client.totalSpent || 0), 0)
+  clientStore.clients.reduce((sum, client) => sum + (client.totalSpent || 0), 0),
 )
 
 // Average order value calculation
 const avgOrderValue = computed(() => {
-  const totalOrders = clientStore.clients.reduce((sum, client) => sum + (client.totalOrders || 0), 0)
+  const totalOrders = clientStore.clients.reduce(
+    (sum, client) => sum + (client.totalOrders || 0),
+    0,
+  )
   return totalOrders > 0 ? totalRevenue.value / totalOrders : 0
 })
 
@@ -191,11 +207,21 @@ const handleBackToSales = () => {
 
 const handleAddClient = () => {
   // Open add client modal/form
+  clientStore.ouvrirFormulaire()
   console.log('Open add client modal')
 }
+const handleSubmit = async () => {
+  try {
+    await clientStore.addClient();
+
+  } catch (error) {
+   throw error
+  }
+};
 
 const handleEditClient = (client: any) => {
   // Open edit client modal/form
+
   console.log('Edit client:', client)
 }
 
