@@ -27,7 +27,7 @@
           :key="index"
           :class="{
             current: step === stepItem.id,
-            success: step > stepItem.id
+            success: step > stepItem.id,
           }"
         >
           <div class="stepper-item-counter">
@@ -39,128 +39,237 @@
       </div>
 
       <!-- Content -->
-      <div class="stepper-content">
-        <div v-if="step === 1" class="stepper-pane">
-          <div class="form-group">
-            <label>Product Name *</label>
-            <input type="text" placeholder="fgty" class="form-input" />
-          </div>
 
-          <div class="form-row">
+      <div class="stepper-content">
+        <section class="step-1">
+          <div v-if="step === 1" class="stepper-pane">
             <div class="form-group">
-              <label>SKU *</label>
-              <div class="input-with-button">
-                <input type="text" placeholder="F-2025-633" class="form-input" />
-                <button class="btn-generate">🔄 Generate</button>
+              <label>Product Name *</label>
+              <input type="text" placeholder="fgty" v-model="formData.name" class="form-input" />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>SKU *</label>
+                <div class="input-with-button">
+                  <input
+                    type="text"
+                    placeholder="F-2025-633"
+                    v-model="formData.sku"
+                    class="form-input"
+                  />
+                  <button class="btn-generate">🔄 Generate</button>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Category *</label>
+                <select class="form-input" v-model="formData.category">
+                  <option>Computers</option>
+                </select>
               </div>
             </div>
 
             <div class="form-group">
-              <label>Category *</label>
-              <select class="form-input">
-                <option>Computers</option>
+              <label>Supplier *</label>
+              <select class="form-input" v-model="formData.supplier">
+                <option>Gaming Tech Corp</option>
               </select>
             </div>
           </div>
-
-          <div class="form-group">
-            <label>Supplier *</label>
-            <select class="form-input">
-              <option>Gaming Tech Corp</option>
-            </select>
-          </div>
-        </div>
-
+        </section>
         <!-- Step 2: Pricing & Stock -->
-<div v-if="step === 2" class="stepper-pane">
-  <h3 class="step-content-title">Pricing & Stock</h3>
-  <p class="step-content-description">
-    Configure pricing and inventory information for this product.
-  </p>
-  <div class="bg-white border border-gray-200 rounded-xl p-6 mt-6">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <!-- Price -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Price *</label>
-        <div class="flex items-center gap-2">
-          <span class="text-gray-400 text-lg">$</span>
-          <input
-            type="number"
-            class="form-input"
-            placeholder="30"
-            v-model="form.price"
-            min="0"
-          />
-        </div>
-      </div>
-      <!-- Currency -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Currency</label>
-        <select class="form-input" v-model="form.currency">
-          <option value="USD">USD ($)</option>
-          <option value="EUR">EUR (€)</option>
-          <option value="XOF">XOF (CFA)</option>
-        </select>
-      </div>
-      <!-- Current Stock -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Current Stock</label>
-        <input
-          type="number"
-          class="form-input"
-          placeholder="30"
-          v-model="form.currentStock"
-          min="0"
-        />
-      </div>
-      <!-- Min Stock -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Min Stock</label>
-        <input
-          type="number"
-          class="form-input"
-          placeholder="10"
-          v-model="form.minStock"
-          min="0"
-        />
-      </div>
-      <!-- Max Stock -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Max Stock</label>
-        <input
-          type="number"
-          class="form-input"
-          placeholder="100"
-          v-model="form.maxStock"
-          min="0"
-        />
-      </div>
-      <!-- Last Restocked -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Last Restocked</label>
-        <input
-          type="date"
-          class="form-input"
-          v-model="form.lastRestocked"
-        />
-      </div>
-    </div>
-  </div>
-</div>
+        <section class="step-2">
+          <div v-if="step === 2" class="stepper-pane">
+            <h3 class="step-content-title">Pricing & Stock</h3>
+            <p class="step-content-description">
+              Configure pricing and inventory information for this product.
+            </p>
+            <div class="bg-white border border-gray-200 rounded-xl p-6 mt-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Price -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Price *</label>
+                  <div class="flex items-center gap-2">
+                    <span class="text-gray-400 text-lg">$</span>
+                    <input
+                      type="number"
+                      class="form-input"
+                      placeholder="30"
+                      v-model="formData.price"
+                      min="0"
+                    />
+                  </div>
+                </div>
+                <!-- Currency -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Currency</label>
+                  <select class="form-input" v-model="formData.currency">
+                    <option value="USD">USD ($)</option>
+                    <option value="EUR">EUR (€)</option>
+                    <option value="XOF">XOF (CFA)</option>
+                  </select>
+                </div>
+                <!-- Current Stock -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Current Stock</label>
+                  <input
+                    type="number"
+                    class="form-input"
+                    placeholder="30"
+                    v-model="formData.stockLevel"
+                    min="0"
+                  />
+                </div>
+                <!-- Min Stock -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Min Stock</label>
+                  <input
+                    type="number"
+                    class="form-input"
+                    placeholder="10"
+                    v-model="formData.minStockLevel"
+                    min="0"
+                  />
+                </div>
+                <!-- Max Stock -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Max Stock</label>
+                  <input
+                    type="number"
+                    class="form-input"
+                    placeholder="100"
+                    v-model="formData.maxStockLevel"
+                    min="0"
+                  />
+                </div>
+                <!-- Last Restocked -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Last Restocked</label>
+                  <input type="date" class="form-input" v-model="formData.lastRestocked" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
-        <div v-if="step === 3" class="stepper-pane">
-          <h3 class="step-content-title">Image & Description</h3>
-          <p class="step-content-description">
-            Add product images and detailed description.
-          </p>
-        </div>
-
-        <div v-if="step === 4" class="stepper-pane">
-          <h3 class="step-content-title">Specifications</h3>
-          <p class="step-content-description">
-            Add technical specifications and product details.
-          </p>
-        </div>
+        <section class="step-3">
+          <div v-if="step === 3" class="stepper-pane">
+            <h3 class="step-content-title">Image & Description</h3>
+            <p class="step-content-description">Add product images and detailed description.</p>
+            <div class="bg-white border border-gray-200 rounded-xl p-6 mt-6">
+              <!-- Product Image URL -->
+              <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Product Image URL</label
+                >
+                <input
+                  type="text"
+                  class="form-input"
+                  placeholder="https://example.com/product-image.jpg"
+                  v-model="formData.imageUrl"
+                />
+                <div class="text-xs text-gray-500 mt-1 mb-2">
+                  Paste a URL to an image or select from quick options below
+                </div>
+                <div class="flex gap-2 mb-2">
+                  <img
+                    v-for="img in quickImages"
+                    :key="img"
+                    :src="img"
+                    @click="form.imageUrl = img"
+                    class="w-20 h-20 object-cover rounded cursor-pointer border border-gray-200 hover:border-black transition"
+                    :alt="img"
+                  />
+                </div>
+              </div>
+              <!-- Description -->
+              <div class="form-group">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Description *</label>
+                <textarea
+                  class="form-input"
+                  rows="3"
+                  placeholder="Describe the product features, benefits, and specifications..."
+                  v-model="formData.description"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="step-4">
+          <div v-if="step === 4" class="stepper-pane">
+            <div
+              class="bg-white border border-gray-200 rounded-xl p-6 mt-6 grid grid-cols-1 md:grid-cols-2 gap-6"
+            >
+              <!-- Add Specifications -->
+              <div class="bg-gray-50 rounded-lg p-6">
+                <h4 class="font-semibold text-lg mb-4">Add Specifications</h4>
+                <div class="flex gap-2 mb-3">
+                  <input
+                    type="text"
+                    class="form-input"
+                    placeholder="e.g., Battery Life"
+                    v-model="specKey"
+                  />
+                  <input
+                    type="text"
+                    class="form-input"
+                    placeholder="e.g., 30 hours"
+                    v-model="specValue"
+                  />
+                </div>
+                <button
+                  class="btn btn-primary w-full"
+                  @click="addSpecification"
+                  :disabled="!specKey || !specValue"
+                >
+                  + Add Specification
+                </button>
+                <ul class="mt-4 space-y-1">
+                  <li
+                    v-for="(spec, i) in specifications"
+                    :key="i"
+                    class="text-sm text-gray-700 flex justify-between"
+                  >
+                    <span>{{ spec.key }}:</span>
+                    <span class="font-medium">{{ spec.value }}</span>
+                  </li>
+                </ul>
+              </div>
+              <!-- Product Summary -->
+              <div class="bg-gray-50 rounded-lg p-6">
+                <h4 class="font-semibold text-lg mb-4">Product Summary</h4>
+                <div class="space-y-2 text-sm">
+                  <div>
+                    <span class="text-gray-500">Name:</span>
+                    <span class="font-semibold">{{ formData.name }}</span>
+                  </div>
+                  <div>
+                    <span class="text-gray-500">SKU:</span>
+                    <span class="font-semibold">{{ formData.sku }}</span>
+                  </div>
+                  <div>
+                    <span class="text-gray-500">Category:</span>
+                    <span class="font-semibold">{{ formData.category }}</span>
+                  </div>
+                  <div>
+                    <span class="text-gray-500">Price:</span>
+                    <span class="font-semibold">{{ formData.currency }} {{ form.price }}</span>
+                  </div>
+                  <div>
+                    <span class="text-gray-500">Stock:</span>
+                    <span class="font-semibold">{{ formData.stockLevel }} units</span>
+                  </div>
+                  <div>
+                    <span class="text-gray-500">Supplier:</span>
+                    <span class="font-semibold">{{ formData.supplier }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Controls -->
+          </div>
+        </section>
       </div>
 
       <!-- Controls -->
@@ -169,9 +278,7 @@
           <span class="icon-arrow">←</span>
           Previous
         </button>
-        <div class="step-indicator">
-          Step {{ step }} of 4
-        </div>
+        <div class="step-indicator">Step {{ step }} of 4</div>
         <button class="btn btn-primary" @click="nextStep" :disabled="step === 4">
           Next
           <span class="icon-arrow">→</span>
@@ -182,37 +289,64 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed } from 'vue'
 
-const step = ref(1);
+const step = ref(1)
 
 const stepItems = [
-  { id: 1, title: "Basic Info" },
-  { id: 2, title: "Pricing & Stock" },
-  { id: 3, title: "Image & Description" },
-  { id: 4, title: "Specifications" },
-];
+  { id: 1, title: 'Basic Info' },
+  { id: 2, title: 'Pricing & Stock' },
+  { id: 3, title: 'Image & Description' },
+  { id: 4, title: 'Specifications' },
+]
 const form = ref({
   price: '',
   currency: 'USD',
   currentStock: '',
   minStock: '',
   maxStock: '',
-  lastRestocked: ''
+  lastRestocked: '',
 })
 const stepperProgress = computed(() => {
-  return (100 / (stepItems.length - 1)) * (step.value - 1) + "%";
-});
+  return (100 / (stepItems.length - 1)) * (step.value - 1) + '%'
+})
 
 const nextStep = () => {
-  if (step.value < stepItems.length) step.value++;
-};
+  if (step.value < stepItems.length) step.value++
+}
 
 const prevStep = () => {
-  if (step.value > 1) step.value--;
-};
-</script>
+  if (step.value > 1) step.value--
+}
+const formData = {
+  name: '',
+  sku: '',
+  category: '',
+  price: 0,
+  currency: 'USD',
+  stockLevel: 0,
+  minStockLevel: 10,
+  maxStockLevel: 100,
+  supplier: '',
+  lastRestocked: new Date().toISOString().split('T')[0],
+  description: '',
+  specifications: {},
+  imageUrl: '',
+}
+  const generateSKU = () => {
+    const prefix = formData.name.split(' ').map(word => word.charAt(0)).join('').toUpperCase()
+    const year = new Date().getFullYear()
+    const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0')
+    return `${prefix}-${year}-${random}`
+  }
 
+  const handleAutoGenerateSKU = () => {
+    if (formData.name) {
+      const sku = generateSKU()
+      handleInputChange('sku', sku)
+    }
+  }
+</script>
 
 <style lang="scss" scoped>
 $primary: #000000;
