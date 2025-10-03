@@ -23,7 +23,7 @@ const router = createRouter({
       component: () => import('../views/RegisterView.vue'),
     },
     {
-        path: '/product/:id/:product',
+        path: '/product/:id',
       name: 'product-detail',
       component: () => import('@/views/ProductDetailPage.vue'),
       props: true,

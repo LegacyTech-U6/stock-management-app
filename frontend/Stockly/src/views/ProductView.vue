@@ -120,7 +120,7 @@
           v-for="product in filteredProducts"
           :key="product.id"
           :product="product"
-          @view="openProduct(prod)"
+          @view="handleViewProduct(product)"
         />
       </div>
 
@@ -128,7 +128,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { useRouter } from 'vue-router'
 import { ref, computed, onMounted } from 'vue'
 import { useProductStore } from '@/stores/productStore'
@@ -183,15 +183,16 @@ const handleAddProduct =() =>{
 }
 const router = useRouter()
 
-const handleViewProduct = (product: any) => {
+const handleViewProduct = (product) => {
   // Navigate to product detail page and pass product data
   router.push({
     name: 'product-detail', // or path: `/products/${product.id}`
     params: {
-      id: product.id,
-       product: product // Pass the entire product object
+      id: product.id
     }
   })
+    // On envoie uniquement l’ID dans l’URL
+  // router.push({ name: 'ProductDetail', params: { id: product.id } })
 }
 
 onMounted(async () => {
