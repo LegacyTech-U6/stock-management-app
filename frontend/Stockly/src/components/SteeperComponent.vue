@@ -58,7 +58,7 @@
                     v-model="formData.sku"
                     class="form-input"
                   />
-                  <button class="btn-generate">🔄 Generate</button>
+                  <button class="btn-generate" @click="handleAutoGenerateSKU">🔄 Generate</button>
                 </div>
               </div>
 
@@ -346,6 +346,60 @@ const formData = {
       handleInputChange('sku', sku)
     }
   }
+
+    const handleInputChange = (field: keyof ProductFormData, value: any) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }))
+    // Clear error when user starts typing
+    if (errors[field]) {
+      setErrors(prev => {
+        const newErrors = { ...prev }
+        delete newErrors[field]
+        return newErrors
+      })
+    }
+  }
+    const validateStep = (step: number) => {
+    const newErrors: Record<string, string> = {}
+
+    if (step === 1) {
+      if (!formData.name.trim()) newErrors.name = 'Product name is required'
+      if (!formData.sku.trim()) newErrors.sku = 'SKU is required'
+      if (!formData.category.trim()) newErrors.category = 'Category is required'
+      if (!formData.supplier.trim()) newErrors.supplier = 'Supplier is required'
+    }
+
+    if (step === 2) {
+      if (formData.price <= 0) newErrors.price = 'Price must be greater than 0'
+      if (formData.stockLevel < 0) newErrors.stockLevel = 'Stock level cannot be negative'
+      if (formData.minStockLevel >= formData.maxStockLevel) {
+        newErrors.minStockLevel = 'Minimum stock must be less than maximum stock'
+      }
+    }
+
+    if (step === 3) {
+      if (!formData.description.trim()) newErrors.description = 'Description is required'
+    }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const handleSubmit = () => {
+    if (!validateStep(4)) return
+
+    const newProduct: Product = {
+      ...formData,
+      id: `PRD-${Date.now()}`,
+      specifications: specifications
+    }
+
+    onAddProduct(newProduct)
+    toast.success('Product added successfully!')
+  }
+
 </script>
 
 <style lang="scss" scoped>
