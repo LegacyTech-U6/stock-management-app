@@ -50,6 +50,12 @@ const router = createRouter({
       name:'steper',
       component: () => import('../components/SteeperComponent.vue'),
        meta:{showNavbarAndFooter:false}
+    },
+    {
+      path:'/sales',
+      name:'sales',
+      component: () => import('../views/SalesInterface.vue'),
+       meta:{showNavbarAndFooter:false}
     }
   ],
 })
