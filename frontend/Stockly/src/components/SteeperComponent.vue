@@ -1,287 +1,349 @@
 <template>
-  <div class="stepper-container">
+  <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4 sm:px-6 lg:px-8">
     <!-- Header -->
-    <div class="stepper-header">
-      <div>
-        <h1 class="stepper-title">Add New Product</h1>
-        <p class="stepper-subtitle">Create a new product in your inventory</p>
+    <div class="max-w-4xl mx-auto mb-8">
+      <div class="flex justify-between items-start">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900 mb-2">Add New Product</h1>
+          <p class="text-sm text-gray-600">Create a new product in your inventory</p>
+        </div>
+        <button class="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 text-sm font-medium hover:bg-gray-50 transition-all duration-200 shadow-sm">
+          <span class="text-lg">←</span>
+          Cancel
+        </button>
       </div>
-      <button class="btn-cancel">
-        <span class="icon-back">←</span>
-        Cancel
-      </button>
     </div>
 
-    <!-- Stepper -->
-    <div class="stepper-wrapper">
-      <div class="stepper">
+    <!-- Stepper Container -->
+    <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg p-8">
+      <!-- Progress Steps -->
+      <div class="relative mb-12">
         <!-- Progress Bar -->
-        <div class="stepper-progress">
-          <div class="stepper-progress-bar" :style="{ width: stepperProgress }"></div>
+        <div class="absolute top-8 left-16 right-16 h-0.5 bg-gray-200">
+          <div
+            class="h-full bg-emerald-500 transition-all duration-500 ease-out"
+            :style="{ width: stepperProgress }"
+          ></div>
         </div>
 
         <!-- Steps -->
-        <div
-          class="stepper-item"
-          v-for="(stepItem, index) in stepItems"
-          :key="index"
-          :class="{
-            current: step === stepItem.id,
-            success: step > stepItem.id,
-          }"
-        >
-          <div class="stepper-item-counter">
-            <span v-if="step > stepItem.id" class="icon-check">✓</span>
-            <span v-else class="number">{{ stepItem.id }}</span>
+        <div class="relative flex justify-between">
+          <div
+            v-for="(stepItem, index) in stepItems"
+            :key="index"
+            class="flex flex-col items-center flex-1"
+          >
+            <div
+              class="w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 transform"
+              :class="{
+                'bg-gray-200': step < stepItem.id,
+                'bg-indigo-600 scale-110': step === stepItem.id,
+                'bg-emerald-500': step > stepItem.id
+              }"
+            >
+              <span
+                v-if="step > stepItem.id"
+                class="text-white text-2xl font-bold"
+              >✓</span>
+              <span
+                v-else
+                class="text-xl font-semibold"
+                :class="step === stepItem.id ? 'text-white' : 'text-gray-500'"
+              >{{ stepItem.id }}</span>
+            </div>
+            <span
+              class="mt-3 text-sm font-medium text-center transition-colors duration-300"
+              :class="{
+                'text-gray-500': step < stepItem.id,
+                'text-indigo-600': step === stepItem.id,
+                'text-emerald-600': step > stepItem.id
+              }"
+            >{{ stepItem.title }}</span>
           </div>
-          <span class="stepper-item-title">{{ stepItem.title }}</span>
         </div>
       </div>
 
       <!-- Content -->
-
-      <div class="stepper-content">
-        <section class="step-1">
-          <div v-if="step === 1" class="stepper-pane">
-            <div class="form-group">
-              <label>Product Name *</label>
-              <input type="text" placeholder="fgty" v-model="formData.name" class="form-input" />
-            </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label>SKU *</label>
-                <div class="input-with-button">
-                  <input
-                    type="text"
-                    placeholder="F-2025-633"
-                    v-model="formData.sku"
-                    class="form-input"
-                  />
-                  <button class="btn-generate" @click="handleAutoGenerateSKU">🔄 Generate</button>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label>Category *</label>
-                <select class="form-input" v-model="formData.category">
-                  <option>Computers</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label>Supplier *</label>
-              <select class="form-input" v-model="formData.supplier">
-                <option>Gaming Tech Corp</option>
-              </select>
-            </div>
+      <div class="mb-8">
+        <!-- Step 1: Basic Info -->
+        <div v-if="step === 1" class="space-y-6 min-h-[400px]">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Product Name *</label>
+            <input
+              type="text"
+              v-model="formData.Prod_name"
+              placeholder="Enter product name"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 outline-none"
+              :class="{ 'border-red-500 ring-2 ring-red-200': errors.Prod_name }"
+            />
+            <p v-if="errors.Prod_name" class="text-red-600 text-xs mt-1 font-medium">{{ errors.Prod_name }}</p>
           </div>
-        </section>
-        <!-- Step 2: Pricing & Stock -->
-        <section class="step-2">
-          <div v-if="step === 2" class="stepper-pane">
-            <h3 class="step-content-title">Pricing & Stock</h3>
-            <p class="step-content-description">
-              Configure pricing and inventory information for this product.
-            </p>
-            <div class="bg-white border border-gray-200 rounded-xl p-6 mt-6">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Price -->
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Price *</label>
-                  <div class="flex items-center gap-2">
-                    <span class="text-gray-400 text-lg">$</span>
-                    <input
-                      type="number"
-                      class="form-input"
-                      placeholder="30"
-                      v-model="formData.price"
-                      min="0"
-                    />
-                  </div>
-                </div>
-                <!-- Currency -->
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Currency</label>
-                  <select class="form-input" v-model="formData.currency">
-                    <option value="USD">USD ($)</option>
-                    <option value="EUR">EUR (€)</option>
-                    <option value="XOF">XOF (CFA)</option>
-                  </select>
-                </div>
-                <!-- Current Stock -->
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Current Stock</label>
-                  <input
-                    type="number"
-                    class="form-input"
-                    placeholder="30"
-                    v-model="formData.stockLevel"
-                    min="0"
-                  />
-                </div>
-                <!-- Min Stock -->
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Min Stock</label>
-                  <input
-                    type="number"
-                    class="form-input"
-                    placeholder="10"
-                    v-model="formData.minStockLevel"
-                    min="0"
-                  />
-                </div>
-                <!-- Max Stock -->
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Max Stock</label>
-                  <input
-                    type="number"
-                    class="form-input"
-                    placeholder="100"
-                    v-model="formData.maxStockLevel"
-                    min="0"
-                  />
-                </div>
-                <!-- Last Restocked -->
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Last Restocked</label>
-                  <input type="date" class="form-input" v-model="formData.lastRestocked" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
 
-        <section class="step-3">
-          <div v-if="step === 3" class="stepper-pane">
-            <h3 class="step-content-title">Image & Description</h3>
-            <p class="step-content-description">Add product images and detailed description.</p>
-            <div class="bg-white border border-gray-200 rounded-xl p-6 mt-6">
-              <!-- Product Image URL -->
-              <div class="form-group">
-                <label class="block text-sm font-medium text-gray-700 mb-1"
-                  >Product Image URL</label
-                >
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Barcode *</label>
+              <div class="flex gap-2">
                 <input
                   type="text"
-                  class="form-input"
-                  placeholder="https://example.com/product-image.jpg"
-                  v-model="formData.imageUrl"
+                  v-model="formData.code_bar"
+                  placeholder="Auto-generated"
+                  class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 outline-none"
+                  :class="{ 'border-red-500 ring-2 ring-red-200': errors.code_bar }"
                 />
-                <div class="text-xs text-gray-500 mt-1 mb-2">
-                  Paste a URL to an image or select from quick options below
-                </div>
-                <div class="flex gap-2 mb-2">
-                  <img
-                    v-for="img in quickImages"
-                    :key="img"
-                    :src="img"
-                    @click="form.imageUrl = img"
-                    class="w-20 h-20 object-cover rounded cursor-pointer border border-gray-200 hover:border-black transition"
-                    :alt="img"
-                  />
-                </div>
-              </div>
-              <!-- Description -->
-              <div class="form-group">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Description *</label>
-                <textarea
-                  class="form-input"
-                  rows="3"
-                  placeholder="Describe the product features, benefits, and specifications..."
-                  v-model="formData.description"
-                ></textarea>
-              </div>
-            </div>
-          </div>
-        </section>
-        <section class="step-4">
-          <div v-if="step === 4" class="stepper-pane">
-            <div
-              class="bg-white border border-gray-200 rounded-xl p-6 mt-6 grid grid-cols-1 md:grid-cols-2 gap-6"
-            >
-              <!-- Add Specifications -->
-              <div class="bg-gray-50 rounded-lg p-6">
-                <h4 class="font-semibold text-lg mb-4">Add Specifications</h4>
-                <div class="flex gap-2 mb-3">
-                  <input
-                    type="text"
-                    class="form-input"
-                    placeholder="e.g., Battery Life"
-                    v-model="specKey"
-                  />
-                  <input
-                    type="text"
-                    class="form-input"
-                    placeholder="e.g., 30 hours"
-                    v-model="specValue"
-                  />
-                </div>
                 <button
-                  class="btn btn-primary w-full"
-                  @click="addSpecification"
-                  :disabled="!specKey || !specValue"
+                  @click="handleAutoGenerateBarcode"
+                  class="px-4 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 whitespace-nowrap font-medium shadow-md hover:shadow-lg"
                 >
-                  + Add Specification
+                  🔄 Generate
                 </button>
-                <ul class="mt-4 space-y-1">
-                  <li
-                    v-for="(spec, i) in specifications"
-                    :key="i"
-                    class="text-sm text-gray-700 flex justify-between"
-                  >
-                    <span>{{ spec.key }}:</span>
-                    <span class="font-medium">{{ spec.value }}</span>
-                  </li>
-                </ul>
               </div>
-              <!-- Product Summary -->
-              <div class="bg-gray-50 rounded-lg p-6">
-                <h4 class="font-semibold text-lg mb-4">Product Summary</h4>
-                <div class="space-y-2 text-sm">
-                  <div>
-                    <span class="text-gray-500">Name:</span>
-                    <span class="font-semibold">{{ formData.name }}</span>
+              <p v-if="errors.code_bar" class="text-red-600 text-xs mt-1 font-medium">{{ errors.code_bar }}</p>
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Category *</label>
+              <select
+                v-model="formData.category_id"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 outline-none"
+                :class="{ 'border-red-500 ring-2 ring-red-200': errors.category_id }"
+              >
+                <option value="">Select category</option>
+                <option value="1">Electronics</option>
+                <option value="2">Computers</option>
+                <option value="3">Accessories</option>
+              </select>
+              <p v-if="errors.category_id" class="text-red-600 text-xs mt-1 font-medium">{{ errors.category_id }}</p>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Supplier *</label>
+            <select
+              v-model="formData.supplier"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 outline-none"
+              :class="{ 'border-red-500 ring-2 ring-red-200': errors.supplier }"
+            >
+              <option value="">Select supplier</option>
+              <option value="1">Gaming Tech Corp</option>
+              <option value="2">Tech Solutions Ltd</option>
+              <option value="3">Digital Supplies Inc</option>
+            </select>
+            <p v-if="errors.supplier" class="text-red-600 text-xs mt-1 font-medium">{{ errors.supplier }}</p>
+          </div>
+        </div>
+
+        <!-- Step 2: Pricing & Stock -->
+        <div v-if="step === 2" class="space-y-6 min-h-[400px]">
+          <div>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Pricing & Stock</h3>
+            <p class="text-sm text-gray-600 mb-6">Configure pricing and inventory information</p>
+          </div>
+
+          <div class="bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-xl p-6 space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Cost Price *</label>
+                <div class="relative">
+                  <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 font-medium">$</span>
+                  <input
+                    type="number"
+                    v-model="formData.cost_price"
+                    placeholder="0.00"
+                    min="0"
+                    step="0.01"
+                    class="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 outline-none"
+                    :class="{ 'border-red-500 ring-2 ring-red-200': errors.cost_price }"
+                  />
+                </div>
+                <p v-if="errors.cost_price" class="text-red-600 text-xs mt-1 font-medium">{{ errors.cost_price }}</p>
+              </div>
+
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Selling Price *</label>
+                <div class="relative">
+                  <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 font-medium">$</span>
+                  <input
+                    type="number"
+                    v-model="formData.selling_price"
+                    placeholder="0.00"
+                    min="0"
+                    step="0.01"
+                    class="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 outline-none"
+                    :class="{ 'border-red-500 ring-2 ring-red-200': errors.selling_price }"
+                  />
+                </div>
+                <p v-if="errors.selling_price" class="text-red-600 text-xs mt-1 font-medium">{{ errors.selling_price }}</p>
+              </div>
+
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Initial Quantity</label>
+                <input
+                  type="number"
+                  v-model="formData.quantity"
+                  placeholder="0"
+                  min="0"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 outline-none"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Min Stock Level</label>
+                <input
+                  type="number"
+                  v-model="formData.min_stock_level"
+                  placeholder="0"
+                  min="0"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 outline-none"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Max Stock Level</label>
+                <input
+                  type="number"
+                  v-model="formData.max_stock_level"
+                  placeholder="0"
+                  min="0"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 outline-none"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Date of Arrival</label>
+                <input
+                  type="date"
+                  v-model="formData.date_of_arrival"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 outline-none"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: Description & Image -->
+        <div v-if="step === 3" class="space-y-6 min-h-[400px]">
+          <div>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Description & Image</h3>
+            <p class="text-sm text-gray-600 mb-6">Add product details and image</p>
+          </div>
+
+          <div class="bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-xl p-6 space-y-6">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Product Image URL</label>
+              <input
+                type="text"
+                v-model="formData.Prod_image"
+                placeholder="https://example.com/product-image.jpg"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 outline-none"
+              />
+              <p class="text-xs text-gray-500 mt-1">Enter a valid image URL for the product</p>
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+              <textarea
+                v-model="formData.Prod_Description"
+                rows="6"
+                placeholder="Describe the product features, benefits, and specifications..."
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 outline-none resize-none"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4: Review -->
+        <div v-if="step === 4" class="space-y-6 min-h-[400px]">
+          <div>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Review & Confirm</h3>
+            <p class="text-sm text-gray-600 mb-6">Please review all information before submitting</p>
+          </div>
+
+          <div class="bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-200 rounded-xl p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="space-y-4">
+                <h4 class="font-bold text-lg text-gray-800 mb-4 border-b border-indigo-200 pb-2">Basic Information</h4>
+                <div class="space-y-3">
+                  <div class="flex justify-between">
+                    <span class="text-gray-600 font-medium">Product Name:</span>
+                    <span class="text-gray-900 font-semibold">{{ formData.Prod_name || '-' }}</span>
                   </div>
-                  <div>
-                    <span class="text-gray-500">SKU:</span>
-                    <span class="font-semibold">{{ formData.sku }}</span>
+                  <div class="flex justify-between">
+                    <span class="text-gray-600 font-medium">Barcode:</span>
+                    <span class="text-gray-900 font-semibold">{{ formData.code_bar || '-' }}</span>
                   </div>
-                  <div>
-                    <span class="text-gray-500">Category:</span>
-                    <span class="font-semibold">{{ formData.category }}</span>
+                  <div class="flex justify-between">
+                    <span class="text-gray-600 font-medium">Category:</span>
+                    <span class="text-gray-900 font-semibold">{{ getCategoryName(formData.category_id) }}</span>
                   </div>
-                  <div>
-                    <span class="text-gray-500">Price:</span>
-                    <span class="font-semibold">{{ formData.currency }} {{ form.price }}</span>
+                  <div class="flex justify-between">
+                    <span class="text-gray-600 font-medium">Supplier:</span>
+                    <span class="text-gray-900 font-semibold">{{ getSupplierName(formData.supplier) }}</span>
                   </div>
-                  <div>
-                    <span class="text-gray-500">Stock:</span>
-                    <span class="font-semibold">{{ formData.stockLevel }} units</span>
+                </div>
+              </div>
+
+              <div class="space-y-4">
+                <h4 class="font-bold text-lg text-gray-800 mb-4 border-b border-indigo-200 pb-2">Pricing & Stock</h4>
+                <div class="space-y-3">
+                  <div class="flex justify-between">
+                    <span class="text-gray-600 font-medium">Cost Price:</span>
+                    <span class="text-gray-900 font-semibold">${{ formData.cost_price || '0.00' }}</span>
                   </div>
-                  <div>
-                    <span class="text-gray-500">Supplier:</span>
-                    <span class="font-semibold">{{ formData.supplier }}</span>
+                  <div class="flex justify-between">
+                    <span class="text-gray-600 font-medium">Selling Price:</span>
+                    <span class="text-emerald-600 font-bold text-lg">${{ formData.selling_price || '0.00' }}</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-600 font-medium">Quantity:</span>
+                    <span class="text-gray-900 font-semibold">{{ formData.quantity || 0 }} units</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-600 font-medium">Stock Range:</span>
+                    <span class="text-gray-900 font-semibold">{{ formData.min_stock_level }} - {{ formData.max_stock_level }}</span>
                   </div>
                 </div>
               </div>
             </div>
-            <!-- Controls -->
+
+            <div v-if="formData.Prod_Description" class="mt-6 pt-6 border-t border-indigo-200">
+              <h4 class="font-bold text-lg text-gray-800 mb-3">Description</h4>
+              <p class="text-gray-700 text-sm leading-relaxed">{{ formData.Prod_Description }}</p>
+            </div>
           </div>
-        </section>
+        </div>
       </div>
 
       <!-- Controls -->
-      <div class="controls">
-        <button class="btn btn-secondary" @click="prevStep" :disabled="step === 1">
-          <span class="icon-arrow">←</span>
+      <div class="flex justify-between items-center pt-6 border-t border-gray-200">
+        <button
+          @click="prevStep"
+          :disabled="step === 1"
+          class="flex items-center gap-2 px-6 py-3 bg-white border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow"
+        >
+          <span class="text-lg">←</span>
           Previous
         </button>
-        <div class="step-indicator">Step {{ step }} of 4</div>
-        <button class="btn btn-primary" @click="nextStep" :disabled="step === 4">
+
+        <div class="text-sm font-semibold text-gray-600 bg-gray-100 px-4 py-2 rounded-full">
+          Step {{ step }} of {{ stepItems.length }}
+        </div>
+
+        <button
+          v-if="step < stepItems.length"
+          @click="nextStep"
+          class="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-medium hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
+        >
           Next
-          <span class="icon-arrow">→</span>
+          <span class="text-lg">→</span>
+        </button>
+
+        <button
+          v-else
+          @click="handleSubmit"
+          class="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg font-medium hover:from-emerald-600 hover:to-teal-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
+        >
+          <span class="text-lg">✓</span>
+          Add Product
         </button>
       </div>
     </div>
@@ -292,420 +354,148 @@
 import { ref, computed } from 'vue'
 
 const step = ref(1)
+const errors = ref({})
 
 const stepItems = [
   { id: 1, title: 'Basic Info' },
   { id: 2, title: 'Pricing & Stock' },
-  { id: 3, title: 'Image & Description' },
-  { id: 4, title: 'Specifications' },
+  { id: 3, title: 'Description' },
+  { id: 4, title: 'Review' },
 ]
-const form = ref({
-  price: '',
-  currency: 'USD',
-  currentStock: '',
-  minStock: '',
-  maxStock: '',
-  lastRestocked: '',
+
+const formData = ref({
+  Prod_name: '',
+  quantity: 0,
+  cost_price: 0,
+  selling_price: 0,
+  category_id: '',
+  Prod_Description: '',
+  code_bar: '',
+  date_of_arrival: new Date().toISOString().split('T')[0],
+  supplier: '',
+  Prod_image: '',
+  min_stock_level: 10,
+  max_stock_level: 100,
 })
+
 const stepperProgress = computed(() => {
-  return (100 / (stepItems.length - 1)) * (step.value - 1) + '%'
+  return `${(100 / (stepItems.length - 1)) * (step.value - 1)}%`
 })
 
 const nextStep = () => {
-  if (step.value < stepItems.length) step.value++
+  if (validateStep(step.value)) {
+    if (step.value < stepItems.length) step.value++
+  }
 }
 
 const prevStep = () => {
   if (step.value > 1) step.value--
 }
-const formData = {
-  name: '',
-  sku: '',
-  category: '',
-  price: 0,
-  currency: 'USD',
-  stockLevel: 0,
-  minStockLevel: 10,
-  maxStockLevel: 100,
-  supplier: '',
-  lastRestocked: new Date().toISOString().split('T')[0],
-  description: '',
-  specifications: {},
-  imageUrl: '',
+
+const generateBarcode = () => {
+  const prefix = formData.value.Prod_name
+    .split(' ')
+    .map((word) => word.charAt(0))
+    .join('')
+    .toUpperCase()
+    .substring(0, 3)
+  const timestamp = Date.now().toString().slice(-6)
+  const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0')
+  return `${prefix || 'PRD'}-${timestamp}-${random}`
 }
-  const generateSKU = () => {
-    const prefix = formData.name.split(' ').map(word => word.charAt(0)).join('').toUpperCase()
-    const year = new Date().getFullYear()
-    const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0')
-    return `${prefix}-${year}-${random}`
+
+const handleAutoGenerateBarcode = () => {
+  if (formData.value.Prod_name) {
+    formData.value.code_bar = generateBarcode()
+    delete errors.value.code_bar
+  }
+}
+
+const validateStep = (currentStep) => {
+  const newErrors = {}
+
+  if (currentStep === 1) {
+    if (!formData.value.Prod_name.trim()) {
+      newErrors.Prod_name = 'Product name is required'
+    }
+    if (!formData.value.code_bar.trim()) {
+      newErrors.code_bar = 'Barcode is required'
+    }
+    if (!formData.value.category_id) {
+      newErrors.category_id = 'Category is required'
+    }
+    if (!formData.value.supplier) {
+      newErrors.supplier = 'Supplier is required'
+    }
   }
 
-  const handleAutoGenerateSKU = () => {
-    if (formData.name) {
-      const sku = generateSKU()
-      handleInputChange('sku', sku)
+  if (currentStep === 2) {
+    if (!formData.value.cost_price || formData.value.cost_price <= 0) {
+      newErrors.cost_price = 'Cost price must be greater than 0'
+    }
+    if (!formData.value.selling_price || formData.value.selling_price <= 0) {
+      newErrors.selling_price = 'Selling price must be greater than 0'
+    }
+    if (parseFloat(formData.value.selling_price) < parseFloat(formData.value.cost_price)) {
+      newErrors.selling_price = 'Selling price should be greater than cost price'
     }
   }
 
-    const handleInputChange = (field: keyof ProductFormData, value: any) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }))
-    // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors(prev => {
-        const newErrors = { ...prev }
-        delete newErrors[field]
-        return newErrors
-      })
-    }
+  errors.value = newErrors
+  return Object.keys(newErrors).length === 0
+}
+
+const getCategoryName = (id) => {
+  const categories = {
+    '1': 'Electronics',
+    '2': 'Computers',
+    '3': 'Accessories'
   }
-    const validateStep = (step: number) => {
-    const newErrors: Record<string, string> = {}
+  return categories[id] || '-'
+}
 
-    if (step === 1) {
-      if (!formData.name.trim()) newErrors.name = 'Product name is required'
-      if (!formData.sku.trim()) newErrors.sku = 'SKU is required'
-      if (!formData.category.trim()) newErrors.category = 'Category is required'
-      if (!formData.supplier.trim()) newErrors.supplier = 'Supplier is required'
-    }
+const getSupplierName = (id) => {
+  const suppliers = {
+    '1': 'Gaming Tech Corp',
+    '2': 'Tech Solutions Ltd',
+    '3': 'Digital Supplies Inc'
+  }
+  return suppliers[id] || '-'
+}
 
-    if (step === 2) {
-      if (formData.price <= 0) newErrors.price = 'Price must be greater than 0'
-      if (formData.stockLevel < 0) newErrors.stockLevel = 'Stock level cannot be negative'
-      if (formData.minStockLevel >= formData.maxStockLevel) {
-        newErrors.minStockLevel = 'Minimum stock must be less than maximum stock'
-      }
-    }
+const handleSubmit = () => {
+  if (!validateStep(4)) return
 
-    if (step === 3) {
-      if (!formData.description.trim()) newErrors.description = 'Description is required'
-    }
-
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
+  const productData = {
+    ...formData.value,
+    // Convert string values to appropriate types for backend
+    quantity: parseInt(formData.value.quantity) || 0,
+    cost_price: parseFloat(formData.value.cost_price) || 0,
+    selling_price: parseFloat(formData.value.selling_price) || 0,
+    category_id: parseInt(formData.value.category_id) || null,
+    supplier: parseInt(formData.value.supplier) || null,
+    min_stock_level: parseInt(formData.value.min_stock_level) || 0,
+    max_stock_level: parseInt(formData.value.max_stock_level) || null,
   }
 
-  const handleSubmit = () => {
-    if (!validateStep(4)) return
+  console.log('✅ Product Data to Submit:', productData)
+  alert('Product added successfully!')
 
-    const newProduct: Product = {
-      ...formData,
-      id: `PRD-${Date.now()}`,
-      specifications: specifications
-    }
-
-    onAddProduct(newProduct)
-    toast.success('Product added successfully!')
+  // Reset form
+  formData.value = {
+    Prod_name: '',
+    quantity: 0,
+    cost_price: 0,
+    selling_price: 0,
+    category_id: '',
+    Prod_Description: '',
+    code_bar: '',
+    date_of_arrival: new Date().toISOString().split('T')[0],
+    supplier: '',
+    Prod_image: '',
+    min_stock_level: 10,
+    max_stock_level: 100,
   }
-
+  step.value = 1
+}
 </script>
-
-<style lang="scss" scoped>
-$primary: #000000;
-$success: #10b981;
-$gray-50: #f9fafb;
-$gray-100: #f3f4f6;
-$gray-200: #e5e7eb;
-$gray-300: #d1d5db;
-$gray-400: #9ca3af;
-$gray-600: #4b5563;
-$gray-700: #374151;
-$transition: all 300ms ease;
-
-.stepper-container {
-  min-height: 100vh;
-  background: linear-gradient(135deg, $gray-50 0%, $gray-100 100%);
-  padding: 2rem;
-}
-
-.stepper-header {
-  max-width: 56rem;
-  margin: 0 auto 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-
-.stepper-title {
-  font-size: 1.875rem;
-  font-weight: 700;
-  color: $gray-700;
-  margin: 0 0 0.25rem;
-}
-
-.stepper-subtitle {
-  font-size: 0.875rem;
-  color: $gray-600;
-  margin: 0;
-}
-
-.btn-cancel {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: white;
-  border: 1px solid $gray-200;
-  border-radius: 0.5rem;
-  color: $gray-700;
-  font-size: 0.875rem;
-  cursor: pointer;
-  transition: $transition;
-
-  &:hover {
-    background: $gray-50;
-  }
-
-  .icon-back {
-    font-size: 1rem;
-  }
-}
-
-.stepper-wrapper {
-  max-width: 56rem;
-  margin: 0 auto;
-  background: white;
-  border-radius: 1rem;
-  padding: 2.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.stepper {
-  display: flex;
-  justify-content: space-between;
-  position: relative;
-  margin-bottom: 3rem;
-}
-
-.stepper-progress {
-  position: absolute;
-  top: 2rem;
-  left: 4rem;
-  right: 4rem;
-  height: 2px;
-  background: $gray-200;
-  z-index: 0;
-}
-
-.stepper-progress-bar {
-  height: 100%;
-  background: $success;
-  transition: $transition;
-}
-
-.stepper-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  z-index: 1;
-  flex: 1;
-}
-
-.stepper-item-counter {
-  width: 4rem;
-  height: 4rem;
-  border-radius: 50%;
-  background: $gray-200;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  transition: $transition;
-
-  .step-icon {
-    width: 1.5rem;
-    height: 1.5rem;
-    color: $gray-400;
-    transition: $transition;
-  }
-
-  .icon-check {
-    position: absolute;
-    font-size: 1.5rem;
-    color: white;
-    opacity: 0;
-    transform: scale(0);
-    transition: $transition;
-  }
-}
-
-.stepper-item-title {
-  margin-top: 0.75rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: $gray-400;
-  text-align: center;
-  transition: $transition;
-}
-
-.stepper-item.current {
-  .stepper-item-counter {
-    background: rgb(159, 159, 192);
-
-    .step-icon {
-      color: white;
-    }
-  }
-
-  .stepper-item-title {
-    color: $primary;
-  }
-}
-
-.stepper-item.success {
-  .stepper-item-counter {
-    background: $success;
-
-    .step-icon {
-      opacity: 0;
-      transform: scale(0);
-    }
-
-    .icon-check {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-
-  .stepper-item-title {
-    color: $success;
-  }
-}
-
-.stepper-content {
-  margin-bottom: 2rem;
-}
-
-.stepper-pane {
-  min-height: 20rem;
-}
-
-.step-content-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: $gray-700;
-  margin: 0 0 0.5rem;
-}
-
-.step-content-description {
-  color: $gray-600;
-  font-size: 0.875rem;
-}
-
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-
-label {
-  display: block;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: $gray-700;
-  margin-bottom: 0.5rem;
-}
-
-.form-input {
-  width: 100%;
-  padding: 0.625rem 0.875rem;
-  border: 1px solid $gray-300;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-  color: $gray-700;
-  background: white;
-  transition: $transition;
-
-  &:focus {
-    outline: none;
-    border-color: $primary;
-    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
-  }
-
-  &::placeholder {
-    color: $gray-400;
-  }
-}
-
-.input-with-button {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.btn-generate {
-  padding: 0.625rem 1rem;
-  background: $gray-100;
-  border: 1px solid $gray-300;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-  color: $gray-700;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: $transition;
-
-  &:hover {
-    background: $gray-200;
-  }
-}
-
-.controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 2rem;
-  border-top: 1px solid $gray-200;
-}
-
-.step-indicator {
-  font-size: 0.875rem;
-  color: $gray-600;
-}
-
-.btn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.625rem 1.25rem;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: $transition;
-  border: none;
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .icon-arrow {
-    font-size: 1rem;
-  }
-}
-
-.btn-secondary {
-  background: white;
-  color: $gray-700;
-  border: 1px solid $gray-300;
-
-  &:hover:not(:disabled) {
-    background: $gray-50;
-  }
-}
-
-.btn-primary {
-  background: $primary;
-  color: white;
-
-  &:hover:not(:disabled) {
-    background: lighten($primary, 10%);
-  }
-}
-</style>

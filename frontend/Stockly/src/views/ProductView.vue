@@ -179,6 +179,7 @@ const filteredProducts = computed(() => {
 })
 const handleAddProduct =() =>{
   console.log('Add product clicked')
+  router.push('/steper')
   // Add your add product logic here (e.g., open modal or navigate to form)
 }
 const router = useRouter()

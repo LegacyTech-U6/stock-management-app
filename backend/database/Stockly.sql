@@ -69,13 +69,14 @@ CREATE TABLE `Product` (
   `date_of_arrival` DATE DEFAULT NULL,
   `supplier` INT(11) DEFAULT NULL,
   `Prod_image` VARCHAR(255) DEFAULT NULL,
+  `min_stock_level` INT DEFAULT 0,
+  `max_stock_level` INT DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `supplier` (`supplier`),
-  CONSTRAINT `Product_ibfk_1` FOREIGN KEY (`supplier`) REFERENCES `supplier` (`id`) ON DELETE
-  SET NULL,
-    CONSTRAINT `Product_fk_category` FOREIGN KEY (`category_id`) REFERENCES `Category`(`id`) ON DELETE
-  SET NULL
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+  CONSTRAINT `Product_ibfk_1` FOREIGN KEY (`supplier`) REFERENCES `supplier` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `Product_fk_category` FOREIGN KEY (`category_id`) REFERENCES `Category`(`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 -- Table Factures
 CREATE TABLE `Factures` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
