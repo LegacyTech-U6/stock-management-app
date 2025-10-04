@@ -128,11 +128,13 @@ module.exports = {
         code_bar,
         date_of_arrival,
         supplier,
+        min_stock_level,
+        max_stock_level
       } = req.body;
 
-      // Multer adds req.file if image uploadeded
+      // Multer adds req.file if image uploaded
       const Prod_image = req.file ? `/uploads/${req.file.filename}` : null;
-
+      console.log(req.body);
       const newProduct = await createProduct(
         Prod_name,
         quantity,
@@ -143,7 +145,9 @@ module.exports = {
         code_bar,
         date_of_arrival,
         supplier,
-        Prod_image
+        Prod_image,
+        min_stock_level,
+        max_stock_level
       );
 
       res
@@ -167,6 +171,8 @@ module.exports = {
         code_bar,
         date_of_arrival,
         supplier,
+        min_stock_level,
+        max_stock_level
       } = req.body;
 
       let prod_image = null;
@@ -204,7 +210,9 @@ module.exports = {
         code_bar,
         date_of_arrival,
         supplier,
-        prod_image // null if no new image
+        prod_image, // null if no new image
+        min_stock_level,
+        max_stock_level
       );
 
       if (!updated) {

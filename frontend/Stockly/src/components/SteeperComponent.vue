@@ -352,7 +352,8 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-
+import { useProductStore } from '@/stores/productStore'
+const productStore = useProductStore()
 const step = ref(1)
 const errors = ref({})
 
@@ -479,8 +480,12 @@ const handleSubmit = () => {
   }
 
   console.log('✅ Product Data to Submit:', productData)
-  alert('Product added successfully!')
-
+  console.log(productData)
+  if (productStore.addProduct(productData)) {
+    alert('Product added to store!')
+  }else {
+    console.warn('Product store or addProduct method not available')
+  }
   // Reset form
   formData.value = {
     Prod_name: '',

@@ -14,7 +14,10 @@ export const useProductStore = defineStore("product", {
       Prod_Description: "",
       code_bar: "",
       date_of_arrival: "",
-      supplier: ""
+      supplier: "",
+      Prod_image: null,
+      min_stock_level: "",
+      max_stock_level: "",
     },
 
     loading: false,
@@ -46,11 +49,13 @@ export const useProductStore = defineStore("product", {
         this.loading = false;
       }
     },
-    async addProduct() {
+    async addProduct(productData) {
       this.loading = true;
       this.error = null;
+      console.log("Data received in the store:", productData);
       try {
-        const productData = this.productForm;
+
+        console.log("Data received in the store:", productData);
         await createProduct(productData);
       } catch (error) {
         this.error = error.message;

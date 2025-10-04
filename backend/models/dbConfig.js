@@ -50,7 +50,9 @@ async function createProduct(
   code_bar,
   date_of_arrival, // <-- fix spelling
   supplier,
-  Prod_image
+  Prod_image,
+  min_stock_level,
+  max_stock_level
 ) {
   const [results] = await pool.query(
     `INSERT INTO Product (
@@ -63,8 +65,10 @@ async function createProduct(
       code_bar,
       date_of_arrival,
       supplier,
-      Prod_image
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      Prod_image,
+      min_stock_level,
+      max_stock_level
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       Prod_name,
       quantity,
@@ -76,6 +80,8 @@ async function createProduct(
       date_of_arrival, // <-- fix spelling
       supplier,
       Prod_image,
+      min_stock_level,
+      max_stock_level
     ]
   );
   return getProduct();
@@ -91,7 +97,9 @@ async function updateProduct(
   code_bar,
   date_of_arrival,
   supplier,
-  prod_image
+  prod_image,
+  min_stock_level,
+  max_stock_level
 ) {
   let query = `
     UPDATE Product SET
@@ -103,7 +111,9 @@ async function updateProduct(
       Prod_Description = ?,
       code_bar = ?,
       date_of_arrival = ?,
-      supplier = ?
+      supplier = ?,
+      min_stock_level = ?,
+      max_stock_level = ?
   `;
   const values = [
     prod_name,
@@ -115,6 +125,8 @@ async function updateProduct(
     code_bar,
     date_of_arrival,
     supplier,
+    min_stock_level,
+    max_stock_level
   ];
 
   if (prod_image) {
