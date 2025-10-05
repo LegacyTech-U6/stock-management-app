@@ -16,12 +16,8 @@ const route = useRoute()
       </div>
     </div>
   </header>
-  <LoginNav v-if="$route.meta.showNavbarAndFooter !== false" />
-
-
   <RouterView />
-
-  <FooTer v-if="$route.meta.showNavbarAndFooter !== false"  />
+  <FooTer v-if="$route.meta.showNavbarAndFooter !== false" />
 </template>
 
 <style scoped>
@@ -87,5 +83,3 @@ nav a:first-of-type {
   }
 }
 </style>
-
-

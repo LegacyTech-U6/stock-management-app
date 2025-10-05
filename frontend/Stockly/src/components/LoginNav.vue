@@ -52,7 +52,7 @@
             <router-link to="/products" class="submenu-item" active-class="submenu-item-active">
               <span>All Products</span><span class="badge-sm">6</span>
             </router-link>
-            <router-link to="/products/add" class="submenu-item" active-class="submenu-item-active">
+            <router-link to="/steper" class="submenu-item" active-class="submenu-item-active">
               <span class="flex-center">
                 <span class="add-symbol">+</span>Add New Product
               </span>
