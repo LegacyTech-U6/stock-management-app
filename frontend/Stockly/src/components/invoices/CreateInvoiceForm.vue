@@ -7,7 +7,7 @@
     />
 
     <CompanyInfo />
-    <BillTo :client="selectedClient" />
+    <BillTo :client="invoice.client" />
     <InvoiceItemsTable :items="invoice.items" />
 
     <InvoiceSummary
@@ -27,8 +27,9 @@ import BillTo from './BillTo.vue'
 import InvoiceItemsTable from './InvoiceItemsTable.vue'
 import InvoiceSummary from './InvoiceSummary.vue'
 import PaymentTerms from './PaymentTerms.vue'
+import { useInvoiceStore } from '@/stores/FactureStore'
 import { ref,computed } from 'vue'
-
+const invoiceStore = useInvoiceStore()
 const invoice = JSON.parse(localStorage.getItem('invoiceData'))
 // ✅ Déclare les props
 const props = defineProps({
@@ -58,8 +59,10 @@ const subtotal = computed(() => {
 const taxAmount = computed(() => (subtotal.value * (invoice.taxRate || 0)) / 100)
 const total = computed(() => subtotal.value + taxAmount.value)
 
-function downloadPDF() {
+async function downloadPDF() {
   console.log('Download PDF logic here')
+ await invoiceStore.createInvoice(invoice)
+
 }
 
 function printInvoice() {

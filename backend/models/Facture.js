@@ -74,7 +74,13 @@ async function createInvoice(
 
       // Créer la vente
       const totalPrice = item.selling_price * item.quantity;
-      await createSale(item.id, item.quantity, totalPrice);
+      try {
+        await createSale(item.id, item.quantity, totalPrice);
+      } catch (error) {
+        throw error;
+        
+      }
+      
     }
 
     return factureId;

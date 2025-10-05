@@ -1,4 +1,3 @@
-
 <template>
   <div class="min-h-screen bg-gray-50/50">
     <!-- Header -->
@@ -26,6 +25,7 @@
           <button
             @click="$router.push('/product')"
             class="px-4 py-2 text-sm border rounded-lg hover:bg-gray-50"
+            :disabled="loading"
           >
             Cancel
           </button>
@@ -87,6 +87,7 @@
                 class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black focus:border-black"
                 :class="{ 'border-red-500': errors.name }"
                 placeholder="Enter product name"
+                :disabled="loading"
               />
               <p v-if="errors.name" class="text-red-500 text-xs mt-1">{{ errors.name }}</p>
             </div>
@@ -100,10 +101,12 @@
                     class="flex-1 px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black"
                     :class="{ 'border-red-500': errors.barcode }"
                     placeholder="Auto-generated"
+                    :disabled="loading"
                   />
                   <button
                     @click="generateBarcode"
                     class="px-4 py-2.5 bg-gray-100 rounded-lg hover:bg-gray-200"
+                    :disabled="loading || !form.name"
                   >
                     Generate
                   </button>
@@ -117,6 +120,7 @@
                   v-model="form.category"
                   class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black"
                   :class="{ 'border-red-500': errors.category }"
+                  :disabled="loading"
                 >
                   <option value="">Select category</option>
                   <option v-for="c in categories" :key="c.id" :value="c.id">{{ c.name }}</option>
@@ -133,6 +137,7 @@
                 v-model="form.supplier"
                 class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black"
                 :class="{ 'border-red-500': errors.supplier }"
+                :disabled="loading"
               >
                 <option value="">Select supplier</option>
                 <option v-for="s in suppliers" :key="s.id" :value="s.id">{{ s.name }}</option>
@@ -154,6 +159,7 @@
                   class="w-full pl-8 pr-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black"
                   :class="{ 'border-red-500': errors.costPrice }"
                   placeholder="0.00"
+                  :disabled="loading"
                 />
               </div>
               <p v-if="errors.costPrice" class="text-red-500 text-xs mt-1">
@@ -172,6 +178,7 @@
                   class="w-full pl-8 pr-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black"
                   :class="{ 'border-red-500': errors.sellingPrice }"
                   placeholder="0.00"
+                  :disabled="loading"
                 />
               </div>
               <p v-if="errors.sellingPrice" class="text-red-500 text-xs mt-1">
@@ -186,6 +193,7 @@
                 type="number"
                 class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black"
                 placeholder="0"
+                :disabled="loading"
               />
             </div>
 
@@ -196,6 +204,7 @@
                 type="number"
                 class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black"
                 placeholder="0"
+                :disabled="loading"
               />
             </div>
 
@@ -206,6 +215,7 @@
                 type="number"
                 class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black"
                 placeholder="0"
+                :disabled="loading"
               />
             </div>
 
@@ -215,6 +225,7 @@
                 v-model="form.arrivalDate"
                 type="date"
                 class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black"
+                :disabled="loading"
               />
             </div>
           </div>
@@ -228,6 +239,7 @@
                 type="url"
                 class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black"
                 placeholder="https://example.com/image.jpg"
+                :disabled="loading"
               />
             </div>
 
@@ -238,6 +250,7 @@
                 rows="4"
                 class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black resize-none"
                 placeholder="Product description..."
+                :disabled="loading"
               ></textarea>
             </div>
           </div>
@@ -300,11 +313,14 @@
             </div>
           </div>
 
+          <!-- Error Message -->
+          <p v-if="submitError" class="text-red-600 mb-4">{{ submitError }}</p>
+
           <!-- Navigation -->
           <div class="flex justify-between items-center mt-8 pt-8 border-t">
             <button
               @click="step--"
-              :disabled="step === 1"
+              :disabled="step === 1 || loading"
               class="px-5 py-2.5 text-sm font-medium border rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -318,16 +334,29 @@
               Previous
             </button>
 
-            <span class="text-sm text-gray-500">Step {{ step }} of 4</span>
+            <div class="flex items-center gap-3">
+              <!-- Loader -->
+              <div v-if="loading" class="flex items-center gap-2 text-sm text-gray-500">
+                <div class="loader"></div>
+                Adding Product...
+              </div>
+              <span v-else class="text-sm text-gray-500">Step {{ step }} of 4</span>
+            </div>
 
             <button
               @click="step < 4 ? nextStep() : submit()"
-              class="px-5 py-2.5 text-sm font-medium text-white rounded-lg flex items-center gap-2"
-              :class="step < 4 ? 'bg-black hover:bg-gray-800' : 'bg-green-600 hover:bg-green-700'"
+              :disabled="loading"
+              class="px-5 py-2.5 text-sm font-medium text-white rounded-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              :class="
+                step < 4
+                  ? 'bg-black hover:bg-gray-800'
+                  : 'bg-green-600 hover:bg-green-700'
+              "
             >
               <template v-if="step < 4">
-                Next
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <span v-if="!loading">Next</span>
+                <div v-else class="loader-small"></div>
+                <svg v-if="!loading" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -337,7 +366,8 @@
                 </svg>
               </template>
               <template v-else>
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div v-if="loading" class="loader-small"></div>
+                <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -345,7 +375,7 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                Add Product
+                <span>{{ loading ? 'Adding...' : 'Add Product' }}</span>
               </template>
             </button>
           </div>
@@ -356,11 +386,19 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
+import { useProductStore } from '@/stores/product' // Adjust path to your store
+
+// Initialize store
+const productStore = useProductStore()
+
+// Use store's loading state
+const loading = computed(() => productStore.loading)
 
 const step = ref(1)
 const steps = ['Basic Information', 'Pricing & Stock', 'Description & Image', 'Review']
 const errors = reactive({})
+const submitError = ref('')
 
 const form = reactive({
   name: '',
@@ -428,19 +466,41 @@ const nextStep = () => {
   if (validateStep(step.value)) step.value++
 }
 
-const submit = () => {
+const submit = async () => {
   if (!validateStep(4)) return
 
-  console.log('Product submitted:', form)
-  // Add your submit logic here
+  try {
+    // Prepare data for store
+    const productData = {
+      Prod_name: form.name,
+      quantity: form.quantity,
+      cost_price: form.costPrice,
+      selling_price: form.sellingPrice,
+      category_id: form.category,
+      Prod_Description: form.description,
+      code_bar: form.barcode,
+      date_of_arrival: form.arrivalDate,
+      supplier: form.supplier,
+      Prod_image: form.imageUrl,
+      min_stock_level: form.minStock,
+      max_stock_level: form.maxStock,
+    }
 
-  if (productStore.addProduct(productData)) {
+    // Call store action - this will automatically set loading state
+    await productStore.addProduct(productData)
+
+    // Success - reset form and navigate
+    resetForm()
     alert('Product added successfully!')
-  } else {
-    console.warn('Product store or addProduct method not available')
-  }
+    // Optionally navigate away: $router.push('/products')
 
-  // Reset form
+  } catch (error) {
+    submitError.value = error?.response?.data?.message || error.message || 'An error occurred while adding the product.'
+    console.error('Error adding product:', error)
+  }
+}
+
+const resetForm = () => {
   Object.keys(form).forEach((key) => {
     form[key] =
       key === 'arrivalDate'
@@ -454,6 +514,7 @@ const submit = () => {
               : ''
   })
   step.value = 1
+  submitError.value = ''
 }
 </script>
 
@@ -462,5 +523,29 @@ input:focus,
 select:focus,
 textarea:focus {
   outline: none;
+}
+
+/* Loader Styles */
+.loader {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #f3f4f6;
+  border-top: 2px solid #000;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loader-small {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 </style>

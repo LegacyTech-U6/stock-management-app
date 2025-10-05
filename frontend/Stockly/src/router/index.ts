@@ -38,6 +38,7 @@ const router = createRouter({
       path: '/client',
       name: 'client',
       component: () => import('../views/ClientManager.vue'),
+      meta:{showNavbarAndFooter:false}
     },
     {
       path: '/product',

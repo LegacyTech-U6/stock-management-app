@@ -1,268 +1,273 @@
 <template>
-  <aside class="flex flex-col w-64 h-screen border-r bg-white">
-    <!-- Header -->
-    <header class="flex items-center gap-2 px-4 py-3 border-b">
-      <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white">
-        <Boxes class="h-4 w-4" />
+  <aside class="sidebar">
+    <!-- Logo Section -->
+    <div class="logo-section">
+      <div class="logo-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M20 7L12 3L4 7M20 7L12 11M20 7V17L12 21M12 11L4 7M12 11V21M4 7V17L12 21"
+                stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
       </div>
-      <div class="flex flex-col">
-        <span class="font-semibold">StockFlow</span>
-        <span class="text-xs text-gray-500">Inventory System</span>
+      <div>
+        <h1 class="logo-title">StockFlow</h1>
+        <p class="logo-subtitle">Inventory System</p>
       </div>
-    </header>
+    </div>
 
     <!-- Navigation -->
-    <nav class="flex-1 overflow-y-auto p-3 space-y-4">
-      <div v-for="section in navigationItems" :key="section.title">
-        <h3 class="text-xs uppercase text-gray-500 font-semibold mb-2">{{ section.title }}</h3>
-        <ul class="space-y-1">
-          <li v-for="item in section.items" :key="item.title">
-            <button
-              class="flex w-full items-center justify-between px-3 py-2 text-sm rounded-lg hover:bg-gray-100"
-              :class="{ 'bg-primary/10 text-primary font-semibold': item.isActive }"
-              @click="handleNavigate(item.url)"
-            >
-              <div class="flex items-center gap-2">
-                <component :is="item.icon" class="h-4 w-4" />
-                <span>{{ item.title }}</span>
-              </div>
-              <div class="flex items-center gap-1">
-                <span
-                  v-if="item.badge"
-                  class="bg-gray-200 text-gray-700 text-xs rounded-full px-2 py-0.5"
-                >
-                  {{ item.badge }}
-                </span>
-                <ChevronRight v-if="item.subItems" class="h-3 w-3" />
-              </div>
-            </button>
-
-            <!-- Sub Items -->
-            <ul v-if="item.subItems" class="ml-6 mt-1 space-y-1">
-              <li v-for="sub in item.subItems" :key="sub.title">
-                <button
-                  class="flex w-full items-center justify-between px-3 py-1.5 text-sm rounded-md hover:bg-gray-100"
-                  :class="{ 'bg-primary/10 text-primary font-semibold': sub.isActive }"
-                  @click="handleNavigate(sub.url)"
-                >
-                  <div class="flex items-center gap-2">
-                    <component v-if="sub.icon" :is="sub.icon" class="h-3 w-3" />
-                    <span>{{ sub.title }}</span>
-                  </div>
-                  <span
-                    v-if="sub.count !== undefined"
-                    class="border border-gray-300 text-xs rounded-full px-2 py-0.5"
-                  >
-                    {{ sub.count }}
-                  </span>
-                </button>
-              </li>
-            </ul>
-          </li>
-        </ul>
+    <nav class="nav">
+      <!-- Overview -->
+      <div class="nav-section">
+        <span class="nav-section-label">Overview</span>
+        <router-link to="/dashboard" class="nav-item" active-class="nav-item-active">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M3 9L12 2L21 9V20C21 20.53 20.79 21.04 20.41 21.41C20.04 21.79 19.53 22 19 22H5C4.47 22 3.96 21.79 3.59 21.41C3.21 21.04 3 20.53 3 20V9Z"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Dashboard</span>
+        </router-link>
       </div>
 
-      <!-- Inventory status -->
-      <div v-if="totalProducts > 0" class="pt-4 border-t">
-        <h3 class="text-xs uppercase text-gray-500 font-semibold mb-2">Inventory Status</h3>
-        <div class="space-y-2 text-sm">
-          <div class="flex justify-between items-center">
-            <div class="flex items-center gap-2">
-              <CheckCircle class="h-3 w-3 text-green-500" />
-              <span>In Stock</span>
+      <!-- Inventory -->
+      <div class="nav-section">
+        <span class="nav-section-label">Inventory Management</span>
+        <div class="nav-item nav-toggle" :class="{ 'nav-item-active': inventoryExpanded }" @click="toggleInventory">
+          <div class="flex-between">
+            <div class="flex-center">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M21 16V8C21 7.65 20.91 7.3 20.73 7.00C20.55 6.70 20.30 6.45 20 6.27L13 2.27C12.70 2.09 12.35 2 12 2C11.65 2 11.30 2.09 11 2.27L4 6.27C3.70 6.45 3.44 6.70 3.27 7.00C3.09 7.30 3 7.65 3 8V16C3 16.35 3.09 16.70 3.27 17.00C3.44 17.30 3.70 17.55 4 17.73L11 21.73C11.30 21.91 11.65 22 12 22C12.35 22 12.70 21.91 13 21.73L20 17.73C20.30 17.55 20.55 17.30 20.73 17.00C20.91 16.70 21 16.35 21 16Z"
+                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>Product Inventory</span>
+              <span class="badge">6</span>
             </div>
-            <span class="text-xs px-2 border rounded">{{ inStockProducts }}</span>
+            <svg class="arrow" :class="{ 'rotated': inventoryExpanded }" width="16" height="16" fill="none" viewBox="0 0 24 24">
+              <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
           </div>
+        </div>
 
-          <div v-if="lowStockProducts > 0" class="flex justify-between items-center">
-            <div class="flex items-center gap-2">
-              <AlertTriangle class="h-3 w-3 text-yellow-500" />
-              <span>Low Stock</span>
-            </div>
-            <span class="bg-yellow-100 text-yellow-700 text-xs px-2 rounded">
-              {{ lowStockProducts }}
-            </span>
+        <transition name="submenu">
+          <div v-show="inventoryExpanded" class="submenu">
+            <router-link to="/products" class="submenu-item" active-class="submenu-item-active">
+              <span>All Products</span><span class="badge-sm">6</span>
+            </router-link>
+            <router-link to="/products/add" class="submenu-item" active-class="submenu-item-active">
+              <span class="flex-center">
+                <span class="add-symbol">+</span>Add New Product
+              </span>
+            </router-link>
           </div>
+        </transition>
+      </div>
 
-          <div v-if="outOfStockProducts > 0" class="flex justify-between items-center">
-            <div class="flex items-center gap-2">
-              <AlertTriangle class="h-3 w-3 text-red-500" />
-              <span>Out of Stock</span>
-            </div>
-            <span class="bg-red-100 text-red-700 text-xs px-2 rounded">
-              {{ outOfStockProducts }}
-            </span>
-          </div>
+      <!-- Sales -->
+      <div class="nav-section">
+        <span class="nav-section-label">Sales & Orders</span>
+
+        <router-link to="/sales" class="nav-item" active-class="nav-item-active">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M6 2L3 6V20C3 20.53 3.21 21.04 3.59 21.41C3.96 21.79 4.47 22 5 22H19C19.53 22 20.04 21.79 20.41 21.41C20.79 21.04 21 20.53 21 20V6L18 2H6Z"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Sales Interface</span>
+        </router-link>
+
+        <router-link to="/clients" class="nav-item" active-class="nav-item-active">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M17 21V19C17 17.94 16.58 16.92 15.83 16.17C15.08 15.42 14.06 15 13 15H5C3.94 15 2.92 15.42 2.17 16.17C1.42 16.92 1 17.94 1 19V21"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Client Management</span>
+        </router-link>
+      </div>
+
+      <!-- Inventory Status -->
+      <div class="nav-section">
+        <span class="nav-section-label">Inventory Status</span>
+
+        <div class="status-item">
+          <div class="dot green"></div>
+          <span>In Stock</span>
+          <span class="badge">4</span>
+        </div>
+
+        <div class="status-item">
+          <div class="dot amber"></div>
+          <span>Low Stock</span>
+          <span class="badge">1</span>
+        </div>
+
+        <div class="status-item">
+          <div class="dot red"></div>
+          <span>Out of Stock</span>
+          <span class="badge-danger">1</span>
         </div>
       </div>
     </nav>
 
-    <!-- Footer -->
-    <footer class="border-t p-3">
-      <div class="flex items-center gap-3">
-        <div class="h-8 w-8 flex items-center justify-center rounded-lg bg-gray-200 font-bold">
-          {{ userInitials }}
-        </div>
-        <div class="flex-1">
-          <p class="text-sm font-semibold truncate">{{ user.name }}</p>
-          <p class="text-xs text-gray-500 truncate">{{ user.email }}</p>
-        </div>
-        <button
-          @click="onLogout"
-          class="text-red-600 hover:text-red-700 transition"
-          title="Logout"
-        >
-          <LogOut class="h-4 w-4" />
-        </button>
+    <!-- User -->
+    <div class="user-profile">
+      <img src="https://i.pravatar.cc/40" alt="Demo User" class="avatar"/>
+      <div class="user-info">
+        <h4>Demo User</h4>
+        <p>user@demo.com</p>
       </div>
-    </footer>
+      <svg class="arrow-right" width="16" height="16" viewBox="0 0 24 24" fill="none">
+        <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
   </aside>
 </template>
 
-<script setup lang="ts">
-import { computed } from 'vue'
-import {
-  Boxes,
-  ChevronRight,
-  Home,
-  Package,
-  Plus,
-  ShoppingCart,
-  Users,
-  AlertTriangle,
-  CheckCircle,
-  LogOut
-} from 'lucide-vue-next'
-
-type ViewType =
-  | 'dashboard'
-  | 'inventory'
-  | 'add-product'
-  | 'product-detail'
-  | 'sales'
-  | 'clients'
-  | 'invoice'
-
-interface UserData {
-  id: string
-  name: string
-  email: string
-  role: string
-  company: string
-  phone?: string
-  avatar?: string
-  loginTime: string
-  token: string
-  isNewUser?: boolean
-}
-
-interface Product {
-  id: string
-  name: string
-  sku: string
-  category: string
-  price: number
-  currency: string
-  stockLevel: number
-  minStockLevel: number
-  maxStockLevel: number
-  supplier: string
-  lastRestocked: string
-  description: string
-  specifications: Record<string, string>
-  imageUrl: string
-}
-
-const props = defineProps<{
-  currentView: ViewType
-  user: UserData
-  products: Product[]
-  onNavigate: (view: ViewType) => void
-  onLogout: () => void
-}>()
-
-// Inventory stats
-const totalProducts = computed(() => props.products.length)
-const lowStockProducts = computed(() =>
-  props.products.filter(p => p.stockLevel <= p.minStockLevel && p.stockLevel > 0).length
-)
-const outOfStockProducts = computed(() =>
-  props.products.filter(p => p.stockLevel === 0).length
-)
-const inStockProducts = computed(() =>
-  props.products.filter(p => p.stockLevel > p.minStockLevel).length
-)
-
-const navigationItems = computed(() => [
-  {
-    title: 'Overview',
-    items: [
-      {
-        title: 'Dashboard',
-        url: 'dashboard',
-        icon: Home,
-        isActive: props.currentView === 'dashboard',
-        description: 'Main overview and analytics'
-      }
-    ]
+<script>
+export default {
+  name: 'Sidebar',
+  data() {
+    return { inventoryExpanded: false }
   },
-  {
-    title: 'Inventory Management',
-    items: [
-      {
-        title: 'Product Inventory',
-        url: 'inventory',
-        icon: Package,
-        isActive: ['inventory', 'product-detail'].includes(props.currentView),
-        description: 'View and manage all products',
-        badge: totalProducts.value > 0 ? totalProducts.value.toString() : undefined,
-        subItems: [
-          {
-            title: 'All Products',
-            url: 'inventory',
-            isActive: props.currentView === 'inventory',
-            count: totalProducts.value
-          },
-          {
-            title: 'Add New Product',
-            url: 'add-product',
-            isActive: props.currentView === 'add-product',
-            icon: Plus
-          }
-        ]
-      }
-    ]
-  },
-  {
-    title: 'Sales & Orders',
-    items: [
-      {
-        title: 'Sales Interface',
-        url: 'sales',
-        icon: ShoppingCart,
-        isActive: ['sales', 'invoice'].includes(props.currentView),
-        description: 'Create orders and invoices'
-      },
-      {
-        title: 'Client Management',
-        url: 'clients',
-        icon: Users,
-        isActive: props.currentView === 'clients',
-        description: 'Manage customer information'
-      }
-    ]
+  methods: {
+    toggleInventory() { this.inventoryExpanded = !this.inventoryExpanded }
   }
-])
-
-const userInitials = computed(() =>
-  props.user.name
-    .split(' ')
-    .map(n => n[0])
-    .join('')
-    .toUpperCase()
-)
-
-function handleNavigate(view: ViewType) {
-  props.onNavigate(view)
 }
 </script>
+
+<style scoped>
+/* Layout */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 16rem;
+  background: #fff;
+  border-right: 1px solid #e5e7eb;
+}
+
+/* Logo Section */
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+.logo-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  background: #4f46e5;
+  border-radius: 0.5rem;
+}
+.logo-title { font-weight: 600; color: #111827; font-size: 1rem; }
+.logo-subtitle { font-size: 0.75rem; color: #6b7280; }
+
+/* Navigation */
+.nav { flex: 1; overflow-y: auto; padding: 1rem 0; }
+.nav-section { margin-bottom: 1.5rem; }
+.nav-section-label {
+  display: block;
+  padding: 0 1.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* Items */
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #4b5563;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
+.nav-item:hover { background: #f9fafb; color: #111827; }
+.nav-item-active { background: #eef2ff; color: #4f46e5; position: relative; }
+.nav-item-active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0.25rem;
+  background: #4f46e5;
+}
+
+/* Submenu */
+.submenu {
+  margin-top: 0.25rem;
+  margin-left: 1.5rem;
+  padding-left: 1.5rem;
+  border-left: 1px solid #e5e7eb;
+}
+.submenu-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  color: #4b5563;
+  border-radius: 0.375rem;
+  text-decoration: none;
+}
+.submenu-item:hover { background: #f9fafb; color: #111827; }
+.submenu-item-active { background: #eef2ff; color: #4f46e5; font-weight: 500; }
+
+/* Badges */
+.badge,
+.badge-sm,
+.badge-danger {
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 0.375rem;
+  padding: 0.25rem 0.5rem;
+}
+.badge { background: #f3f4f6; color: #4b5563; }
+.badge-sm { background: #f3f4f6; color: #4b5563; padding: 0.125rem 0.4rem; }
+.badge-danger { background: #fee2e2; color: #dc2626; }
+
+/* Status */
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 1.5rem;
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+.dot {
+  width: 0.5rem; height: 0.5rem; border-radius: 9999px;
+}
+.dot.green { background: #22c55e; }
+.dot.amber { background: #f59e0b; }
+.dot.red { background: #ef4444; }
+
+/* User Profile */
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e5e7eb;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.user-profile:hover { background: #f9fafb; }
+.avatar { width: 2.5rem; height: 2.5rem; border-radius: 9999px; }
+.user-info h4 { font-size: 0.875rem; font-weight: 500; color: #111827; margin: 0; }
+.user-info p { font-size: 0.75rem; color: #6b7280; margin: 0; }
+.arrow { transition: transform 0.2s; }
+.rotated { transform: rotate(90deg); }
+.arrow-right { color: #9ca3af; }
+
+/* Scrollbar */
+.nav::-webkit-scrollbar { width: 6px; }
+.nav::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 9999px; }
+.nav::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+</style>

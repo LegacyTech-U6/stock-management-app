@@ -19,14 +19,25 @@
               <h2 class="text-xl font-semibold text-gray-900">Nouveau client</h2>
             </div>
             <button
-              @click="$emit('close')"
-              class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors"
+              @click="handleClose"
+              :disabled="store.submitLoading"
+              class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               aria-label="Fermer"
             >
               <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
               </svg>
             </button>
+          </div>
+
+          <!-- Global Error Message -->
+          <div v-if="store.submitError" class="mx-6 mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+            <div class="flex items-center gap-2 text-red-700">
+              <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <span class="text-sm font-medium">{{ store.submitError }}</span>
+            </div>
           </div>
 
           <!-- Form -->
@@ -38,11 +49,12 @@
               </label>
               <input
                 id="name"
-                v-model="form.client_name"
+                v-model="store.clientForm.client_name"
                 type="text"
                 placeholder="Jean Dupont"
                 class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors placeholder-gray-400"
                 :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.nom }"
+                :disabled="store.submitLoading"
                 required
               />
               <p v-if="errors.nom" class="text-sm text-red-600">{{ errors.nom }}</p>
@@ -55,11 +67,12 @@
               </label>
               <input
                 id="email"
-                v-model="form.email"
+                v-model="store.clientForm.email"
                 type="email"
                 placeholder="jean.dupont@example.com"
                 class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors placeholder-gray-400"
                 :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.email }"
+                :disabled="store.submitLoading"
               />
               <p v-if="errors.email" class="text-sm text-red-600">{{ errors.email }}</p>
             </div>
@@ -71,11 +84,12 @@
               </label>
               <input
                 id="telephone"
-                v-model="form.client_PhoneNumber"
+                v-model="store.clientForm.client_PhoneNumber"
                 type="tel"
                 placeholder="+33 6 12 34 56 78"
                 class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors placeholder-gray-400"
                 :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.telephone }"
+                :disabled="store.submitLoading"
               />
               <p v-if="errors.telephone" class="text-sm text-red-600">{{ errors.telephone }}</p>
             </div>
@@ -87,56 +101,59 @@
               </label>
               <textarea
                 id="adresse"
-                v-model="form.location"
+                v-model="store.clientForm.location"
                 rows="3"
                 placeholder="123 Rue de la Paix, 75001 Paris"
                 class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors placeholder-gray-400 resize-none"
                 :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.adresse }"
+                :disabled="store.submitLoading"
               />
               <p v-if="errors.adresse" class="text-sm text-red-600">{{ errors.adresse }}</p>
             </div>
 
-            <!-- signature -->
-             <div class="space-y-2">
-              <label for="adresse" class="block text-sm font-medium text-gray-700">
-                signature
+            <!-- Signature -->
+            <div class="space-y-2">
+              <label for="signature" class="block text-sm font-medium text-gray-700">
+                Signature
               </label>
               <textarea
-                id="adresse"
-                v-model="form.client_Signature"
+                id="signature"
+                v-model="store.clientForm.client_Signature"
                 rows="3"
-                placeholder="123 Rue de la Paix, 75001 Paris"
+                placeholder="Signature du client"
                 class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors placeholder-gray-400 resize-none"
-                :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.adresse }"
+                :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': errors.signature }"
+                :disabled="store.submitLoading"
               />
-              <p v-if="errors.adresse" class="text-sm text-red-600">{{ errors.adresse }}</p>
+              <p v-if="errors.signature" class="text-sm text-red-600">{{ errors.signature }}</p>
             </div>
-
 
             <!-- Actions -->
             <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-100">
               <button
                 type="button"
-                @click="$emit('close')"
-                class="w-full sm:w-auto px-6 py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                @click="handleClose"
+                :disabled="store.submitLoading"
+                class="w-full sm:w-auto px-6 py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Annuler
               </button>
               <button
                 type="submit"
-                :disabled="isSubmitting"
-                class="w-full sm:w-auto px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center gap-2"
+                :disabled="store.submitLoading"
+                class="w-full sm:w-auto px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center gap-2 disabled:cursor-not-allowed"
               >
-                <svg
-                  v-if="isSubmitting"
-                  class="w-4 h-4 animate-spin"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
-                </svg>
-                {{ isSubmitting ? 'Ajout...' : 'Ajouter le client' }}
+                <!-- Loader -->
+                <div v-if="store.submitLoading" class="flex items-center gap-2">
+                  <div class="loader-small"></div>
+                  <span>Ajout en cours...</span>
+                </div>
+                <template v-else>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                  </svg>
+                  Ajouter le client
+                </template>
               </button>
             </div>
           </form>
@@ -146,23 +163,25 @@
   </Teleport>
 </template>
 
-<script setup  >
+<script setup>
 import UserIcon from '@/assets/icon svg/UserIcon.vue';
-import { ref, reactive, watch ,nextTick } from 'vue';
+import { ref, reactive, watch, nextTick } from 'vue';
+import { useClientStore } from '@/stores/clientStore';
+
+const store = useClientStore();
 
 const props = defineProps({
-  open: Boolean,
-  form: Object
+  open: Boolean
 });
 
-const emit = defineEmits(['submit', 'close']);
+const emit = defineEmits(['close', 'success']);
 
-const isSubmitting = ref(false);
 const errors = reactive({
   nom: '',
   email: '',
   telephone: '',
-  adresse: ''
+  adresse: '',
+  signature: ''
 });
 
 // Validation des champs
@@ -175,29 +194,29 @@ const validateForm = () => {
   let isValid = true;
 
   // Validation nom
-  if (!props.form.client_name || props.form.client_name.trim().length < 2) {
+  if (!store.clientForm.client_name || store.clientForm.client_name.trim().length < 2) {
     errors.nom = 'Le nom doit contenir au moins 2 caractères';
     isValid = false;
   }
 
   // Validation email
-  if (props.form.email && props.form.email.trim()) {
+  if (store.clientForm.email && store.clientForm.email.trim()) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(props.form.email)) {
+    if (!emailRegex.test(store.clientForm.email)) {
       errors.email = 'Format d\'email invalide';
       isValid = false;
     }
   }
 
   // Validation téléphone
-  // if (props.form.client_phoneNumber && props.form.client_phoneNumber.trim()) {
-  //   const phoneRegex = /^(?:\+33|0)[1-9](?:[0-9]{8})$/;
-  //   const cleanPhone = props.form.telephone.replace(/\s/g, '');
-  //   if (!phoneRegex.test(cleanPhone)) {
-  //     errors.telephone = 'Format de téléphone invalide';
-  //     isValid = false;
-  //   }
-  // }
+  if (store.clientForm.client_PhoneNumber && store.clientForm.client_PhoneNumber.trim()) {
+    const phoneRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
+    const cleanPhone = store.clientForm.client_PhoneNumber.replace(/\s/g, '');
+    if (!phoneRegex.test(cleanPhone)) {
+      errors.telephone = 'Format de téléphone invalide';
+      isValid = false;
+    }
+  }
 
   return isValid;
 };
@@ -206,18 +225,24 @@ const handleSubmit = async () => {
   if (!validateForm()) return;
 
   try {
-    isSubmitting.value = true;
-    await emit('submit');
+    await store.addClient();
+    emit('success');
   } catch (error) {
+    // Error is handled in the store and displayed in the template
     console.error('Erreur lors de l\'ajout du client:', error);
-  } finally {
-    isSubmitting.value = false;
+  }
+};
+
+const handleClose = () => {
+  if (!store.submitLoading) {
+    store.fermerFormulaire();
+    emit('close');
   }
 };
 
 const handleBackdropClick = () => {
-  if (!isSubmitting.value) {
-    emit('close');
+  if (!store.submitLoading) {
+    handleClose();
   }
 };
 
@@ -225,7 +250,7 @@ const handleBackdropClick = () => {
 watch(() => props.open, (newVal) => {
   if (newVal) {
     nextTick(() => {
-      const firstInput = document.getElementById('nom');
+      const firstInput = document.getElementById('name');
       if (firstInput) {
         firstInput.focus();
       }
@@ -247,6 +272,21 @@ watch(() => props.open, (newVal) => {
 .modal-leave-to {
   opacity: 0;
   transform: scale(0.95);
+}
+
+/* Loader Styles */
+.loader-small {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* Animation pour mobile */

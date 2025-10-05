@@ -3,6 +3,7 @@ import { RouterLink, RouterView } from 'vue-router'
 import { useRoute } from 'vue-router'
 import NavBar from './components/NavBar.vue'
 import FooTer from './components/FooTer.vue'
+import LoginNav from './components/LoginNav.vue'
 
 const route = useRoute()
 </script>
@@ -15,7 +16,8 @@ const route = useRoute()
       </div>
     </div>
   </header>
-  
+  <LoginNav v-if="$route.meta.showNavbarAndFooter !== false" />
+
 
   <RouterView />
 
@@ -85,3 +87,5 @@ nav a:first-of-type {
   }
 }
 </style>
+
+
