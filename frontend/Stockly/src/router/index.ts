@@ -56,6 +56,11 @@ const router = createRouter({
       name:'sales',
       component: () => import('../views/SalesInterface.vue'),
        meta:{showNavbarAndFooter:false}
+    },{
+      path:'/invoice',
+      name:'invoice',
+      component:()=>import('../components/invoices/CreateInvoiceForm.vue'),
+       meta:{showNavbarAndFooter:false}
     }
   ],
 })

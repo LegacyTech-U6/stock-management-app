@@ -52,3 +52,52 @@ export async function createProduct(productData) {
   return data
 
 }
+
+
+
+///////////////////////////////////////
+// Invoice calls
+///////////////////////////////////////
+
+// ✅ Factures : Créer une facture
+export async function createInvoice(invoiceData) {
+  const { data } = await API.post('/factures', invoiceData)
+  return data
+}
+
+// ✅ Factures : Récupérer toutes les factures
+export async function getAllInvoices() {
+  const { data } = await API.get('/factures')
+  return data
+}
+
+// ✅ Factures : Récupérer une facture par ID avec ses lignes
+export async function getInvoiceById(id) {
+  const { data } = await API.get(`/factures/${id}`)
+  return data
+}
+///////////////////////////////////////
+// Sales calls
+///////////////////////////////////////
+
+// ✅ Ventes : Récupérer toutes les ventes
+export async function getAllSales() {
+  const { data } = await API.get('/sales')
+  return data
+}
+
+// ✅ Ventes : Récupérer une vente par ID
+export async function getSaleById(id) {
+  const { data } = await API.get(`/sales/${id}`)
+  return data
+}
+// ✅ Ventes : Créer une vente
+export async function createSale(saleData) {
+  const { data } = await API.post('/sales', saleData)
+  return data
+}
+// ✅ Ventes : Supprimer une vente
+export async function deleteSale(saleId) {
+  const { data } = await API.delete(`/sales/${saleId}`)
+  return data
+}

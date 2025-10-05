@@ -24,11 +24,12 @@ async function createInvoice(
     // 1. Calcul total hors réduction
     let total_hors_reduction = 0;
     for (const item of items) {
-      total_hors_reduction += item.quantity * item.unit_price;
+      const qty = Number(item.quantity) || 0;
+      const price = Number(item.selling_price) || 0;
+      total_hors_reduction += qty * price;
     }
-
-    // 2. Calcul total final
-    const total = total_hors_reduction - reduction + tva;
+    const total =
+      total_hors_reduction - (Number(reduction) || 0) + (Number(tva) || 0);
 
     // 3. Insérer dans Factures
     const [factureResult] = await pool.query(
@@ -57,23 +58,23 @@ async function createInvoice(
          VALUES (?, ?, ?, ?, ?, ?)`,
         [
           factureId,
-          item.product_id,
+          item.id,
           item.quantity,
-          item.unit_price,
+          item.selling_price,
           item.vat || 0,
           item.discount || 0,
         ]
       );
 
       // Mettre à jour stock comme dans buyProduct
-      const productRows = await getOneProduct(item.product_id);
+      const productRows = await getOneProduct(item.id);
       if (productRows.length === 0) throw new Error("Produit introuvable");
       const newQuantity = productRows[0].quantity - item.quantity;
       await updateProductQuantity(item.product_id, newQuantity);
 
       // Créer la vente
-      const totalPrice = item.unit_price * item.quantity;
-      await createSale(item.product_id, item.quantity, totalPrice);
+      const totalPrice = item.selling_price * item.quantity;
+      await createSale(item.id, item.quantity, totalPrice);
     }
 
     return factureId;

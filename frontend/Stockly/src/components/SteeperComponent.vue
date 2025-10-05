@@ -1,506 +1,466 @@
+
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4 sm:px-6 lg:px-8">
+  <div class="min-h-screen bg-gray-50/50">
     <!-- Header -->
-    <div class="max-w-4xl mx-auto mb-8">
-      <div class="flex justify-between items-start">
-        <div>
-          <h1 class="text-3xl font-bold text-gray-900 mb-2">Add New Product</h1>
-          <p class="text-sm text-gray-600">Create a new product in your inventory</p>
+    <div class="bg-white border-b">
+      <div class="max-w-7xl mx-auto px-6 py-5">
+        <div class="flex justify-between items-center">
+          <div>
+            <button
+              @click="$router.back()"
+              class="text-gray-500 hover:text-gray-700 text-sm mb-2 flex items-center gap-1"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+              Back to Products
+            </button>
+            <h1 class="text-2xl font-bold">Add New Product</h1>
+            <p class="text-gray-500 text-sm mt-1">Create a new product in your inventory</p>
+          </div>
+          <button
+            @click="$router.push('/product')"
+            class="px-4 py-2 text-sm border rounded-lg hover:bg-gray-50"
+          >
+            Cancel
+          </button>
         </div>
-        <button class="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 text-sm font-medium hover:bg-gray-50 transition-all duration-200 shadow-sm">
-          <span class="text-lg">←</span>
-          Cancel
-        </button>
       </div>
     </div>
 
-    <!-- Stepper Container -->
-    <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg p-8">
-      <!-- Progress Steps -->
-      <div class="relative mb-12">
-        <!-- Progress Bar -->
-        <div class="absolute top-8 left-16 right-16 h-0.5 bg-gray-200">
-          <div
-            class="h-full bg-emerald-500 transition-all duration-500 ease-out"
-            :style="{ width: stepperProgress }"
-          ></div>
-        </div>
-
-        <!-- Steps -->
-        <div class="relative flex justify-between">
-          <div
-            v-for="(stepItem, index) in stepItems"
-            :key="index"
-            class="flex flex-col items-center flex-1"
-          >
-            <div
-              class="w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 transform"
-              :class="{
-                'bg-gray-200': step < stepItem.id,
-                'bg-indigo-600 scale-110': step === stepItem.id,
-                'bg-emerald-500': step > stepItem.id
-              }"
-            >
-              <span
-                v-if="step > stepItem.id"
-                class="text-white text-2xl font-bold"
-              >✓</span>
-              <span
-                v-else
-                class="text-xl font-semibold"
-                :class="step === stepItem.id ? 'text-white' : 'text-gray-500'"
-              >{{ stepItem.id }}</span>
+    <!-- Content -->
+    <div class="max-w-7xl mx-auto p-6">
+      <div class="bg-white rounded-xl shadow-sm">
+        <!-- Progress -->
+        <div class="p-8 pb-6">
+          <div class="relative">
+            <div class="absolute top-5 left-0 right-0 h-0.5 bg-gray-200">
+              <div
+                class="h-full bg-black transition-all duration-500"
+                :style="{ width: `${(step - 1) * 33.33}%` }"
+              ></div>
             </div>
-            <span
-              class="mt-3 text-sm font-medium text-center transition-colors duration-300"
-              :class="{
-                'text-gray-500': step < stepItem.id,
-                'text-indigo-600': step === stepItem.id,
-                'text-emerald-600': step > stepItem.id
-              }"
-            >{{ stepItem.title }}</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Content -->
-      <div class="mb-8">
-        <!-- Step 1: Basic Info -->
-        <div v-if="step === 1" class="space-y-6 min-h-[400px]">
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Product Name *</label>
-            <input
-              type="text"
-              v-model="formData.Prod_name"
-              placeholder="Enter product name"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 outline-none"
-              :class="{ 'border-red-500 ring-2 ring-red-200': errors.Prod_name }"
-            />
-            <p v-if="errors.Prod_name" class="text-red-600 text-xs mt-1 font-medium">{{ errors.Prod_name }}</p>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">Barcode *</label>
-              <div class="flex gap-2">
-                <input
-                  type="text"
-                  v-model="formData.code_bar"
-                  placeholder="Auto-generated"
-                  class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 outline-none"
-                  :class="{ 'border-red-500 ring-2 ring-red-200': errors.code_bar }"
-                />
-                <button
-                  @click="handleAutoGenerateBarcode"
-                  class="px-4 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 whitespace-nowrap font-medium shadow-md hover:shadow-lg"
-                >
-                  🔄 Generate
-                </button>
-              </div>
-              <p v-if="errors.code_bar" class="text-red-600 text-xs mt-1 font-medium">{{ errors.code_bar }}</p>
-            </div>
-
-            <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">Category *</label>
-              <select
-                v-model="formData.category_id"
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 outline-none"
-                :class="{ 'border-red-500 ring-2 ring-red-200': errors.category_id }"
+            <div class="relative flex justify-between">
+              <div
+                v-for="(s, i) in steps"
+                :key="i"
+                class="flex flex-col items-center cursor-pointer"
+                @click="step = validateStep(step) && i + 1 <= step ? i + 1 : step"
               >
-                <option value="">Select category</option>
-                <option value="1">Electronics</option>
-                <option value="2">Computers</option>
-                <option value="3">Accessories</option>
-              </select>
-              <p v-if="errors.category_id" class="text-red-600 text-xs mt-1 font-medium">{{ errors.category_id }}</p>
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Supplier *</label>
-            <select
-              v-model="formData.supplier"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 outline-none"
-              :class="{ 'border-red-500 ring-2 ring-red-200': errors.supplier }"
-            >
-              <option value="">Select supplier</option>
-              <option value="1">Gaming Tech Corp</option>
-              <option value="2">Tech Solutions Ltd</option>
-              <option value="3">Digital Supplies Inc</option>
-            </select>
-            <p v-if="errors.supplier" class="text-red-600 text-xs mt-1 font-medium">{{ errors.supplier }}</p>
-          </div>
-        </div>
-
-        <!-- Step 2: Pricing & Stock -->
-        <div v-if="step === 2" class="space-y-6 min-h-[400px]">
-          <div>
-            <h3 class="text-xl font-bold text-gray-800 mb-2">Pricing & Stock</h3>
-            <p class="text-sm text-gray-600 mb-6">Configure pricing and inventory information</p>
-          </div>
-
-          <div class="bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-xl p-6 space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Cost Price *</label>
-                <div class="relative">
-                  <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 font-medium">$</span>
-                  <input
-                    type="number"
-                    v-model="formData.cost_price"
-                    placeholder="0.00"
-                    min="0"
-                    step="0.01"
-                    class="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 outline-none"
-                    :class="{ 'border-red-500 ring-2 ring-red-200': errors.cost_price }"
-                  />
+                <div
+                  class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-all"
+                  :class="
+                    step > i + 1
+                      ? 'bg-black text-white'
+                      : step === i + 1
+                        ? 'bg-black text-white'
+                        : 'bg-white border-2 border-gray-300'
+                  "
+                >
+                  <span v-if="step > i + 1">✓</span>
+                  <span v-else>{{ i + 1 }}</span>
                 </div>
-                <p v-if="errors.cost_price" class="text-red-600 text-xs mt-1 font-medium">{{ errors.cost_price }}</p>
-              </div>
-
-              <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Selling Price *</label>
-                <div class="relative">
-                  <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 font-medium">$</span>
-                  <input
-                    type="number"
-                    v-model="formData.selling_price"
-                    placeholder="0.00"
-                    min="0"
-                    step="0.01"
-                    class="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 outline-none"
-                    :class="{ 'border-red-500 ring-2 ring-red-200': errors.selling_price }"
-                  />
-                </div>
-                <p v-if="errors.selling_price" class="text-red-600 text-xs mt-1 font-medium">{{ errors.selling_price }}</p>
-              </div>
-
-              <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Initial Quantity</label>
-                <input
-                  type="number"
-                  v-model="formData.quantity"
-                  placeholder="0"
-                  min="0"
-                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 outline-none"
-                />
-              </div>
-
-              <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Min Stock Level</label>
-                <input
-                  type="number"
-                  v-model="formData.min_stock_level"
-                  placeholder="0"
-                  min="0"
-                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 outline-none"
-                />
-              </div>
-
-              <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Max Stock Level</label>
-                <input
-                  type="number"
-                  v-model="formData.max_stock_level"
-                  placeholder="0"
-                  min="0"
-                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 outline-none"
-                />
-              </div>
-
-              <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Date of Arrival</label>
-                <input
-                  type="date"
-                  v-model="formData.date_of_arrival"
-                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 outline-none"
-                />
+                <span
+                  class="mt-2 text-xs font-medium"
+                  :class="step >= i + 1 ? 'text-black' : 'text-gray-400'"
+                >
+                  {{ s }}
+                </span>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Step 3: Description & Image -->
-        <div v-if="step === 3" class="space-y-6 min-h-[400px]">
-          <div>
-            <h3 class="text-xl font-bold text-gray-800 mb-2">Description & Image</h3>
-            <p class="text-sm text-gray-600 mb-6">Add product details and image</p>
-          </div>
-
-          <div class="bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-xl p-6 space-y-6">
+        <!-- Form Steps -->
+        <div class="px-8 pb-8">
+          <!-- Step 1 -->
+          <div v-show="step === 1" class="space-y-6">
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">Product Image URL</label>
+              <label class="block text-sm font-medium mb-2">Product Name *</label>
               <input
-                type="text"
-                v-model="formData.Prod_image"
-                placeholder="https://example.com/product-image.jpg"
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 outline-none"
+                v-model="form.name"
+                class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black focus:border-black"
+                :class="{ 'border-red-500': errors.name }"
+                placeholder="Enter product name"
               />
-              <p class="text-xs text-gray-500 mt-1">Enter a valid image URL for the product</p>
+              <p v-if="errors.name" class="text-red-500 text-xs mt-1">{{ errors.name }}</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-medium mb-2">Barcode *</label>
+                <div class="flex gap-2">
+                  <input
+                    v-model="form.barcode"
+                    class="flex-1 px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black"
+                    :class="{ 'border-red-500': errors.barcode }"
+                    placeholder="Auto-generated"
+                  />
+                  <button
+                    @click="generateBarcode"
+                    class="px-4 py-2.5 bg-gray-100 rounded-lg hover:bg-gray-200"
+                  >
+                    Generate
+                  </button>
+                </div>
+                <p v-if="errors.barcode" class="text-red-500 text-xs mt-1">{{ errors.barcode }}</p>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium mb-2">Category *</label>
+                <select
+                  v-model="form.category"
+                  class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black"
+                  :class="{ 'border-red-500': errors.category }"
+                >
+                  <option value="">Select category</option>
+                  <option v-for="c in categories" :key="c.id" :value="c.id">{{ c.name }}</option>
+                </select>
+                <p v-if="errors.category" class="text-red-500 text-xs mt-1">
+                  {{ errors.category }}
+                </p>
+              </div>
             </div>
 
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+              <label class="block text-sm font-medium mb-2">Supplier *</label>
+              <select
+                v-model="form.supplier"
+                class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black"
+                :class="{ 'border-red-500': errors.supplier }"
+              >
+                <option value="">Select supplier</option>
+                <option v-for="s in suppliers" :key="s.id" :value="s.id">{{ s.name }}</option>
+              </select>
+              <p v-if="errors.supplier" class="text-red-500 text-xs mt-1">{{ errors.supplier }}</p>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div v-show="step === 2" class="grid grid-cols-3 gap-6">
+            <div>
+              <label class="block text-sm font-medium mb-2">Cost Price *</label>
+              <div class="relative">
+                <span class="absolute left-4 top-2.5 text-gray-500">$</span>
+                <input
+                  v-model.number="form.costPrice"
+                  type="number"
+                  step="0.01"
+                  class="w-full pl-8 pr-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black"
+                  :class="{ 'border-red-500': errors.costPrice }"
+                  placeholder="0.00"
+                />
+              </div>
+              <p v-if="errors.costPrice" class="text-red-500 text-xs mt-1">
+                {{ errors.costPrice }}
+              </p>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-2">Selling Price *</label>
+              <div class="relative">
+                <span class="absolute left-4 top-2.5 text-gray-500">$</span>
+                <input
+                  v-model.number="form.sellingPrice"
+                  type="number"
+                  step="0.01"
+                  class="w-full pl-8 pr-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black"
+                  :class="{ 'border-red-500': errors.sellingPrice }"
+                  placeholder="0.00"
+                />
+              </div>
+              <p v-if="errors.sellingPrice" class="text-red-500 text-xs mt-1">
+                {{ errors.sellingPrice }}
+              </p>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-2">Initial Quantity</label>
+              <input
+                v-model.number="form.quantity"
+                type="number"
+                class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black"
+                placeholder="0"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-2">Min Stock Level</label>
+              <input
+                v-model.number="form.minStock"
+                type="number"
+                class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black"
+                placeholder="0"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-2">Max Stock Level</label>
+              <input
+                v-model.number="form.maxStock"
+                type="number"
+                class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black"
+                placeholder="0"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-2">Date of Arrival</label>
+              <input
+                v-model="form.arrivalDate"
+                type="date"
+                class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black"
+              />
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div v-show="step === 3" class="space-y-6">
+            <div>
+              <label class="block text-sm font-medium mb-2">Product Image URL</label>
+              <input
+                v-model="form.imageUrl"
+                type="url"
+                class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black"
+                placeholder="https://example.com/image.jpg"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-2">Description</label>
               <textarea
-                v-model="formData.Prod_Description"
-                rows="6"
-                placeholder="Describe the product features, benefits, and specifications..."
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 outline-none resize-none"
+                v-model="form.description"
+                rows="4"
+                class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black resize-none"
+                placeholder="Product description..."
               ></textarea>
             </div>
           </div>
-        </div>
 
-        <!-- Step 4: Review -->
-        <div v-if="step === 4" class="space-y-6 min-h-[400px]">
-          <div>
-            <h3 class="text-xl font-bold text-gray-800 mb-2">Review & Confirm</h3>
-            <p class="text-sm text-gray-600 mb-6">Please review all information before submitting</p>
-          </div>
-
-          <div class="bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-200 rounded-xl p-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="space-y-4">
-                <h4 class="font-bold text-lg text-gray-800 mb-4 border-b border-indigo-200 pb-2">Basic Information</h4>
-                <div class="space-y-3">
-                  <div class="flex justify-between">
-                    <span class="text-gray-600 font-medium">Product Name:</span>
-                    <span class="text-gray-900 font-semibold">{{ formData.Prod_name || '-' }}</span>
+          <!-- Step 4 -->
+          <div v-show="step === 4" class="bg-gray-50 rounded-xl p-6">
+            <div class="grid grid-cols-2 gap-8">
+              <div>
+                <h3 class="font-semibold mb-4">Basic Information</h3>
+                <dl class="space-y-3 text-sm">
+                  <div class="flex justify-between py-2 border-b">
+                    <dt class="text-gray-600">Product Name:</dt>
+                    <dd class="font-medium">{{ form.name || '-' }}</dd>
                   </div>
-                  <div class="flex justify-between">
-                    <span class="text-gray-600 font-medium">Barcode:</span>
-                    <span class="text-gray-900 font-semibold">{{ formData.code_bar || '-' }}</span>
+                  <div class="flex justify-between py-2 border-b">
+                    <dt class="text-gray-600">Barcode:</dt>
+                    <dd class="font-medium">{{ form.barcode || '-' }}</dd>
                   </div>
-                  <div class="flex justify-between">
-                    <span class="text-gray-600 font-medium">Category:</span>
-                    <span class="text-gray-900 font-semibold">{{ getCategoryName(formData.category_id) }}</span>
+                  <div class="flex justify-between py-2 border-b">
+                    <dt class="text-gray-600">Category:</dt>
+                    <dd class="font-medium">
+                      {{ categories.find((c) => c.id == form.category)?.name || '-' }}
+                    </dd>
                   </div>
-                  <div class="flex justify-between">
-                    <span class="text-gray-600 font-medium">Supplier:</span>
-                    <span class="text-gray-900 font-semibold">{{ getSupplierName(formData.supplier) }}</span>
+                  <div class="flex justify-between py-2 border-b">
+                    <dt class="text-gray-600">Supplier:</dt>
+                    <dd class="font-medium">
+                      {{ suppliers.find((s) => s.id == form.supplier)?.name || '-' }}
+                    </dd>
                   </div>
-                </div>
+                </dl>
               </div>
 
-              <div class="space-y-4">
-                <h4 class="font-bold text-lg text-gray-800 mb-4 border-b border-indigo-200 pb-2">Pricing & Stock</h4>
-                <div class="space-y-3">
-                  <div class="flex justify-between">
-                    <span class="text-gray-600 font-medium">Cost Price:</span>
-                    <span class="text-gray-900 font-semibold">${{ formData.cost_price || '0.00' }}</span>
+              <div>
+                <h3 class="font-semibold mb-4">Pricing & Stock</h3>
+                <dl class="space-y-3 text-sm">
+                  <div class="flex justify-between py-2 border-b">
+                    <dt class="text-gray-600">Cost Price:</dt>
+                    <dd class="font-medium">${{ form.costPrice || '0.00' }}</dd>
                   </div>
-                  <div class="flex justify-between">
-                    <span class="text-gray-600 font-medium">Selling Price:</span>
-                    <span class="text-emerald-600 font-bold text-lg">${{ formData.selling_price || '0.00' }}</span>
+                  <div class="flex justify-between py-2 border-b">
+                    <dt class="text-gray-600">Selling Price:</dt>
+                    <dd class="font-medium text-green-600">${{ form.sellingPrice || '0.00' }}</dd>
                   </div>
-                  <div class="flex justify-between">
-                    <span class="text-gray-600 font-medium">Quantity:</span>
-                    <span class="text-gray-900 font-semibold">{{ formData.quantity || 0 }} units</span>
+                  <div class="flex justify-between py-2 border-b">
+                    <dt class="text-gray-600">Quantity:</dt>
+                    <dd class="font-medium">{{ form.quantity || 0 }} units</dd>
                   </div>
-                  <div class="flex justify-between">
-                    <span class="text-gray-600 font-medium">Stock Range:</span>
-                    <span class="text-gray-900 font-semibold">{{ formData.min_stock_level }} - {{ formData.max_stock_level }}</span>
+                  <div class="flex justify-between py-2 border-b">
+                    <dt class="text-gray-600">Stock Range:</dt>
+                    <dd class="font-medium">{{ form.minStock || 0 }} - {{ form.maxStock || 0 }}</dd>
                   </div>
-                </div>
+                </dl>
               </div>
             </div>
 
-            <div v-if="formData.Prod_Description" class="mt-6 pt-6 border-t border-indigo-200">
-              <h4 class="font-bold text-lg text-gray-800 mb-3">Description</h4>
-              <p class="text-gray-700 text-sm leading-relaxed">{{ formData.Prod_Description }}</p>
+            <div v-if="form.description" class="mt-6 pt-6 border-t">
+              <h3 class="font-semibold mb-2">Description</h3>
+              <p class="text-sm text-gray-700">{{ form.description }}</p>
             </div>
           </div>
+
+          <!-- Navigation -->
+          <div class="flex justify-between items-center mt-8 pt-8 border-t">
+            <button
+              @click="step--"
+              :disabled="step === 1"
+              class="px-5 py-2.5 text-sm font-medium border rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+              Previous
+            </button>
+
+            <span class="text-sm text-gray-500">Step {{ step }} of 4</span>
+
+            <button
+              @click="step < 4 ? nextStep() : submit()"
+              class="px-5 py-2.5 text-sm font-medium text-white rounded-lg flex items-center gap-2"
+              :class="step < 4 ? 'bg-black hover:bg-gray-800' : 'bg-green-600 hover:bg-green-700'"
+            >
+              <template v-if="step < 4">
+                Next
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </template>
+              <template v-else>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                Add Product
+              </template>
+            </button>
+          </div>
         </div>
-      </div>
-
-      <!-- Controls -->
-      <div class="flex justify-between items-center pt-6 border-t border-gray-200">
-        <button
-          @click="prevStep"
-          :disabled="step === 1"
-          class="flex items-center gap-2 px-6 py-3 bg-white border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow"
-        >
-          <span class="text-lg">←</span>
-          Previous
-        </button>
-
-        <div class="text-sm font-semibold text-gray-600 bg-gray-100 px-4 py-2 rounded-full">
-          Step {{ step }} of {{ stepItems.length }}
-        </div>
-
-        <button
-          v-if="step < stepItems.length"
-          @click="nextStep"
-          class="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-medium hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
-        >
-          Next
-          <span class="text-lg">→</span>
-        </button>
-
-        <button
-          v-else
-          @click="handleSubmit"
-          class="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg font-medium hover:from-emerald-600 hover:to-teal-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
-        >
-          <span class="text-lg">✓</span>
-          Add Product
-        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import { useProductStore } from '@/stores/productStore'
-const productStore = useProductStore()
-const step = ref(1)
-const errors = ref({})
+import { ref, reactive } from 'vue'
 
-const stepItems = [
-  { id: 1, title: 'Basic Info' },
-  { id: 2, title: 'Pricing & Stock' },
-  { id: 3, title: 'Description' },
-  { id: 4, title: 'Review' },
+const step = ref(1)
+const steps = ['Basic Information', 'Pricing & Stock', 'Description & Image', 'Review']
+const errors = reactive({})
+
+const form = reactive({
+  name: '',
+  barcode: '',
+  category: '',
+  supplier: '',
+  costPrice: 0,
+  sellingPrice: 0,
+  quantity: 0,
+  minStock: 10,
+  maxStock: 100,
+  arrivalDate: new Date().toISOString().split('T')[0],
+  imageUrl: '',
+  description: '',
+})
+
+const categories = [
+  { id: '1', name: 'Electronics' },
+  { id: '2', name: 'Computers' },
+  { id: '3', name: 'Accessories' },
 ]
 
-const formData = ref({
-  Prod_name: '',
-  quantity: 0,
-  cost_price: 0,
-  selling_price: 0,
-  category_id: '',
-  Prod_Description: '',
-  code_bar: '',
-  date_of_arrival: new Date().toISOString().split('T')[0],
-  supplier: '',
-  Prod_image: '',
-  min_stock_level: 10,
-  max_stock_level: 100,
-})
-
-const stepperProgress = computed(() => {
-  return `${(100 / (stepItems.length - 1)) * (step.value - 1)}%`
-})
-
-const nextStep = () => {
-  if (validateStep(step.value)) {
-    if (step.value < stepItems.length) step.value++
-  }
-}
-
-const prevStep = () => {
-  if (step.value > 1) step.value--
-}
+const suppliers = [
+  { id: '1', name: 'Gaming Tech Corp' },
+  { id: '2', name: 'Tech Solutions Ltd' },
+  { id: '3', name: 'Digital Supplies Inc' },
+]
 
 const generateBarcode = () => {
-  const prefix = formData.value.Prod_name
-    .split(' ')
-    .map((word) => word.charAt(0))
-    .join('')
-    .toUpperCase()
-    .substring(0, 3)
-  const timestamp = Date.now().toString().slice(-6)
-  const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0')
-  return `${prefix || 'PRD'}-${timestamp}-${random}`
-}
-
-const handleAutoGenerateBarcode = () => {
-  if (formData.value.Prod_name) {
-    formData.value.code_bar = generateBarcode()
-    delete errors.value.code_bar
-  }
+  if (!form.name) return
+  const prefix =
+    form.name
+      .split(' ')
+      .map((w) => w[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 3) || 'PRD'
+  form.barcode = `${prefix}-${Date.now().toString().slice(-6)}-${Math.floor(Math.random() * 1000)
+    .toString()
+    .padStart(3, '0')}`
+  delete errors.barcode
 }
 
 const validateStep = (currentStep) => {
-  const newErrors = {}
+  Object.keys(errors).forEach((key) => delete errors[key])
 
   if (currentStep === 1) {
-    if (!formData.value.Prod_name.trim()) {
-      newErrors.Prod_name = 'Product name is required'
-    }
-    if (!formData.value.code_bar.trim()) {
-      newErrors.code_bar = 'Barcode is required'
-    }
-    if (!formData.value.category_id) {
-      newErrors.category_id = 'Category is required'
-    }
-    if (!formData.value.supplier) {
-      newErrors.supplier = 'Supplier is required'
-    }
+    if (!form.name.trim()) errors.name = 'Product name is required'
+    if (!form.barcode.trim()) errors.barcode = 'Barcode is required'
+    if (!form.category) errors.category = 'Category is required'
+    if (!form.supplier) errors.supplier = 'Supplier is required'
   }
 
   if (currentStep === 2) {
-    if (!formData.value.cost_price || formData.value.cost_price <= 0) {
-      newErrors.cost_price = 'Cost price must be greater than 0'
-    }
-    if (!formData.value.selling_price || formData.value.selling_price <= 0) {
-      newErrors.selling_price = 'Selling price must be greater than 0'
-    }
-    if (parseFloat(formData.value.selling_price) < parseFloat(formData.value.cost_price)) {
-      newErrors.selling_price = 'Selling price should be greater than cost price'
-    }
+    if (form.costPrice <= 0) errors.costPrice = 'Cost price must be greater than 0'
+    if (form.sellingPrice <= 0) errors.sellingPrice = 'Selling price must be greater than 0'
+    if (form.sellingPrice < form.costPrice)
+      errors.sellingPrice = 'Selling price should be greater than cost price'
   }
 
-  errors.value = newErrors
-  return Object.keys(newErrors).length === 0
+  return Object.keys(errors).length === 0
 }
 
-const getCategoryName = (id) => {
-  const categories = {
-    '1': 'Electronics',
-    '2': 'Computers',
-    '3': 'Accessories'
-  }
-  return categories[id] || '-'
+const nextStep = () => {
+  if (validateStep(step.value)) step.value++
 }
 
-const getSupplierName = (id) => {
-  const suppliers = {
-    '1': 'Gaming Tech Corp',
-    '2': 'Tech Solutions Ltd',
-    '3': 'Digital Supplies Inc'
-  }
-  return suppliers[id] || '-'
-}
-
-const handleSubmit = () => {
+const submit = () => {
   if (!validateStep(4)) return
 
-  const productData = {
-    ...formData.value,
-    // Convert string values to appropriate types for backend
-    quantity: parseInt(formData.value.quantity) || 0,
-    cost_price: parseFloat(formData.value.cost_price) || 0,
-    selling_price: parseFloat(formData.value.selling_price) || 0,
-    category_id: parseInt(formData.value.category_id) || null,
-    supplier: parseInt(formData.value.supplier) || null,
-    min_stock_level: parseInt(formData.value.min_stock_level) || 0,
-    max_stock_level: parseInt(formData.value.max_stock_level) || null,
-  }
+  console.log('Product submitted:', form)
+  // Add your submit logic here
 
-  console.log('✅ Product Data to Submit:', productData)
-  console.log(productData)
   if (productStore.addProduct(productData)) {
-    alert('Product added to store!')
-  }else {
+    alert('Product added successfully!')
+  } else {
     console.warn('Product store or addProduct method not available')
   }
+
   // Reset form
-  formData.value = {
-    Prod_name: '',
-    quantity: 0,
-    cost_price: 0,
-    selling_price: 0,
-    category_id: '',
-    Prod_Description: '',
-    code_bar: '',
-    date_of_arrival: new Date().toISOString().split('T')[0],
-    supplier: '',
-    Prod_image: '',
-    min_stock_level: 10,
-    max_stock_level: 100,
-  }
+  Object.keys(form).forEach((key) => {
+    form[key] =
+      key === 'arrivalDate'
+        ? new Date().toISOString().split('T')[0]
+        : key === 'minStock'
+          ? 10
+          : key === 'maxStock'
+            ? 100
+            : typeof form[key] === 'number'
+              ? 0
+              : ''
+  })
   step.value = 1
 }
 </script>
+
+<style scoped>
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+}
+</style>
