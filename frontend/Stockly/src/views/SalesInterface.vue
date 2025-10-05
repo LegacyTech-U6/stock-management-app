@@ -1,6 +1,6 @@
 <template>
   <div class="sales-interface min-h-screen bg-gray-50">
-    <div class="container mx-auto p-4 lg:p-6 space-y-4 lg:space-y-6">
+    <div class="p-4 lg:p-6 space-y-4 lg:space-y-6">
       <!-- Mobile Header with Cart Button -->
       <div class="lg:hidden flex justify-between items-center mb-4">
         <h1 class="text-xl font-bold text-gray-900">New Sale</h1>

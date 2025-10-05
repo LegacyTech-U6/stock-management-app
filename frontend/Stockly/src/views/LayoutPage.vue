@@ -6,13 +6,13 @@ import { useRoute } from 'vue-router'
 const route = useRoute()
 </script>
 <template>
-  <div class="flex">
-    <div>
+  <div class="grid grid-cols-7">
+    <div class="col-span-1">
       <aside>
         <LoginNav />
       </aside>
     </div>
-    <div>
+    <div class="col-span-6">
       <RouterView />
     </div>
   </div>

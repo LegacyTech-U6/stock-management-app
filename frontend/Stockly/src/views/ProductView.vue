@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-gray-50">
     <!-- Professional Header -->
     <div class="bg-white border-b border-gray-200">
-      <div class="max-w-7xl mx-auto px-6 py-6">
+      <div class="px-6 py-6">
         <div class="flex items-center justify-between">
           <div>
             <h1 class="text-2xl font-semibold text-gray-900">Product Inventory</h1>
@@ -50,7 +50,7 @@
     </div>
 
     <!-- Stats Cards -->
-    <div class="max-w-7xl mx-auto px-6 py-6">
+    <div class="px-6 py-6">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div class="bg-white border border-gray-200 rounded-lg p-4">
           <div class="flex items-center gap-3 mb-2">
@@ -103,7 +103,7 @@
     </div>
 
     <!-- Filters -->
-    <div class="max-w-7xl mx-auto px-6 pb-6">
+    <div class=" mx-auto px-6 pb-6">
       <div class="flex flex-col sm:flex-row gap-3">
         <!-- Search -->
         <div class="flex-1 relative">
@@ -143,7 +143,7 @@
     </div>
 
     <!-- Product List -->
-    <div class="max-w-7xl mx-auto px-6 pb-8">
+    <div class="mx-auto px-6 pb-8">
       <!-- Loading State -->
       <div v-if="loading" class="flex justify-center items-center py-20">
         <div class="animate-spin rounded-full h-12 w-12 border-2 border-gray-300 border-t-gray-900"></div>

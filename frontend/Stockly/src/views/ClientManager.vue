@@ -1,6 +1,6 @@
 <template>
-  <div class="min-h-screen pt-20 bg-gray-50 py-6 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-7xl mx-auto space-y-6">
+  <div class="min-h-screen pt-10 bg-gray-50 py-6 px-4 sm:px-6 lg:px-8">
+    <div class="space-y-6">
       <!-- Header Section -->
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -88,7 +88,7 @@
       <!-- Client Cards Grid -->
       <div
         v-if="filteredClients.length > 0"
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 pb-8"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 pb-8"
       >
         <ClientCard
           v-for="client in filteredClients"

@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-gray-50/50">
     <!-- Header -->
     <div class="bg-white border-b">
-      <div class="max-w-7xl mx-auto px-6 py-5">
+      <div class="px-6 py-5">
         <div class="flex justify-between items-center">
           <div>
             <button
@@ -34,7 +34,7 @@
     </div>
 
     <!-- Content -->
-    <div class="max-w-7xl mx-auto p-6">
+    <div class="mx-auto p-6">
       <div class="bg-white rounded-xl shadow-sm">
         <!-- Progress -->
         <div class="p-8 pb-6">
