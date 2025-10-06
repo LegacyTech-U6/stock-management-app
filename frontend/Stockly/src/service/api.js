@@ -24,7 +24,9 @@ export async function deleteClient(clientId) {
   const { data } = await API.delete(`/client/${clientId}`)
   return data
 }
-
+ ///////////////////////////////////
+ //Product Management
+ //////////////////////////////////
 export async function getProduct() {
   const { data } = await API.get('/products')
   return data
@@ -101,3 +103,43 @@ export async function deleteSale(saleId) {
   const { data } = await API.delete(`/sales/${saleId}`)
   return data
 }
+
+/////////////////////////////////////
+// category management
+//////////////////////////////////////
+
+//getting all categories
+export async function getCategory(){
+  const {data} =await API.get('/category')
+  return data
+}
+// getting a paticular category
+export async function getOneCategory(CategoryId) {
+  const {data} = await API.get(`/category/${CategoryId}`)
+  return data
+}
+
+// creating a category
+export async function createCategory(categoryData) {
+  const {data} =  await API.post('/category' , categoryData)
+  return data
+
+}
+
+//updating category
+
+export async function updateCategory(CategoryId,categoryData) {
+  const {data} = await API.put(`/category/${CategoryId}`,categoryData)
+  return data
+
+}
+
+//deleting a category
+
+export async function deleteCategory(CategoryId) {
+  const { data } = await API.delete(`/category/${CategoryId}`)
+  return data
+}
+
+
+

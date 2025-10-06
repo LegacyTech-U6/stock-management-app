@@ -202,10 +202,7 @@ async function getOutOfStockProducts() {
   return products;
 }
 
-module.exports = {
-  // ... autres fonctions
-  checkLowStock,
-};
+
 
 module.exports = {
   getProduct,
@@ -220,4 +217,5 @@ module.exports = {
   checkLowStock,
   getOutOfStockProducts,
   getSales,
+  checkLowStock,
 };

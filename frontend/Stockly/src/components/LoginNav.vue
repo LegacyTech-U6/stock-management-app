@@ -1,5 +1,5 @@
 <template>
-  <aside class="sidebar">
+  <aside class="sidebar fixed">
     <!-- Logo Section -->
     <div class="logo-section">
       <div class="logo-icon">
@@ -74,13 +74,23 @@
         </router-link>
 
         <router-link to="/clients" class="nav-item" active-class="nav-item-active">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-            <path d="M17 21V19C17 17.94 16.58 16.92 15.83 16.17C15.08 15.42 14.06 15 13 15H5C3.94 15 2.92 15.42 2.17 16.17C1.42 16.92 1 17.94 1 19V21"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+
+          <UsersClients />
           <span>Client Management</span>
         </router-link>
       </div>
+      <!-- invoice mangement -->
+       <div class="nav-section">
+           <span class="nav-section-label"> Invoice Management</span>
+           <router-link to="/invoices" class="nav-item" active-class="nav-item-active">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M6 2L3 6V20C3 20.53 3.21 21.04 3.59 21.41C3.96 21.79 4.47 22 5 22H19C19.53 22 20.04 21.79 20.41 21.41C20.79 21.04 21 20.53 21 20V6L18 2H6Z"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Invoices</span>
+        </router-link>
+
+       </div>
 
       <!-- Inventory Status -->
       <div class="nav-section">
@@ -121,6 +131,9 @@
 </template>
 
 <script>
+import UserGroupIcon from '@/assets/icon svg/userGroupIcon.vue';
+import UsersClients from '@/assets/icon svg/UsersClients.vue';
+
 export default {
   name: 'Sidebar',
   data() {

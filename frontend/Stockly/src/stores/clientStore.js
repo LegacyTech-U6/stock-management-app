@@ -1,23 +1,23 @@
 import { defineStore } from 'pinia'
-import { getClient, getClientById, updateClient, CreateClient } from '@/service/api'
+import { getClient, getClientById, updateClient, CreateClient, deleteClient } from '@/service/api'
 
 export const useClientStore = defineStore('client', {
   state: () => ({
     clients: [],
     selectedClient: null,
     clientForm: {
-      client_name: "",
-      client_Signature: "",
-      client_PhoneNumber: "",
-      email: "",
-      location: ""
+      client_name: '',
+      client_Signature: '',
+      client_PhoneNumber: '',
+      email: '',
+      location: '',
     },
     loading: false,
     error: null,
     isFormOpen: false,
     isDetailsOpen: false,
     submitLoading: false, // Separate loading state for form submission
-    submitError: null,    // Separate error state for form submission
+    submitError: null, // Separate error state for form submission
   }),
 
   actions: {
@@ -29,7 +29,7 @@ export const useClientStore = defineStore('client', {
         console.log(this.clients)
       } catch (err) {
         this.error = err.response?.data?.message || err.message || 'Failed to fetch clients'
-        console.error("Error fetching clients:", err)
+        console.error('Error fetching clients:', err)
         throw err // Re-throw for component handling
       } finally {
         this.loading = false
@@ -43,7 +43,7 @@ export const useClientStore = defineStore('client', {
         this.selectedClient = await getClientById(id)
       } catch (err) {
         this.error = err.response?.data?.message || err.message || 'Failed to fetch client details'
-        console.error("Error fetching client:", err)
+        console.error('Error fetching client:', err)
         throw err
       } finally {
         this.loading = false
@@ -61,7 +61,7 @@ export const useClientStore = defineStore('client', {
         return { success: true }
       } catch (error) {
         this.submitError = error.response?.data?.message || error.message || 'Failed to add client'
-        console.error("Error adding client:", error)
+        console.error('Error adding client:', error)
         throw error
       } finally {
         this.submitLoading = false
@@ -77,7 +77,22 @@ export const useClientStore = defineStore('client', {
         return { success: true }
       } catch (err) {
         this.submitError = err.response?.data?.message || err.message || 'Failed to update client'
-        console.error("Error updating client:", err)
+        console.error('Error updating client:', err)
+        throw err
+      } finally {
+        this.submitLoading = false
+      }
+    },
+    async deleteclient(clientId) {
+      this.submitLoading = true
+      this.submitError = null
+      try {
+        await deleteClient(clientId)
+        await this.fetchClients()
+        return { success: true }
+      } catch (err) {
+        this.submitError = err.response?.data?.message || err.message || 'Failed to update client'
+        console.error('Error deletint the client:', err)
         throw err
       } finally {
         this.submitLoading = false
@@ -97,11 +112,11 @@ export const useClientStore = defineStore('client', {
 
     resetForm() {
       this.clientForm = {
-        client_name: "",
-        client_Signature: "",
-        client_PhoneNumber: "",
-        email: "",
-        location: ""
+        client_name: '',
+        client_Signature: '',
+        client_PhoneNumber: '',
+        email: '',
+        location: '',
       }
     },
 
@@ -109,6 +124,6 @@ export const useClientStore = defineStore('client', {
     clearErrors() {
       this.error = null
       this.submitError = null
-    }
+    },
   },
 })

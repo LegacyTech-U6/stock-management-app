@@ -212,12 +212,11 @@ const handleAddClient = () => {
 }
 const handleSubmit = async () => {
   try {
-    await clientStore.addClient();
-
+    await clientStore.addClient()
   } catch (error) {
-   throw error
+    throw error
   }
-};
+}
 
 const handleEditClient = (client: any) => {
   // Open edit client modal/form
@@ -225,11 +224,15 @@ const handleEditClient = (client: any) => {
   console.log('Edit client:', client)
 }
 
-const handleDeleteClient = (client: any) => {
+const handleDeleteClient = async (client: any) => {
   // Show confirmation dialog and delete
   if (confirm(`Are you sure you want to delete ${client.client_name}?`)) {
     // clientStore.deleteClient(client.id)
-    console.log('Delete client:', client)
+
+    if (await clientStore.deleteclient(client.id)) {
+      alert('client deleted:')
+    }else alert('client not deleted')
+
   }
 }
 </script>
