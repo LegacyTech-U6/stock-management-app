@@ -24,38 +24,33 @@ export async function deleteClient(clientId) {
   const { data } = await API.delete(`/client/${clientId}`)
   return data
 }
- ///////////////////////////////////
- //Product Management
- //////////////////////////////////
+///////////////////////////////////
+//Product Management
+//////////////////////////////////
 export async function getProduct() {
   const { data } = await API.get('/products')
   return data
 }
 
 export async function getOneProduct(id) {
-  const {data} = await API.get(`/products/${id}`)
+  const { data } = await API.get(`/products/${id}`)
   return data
 }
 
-export async function updateProduct(productId,productData) {
-  const {data} = await API.put(`/products/${productId}`,productData)
+export async function updateProduct(productId, productData) {
+  const { data } = await API.put(`/products/${productId}`, productData)
   return data
-
 }
 
 export async function deleteProduct(productId) {
-  const {data} = await API.delete(`/products/${productId}`)
+  const { data } = await API.delete(`/products/${productId}`)
   return data
-
 }
 
 export async function createProduct(productData) {
-  const {data} = await API.post('/products',productData)
+  const { data } = await API.post('/products', productData)
   return data
-
 }
-
-
 
 ///////////////////////////////////////
 // Invoice calls
@@ -109,29 +104,27 @@ export async function deleteSale(saleId) {
 //////////////////////////////////////
 
 //getting all categories
-export async function getCategory(){
-  const {data} =await API.get('/category')
+export async function getCategory() {
+  const { data } = await API.get('/category')
   return data
 }
 // getting a paticular category
 export async function getOneCategory(CategoryId) {
-  const {data} = await API.get(`/category/${CategoryId}`)
+  const { data } = await API.get(`/category/${CategoryId}`)
   return data
 }
 
 // creating a category
 export async function createCategory(categoryData) {
-  const {data} =  await API.post('/category' , categoryData)
+  const { data } = await API.post('/category', categoryData)
   return data
-
 }
 
 //updating category
 
-export async function updateCategory(CategoryId,categoryData) {
-  const {data} = await API.put(`/category/${CategoryId}`,categoryData)
+export async function updateCategory(CategoryId, categoryData) {
+  const { data } = await API.put(`/category/${CategoryId}`, categoryData)
   return data
-
 }
 
 //deleting a category
@@ -141,5 +134,37 @@ export async function deleteCategory(CategoryId) {
   return data
 }
 
+/////////////////////////////////////////////////
+//supplier  management
+/////////////////////////////////////////////////
 
+// creation of supplies
+export async function createSupplier(supplierData) {
+  const {data} = await API.post(`/suppliers`,supplierData)
+  return data
 
+}
+
+/// getting all suppliers
+export async function getSuppliers() {
+  const { data } = await API.get('/suppliers')
+  return data
+}
+
+export async function getOneSupplier(supplierId) {
+  const {data} = await API.get(`/suppliers/${supplierId}`)
+  return data
+
+}
+
+export async function updateSupplier(supplierId,supplierData) {
+  const {data} = await API.put(`/suppliers/${supplierId}`,supplierData)
+  return data
+
+}
+
+export async function deleteSupplier(supplierId) {
+  const {data} = await API.delete(`/suppliers/${supplierId}`)
+  return data
+
+}

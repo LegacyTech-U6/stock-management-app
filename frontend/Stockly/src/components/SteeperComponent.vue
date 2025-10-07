@@ -140,7 +140,7 @@
                 :disabled="loading"
               >
                 <option value="">Select supplier</option>
-                <option v-for="s in suppliers" :key="s.id" :value="s.id">{{ s.name }}</option>
+                <option v-for="s in supplierStore.suppliers" :key="s.id" :value="s.id">{{ s.supplier_name }}</option>
               </select>
               <p v-if="errors.supplier" class="text-red-500 text-xs mt-1">{{ errors.supplier }}</p>
             </div>
@@ -272,13 +272,13 @@
                   <div class="flex justify-between py-2 border-b">
                     <dt class="text-gray-600">Category:</dt>
                     <dd class="font-medium">
-                      {{ categories.find((c) => c.id == form.category)?.name || '-' }}
+                      {{ supplierStore.suppliers?.find((s) => s.id == form.supplier)?.name || '-' }}
                     </dd>
                   </div>
                   <div class="flex justify-between py-2 border-b">
                     <dt class="text-gray-600">Supplier:</dt>
                     <dd class="font-medium">
-                      {{ suppliers.find((s) => s.id == form.supplier)?.name || '-' }}
+                      {{ supplierStore.suppliers.find((s) => s.id == form.supplier)?.name || '-' }}
                     </dd>
                   </div>
                 </dl>
@@ -347,16 +347,18 @@
               @click="step < 4 ? nextStep() : submit()"
               :disabled="loading"
               class="px-5 py-2.5 text-sm font-medium text-white rounded-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-              :class="
-                step < 4
-                  ? 'bg-black hover:bg-gray-800'
-                  : 'bg-green-600 hover:bg-green-700'
-              "
+              :class="step < 4 ? 'bg-black hover:bg-gray-800' : 'bg-green-600 hover:bg-green-700'"
             >
               <template v-if="step < 4">
                 <span v-if="!loading">Next</span>
                 <div v-else class="loader-small"></div>
-                <svg v-if="!loading" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg
+                  v-if="!loading"
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -386,12 +388,15 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { useProductStore } from '@/stores/product' // Adjust path to your store
+import { useCategoryStore } from '@/stores/CategoryStore'
+import { useSupplierStore } from '@/stores/SupplierStore'
 
 // Initialize store
 const productStore = useProductStore()
-
+const categoryStore = useCategoryStore()
+const supplierStore = useSupplierStore()
 // Use store's loading state
 const loading = computed(() => productStore.loading)
 
@@ -414,18 +419,12 @@ const form = reactive({
   imageUrl: '',
   description: '',
 })
+const categories = ref([])
 
-const categories = [
-  { id: '1', name: 'Electronics' },
-  { id: '2', name: 'Computers' },
-  { id: '3', name: 'Accessories' },
-]
-
-const suppliers = [
-  { id: '1', name: 'Gaming Tech Corp' },
-  { id: '2', name: 'Tech Solutions Ltd' },
-  { id: '3', name: 'Digital Supplies Inc' },
-]
+onMounted(async () => {
+  categories.value = await categoryStore.fetchCategory()
+  supplierStore.fetchSuppliers()
+})
 
 const generateBarcode = () => {
   if (!form.name) return
@@ -493,9 +492,11 @@ const submit = async () => {
     resetForm()
     alert('Product added successfully!')
     // Optionally navigate away: $router.push('/products')
-
   } catch (error) {
-    submitError.value = error?.response?.data?.message || error.message || 'An error occurred while adding the product.'
+    submitError.value =
+      error?.response?.data?.message ||
+      error.message ||
+      'An error occurred while adding the product.'
     console.error('Error adding product:', error)
   }
 }
@@ -545,7 +546,11 @@ textarea:focus {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>

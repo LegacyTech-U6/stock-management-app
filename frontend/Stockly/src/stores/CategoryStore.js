@@ -8,7 +8,7 @@ import {
 } from '../service/api'
 export const useCategoryStore = defineStore('Category', {
   state: () => ({
-    Category: [],
+    categories: [],
     loading: false,
     error: null,
     submitLoading: false,
@@ -25,18 +25,21 @@ export const useCategoryStore = defineStore('Category', {
         console.error("erreur lors de l'ajout de la category")
       }
     },
-    async fetchCategory() {
-      this.loading = true
-      this.error = null
-      try {
-        const category = await getCategory()
-        console.log(category)
-        this.error = null
-      } catch (error) {
-        this.error = error
-        console.error('erreur lors de la recuperation des categories')
-      }
-    },
+  async fetchCategory() {
+  this.loading = true
+  this.error = null
+  try {
+    const category = await getCategory()
+    console.log("category loged from store", category)
+    this.loading = false
+    return category // ✅ return the data
+  } catch (error) {
+    this.error = error
+    this.loading = false
+    console.error('Erreur lors de la récupération des catégories', error)
+    return [] // return empty array in case of error
+  }
+},
     async fetchOneCategory(id) {
       this.loading = true
       this.error = null
