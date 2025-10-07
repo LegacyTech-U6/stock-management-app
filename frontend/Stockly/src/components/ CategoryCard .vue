@@ -1,7 +1,7 @@
 <template>
 
   <div class="category-card">
-     <div class="category-header">
+     <div class="category-header" @click="$emit('view',category.id)">
           <div class="category-avatar">
             {{ category.name.charAt(0).toUpperCase() }}
           </div>
@@ -50,15 +50,16 @@
   </div>
 </template>
 
-<script setup>
+<script setup >
 defineProps({
   category: {
     type: Object,
     required: true
   }
 });
+defineEmits(['edit', 'delete', 'view']);
 
-defineEmits(['edit', 'delete']);
+
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);

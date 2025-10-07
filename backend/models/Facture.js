@@ -70,7 +70,7 @@ async function createInvoice(
       const productRows = await getOneProduct(item.id);
       if (productRows.length === 0) throw new Error("Produit introuvable");
       const newQuantity = productRows[0].quantity - item.quantity;
-      await updateProductQuantity(item.product_id, newQuantity);
+      await updateProductQuantity(item.id, newQuantity);
 
       // Créer la vente
       const totalPrice = item.selling_price * item.quantity;

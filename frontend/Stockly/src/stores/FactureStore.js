@@ -4,14 +4,18 @@ import { createInvoice,getAllInvoices,getInvoiceById } from "../service/api";
 export const useInvoiceStore = defineStore('invoice',{
   state:()=>({
     loading:false,
+     invoices: [],
   }),
   actions:{
     async fetchInvoice(){
       this.loading= true
       try {
-        this.invoice = await getAllInvoices()
+        const res = await getAllInvoices()
+         this.invoices = res;
+
         this.error = null
-        console.log(this.invoice)
+        console.log(this.invoices)
+        return res;
       } catch (err) {
         this.error = err
 

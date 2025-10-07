@@ -9,6 +9,7 @@ import {
 export const useCategoryStore = defineStore('Category', {
   state: () => ({
     categories: [],
+     category: null,
     loading: false,
     error: null,
     submitLoading: false,
@@ -46,8 +47,10 @@ export const useCategoryStore = defineStore('Category', {
       this.loading = true
       this.error = null
       try {
-        const category = await getOneCategory(id)
-        console.log(category)
+        const response = await getOneCategory(id)
+        console.log(response)
+        this.category = response
+        console.log("category loged from store", this.category)
         this.error = null
       } catch (error) {
         this.error = error

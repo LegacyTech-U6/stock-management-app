@@ -1,14 +1,28 @@
 <template>
   <div class="category-view">
     <!-- Header Section -->
-    <div class="page-header">
-      <div class="header-content">
-        <h1 class="page-title">Category Management</h1>
-        <p class="page-subtitle">Manage your product categories</p>
-      </div>
-      <div class="header-actions">
-        <button class="btn-secondary" @click="$router.back()">Back to Products</button>
-        <button class="btn-primary" @click="showAddCategory = true">+ Add Category</button>
+     <div class="bg-white border-b border-gray-200">
+      <div class=" mx-auto px-6 py-4">
+        <button
+          @click="goBack"
+          class="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-3 transition-colors text-sm"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          Back to Category
+        </button>
+
+        <div class="flex items-start justify-between">
+          <div>
+            <h1 class="text-2xl font-semibold text-gray-900 mb-1">
+              {{ Category?.name || 'Category Details' }}
+            </h1>
+            <div class="flex items-center gap-4 text-sm text-gray-500">
+              <span>{{ Category?.description }}</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -26,7 +40,7 @@
           </svg>
         </div>
         <div class="stat-content">
-          <div class="stat-label">Total Categories</div>
+          <div class="stat-label">Total Products</div>
           <div class="stat-value">{{ totalCategories }}</div>
         </div>
       </div>
@@ -60,7 +74,7 @@
           </svg>
         </div>
         <div class="stat-content">
-          <div class="stat-label">Total Products</div>
+          <div class="stat-label">Total Value</div>
           <div class="stat-value">{{ totalProducts }}</div>
         </div>
       </div>
@@ -105,14 +119,7 @@
 
     <!-- Categories Grid -->
     <div class="categories-grid">
-      <CategoryCard
-        v-for="category in filteredCategories"
-        :key="category.id"
-        :category="category"
-        @edit="handleEditCategory"
-        @delete="handleDeleteCategory"
-        @view="handleViewCategory"
-      />
+     
     </div>
 
     <!-- Empty State -->
@@ -125,16 +132,8 @@
           d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
         ></path>
       </svg>
-      <p>No categories found matching your search.</p>
+      <p>No products found matching your search.</p>
     </div>
-
-    <!-- Add/Edit Category Modal -->
-    <AddCategoryModal
-      v-if="showAddCategory"
-      :category="editingCategory"
-      @save="handleSaveCategory"
-      @close="closeModal"
-    />
   </div>
 </template>
 
@@ -144,10 +143,13 @@ import CategoryCard from '../components/ CategoryCard .vue'
 import AddCategoryModal from '../components/AddCategoryModal .vue'
 import { useCategoryStore } from '@/stores/CategoryStore'
 import { toast } from 'vue-sonner'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
+import { storeToRefs } from 'pinia'
+
 // Mock data - replace with actual API calls
 const categoryStore = useCategoryStore()
 const router = useRouter()
+const route = useRoute()
 const searchQuery = ref('')
 const showAddCategory = ref(false)
 const editingCategory = ref(null)
@@ -182,71 +184,21 @@ const formatDate = (dateString) => {
   return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
 }
 
-const handleEditCategory = (category) => {
-  editingCategory.value = { ...category }
-  showAddCategory.value = true
-}
 
-const handleDeleteCategory = async (categoryId) => {
-  if (!confirm('Are you sure you want to delete this category?')) return
 
-  try {
-    // 🔹 Call the store action to delete from backend
-    await categoryStore.Delete(categoryId)
-
-    // 🔹 Refresh the categories list after deletion
-    await categoryStore.fetchCategory()
-
-    // 🔹 Optional: show success toast
-    // toast.success('Category deleted successfully!')
-  } catch (error) {
-    console.error('Error deleting category:', error)
-    // toast.error('Failed to delete category')
-  }
-}
-const handleSaveCategory = async (categoryData) => {
-  try {
-    if (categoryData.id) {
-      // 🔹 Mise à jour d'une catégorie existante
-      await categoryStore.Update(categoryData.id, {
-        name: categoryData.name,
-        description: categoryData.description,
-      })
-      toast.success('Catégorie mise à jour avec succès !')
-    } else {
-      // 🔹 Création d'une nouvelle catégorie
-      await categoryStore.Create({
-        name: categoryData.name,
-        description: categoryData.description,
-      })
-      toast.success('Nouvelle catégorie créée avec succès !')
-    }
-
-    // 🔄 Recharge la liste pour garder l'UI à jour
-    await categoryStore.fetchCategory()
-
-    // ✅ Ferme le modal après succès
-    closeModal()
-  } catch (error) {
-    console.error('Erreur lors de la sauvegarde de la catégorie :', error)
-    toast.error('Erreur lors de la sauvegarde de la catégorie !')
-  }
-}
 const closeModal = () => {
   showAddCategory.value = false
   editingCategory.value = null
 }
-
-const handleViewCategory = (categoryId) => {
-  router.push({
-    name: 'category-detail',
-    params: { id: categoryId },
-  })
-}
+const { category: Category, loading, error } = storeToRefs(categoryStore)
 
 onMounted(async () => {
-  // Fetch categories from API in real implementation
-  await categoryStore.fetchCategory()
+  const id = route.params.id
+  if (!id) {
+    console.error('❌ Aucun ID de catégorie trouvé dans la route.')
+    return
+  }
+  await categoryStore.fetchOneCategory(id)
 })
 </script>
 

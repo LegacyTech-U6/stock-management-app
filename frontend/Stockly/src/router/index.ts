@@ -76,6 +76,21 @@ const routes = [
         name:'categories',
           component:()=>import('@/views/CategoryView .vue')
 
+      },
+      {
+        path:'/outOfStock',
+        name:'/outOfStock',
+        component:()=>import('@/views/OutofStock.vue')
+      },
+      {
+        path:'/lowStock',
+        name:'lowStock',
+        component:()=>import('@/views/LowStock.vue')
+      },{
+        path:'/detail/:id',
+        name:'category-detail',
+        component:()=>import('@/views/CategoryDetail.vue'),
+        props: true,
       }
     ],
   },
