@@ -66,6 +66,17 @@ const routes = [
         component: () => import('../views/ClientManager.vue'),
         meta: { showNavbarAndFooter: false },
       },
+      {
+        path:'/invoices',
+        name:'invoices',
+        component:()=>import('@/views/InvoiceView.vue')
+      },
+      {
+        path:'/categories',
+        name:'categories',
+          component:()=>import('@/views/CategoryView .vue')
+
+      }
     ],
   },
 ]
