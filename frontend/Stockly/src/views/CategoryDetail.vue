@@ -41,7 +41,7 @@
         </div>
         <div class="stat-content">
           <div class="stat-label">Total Products</div>
-          <div class="stat-value">{{ totalCategories }}</div>
+          <div class="stat-value">{{ Category?.productCount }}</div>
         </div>
       </div>
 
@@ -75,7 +75,7 @@
         </div>
         <div class="stat-content">
           <div class="stat-label">Total Value</div>
-          <div class="stat-value">{{ totalProducts }}</div>
+          <div class="stat-value">{{ totalProductsValue }}</div>
         </div>
       </div>
 
@@ -119,11 +119,16 @@
 
     <!-- Categories Grid -->
     <div class="categories-grid">
-     
+       <ProductListItem
+          v-for="product in filteredProducts"
+          :key="product.id"
+          :product="product"
+          @view="handleViewProduct"
+        />
     </div>
 
     <!-- Empty State -->
-    <div v-if="filteredCategories.length === 0" class="empty-state">
+    <div v-if="filteredProducts.length === 0" class="empty-state">
       <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           stroke-linecap="round"
@@ -145,38 +150,43 @@ import { useCategoryStore } from '@/stores/CategoryStore'
 import { toast } from 'vue-sonner'
 import { useRouter, useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
+import ProductListItem from '@/components/Products/ProductListItem.vue'
 
 // Mock data - replace with actual API calls
 const categoryStore = useCategoryStore()
 const router = useRouter()
 const route = useRoute()
-const searchQuery = ref('')
+
 const showAddCategory = ref(false)
 const editingCategory = ref(null)
 
-// Computed properties
-const filteredCategories = computed(() => {
-  if (!searchQuery.value) return categoryStore.categories
+// Search query (assume you have a ref defined somewhere)
+const searchQuery = ref('')
+
+// Computed: filtered categories based on search query
+const filteredProducts = computed(() => {
+  if (!searchQuery.value) return products.value
 
   const query = searchQuery.value.toLowerCase()
-  return categoryStore.categories.filter(
-    (category) =>
-      category.name.toLowerCase().includes(query) ||
-      category.description.toLowerCase().includes(query),
+  return products.value.filter(
+    (product) =>
+      product.Prod_name.toLowerCase().includes(query) 
+     
   )
 })
 
-const totalCategories = computed(() => categoryStore.categories.length)
+// Computed: total products across all categories
 const totalProducts = computed(() =>
-  categoryStore.categories.reduce((sum, category) => sum + category.productCount, 0),
+  categoryStore.categories.reduce((sum, category) => sum + category.productCount, 0)
 )
-const categoriesWithProducts = computed(
-  () => categoryStore.categories.filter((category) => category.productCount > 0).length,
+
+
+const totalProductsValue = computed(() =>
+  products.value.reduce((sum, product) => {
+    const productTotal = product.selling_price * (product.quantity ?? 1)
+    return sum + productTotal
+  }, 0)
 )
-const averageProducts = computed(() => {
-  if (categoriesWithProducts.value === 0) return '0.0'
-  return (totalProducts.value / categoriesWithProducts.value).toFixed(1)
-})
 
 // Methods
 const formatDate = (dateString) => {
@@ -190,7 +200,8 @@ const closeModal = () => {
   showAddCategory.value = false
   editingCategory.value = null
 }
-const { category: Category, loading, error } = storeToRefs(categoryStore)
+// Destructure reactive references from the store
+const { category: Category, loading, error, products } = storeToRefs(categoryStore)
 
 onMounted(async () => {
   const id = route.params.id
@@ -199,6 +210,7 @@ onMounted(async () => {
     return
   }
   await categoryStore.fetchOneCategory(id)
+  await categoryStore.Product(id)
 })
 </script>
 

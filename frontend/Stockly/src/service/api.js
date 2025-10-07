@@ -133,6 +133,13 @@ export async function deleteCategory(CategoryId) {
   const { data } = await API.delete(`/category/${CategoryId}`)
   return data
 }
+//getting products by category
+
+export async function getProductsByCategory(categoryId) {
+  const {data} = await API.get(`products/category/${categoryId}`)
+  return data
+  
+}
 
 /////////////////////////////////////////////////
 //supplier  management

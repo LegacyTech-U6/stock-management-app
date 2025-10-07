@@ -1,13 +1,13 @@
 <template>
-  <div class="min-h-screen bg-gray-50/50">
-    <!-- Header -->
-    <div class="bg-white border-b">
-      <div class="px-6 py-5">
-        <div class="flex justify-between items-center">
-          <div>
+  <div class="min-h-screen bg-gray-50">
+    <!-- Mobile-First Header -->
+    <div class="bg-white border-b sticky top-0 z-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div class="flex-1">
             <button
               @click="$router.back()"
-              class="text-gray-500 hover:text-gray-700 text-sm mb-2 flex items-center gap-1"
+              class="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 mb-3 transition-colors"
             >
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -17,14 +17,14 @@
                   d="M15 19l-7-7 7-7"
                 />
               </svg>
-              Back to Products
+              <span class="font-medium">Back to Products</span>
             </button>
-            <h1 class="text-2xl font-bold">Add New Product</h1>
-            <p class="text-gray-500 text-sm mt-1">Create a new product in your inventory</p>
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Add New Product</h1>
+            <p class="text-sm text-gray-500 mt-1">Create and manage your inventory</p>
           </div>
           <button
             @click="$router.push('/product')"
-            class="px-4 py-2 text-sm border rounded-lg hover:bg-gray-50"
+            class="px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
             :disabled="loading"
           >
             Cancel
@@ -33,295 +33,457 @@
       </div>
     </div>
 
-    <!-- Content -->
-    <div class="mx-auto p-6">
-      <div class="bg-white rounded-xl shadow-sm">
-        <!-- Progress -->
-        <div class="p-8 pb-6">
-          <div class="relative">
-            <div class="absolute top-5 left-0 right-0 h-0.5 bg-gray-200">
+    <!-- Main Content Container -->
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <!-- Progress Stepper - Desktop -->
+      <div class="hidden md:block bg-white rounded-xl border border-gray-200 p-6 sm:p-8 mb-6">
+        <div class="relative">
+          <!-- Progress Line -->
+          <div class="absolute top-5 left-0 right-0 h-0.5 bg-gray-100">
+            <div
+              class="h-full bg-black transition-all duration-500 ease-out"
+              :style="{ width: `${((step - 1) / 3) * 100}%` }"
+            ></div>
+          </div>
+          
+          <!-- Step Indicators -->
+          <div class="relative flex justify-between">
+            <div
+              v-for="(s, i) in steps"
+              :key="i"
+              class="flex flex-col items-center cursor-pointer group"
+              @click="navigateToStep(i + 1)"
+            >
               <div
-                class="h-full bg-black transition-all duration-500"
-                :style="{ width: `${(step - 1) * 33.33}%` }"
-              ></div>
-            </div>
-            <div class="relative flex justify-between">
-              <div
-                v-for="(s, i) in steps"
-                :key="i"
-                class="flex flex-col items-center cursor-pointer"
-                @click="step = validateStep(step) && i + 1 <= step ? i + 1 : step"
+                class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 border-2"
+                :class="
+                  step > i + 1
+                    ? 'bg-black border-black text-white'
+                    : step === i + 1
+                      ? 'bg-black border-black text-white shadow-lg shadow-black/20'
+                      : 'bg-white border-gray-200 text-gray-400 group-hover:border-gray-300'
+                "
               >
-                <div
-                  class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-all"
-                  :class="
-                    step > i + 1
-                      ? 'bg-black text-white'
-                      : step === i + 1
-                        ? 'bg-black text-white'
-                        : 'bg-white border-2 border-gray-300'
-                  "
+                <svg
+                  v-if="step > i + 1"
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  <span v-if="step > i + 1">✓</span>
-                  <span v-else>{{ i + 1 }}</span>
-                </div>
-                <span
-                  class="mt-2 text-xs font-medium"
-                  :class="step >= i + 1 ? 'text-black' : 'text-gray-400'"
-                >
-                  {{ s }}
-                </span>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="3"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                <span v-else>{{ i + 1 }}</span>
               </div>
+              <span
+                class="mt-3 text-xs sm:text-sm font-medium transition-colors"
+                :class="step >= i + 1 ? 'text-gray-900' : 'text-gray-400'"
+              >
+                {{ s }}
+              </span>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Form Steps -->
-        <div class="px-8 pb-8">
-          <!-- Step 1 -->
+      <!-- Mobile Progress -->
+      <div class="md:hidden bg-white rounded-xl border border-gray-200 p-4 mb-6">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-sm font-semibold text-gray-900">Step {{ step }} of 4</span>
+          <span class="text-sm text-gray-500">{{ steps[step - 1] }}</span>
+        </div>
+        <div class="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+          <div
+            class="h-full bg-black transition-all duration-500"
+            :style="{ width: `${(step / 4) * 100}%` }"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Form Card -->
+      <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div class="p-6 sm:p-8">
+          <!-- Step 1: Basic Information -->
           <div v-show="step === 1" class="space-y-6">
             <div>
-              <label class="block text-sm font-medium mb-2">Product Name *</label>
+              <h2 class="text-lg font-semibold text-gray-900 mb-6">Basic Information</h2>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-900 mb-2">
+                Product Name <span class="text-red-500">*</span>
+              </label>
               <input
                 v-model="form.name"
-                class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black focus:border-black"
-                :class="{ 'border-red-500': errors.name }"
+                class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black transition-shadow"
+                :class="{ 'border-red-500 focus:ring-red-500': errors.name }"
                 placeholder="Enter product name"
                 :disabled="loading"
               />
-              <p v-if="errors.name" class="text-red-500 text-xs mt-1">{{ errors.name }}</p>
+              <p v-if="errors.name" class="text-red-600 text-xs mt-1.5">{{ errors.name }}</p>
             </div>
 
-            <div class="grid grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
-                <label class="block text-sm font-medium mb-2">Barcode *</label>
+                <label class="block text-sm font-medium text-gray-900 mb-2">
+                  Barcode <span class="text-red-500">*</span>
+                </label>
                 <div class="flex gap-2">
                   <input
                     v-model="form.barcode"
-                    class="flex-1 px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black"
-                    :class="{ 'border-red-500': errors.barcode }"
+                    class="flex-1 px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black"
+                    :class="{ 'border-red-500 focus:ring-red-500': errors.barcode }"
                     placeholder="Auto-generated"
                     :disabled="loading"
                   />
                   <button
                     @click="generateBarcode"
-                    class="px-4 py-2.5 bg-gray-100 rounded-lg hover:bg-gray-200"
+                    class="px-4 py-2.5 text-sm font-medium bg-gray-50 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors whitespace-nowrap"
                     :disabled="loading || !form.name"
                   >
                     Generate
                   </button>
                 </div>
-                <p v-if="errors.barcode" class="text-red-500 text-xs mt-1">{{ errors.barcode }}</p>
+                <p v-if="errors.barcode" class="text-red-600 text-xs mt-1.5">{{ errors.barcode }}</p>
               </div>
 
               <div>
-                <label class="block text-sm font-medium mb-2">Category *</label>
+                <label class="block text-sm font-medium text-gray-900 mb-2">
+                  Category <span class="text-red-500">*</span>
+                </label>
                 <select
                   v-model="form.category"
-                  class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black"
-                  :class="{ 'border-red-500': errors.category }"
+                  class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black bg-white"
+                  :class="{ 'border-red-500 focus:ring-red-500': errors.category }"
                   :disabled="loading"
                 >
                   <option value="">Select category</option>
                   <option v-for="c in categories" :key="c.id" :value="c.id">{{ c.name }}</option>
                 </select>
-                <p v-if="errors.category" class="text-red-500 text-xs mt-1">
-                  {{ errors.category }}
-                </p>
+                <p v-if="errors.category" class="text-red-600 text-xs mt-1.5">{{ errors.category }}</p>
               </div>
             </div>
 
             <div>
-              <label class="block text-sm font-medium mb-2">Supplier *</label>
+              <label class="block text-sm font-medium text-gray-900 mb-2">
+                Supplier <span class="text-red-500">*</span>
+              </label>
               <select
                 v-model="form.supplier"
-                class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black"
-                :class="{ 'border-red-500': errors.supplier }"
+                class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black bg-white"
+                :class="{ 'border-red-500 focus:ring-red-500': errors.supplier }"
                 :disabled="loading"
               >
                 <option value="">Select supplier</option>
-                <option v-for="s in supplierStore.suppliers" :key="s.id" :value="s.id">{{ s.supplier_name }}</option>
+                <option v-for="s in supplierStore.suppliers" :key="s.id" :value="s.id">
+                  {{ s.supplier_name }}
+                </option>
               </select>
-              <p v-if="errors.supplier" class="text-red-500 text-xs mt-1">{{ errors.supplier }}</p>
+              <p v-if="errors.supplier" class="text-red-600 text-xs mt-1.5">{{ errors.supplier }}</p>
             </div>
           </div>
 
-          <!-- Step 2 -->
-          <div v-show="step === 2" class="grid grid-cols-3 gap-6">
+          <!-- Step 2: Pricing & Stock -->
+          <div v-show="step === 2" class="space-y-6">
             <div>
-              <label class="block text-sm font-medium mb-2">Cost Price *</label>
-              <div class="relative">
-                <span class="absolute left-4 top-2.5 text-gray-500">$</span>
+              <h2 class="text-lg font-semibold text-gray-900 mb-6">Pricing & Inventory</h2>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-900 mb-2">
+                  Cost Price <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                  <span class="absolute left-4 top-2.5 text-gray-500 text-sm">$</span>
+                  <input
+                    v-model.number="form.costPrice"
+                    type="number"
+                    step="0.01"
+                    class="w-full pl-8 pr-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black"
+                    :class="{ 'border-red-500 focus:ring-red-500': errors.costPrice }"
+                    placeholder="0.00"
+                    :disabled="loading"
+                  />
+                </div>
+                <p v-if="errors.costPrice" class="text-red-600 text-xs mt-1.5">{{ errors.costPrice }}</p>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-900 mb-2">
+                  Selling Price <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                  <span class="absolute left-4 top-2.5 text-gray-500 text-sm">$</span>
+                  <input
+                    v-model.number="form.sellingPrice"
+                    type="number"
+                    step="0.01"
+                    class="w-full pl-8 pr-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black"
+                    :class="{ 'border-red-500 focus:ring-red-500': errors.sellingPrice }"
+                    placeholder="0.00"
+                    :disabled="loading"
+                  />
+                </div>
+                <p v-if="errors.sellingPrice" class="text-red-600 text-xs mt-1.5">
+                  {{ errors.sellingPrice }}
+                </p>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-900 mb-2">Initial Quantity</label>
                 <input
-                  v-model.number="form.costPrice"
+                  v-model.number="form.quantity"
                   type="number"
-                  step="0.01"
-                  class="w-full pl-8 pr-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black"
-                  :class="{ 'border-red-500': errors.costPrice }"
-                  placeholder="0.00"
+                  class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black"
+                  placeholder="0"
                   :disabled="loading"
                 />
               </div>
-              <p v-if="errors.costPrice" class="text-red-500 text-xs mt-1">
-                {{ errors.costPrice }}
-              </p>
-            </div>
 
-            <div>
-              <label class="block text-sm font-medium mb-2">Selling Price *</label>
-              <div class="relative">
-                <span class="absolute left-4 top-2.5 text-gray-500">$</span>
+              <div>
+                <label class="block text-sm font-medium text-gray-900 mb-2">Min Stock Level</label>
                 <input
-                  v-model.number="form.sellingPrice"
+                  v-model.number="form.minStock"
                   type="number"
-                  step="0.01"
-                  class="w-full pl-8 pr-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black"
-                  :class="{ 'border-red-500': errors.sellingPrice }"
-                  placeholder="0.00"
+                  class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black"
+                  placeholder="0"
                   :disabled="loading"
                 />
               </div>
-              <p v-if="errors.sellingPrice" class="text-red-500 text-xs mt-1">
-                {{ errors.sellingPrice }}
-              </p>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-900 mb-2">Max Stock Level</label>
+                <input
+                  v-model.number="form.maxStock"
+                  type="number"
+                  class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black"
+                  placeholder="0"
+                  :disabled="loading"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-900 mb-2">Date of Arrival</label>
+                <input
+                  v-model="form.arrivalDate"
+                  type="date"
+                  class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black"
+                  :disabled="loading"
+                />
+              </div>
             </div>
 
-            <div>
-              <label class="block text-sm font-medium mb-2">Initial Quantity</label>
-              <input
-                v-model.number="form.quantity"
-                type="number"
-                class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black"
-                placeholder="0"
-                :disabled="loading"
-              />
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium mb-2">Min Stock Level</label>
-              <input
-                v-model.number="form.minStock"
-                type="number"
-                class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black"
-                placeholder="0"
-                :disabled="loading"
-              />
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium mb-2">Max Stock Level</label>
-              <input
-                v-model.number="form.maxStock"
-                type="number"
-                class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black"
-                placeholder="0"
-                :disabled="loading"
-              />
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium mb-2">Date of Arrival</label>
-              <input
-                v-model="form.arrivalDate"
-                type="date"
-                class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black"
-                :disabled="loading"
-              />
+            <!-- Profit Margin Display -->
+            <div
+              v-if="form.costPrice > 0 && form.sellingPrice > 0"
+              class="bg-blue-50 border border-blue-100 rounded-lg p-4"
+            >
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-medium text-gray-900">Profit Margin</p>
+                  <p class="text-xs text-gray-500 mt-0.5">Based on current pricing</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-lg font-bold text-blue-600">
+                    ${{ (form.sellingPrice - form.costPrice).toFixed(2) }}
+                  </p>
+                  <p class="text-xs text-gray-600">
+                    {{ ((((form.sellingPrice - form.costPrice) / form.costPrice) * 100) || 0).toFixed(1) }}% margin
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- Step 3 -->
+          <!-- Step 3: Additional Details -->
           <div v-show="step === 3" class="space-y-6">
             <div>
-              <label class="block text-sm font-medium mb-2">Product Image URL</label>
+              <h2 class="text-lg font-semibold text-gray-900 mb-6">Additional Details</h2>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-900 mb-2">Product Image URL</label>
               <input
                 v-model="form.imageUrl"
                 type="url"
-                class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black"
+                class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black"
                 placeholder="https://example.com/image.jpg"
                 :disabled="loading"
               />
+              <p class="text-xs text-gray-500 mt-1.5">Optional: Add a URL to your product image</p>
             </div>
 
             <div>
-              <label class="block text-sm font-medium mb-2">Description</label>
+              <label class="block text-sm font-medium text-gray-900 mb-2">Description</label>
               <textarea
                 v-model="form.description"
-                rows="4"
-                class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-black resize-none"
-                placeholder="Product description..."
+                rows="5"
+                class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black resize-none"
+                placeholder="Describe your product, including key features, specifications, or other relevant details..."
                 :disabled="loading"
               ></textarea>
+              <p class="text-xs text-gray-500 mt-1.5">
+                {{ form.description.length }} characters
+              </p>
             </div>
           </div>
 
-          <!-- Step 4 -->
-          <div v-show="step === 4" class="bg-gray-50 rounded-xl p-6">
-            <div class="grid grid-cols-2 gap-8">
-              <div>
-                <h3 class="font-semibold mb-4">Basic Information</h3>
-                <dl class="space-y-3 text-sm">
-                  <div class="flex justify-between py-2 border-b">
-                    <dt class="text-gray-600">Product Name:</dt>
-                    <dd class="font-medium">{{ form.name || '-' }}</dd>
-                  </div>
-                  <div class="flex justify-between py-2 border-b">
-                    <dt class="text-gray-600">Barcode:</dt>
-                    <dd class="font-medium">{{ form.barcode || '-' }}</dd>
-                  </div>
-                  <div class="flex justify-between py-2 border-b">
-                    <dt class="text-gray-600">Category:</dt>
-                    <dd class="font-medium">
-                      {{ supplierStore.suppliers?.find((s) => s.id == form.supplier)?.name || '-' }}
-                    </dd>
-                  </div>
-                  <div class="flex justify-between py-2 border-b">
-                    <dt class="text-gray-600">Supplier:</dt>
-                    <dd class="font-medium">
-                      {{ supplierStore.suppliers.find((s) => s.id == form.supplier)?.name || '-' }}
-                    </dd>
-                  </div>
-                </dl>
-              </div>
-
-              <div>
-                <h3 class="font-semibold mb-4">Pricing & Stock</h3>
-                <dl class="space-y-3 text-sm">
-                  <div class="flex justify-between py-2 border-b">
-                    <dt class="text-gray-600">Cost Price:</dt>
-                    <dd class="font-medium">${{ form.costPrice || '0.00' }}</dd>
-                  </div>
-                  <div class="flex justify-between py-2 border-b">
-                    <dt class="text-gray-600">Selling Price:</dt>
-                    <dd class="font-medium text-green-600">${{ form.sellingPrice || '0.00' }}</dd>
-                  </div>
-                  <div class="flex justify-between py-2 border-b">
-                    <dt class="text-gray-600">Quantity:</dt>
-                    <dd class="font-medium">{{ form.quantity || 0 }} units</dd>
-                  </div>
-                  <div class="flex justify-between py-2 border-b">
-                    <dt class="text-gray-600">Stock Range:</dt>
-                    <dd class="font-medium">{{ form.minStock || 0 }} - {{ form.maxStock || 0 }}</dd>
-                  </div>
-                </dl>
-              </div>
+          <!-- Step 4: Review -->
+          <div v-show="step === 4" class="space-y-6">
+            <div>
+              <h2 class="text-lg font-semibold text-gray-900 mb-2">Review Your Product</h2>
+              <p class="text-sm text-gray-500">Please verify all information before submitting</p>
             </div>
 
-            <div v-if="form.description" class="mt-6 pt-6 border-t">
-              <h3 class="font-semibold mb-2">Description</h3>
-              <p class="text-sm text-gray-700">{{ form.description }}</p>
+            <div class="bg-gray-50 rounded-xl p-6 space-y-6">
+              <!-- Basic Info Section -->
+              <div>
+                <h3 class="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  Basic Information
+                </h3>
+                <dl class="space-y-3">
+                  <div class="flex justify-between py-2.5 border-b border-gray-200">
+                    <dt class="text-sm text-gray-600">Product Name</dt>
+                    <dd class="text-sm font-medium text-gray-900">{{ form.name || '-' }}</dd>
+                  </div>
+                  <div class="flex justify-between py-2.5 border-b border-gray-200">
+                    <dt class="text-sm text-gray-600">Barcode</dt>
+                    <dd class="text-sm font-mono font-medium text-gray-900">{{ form.barcode || '-' }}</dd>
+                  </div>
+                  <div class="flex justify-between py-2.5 border-b border-gray-200">
+                    <dt class="text-sm text-gray-600">Category</dt>
+                    <dd class="text-sm font-medium text-gray-900">
+                      {{ categories.find((c) => c.id == form.category)?.name || '-' }}
+                    </dd>
+                  </div>
+                  <div class="flex justify-between py-2.5 border-b border-gray-200">
+                    <dt class="text-sm text-gray-600">Supplier</dt>
+                    <dd class="text-sm font-medium text-gray-900">
+                      {{ supplierStore.suppliers.find((s) => s.id == form.supplier)?.supplier_name || '-' }}
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+
+              <!-- Pricing & Stock Section -->
+              <div>
+                <h3 class="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  Pricing & Inventory
+                </h3>
+                <dl class="space-y-3">
+                  <div class="flex justify-between py-2.5 border-b border-gray-200">
+                    <dt class="text-sm text-gray-600">Cost Price</dt>
+                    <dd class="text-sm font-semibold text-gray-900">${{ form.costPrice.toFixed(2) || '0.00' }}</dd>
+                  </div>
+                  <div class="flex justify-between py-2.5 border-b border-gray-200">
+                    <dt class="text-sm text-gray-600">Selling Price</dt>
+                    <dd class="text-sm font-semibold text-green-600">
+                      ${{ form.sellingPrice.toFixed(2) || '0.00' }}
+                    </dd>
+                  </div>
+                  <div class="flex justify-between py-2.5 border-b border-gray-200">
+                    <dt class="text-sm text-gray-600">Profit Margin</dt>
+                    <dd class="text-sm font-semibold text-blue-600">
+                      ${{ (form.sellingPrice - form.costPrice).toFixed(2) }}
+                      <span class="text-xs text-gray-500 ml-1">
+                        ({{ ((((form.sellingPrice - form.costPrice) / form.costPrice) * 100) || 0).toFixed(1) }}%)
+                      </span>
+                    </dd>
+                  </div>
+                  <div class="flex justify-between py-2.5 border-b border-gray-200">
+                    <dt class="text-sm text-gray-600">Initial Quantity</dt>
+                    <dd class="text-sm font-medium text-gray-900">{{ form.quantity || 0 }} units</dd>
+                  </div>
+                  <div class="flex justify-between py-2.5 border-b border-gray-200">
+                    <dt class="text-sm text-gray-600">Stock Range</dt>
+                    <dd class="text-sm font-medium text-gray-900">
+                      {{ form.minStock || 0 }} - {{ form.maxStock || 0 }} units
+                    </dd>
+                  </div>
+                  <div class="flex justify-between py-2.5">
+                    <dt class="text-sm text-gray-600">Arrival Date</dt>
+                    <dd class="text-sm font-medium text-gray-900">{{ form.arrivalDate || '-' }}</dd>
+                  </div>
+                </dl>
+              </div>
+
+              <!-- Description Section -->
+              <div v-if="form.description">
+                <h3 class="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M4 6h16M4 12h16M4 18h7"
+                    />
+                  </svg>
+                  Description
+                </h3>
+                <p class="text-sm text-gray-700 leading-relaxed">{{ form.description }}</p>
+              </div>
+
+              <!-- Image Section -->
+              <div v-if="form.imageUrl">
+                <h3 class="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
+                  </svg>
+                  Product Image
+                </h3>
+                <p class="text-xs text-gray-500 break-all">{{ form.imageUrl }}</p>
+              </div>
             </div>
           </div>
 
           <!-- Error Message -->
-          <p v-if="submitError" class="text-red-600 mb-4">{{ submitError }}</p>
+          <div v-if="submitError" class="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <div class="flex gap-3">
+              <svg class="w-5 h-5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <p class="text-sm text-red-800">{{ submitError }}</p>
+            </div>
+          </div>
 
-          <!-- Navigation -->
-          <div class="flex justify-between items-center mt-8 pt-8 border-t">
+          <!-- Navigation Buttons -->
+          <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mt-8 pt-8 border-t border-gray-200">
             <button
               @click="step--"
               :disabled="step === 1 || loading"
-              class="px-5 py-2.5 text-sm font-medium border rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              class="w-full sm:w-auto order-2 sm:order-1 px-6 py-2.5 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
             >
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -334,31 +496,20 @@
               Previous
             </button>
 
-            <div class="flex items-center gap-3">
-              <!-- Loader -->
-              <div v-if="loading" class="flex items-center gap-2 text-sm text-gray-500">
-                <div class="loader"></div>
-                Adding Product...
-              </div>
-              <span v-else class="text-sm text-gray-500">Step {{ step }} of 4</span>
+            <div class="order-1 sm:order-2 text-center">
+              <span class="text-sm text-gray-500 font-medium">Step {{ step }} of 4</span>
             </div>
 
             <button
               @click="step < 4 ? nextStep() : submit()"
               :disabled="loading"
-              class="px-5 py-2.5 text-sm font-medium text-white rounded-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              class="w-full sm:w-auto order-3 px-6 py-2.5 text-sm font-medium text-white rounded-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               :class="step < 4 ? 'bg-black hover:bg-gray-800' : 'bg-green-600 hover:bg-green-700'"
             >
-              <template v-if="step < 4">
-                <span v-if="!loading">Next</span>
-                <div v-else class="loader-small"></div>
-                <svg
-                  v-if="!loading"
-                  class="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+              <div v-if="loading" class="loader-small"></div>
+              <template v-else>
+                <span>{{ step < 4 ? 'Next' : 'Add Product' }}</span>
+                <svg v-if="step < 4" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -366,9 +517,6 @@
                     d="M9 5l7 7-7 7"
                   />
                 </svg>
-              </template>
-              <template v-else>
-                <div v-if="loading" class="loader-small"></div>
                 <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     stroke-linecap="round"
@@ -377,7 +525,6 @@
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span>{{ loading ? 'Adding...' : 'Add Product' }}</span>
               </template>
             </button>
           </div>
@@ -389,7 +536,7 @@
 
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
-import { useProductStore } from '@/stores/product' // Adjust path to your store
+import { useProductStore } from '@/stores/productStore' // Adjust path to your store
 import { useCategoryStore } from '@/stores/CategoryStore'
 import { useSupplierStore } from '@/stores/SupplierStore'
 

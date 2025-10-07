@@ -5,6 +5,7 @@ import {
   createCategory,
   updateCategory,
   deleteCategory,
+  getProductsByCategory
 } from '../service/api'
 export const useCategoryStore = defineStore('Category', {
   state: () => ({
@@ -14,6 +15,7 @@ export const useCategoryStore = defineStore('Category', {
     error: null,
     submitLoading: false,
     submitError: null,
+    products:[]
   }),
   actions: {
     async Create(categoryData) {
@@ -83,5 +85,22 @@ export const useCategoryStore = defineStore('Category', {
         this.submitLoading = false
       }
     },
+    async Product(CategoryId){
+      this.loading = true
+      this.error = null
+      try {
+        const response = await getProductsByCategory(CategoryId)
+        console.log(response)
+        this.products = response
+        console.log("products loged from store", this.products)
+        this.error = null
+      } catch (error) {
+        this.error = error
+        console.error('erreur lors de la recuperation de la category')
+      } finally {
+        this.loading = false
+      }
+    }
+
   },
 })

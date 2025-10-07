@@ -1,8 +1,8 @@
 // models/categoryModel.js
-//In this file we have the functions and database queries to manipulate the category table i.e 
+//In this file we have the functions and database queries to manipulate the category table i.e
 
-const {pool} = require('../config/db');
-const Category = require('../controller/Category');
+const { pool } = require("../config/db");
+const Category = require("../controller/Category");
 
 //function that return all the categories off the tables
 async function getAllCategories() {
@@ -22,10 +22,22 @@ async function getAllCategories() {
 
 //function that gets a specific category from the table
 async function getCategoryById(id) {
-  const [rows] = await pool.query(`SELECT * FROM Category WHERE id = ?`, [id]);
+  const [rows] = await pool.query(
+    `SELECT 
+  c.id, 
+  c.name, 
+  c.description,
+  COUNT(p.id) AS productCount
+FROM Category c
+LEFT JOIN Product p ON p.category_id = c.id
+WHERE c.id = ?
+GROUP BY c.id, c.name, c.description
+ORDER BY c.name;
+`,
+    [id]
+  );
   return rows[0] || null;
 }
-
 
 //function that create a category
 async function createCategory(name, description = null) {
