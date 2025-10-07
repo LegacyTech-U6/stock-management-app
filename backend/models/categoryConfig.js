@@ -6,9 +6,20 @@ const Category = require('../controller/Category');
 
 //function that return all the categories off the tables
 async function getAllCategories() {
-  const [rows] = await pool.query(`SELECT * FROM Category ORDER BY name`);
+  const [rows] = await pool.query(`
+    SELECT 
+      c.id, 
+      c.name, 
+      c.description,
+      COUNT(p.id) AS productCount
+    FROM Category c
+    LEFT JOIN Product p ON p.category_id = c.id
+    GROUP BY c.id
+    ORDER BY c.name
+  `);
   return rows;
 }
+
 //function that gets a specific category from the table
 async function getCategoryById(id) {
   const [rows] = await pool.query(`SELECT * FROM Category WHERE id = ?`, [id]);
@@ -39,6 +50,7 @@ async function deleteCategory(id) {
   const [result] = await pool.query(`DELETE FROM Category WHERE id = ?`, [id]);
   return result.affectedRows;
 }
+
 //Here we export the functions to be able to import it from others files i.e the controller document in Category.js
 
 module.exports = {

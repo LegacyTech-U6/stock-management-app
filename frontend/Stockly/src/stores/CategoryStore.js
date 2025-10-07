@@ -31,6 +31,8 @@ export const useCategoryStore = defineStore('Category', {
   try {
     const category = await getCategory()
     console.log("category loged from store", category)
+    this.categories = category
+    return category
     this.loading = false
     return category // ✅ return the data
   } catch (error) {

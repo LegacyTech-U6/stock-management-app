@@ -4,9 +4,12 @@
     <div class="page-header">
       <div class="header-content">
         <h1 class="page-title">Category Management</h1>
-        <p class="page-subtitle">Organize your products with categories</p>
+        <p class="page-subtitle">Manage your product categories</p>
       </div>
       <div class="header-actions">
+        <button class="btn-secondary" @click="$router.back()">
+          Back to Products
+        </button>
         <button class="btn-primary" @click="showAddCategory = true">
           + Add Category
         </button>
@@ -16,30 +19,64 @@
     <!-- Stats Cards -->
     <div class="stats-grid">
       <div class="stat-card">
-        <div class="stat-value">{{ totalCategories }}</div>
-        <div class="stat-label">Total Categories</div>
+        <div class="stat-icon-wrapper blue">
+          <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <div class="stat-label">Total Categories</div>
+          <div class="stat-value">{{ totalCategories }}</div>
+        </div>
       </div>
+
       <div class="stat-card">
-        <div class="stat-value">{{ totalProducts }}</div>
-        <div class="stat-label">Total Products</div>
+        <div class="stat-icon-wrapper green">
+          <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <div class="stat-label">Active Categories</div>
+          <div class="stat-value">{{ categoriesWithProducts }}</div>
+        </div>
       </div>
+
       <div class="stat-card">
-        <div class="stat-value">{{ categoriesWithProducts }}</div>
-        <div class="stat-label">Categories with Products</div>
+        <div class="stat-icon-wrapper purple">
+          <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <div class="stat-label">Total Products</div>
+          <div class="stat-value">{{ totalProducts }}</div>
+        </div>
       </div>
+
       <div class="stat-card">
-        <div class="stat-value">{{ emptyCategories }}</div>
-        <div class="stat-label">Empty Categories</div>
+        <div class="stat-icon-wrapper orange">
+          <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <div class="stat-label">Avg Products</div>
+          <div class="stat-value">{{ averageProducts }}</div>
+        </div>
       </div>
     </div>
 
-    <!-- Search and Controls -->
-    <div class="controls-section">
+    <!-- Search Section -->
+    <div class="search-section">
       <div class="search-box">
+        <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
         <input
           v-model="searchQuery"
           type="text"
-          placeholder="Search categories..."
+          placeholder="Search categories by name or description..."
           class="search-input"
         />
       </div>
@@ -56,8 +93,12 @@
       />
     </div>
 
+
     <!-- Empty State -->
     <div v-if="filteredCategories.length === 0" class="empty-state">
+      <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
       <p>No categories found matching your search.</p>
     </div>
 
@@ -75,38 +116,11 @@
 import { ref, computed, onMounted } from 'vue';
 import CategoryCard from '../components/ CategoryCard .vue'
 import AddCategoryModal from '../components/AddCategoryModal .vue';
-
+import { useCategoryStore } from '@/stores/CategoryStore'
+import { toast } from 'vue-sonner'
 // Mock data - replace with actual API calls
-const categories = ref([
-  {
-    id: 1,
-    name: 'Audio Equipment',
-    description: 'Headphones, speakers, microphones and audio accessories',
-    productCount: 2,
-    createdDate: '2024-01-01'
-  },
-  {
-    id: 2,
-    name: 'Mobile Devices',
-    description: 'Smartphones, tablets and mobile accessories',
-    productCount: 3,
-    createdDate: '2024-01-01'
-  },
-  {
-    id: 3,
-    name: 'Computers',
-    description: 'Laptops, desktops and computer components',
-    productCount: 1,
-    createdDate: '2024-01-01'
-  },
-  {
-    id: 4,
-    name: 'Peripherals',
-    description: 'Keyboards, mice, monitors and other computer peripherals',
-    productCount: 2,
-    createdDate: '2024-01-01'
-  }
-]);
+const categoryStore = useCategoryStore()
+
 
 const searchQuery = ref('');
 const showAddCategory = ref(false);
@@ -114,74 +128,104 @@ const editingCategory = ref(null);
 
 // Computed properties
 const filteredCategories = computed(() => {
-  if (!searchQuery.value) return categories.value;
+  if (!searchQuery.value) return categoryStore.categories;
 
   const query = searchQuery.value.toLowerCase();
-  return categories.value.filter(category =>
+  return categoryStore.categories.filter(category =>
     category.name.toLowerCase().includes(query) ||
     category.description.toLowerCase().includes(query)
   );
 });
 
-const totalCategories = computed(() => categories.value.length);
+const totalCategories = computed(() => categoryStore.categories.length);
 const totalProducts = computed(() =>
-  categories.value.reduce((sum, category) => sum + category.productCount, 0)
+  categoryStore.categories.reduce((sum, category) => sum + category.productCount, 0)
 );
 const categoriesWithProducts = computed(() =>
-  categories.value.filter(category => category.productCount > 0).length
+  categoryStore.categories.filter(category => category.productCount > 0).length
 );
-const emptyCategories = computed(() =>
-  categories.value.filter(category => category.productCount === 0).length
-);
+const averageProducts = computed(() => {
+  if (categoriesWithProducts.value === 0) return '0.0';
+  return (totalProducts.value / categoriesWithProducts.value).toFixed(1);
+});
 
 // Methods
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+};
+
 const handleEditCategory = (category) => {
   editingCategory.value = { ...category };
   showAddCategory.value = true;
 };
 
-const handleDeleteCategory = (categoryId) => {
-  if (confirm('Are you sure you want to delete this category?')) {
-    categories.value = categories.value.filter(cat => cat.id !== categoryId);
-  }
-};
+const handleDeleteCategory = async (categoryId) => {
+  if (!confirm('Are you sure you want to delete this category?')) return
 
-const handleSaveCategory = (categoryData) => {
-  if (categoryData.id) {
-    // Update existing category
-    const index = categories.value.findIndex(cat => cat.id === categoryData.id);
-    if (index !== -1) {
-      categories.value[index] = categoryData;
+  try {
+    // 🔹 Call the store action to delete from backend
+    await categoryStore.Delete(categoryId)
+
+    // 🔹 Refresh the categories list after deletion
+    await categoryStore.fetchCategory()
+
+    // 🔹 Optional: show success toast
+    // toast.success('Category deleted successfully!')
+  } catch (error) {
+    console.error('Error deleting category:', error)
+    // toast.error('Failed to delete category')
+  }
+}
+const handleSaveCategory = async (categoryData) => {
+  try {
+    if (categoryData.id) {
+      // 🔹 Mise à jour d'une catégorie existante
+      await categoryStore.Update(categoryData.id, {
+        name: categoryData.name,
+        description: categoryData.description,
+      })
+      toast.success('Catégorie mise à jour avec succès !')
+    } else {
+      // 🔹 Création d'une nouvelle catégorie
+      await categoryStore.Create({
+        name: categoryData.name,
+        description: categoryData.description,
+      })
+      toast.success('Nouvelle catégorie créée avec succès !')
     }
-  } else {
-    // Add new category
-    const newCategory = {
-      ...categoryData,
-      id: Math.max(...categories.value.map(cat => cat.id)) + 1,
-      createdDate: new Date().toISOString().split('T')[0]
-    };
-    categories.value.push(newCategory);
-  }
-  closeModal();
-};
 
+    // 🔄 Recharge la liste pour garder l'UI à jour
+    await categoryStore.fetchCategory()
+
+    // ✅ Ferme le modal après succès
+    closeModal()
+  } catch (error) {
+    console.error('Erreur lors de la sauvegarde de la catégorie :', error)
+    toast.error('Erreur lors de la sauvegarde de la catégorie !')
+  }
+}
 const closeModal = () => {
   showAddCategory.value = false;
   editingCategory.value = null;
 };
 
-onMounted(() => {
+onMounted(async () => {
   // Fetch categories from API in real implementation
+    await categoryStore.fetchCategory()
 });
 </script>
 
 <style scoped>
 .category-view {
   padding: 2rem;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
+  background-color: #f9fafb;
+  min-height: 100vh;
 }
 
+/* Header Styles */
 .page-header {
   display: flex;
   justify-content: space-between;
@@ -194,97 +238,376 @@ onMounted(() => {
 }
 
 .page-title {
-  font-size: 1.875rem;
+  font-size: 2rem;
   font-weight: 700;
-  color: #1f2937;
-  margin: 0 0 0.5rem 0;
+  color: #111827;
+  margin: 0 0 0.25rem 0;
+  letter-spacing: -0.025em;
 }
 
 .page-subtitle {
   color: #6b7280;
-  font-size: 1rem;
+  font-size: 0.9375rem;
   margin: 0;
+  font-weight: 400;
 }
 
 .header-actions {
+  display: flex;
+  gap: 0.75rem;
   flex-shrink: 0;
 }
 
-.btn-primary {
-  background: #2563eb;
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
+.btn-secondary {
+  background: white;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  padding: 0.625rem 1.25rem;
   border-radius: 6px;
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.btn-primary {
+  background: #000000;
+  color: white;
+  border: none;
+  padding: 0.625rem 1.25rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .btn-primary:hover {
-  background: #1d4ed8;
+  background: #1f2937;
 }
 
+/* Stats Grid */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
   margin-bottom: 2rem;
 }
 
 .stat-card {
   background: white;
   padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
   border: 1px solid #e5e7eb;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.2s ease;
 }
 
-.stat-value {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #1f2937;
-  margin-bottom: 0.5rem;
+.stat-card:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.stat-icon-wrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.stat-icon-wrapper.blue {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.stat-icon-wrapper.green {
+  background: #d1fae5;
+  color: #059669;
+}
+
+.stat-icon-wrapper.purple {
+  background: #e9d5ff;
+  color: #9333ea;
+}
+
+.stat-icon-wrapper.orange {
+  background: #fed7aa;
+  color: #ea580c;
+}
+
+.stat-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.stat-content {
+  flex: 1;
+  min-width: 0;
 }
 
 .stat-label {
   font-size: 0.875rem;
   color: #6b7280;
   font-weight: 500;
+  margin-bottom: 0.25rem;
 }
 
-.controls-section {
-  margin-bottom: 2rem;
+.stat-value {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: -0.025em;
+}
+
+/* Search Section */
+.search-section {
+  margin-bottom: 1.5rem;
+}
+
+.search-box {
+  position: relative;
+  max-width: 100%;
+}
+
+.search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  color: #9ca3af;
+  pointer-events: none;
 }
 
 .search-input {
   width: 100%;
-  max-width: 400px;
-  padding: 0.75rem 1rem;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 0.875rem;
-  transition: border-color 0.2s ease;
+  padding: 0.75rem 1rem 0.75rem 3rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  background: white;
+  transition: all 0.2s ease;
+  color: #111827;
+}
+
+.search-input::placeholder {
+  color: #9ca3af;
 }
 
 .search-input:focus {
   outline: none;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  border-color: #000000;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
 }
 
+/* Categories Grid */
 .categories-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
   gap: 1.5rem;
 }
 
+.category-card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  padding: 1.5rem;
+  transition: all 0.2s ease;
+}
+
+.category-card:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
+}
+
+.category-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.category-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #ef4444;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.category-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.category-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 0.25rem 0;
+  letter-spacing: -0.01em;
+}
+
+.category-company {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.category-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.action-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.action-btn:hover {
+  background: #f3f4f6;
+}
+
+.action-btn svg {
+  width: 18px;
+  height: 18px;
+  color: #6b7280;
+}
+
+.action-btn:hover svg {
+  color: #111827;
+}
+
+.category-details {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.detail-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  font-size: 0.875rem;
+  color: #4b5563;
+  line-height: 1.5;
+}
+
+.detail-icon {
+  width: 16px;
+  height: 16px;
+  color: #9ca3af;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.category-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.footer-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.footer-label {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.footer-value {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.category-meta {
+  font-size: 0.8125rem;
+  color: #9ca3af;
+  padding-top: 0.75rem;
+  border-top: 1px solid #f3f4f6;
+}
+
+/* Empty State */
 .empty-state {
   text-align: center;
-  padding: 3rem;
-  color: #6b7280;
-  font-style: italic;
+  padding: 4rem 2rem;
+  color: #9ca3af;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.empty-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1rem;
+  color: #d1d5db;
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .category-view {
+    padding: 1rem;
+  }
+
+  .page-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+
+  .btn-secondary,
+  .btn-primary {
+    flex: 1;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .categories-grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
