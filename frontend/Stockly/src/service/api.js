@@ -52,6 +52,11 @@ export async function createProduct(productData) {
   return data
 }
 
+export async function OutOfStock(params) {
+  const { data } = await API.get('/products/out-of-stock', { params })
+  return data
+}
+
 ///////////////////////////////////////
 // Invoice calls
 ///////////////////////////////////////

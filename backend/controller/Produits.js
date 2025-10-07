@@ -321,7 +321,7 @@ module.exports = {
             .json({ success: false, message: "Produit introuvable" });
         }
 
-        const supplier = await getOnesupplier(products[i].id);
+        const supplier = await getOnesupplier(products[i].supplier);
         if (!supplier) {
           return res
             .status(404)
