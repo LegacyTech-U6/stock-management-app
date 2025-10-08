@@ -57,21 +57,22 @@ async function updateProductQuantity(id, newQuantity) {
   return result; // contains affectedRows, etc.
 }
 async function createSale(productId, quantitySold, totalPrice) {
- 
-  const profits = await getOneProduct(productId)
+  const product = await getOneProduct(productId); // objet unique
 
-  let total_profit = 0
-  for (let profit of profits) {
-    total_profit = profit.selling_price - profit.cost_price
-    
-  }
-   const [result] = await pool.query(
-    `INSERT INTO Sales (product_id, quantity_sold, total_price , total_profit) VALUES (?, ?, ?, ?)`,
+  if (!product) throw new Error("Produit introuvable");
+
+  const total_profit = (product.selling_price - product.cost_price) * quantitySold;
+
+  const [result] = await pool.query(
+    `INSERT INTO Sales (product_id, quantity_sold, total_price, total_profit) VALUES (?, ?, ?, ?)`,
     [productId, quantitySold, totalPrice, total_profit]
   );
 
+  console.log(`✅ Sale created for product ${productId} | Profit: ${total_profit}`);
+
   return result;
 }
+
 async function getSales() {
   const [rows] = await pool.query(`SELECT * FROM Sales`);
   return rows;

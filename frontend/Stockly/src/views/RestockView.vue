@@ -3,7 +3,7 @@
   <div class="min-h-screen bg-gray-50">
     <!-- Header -->
     <div class="bg-white border-b border-gray-200">
-      <div class="max-w-7xl mx-auto px-6 py-6">
+      <div class="  px-6 py-6">
         <div class="flex items-center justify-between">
           <div>
             <h1 class="text-3xl font-semibold text-gray-900">Restock Management</h1>
@@ -22,7 +22,7 @@
     </div>
 
     <!-- Main Content -->
-    <div class="max-w-7xl mx-auto px-6 py-8">
+    <div class=" px-6 py-8">
       <!-- Stats Cards -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
         <div class="bg-white rounded-lg border border-gray-200 p-5">
@@ -261,7 +261,7 @@
 
               <div class="p-4 bg-orange-50 rounded-lg">
                 <p class="text-xs text-orange-600 mb-1">Total Cost</p>
-                <p class="text-2xl font-bold text-orange-600">${{ (quantity * unitCost).toFixed(2) }}</p>
+                <p class="text-2xl font-bold text-orange-600">${{ (quantity * product?.cost_price).toFixed(2) }}</p>
               </div>
             </div>
 
@@ -297,27 +297,27 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import {  useRoute } from 'vue-router'
 import { getOneProduct as fetchProductById } from '@/service/api'
 import { useProductStore } from '@/stores/productStore'
 
-const quantity = ref(8)
+const quantity = ref(1)
 const unitCost = ref(0)
 const supplier = ref('Peripheral Plus')
 const notes = ref('')
 const restockReason = ref('Out of Stock')
 const submitError = ref('')
 
-const router = useRouter()
+
 const route = useRoute()
 const productStore = useProductStore()
 const product = ref(null)
 
 let realqty = null
-
+const reStockId = route.params.reStockId;
 onMounted(async () => {
   const id = route.params.id
-  if (!id) return console.error("No product ID found in route")
+  if (!reStockId) return console.error("No product ID found in route")
 
   try {
     const response = await fetchProductById(id)

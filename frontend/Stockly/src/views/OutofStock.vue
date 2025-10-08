@@ -225,15 +225,19 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { OutOfStock } from '@/service/api'
-
+import { useRoute,useRouter } from 'vue-router'
 const finishedProducts = ref([]) // ✅ Start as an empty array
 const message = ref('')
 const orders = ref([])
-
+const router = useRouter()
 const searchQuery = ref('')
 const selectedCategory = ref('all')
 const sortBy = ref('daysEmpty')
-
+const highValueCount = ref(0);
+const categories = ref([]);
+const outOfStockProducts = ref([]);
+const totalLostRevenue = ref(0);
+const averageDaysEmpty = ref(0);
 onMounted(async () => {
   await fetchFinishedProducts()
 })
@@ -289,7 +293,13 @@ const formatNumber = (num) => {
   }).format(num)
 }
 
-const handleRestock = (product) => {
-  console.log('Restock:', product)
+const handleRestock = (finishedProduct) => {
+  if (!finishedProduct) return console.error("❌ No product loaded")
+
+  router.push({
+    name: 'restock',
+    params: { reStockId: finishedProduct.id }
+  })
+  console.log('Restock product:', finishedProduct.id)
 }
 </script>

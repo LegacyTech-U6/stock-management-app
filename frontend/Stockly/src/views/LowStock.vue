@@ -107,7 +107,7 @@
           v-for="product in filteredProducts"
           :key="product.id"
           :product="product"
-          @restock="openRestockModal"
+          @restock="handleRestock"
           :reorderCost="totalReorderCost"
         />
       </div>
@@ -131,6 +131,7 @@ import { ref, computed, onMounted } from "vue";
 import LowStockCard from "../components/LowStockCard.vue";
 import { LowStock } from "@/service/api";
 import RestockModal from "@/components/RestockModal.vue";
+import { useRouter, useRoute } from 'vue-router'
 const searchQuery = ref("");
 const stockLevelFilter = ref("all");
 const sortBy = ref("urgency");
@@ -141,6 +142,9 @@ const message = ref('')
 onMounted(async () => {
   await fetchLowStockProducts();
 });
+
+const router = useRouter()
+const route = useRoute()
 const selectedProduct = ref(null);
 async function fetchLowStockProducts() {
   try {
@@ -213,10 +217,15 @@ function openRestockModal(product) {
   selectedProduct.value = product;
   isModalOpen.value = true;
 }
-function handleRestock(product) {
-  console.log("Restock:", product);
-}
+const handleRestock = (lowStockProduct) => {
+  if (!lowStockProduct) return console.error("❌ No product loaded")
 
+  router.push({
+    name: 'restock',
+    params: { reStockId: lowStockProduct.id }
+  })
+  console.log('Restock product:', lowStockProduct.id)
+}
 function formatCurrency(amount) {
   return new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 2,

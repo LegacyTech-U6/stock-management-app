@@ -300,12 +300,17 @@ const stockDotClass = computed(() => {
   return 'bg-green-500'
 })
 
+
 const stockPercentage = computed(() => {
   const qty = quantityNum.value
   const max = 100
   return Math.min((qty / max) * 100, 100)
 })
-
+const stockPercentageColor = computed(() => {
+  if (stockPercentage.value < 20) return 'red';
+  if (stockPercentage.value < 50) return 'orange';
+  return 'green';
+});
 const stockLevelColor = computed(() => {
   const qty = quantityNum.value
   if (qty === 0) return 'bg-gradient-to-r from-red-500 to-red-600'
@@ -337,7 +342,7 @@ const handleRestock = () => {
 
   router.push({
     name: 'restock',
-    params: { id: product.value.id }
+    params: { reStockId: product.value.id }
   })
   console.log('Restock product:', product.value.id)
 }
