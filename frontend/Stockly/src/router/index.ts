@@ -61,6 +61,13 @@ const routes = [
         meta: { showNavbarAndFooter: false },
       },
       {
+        path:'/product/:id/restock',
+        name:'restock',
+        component:()=>import('@/views/RestockView.vue'),
+        props:true,
+        meta: { showNavbarAndFooter: false },
+      },
+      {
         path: '/clients',
         name: 'client',
         component: () => import('../views/ClientManager.vue'),
@@ -91,7 +98,7 @@ const routes = [
         name:'category-detail',
         component:()=>import('@/views/CategoryDetail.vue'),
         props: true,
-      }
+      },
     ],
   },
 ]

@@ -107,7 +107,7 @@
           v-for="product in filteredProducts"
           :key="product.id"
           :product="product"
-          @restock="handleRestock"
+          @restock="openRestockModal"
           :reorderCost="totalReorderCost"
         />
       </div>
@@ -118,22 +118,30 @@
       </div>
     </div>
   </div>
+  <RestockModal
+      :isOpen="isModalOpen"
+      :product="selectedProduct"
+      :suppliers="suppliers"
+      @close="isModalOpen = false"
+      @restock="handleRestock"
+    />
 </template>
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import LowStockCard from "../components/LowStockCard.vue";
 import { LowStock } from "@/service/api";
-
+import RestockModal from "@/components/RestockModal.vue";
 const searchQuery = ref("");
 const stockLevelFilter = ref("all");
 const sortBy = ref("urgency");
 const lowStockProducts = ref([]); // ✅ reactive list
 const error = ref(null);
+const isModalOpen = ref(false);
 const message = ref('')
 onMounted(async () => {
   await fetchLowStockProducts();
 });
-
+const selectedProduct = ref(null);
 async function fetchLowStockProducts() {
   try {
     const data = await LowStock();
@@ -148,6 +156,10 @@ async function fetchLowStockProducts() {
     lowStockProducts.value = [];
   }
 }
+const suppliers = ref([
+  { id: 1, name: "Supplier A" },
+  { id: 2, name: "Supplier B" },
+]);
 
 const totalUnitsNeeded = computed(() =>
   (lowStockProducts.value || []).reduce(
@@ -197,7 +209,10 @@ const filteredProducts = computed(() => {
 
   return result;
 });
-
+function openRestockModal(product) {
+  selectedProduct.value = product;
+  isModalOpen.value = true;
+}
 function handleRestock(product) {
   console.log("Restock:", product);
 }
