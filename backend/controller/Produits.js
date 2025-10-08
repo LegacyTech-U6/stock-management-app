@@ -42,13 +42,13 @@ module.exports = {
 
       // 1.  Get product
 
-      const products = await getOneProduct(productId);
-      const product = products[0];
+      const product = await getOneProduct(productId);
+      
 
       // 2. updating the quantity
 
       const newQuantity = product.quantity + quantityAdd;
-      await updateProduct(productId, newQuantity);
+      await updateProductQuantity(productId, newQuantity);
 
       //3.Return response
 

@@ -58,9 +58,13 @@ export async function OutOfStock() {
 }
 
 export async function LowStock() {
-  const {data} = await API.get('/products/low-stock')
+  const { data } = await API.get('/products/low-stock')
   return data
+}
 
+export async function addProductStock(productId, quantityAdd) {
+  const { data } = await API.post('/products/add', { productId, quantityAdd })
+  return data
 }
 
 ///////////////////////////////////////
@@ -147,9 +151,8 @@ export async function deleteCategory(CategoryId) {
 //getting products by category
 
 export async function getProductsByCategory(categoryId) {
-  const {data} = await API.get(`products/category/${categoryId}`)
+  const { data } = await API.get(`products/category/${categoryId}`)
   return data
-
 }
 
 /////////////////////////////////////////////////
@@ -158,9 +161,8 @@ export async function getProductsByCategory(categoryId) {
 
 // creation of supplies
 export async function createSupplier(supplierData) {
-  const {data} = await API.post(`/suppliers`,supplierData)
+  const { data } = await API.post(`/suppliers`, supplierData)
   return data
-
 }
 
 /// getting all suppliers
@@ -170,19 +172,16 @@ export async function getSuppliers() {
 }
 
 export async function getOneSupplier(supplierId) {
-  const {data} = await API.get(`/suppliers/${supplierId}`)
+  const { data } = await API.get(`/suppliers/${supplierId}`)
   return data
-
 }
 
-export async function updateSupplier(supplierId,supplierData) {
-  const {data} = await API.put(`/suppliers/${supplierId}`,supplierData)
+export async function updateSupplier(supplierId, supplierData) {
+  const { data } = await API.put(`/suppliers/${supplierId}`, supplierData)
   return data
-
 }
 
 export async function deleteSupplier(supplierId) {
-  const {data} = await API.delete(`/suppliers/${supplierId}`)
+  const { data } = await API.delete(`/suppliers/${supplierId}`)
   return data
-
 }

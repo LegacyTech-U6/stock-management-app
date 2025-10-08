@@ -37,6 +37,8 @@ const [rows] = await pool.query(`
     p.code_bar,
     p.date_of_arrival,
     p.Prod_image,
+    p.min_stock_level,
+    p.max_stock_level,
     c.name AS category_name,
     s.supplier_name
   FROM Product p

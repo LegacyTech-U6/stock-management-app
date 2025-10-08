@@ -14,7 +14,7 @@ router.get("/:id", ProductController.get2);
 router.get('/category/:categoryId', ProductController.getProductsByCategory);
 
 router.post("/buy", ProductController.buyProduct);
-router.post("/add", upload.single("prod_image"), ProductController.addProduct);
+router.post("/add/", upload.single("prod_image"), ProductController.addProduct);
 
 // ✅ allow updating product with optional new image
 router.put("/:id", upload.single("prod_image"), ProductController.updated);

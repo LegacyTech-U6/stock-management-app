@@ -333,8 +333,15 @@ const handleEdit = () => {
 }
 
 const handleRestock = () => {
-  console.log('Restock product:', product.value)
+  if (!product.value) return console.error("❌ No product loaded")
+
+  router.push({
+    name: 'restock',
+    params: { id: product.value.id }
+  })
+  console.log('Restock product:', product.value.id)
 }
+
 
 const formatPrice = (value: any) => {
   const num = parseFloat(value)
