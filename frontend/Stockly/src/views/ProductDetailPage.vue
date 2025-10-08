@@ -119,7 +119,7 @@
               <div class="grid grid-cols-2 gap-4">
                 <div>
                   <div class="text-xs text-gray-500 mb-1">Supplier</div>
-                  <div class="text-sm font-medium text-gray-900">{{ product.supplier || 'N/A' }}</div>
+                  <div class="text-sm font-medium text-gray-900">{{ product.supplier_name || 'N/A' }}</div>
                 </div>
                 <div>
                   <div class="text-xs text-gray-500 mb-1">Last Restocked</div>
@@ -225,7 +225,7 @@ interface Product {
   Prod_Description: string
   code_bar: string | number
   date_of_arrival: string
-  supplier: string | number
+  supplier_name: string | number
   Prod_image?: string
 }
 

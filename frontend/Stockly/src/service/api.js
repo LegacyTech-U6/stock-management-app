@@ -52,9 +52,15 @@ export async function createProduct(productData) {
   return data
 }
 
-export async function OutOfStock(params) {
-  const { data } = await API.get('/products/out-of-stock', { params })
+export async function OutOfStock() {
+  const { data } = await API.get('/products/out-of-stock')
   return data
+}
+
+export async function LowStock() {
+  const {data} = await API.get('/products/low-stock')
+  return data
+
 }
 
 ///////////////////////////////////////
@@ -143,7 +149,7 @@ export async function deleteCategory(CategoryId) {
 export async function getProductsByCategory(categoryId) {
   const {data} = await API.get(`products/category/${categoryId}`)
   return data
-  
+
 }
 
 /////////////////////////////////////////////////

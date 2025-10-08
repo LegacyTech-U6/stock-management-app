@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { getProduct, getOneProduct, updateProduct, createProduct,OutOfStock } from "@/service/api";
+import { getProduct, getOneProduct, updateProduct, createProduct,OutOfStock,LowStock } from "@/service/api";
 
 
 export const useProductStore = defineStore("product", {
@@ -21,6 +21,8 @@ export const useProductStore = defineStore("product", {
       max_stock_level: "",
     },
     finishedProducts: null,
+    lowProducts:null
+    ,
     loading: false,
     error: null,
     isFormOpen: false,
@@ -87,7 +89,22 @@ export const useProductStore = defineStore("product", {
       } finally {
         this.loading = false;
       }
-    }
+    },
+    async fetchLowStockProducts() {
+  this.loading = true;
+  try {
+    const data = await LowStock();
+    this.lowProducts = Array.isArray(data) ? data : []; // ✅ ensure always an array
+    this.error = null;
+    console.log("✅ Low products loaded:", this.lowProducts);
+  } catch (err) {
+    this.error = err;
+    this.lowProducts = []; // ✅ keep it consistent
+  } finally {
+    this.loading = false;
+  }
+}
+
 
   },
 });

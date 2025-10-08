@@ -3,15 +3,49 @@ const { pool } = require("../config/db");
 //In this file we deal with the functions and queries to manipule the product tables
 
 async function getProduct() {
-  const results = await pool.query("SELECT * FROM Product");
-  const row = results[0];
-
-  return row;
+ const [rows] = await pool.query(`
+  SELECT 
+    p.id,
+    p.Prod_name,
+    p.quantity,
+    p.cost_price,
+    p.selling_price,
+    p.Prod_Description,
+    p.code_bar,
+    p.date_of_arrival,
+    p.Prod_image,
+    p.min_stock_level,
+    p.max_stock_level,
+    c.name AS category_name,
+    s.supplier_name
+  FROM Product p
+  LEFT JOIN Category c ON p.category_id = c.id
+  LEFT JOIN supplier s ON p.supplier = s.id
+  ORDER BY p.Prod_name
+`);
+  return rows;
 }
 async function getOneProduct(id) {
-  const result = await pool.query(`SELECT * FROM Product WHERE id = ?`, [id]);
-  const rows = result[0];
-  return rows;
+const [rows] = await pool.query(`
+  SELECT 
+    p.id,
+    p.Prod_name,
+    p.quantity,
+    p.cost_price,
+    p.selling_price,
+    p.Prod_Description,
+    p.code_bar,
+    p.date_of_arrival,
+    p.Prod_image,
+    c.name AS category_name,
+    s.supplier_name
+  FROM Product p
+  LEFT JOIN Category c ON p.category_id = c.id
+  LEFT JOIN supplier s ON p.supplier = s.id
+  WHERE p.id = ?
+`, [id]);
+return rows[0];
+
 }
 async function updateProductQuantity(id, newQuantity) {
   const [result] = await pool.query(
@@ -196,10 +230,25 @@ async function checkLowStock(productId) {
   };
 }
 async function getOutOfStockProducts() {
-  const [products] = await pool.query(
-    "SELECT * FROM Product WHERE quantity = 0"
-  );
-  return products;
+const [products] = await pool.query(`
+    SELECT 
+      p.id,
+      p.Prod_name,
+      p.quantity,
+      p.cost_price,
+      p.selling_price,
+      p.supplier,  -- 🟢 important
+      c.name AS category_name,
+      s.supplier_name
+    FROM Product p
+    LEFT JOIN Category c ON p.category_id = c.id
+    LEFT JOIN supplier s ON p.supplier = s.id
+    WHERE p.quantity = 0
+  `);
+
+
+return products;
+
 }
 
 

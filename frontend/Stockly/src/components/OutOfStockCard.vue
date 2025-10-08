@@ -20,7 +20,7 @@
 
     <div class="card-content">
       <div class="product-meta">
-        <span class="category">{{ product.category }}</span>
+        <span class="category">{{ product.category_name }}</span>
         <span class="days-empty">{{ product.daysEmpty }} days empty</span>
       </div>
 
