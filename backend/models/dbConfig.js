@@ -19,7 +19,7 @@ async function getProduct(entrepriseId) {
       s.supplier_name
     FROM Product p
     LEFT JOIN Category c ON p.category_id = c.id
-    LEFT JOIN supplier s ON p.supplier = s.id
+    LEFT JOIN Supplier s ON p.supplier = s.id
     WHERE p.entreprise_id = ?
     ORDER BY p.Prod_name`,
     [entrepriseId]
@@ -46,7 +46,7 @@ async function getOneProduct(id, entrepriseId) {
       s.supplier_name
     FROM Product p
     LEFT JOIN Category c ON p.category_id = c.id
-    LEFT JOIN supplier s ON p.supplier = s.id
+    LEFT JOIN Supplier s ON p.supplier = s.id
     WHERE p.id = ? AND p.entreprise_id = ?`,
     [id, entrepriseId]
   );

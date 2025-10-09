@@ -6,6 +6,9 @@ module.exports = {
     try {
       const entrepriseId = req.entrepriseId; // récupéré depuis ton middleware
       const categories = await categoryModel.getAllCategories(entrepriseId);
+      console.log('====================================');
+      console.log(entrepriseId);
+      console.log('====================================');
       res.json(categories);
     } catch (err) {
       console.error(err);
