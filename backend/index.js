@@ -11,6 +11,7 @@ const OrderRoute = require("./routes/Order");
 const factureRoutes = require("./routes/facture");
 const clientRoute = require("./routes/client");
 const user = require("./routes/Auths.route");
+const entreprise = require("./routes/entreprise.routes");
 app.use(express.json());
 app.use((req, res, next) => {
   console.log(`Requête reçue : ${req.method} ${req.url}`);
@@ -18,7 +19,7 @@ app.use((req, res, next) => {
 });
 app.use(
   cors({
-    origin: "http://localhost:5173" , // ou "*" pour tout autoriser (déconseillé en prod)
+    origin: "http://localhost:5173", // ou "*" pour tout autoriser (déconseillé en prod)
     credentials: true,
   })
 );
@@ -32,5 +33,6 @@ app.use("/api/orders", OrderRoute);
 app.use("/api/factures", factureRoutes);
 app.use("/api/client", clientRoute);
 app.use("/api/auth", user);
+app.use("/api/entreprises", entreprise);
 
 module.exports = app;

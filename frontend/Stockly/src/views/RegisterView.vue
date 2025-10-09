@@ -320,7 +320,7 @@ const handleRegister = async () => {
     if (authStore.error) {
       error.value = authStore.error; // afficher l'erreur du store
     } else {
-      router.push("/dashboard"); // succès
+      router.push("/company"); // succès
     }
   } catch (err) {
     console.error(err);

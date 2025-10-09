@@ -100,7 +100,11 @@ const routes = [
         name:'category-detail',
         component:()=>import('@/views/CategoryDetail.vue'),
         props: true,
-      },
+      },{
+        path:'/company',
+        name:'company',
+        component:()=>import('@/views/CreateEntreprise.vue')
+      }
     ],
   },
 ]
