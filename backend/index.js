@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
-const userRoutes = require("./routes/user");
+
 const ProductRoute = require("./routes/product");
 const ProductRouteStats = require("./routes/stats");
 const CategoryRoute = require("./routes/category");
@@ -24,7 +24,7 @@ app.use(
   })
 );
 
-app.use("/app", userRoutes);
+
 app.use("/api/products", ProductRoute);
 app.use("/api/category", CategoryRoute);
 app.use("/api/stats", ProductRouteStats);

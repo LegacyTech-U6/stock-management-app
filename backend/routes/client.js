@@ -10,10 +10,10 @@ const {
 const authenticateUser = require("../middleware/AuthenticatedUser");
 const getActiveEntreprise = require('../middleware/activeEntreprise');
 
-router.get("/", getAll);
-router.post("/", create);
-router.get("/:id", get);
-router.put("/:id", update);
-router.delete("/:id", deleteclient);
+router.get("/", getActiveEntreprise, getAll);
+router.post("/", getActiveEntreprise, create);
+router.get("/:id", getActiveEntreprise, get);
+router.put("/:id", getActiveEntreprise, update);
+router.delete("/:id", getActiveEntreprise, deleteclient);
 
 module.exports = router;

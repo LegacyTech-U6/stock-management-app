@@ -3,22 +3,22 @@ const router = express.Router();
 const ProductController = require("../controller/Produits");
 const validateProduct = require("../middleware/validateProduct");
 const upload = require("../middleware/upload");
-
+const getActiveEntreprise = require('../middleware/activeEntreprise');
 // Product routes
-router.post('/', ProductController.post);
-router.get('/', ProductController.get);
-router.get('/low-stock', ProductController.checkLowStockGlobal);
-router.get('/out-of-stock', ProductController.checkOutOfStockGlobal);
-router.get('/sales', ProductController.getsales);
-router.get("/:id", ProductController.get2);
-router.get('/category/:categoryId', ProductController.getProductsByCategory);
+router.post('/', getActiveEntreprise, ProductController.post);
+router.get('/', getActiveEntreprise, ProductController.get);
+router.get('/low-stock', getActiveEntreprise, ProductController.checkLowStockGlobal);
+router.get('/out-of-stock', getActiveEntreprise, ProductController.checkOutOfStockGlobal);
+router.get('/sales', getActiveEntreprise, ProductController.getsales);
+router.get("/:id", getActiveEntreprise, ProductController.get2);
+router.get('/category/:categoryId', getActiveEntreprise, ProductController.getProductsByCategory);
 
-router.post("/buy", ProductController.buyProduct);
-router.post("/add/", upload.single("prod_image"), ProductController.addProduct);
+router.post("/buy", getActiveEntreprise, ProductController.buyProduct);
+router.post("/add/", getActiveEntreprise, upload.single("prod_image"), ProductController.addProduct);
 
 // ✅ allow updating product with optional new image
-router.put("/:id", upload.single("prod_image"), ProductController.updated);
+router.put("/:id", getActiveEntreprise, upload.single("prod_image"), ProductController.updated);
 
-router.delete("/:id", ProductController.delete);
+router.delete("/:id", getActiveEntreprise, ProductController.delete);
 
 module.exports = router;

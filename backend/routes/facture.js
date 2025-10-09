@@ -6,9 +6,10 @@ const {
   getInvoicesController,
   getInvoiceByIdController
 } = require("../controller/facture");
+const getActiveEntreprise = require('../middleware/activeEntreprise');
 
-router.post("/", createInvoiceController);     // Créer une facture
-router.get("/", getInvoicesController);        // Récupérer toutes les factures
-router.get("/:id", getInvoiceByIdController);  // Récupérer une facture spécifique
+router.post("/", getActiveEntreprise,createInvoiceController);     // Créer une facture
+router.get("/",getActiveEntreprise, getInvoicesController);        // Récupérer toutes les factures
+router.get("/:id", getActiveEntreprise, getInvoiceByIdController);  // Récupérer une facture spécifique
 
 module.exports = router;

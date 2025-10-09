@@ -9,12 +9,12 @@ const {
   getProducts,
   addSupplier: createSupplier,
 } = require("../controller/suppliers");
-
-router.get("/", get);
-router.post("/", validateSupplier, createSupplier);
-router.get("/:id", getOne);
-router.put("/:id", modifySupplier);
-router.delete("/:id", deleteSupplier);
-router.get("/:id/products", getProducts);
+const getActiveEntreprise = require('../middleware/activeEntreprise');
+router.get("/",getActiveEntreprise, get);
+router.post("/", getActiveEntreprise,validateSupplier, createSupplier);
+router.get("/:id",getActiveEntreprise, getOne);
+router.put("/:id", getActiveEntreprise, modifySupplier);
+router.delete("/:id", getActiveEntreprise, deleteSupplier);
+router.get("/:id/products", getActiveEntreprise, getProducts);
 
 module.exports = router;
