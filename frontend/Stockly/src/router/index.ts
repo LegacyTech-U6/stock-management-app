@@ -16,11 +16,13 @@ const routes = [
     path: '/register',
     name: 'register',
     component: () => import('../views/RegisterView.vue'),
+    meta: { showNavbarAndFooter: false },
   },
   {
     path: '/login',
     name: 'login',
     component: () => import('../views/LoginView.vue'),
+    meta: { showNavbarAndFooter: false },
   },
   {
     path: '/real',

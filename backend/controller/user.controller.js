@@ -28,7 +28,7 @@ const register = [
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { username,Last_name, email,telephone,role, password } = req.body;
+    const { username,Last_name, email,telephone, password } = req.body;
 
     try {
       // Vérifier si l'email existe déjà
@@ -42,8 +42,8 @@ const register = [
 
       // Insérer l'utilisateur
       await pool.query(
-        'INSERT INTO users (username,Last_name, email,telephone,role, password_hash) VALUES (?,?,?,?,?,?)',
-        [username,Last_name, email,telephone,role, hashedPassword]
+        'INSERT INTO users (username,Last_name, email,telephone, password_hash) VALUES (?,?,?,?,?)',
+        [username,Last_name, email,telephone, hashedPassword]
       );
 
       res.status(201).json({ message: 'Utilisateur créé avec succès' });

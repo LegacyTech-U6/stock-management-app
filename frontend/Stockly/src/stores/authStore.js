@@ -16,7 +16,7 @@ export const useAuthStore = defineStore("auth", {
     /**
      * Inscription utilisateur
      */
-    async register(username, Last_name, email, telephone, role, password) {
+    async register(username, Last_name, email, telephone, password) {
       this.isLoading = true;
       this.error = null;
       this.successMessage = null;
@@ -27,8 +27,7 @@ export const useAuthStore = defineStore("auth", {
           Last_name,
           email,
           telephone,
-          role,
-          password,
+          password
         });
 
         // ⚠️ backend ne renvoie que { message }
