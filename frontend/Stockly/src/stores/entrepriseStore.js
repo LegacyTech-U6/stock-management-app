@@ -6,19 +6,29 @@ import {
   getEntrepriseById,
   updateEntreprise,
   deleteEntreprise,
-} from "@/service/api"; // adapte le chemin si nécessaire
+} from "@/service/api";
 
 export const useEntrepriseStore = defineStore("entreprise", {
   state: () => ({
     entreprises: [],
     currentEntreprise: null,
+    activeEntreprise: null,
     isLoading: false,
     error: null,
     successMessage: null,
   }),
-
   actions: {
-    // ✅ Créer une entreprise
+   setActiveEntreprise(entreprise) {
+  this.activeEntreprise = entreprise;
+  localStorage.setItem('activeEntreprise', JSON.stringify(entreprise));
+},
+
+loadActiveEntreprise() {
+  const stored = localStorage.getItem('activeEntreprise');
+  if (stored) this.activeEntreprise = JSON.parse(stored);
+}
+,
+
     async createEntreprise(entrepriseData) {
       this.isLoading = true;
       this.error = null;
@@ -36,14 +46,13 @@ export const useEntrepriseStore = defineStore("entreprise", {
       }
     },
 
-    // ✅ Récupérer toutes les entreprises de l'utilisateur
     async fetchEntreprises() {
       this.isLoading = true;
       this.error = null;
 
       try {
         const data = await getEntreprises();
-        this.entreprises = data;
+        this.entreprises = data.entreprises; // ⚠️ pas .entreprises si backend renvoie un tableau
       } catch (err) {
         this.error = err.response?.data?.message || "Impossible de récupérer les entreprises ❌";
       } finally {
@@ -51,7 +60,6 @@ export const useEntrepriseStore = defineStore("entreprise", {
       }
     },
 
-    // ✅ Récupérer une entreprise par ID
     async fetchEntrepriseById(id) {
       this.isLoading = true;
       this.error = null;
@@ -67,7 +75,6 @@ export const useEntrepriseStore = defineStore("entreprise", {
       }
     },
 
-    // ✅ Mettre à jour une entreprise
     async updateEntreprise(id, entrepriseData) {
       this.isLoading = true;
       this.error = null;
@@ -75,7 +82,6 @@ export const useEntrepriseStore = defineStore("entreprise", {
 
       try {
         const data = await updateEntreprise(id, entrepriseData);
-        // Mettre à jour l'entreprise dans le tableau
         const index = this.entreprises.findIndex(e => e.id === id);
         if (index !== -1) this.entreprises[index] = data;
         this.successMessage = "Entreprise mise à jour avec succès 🎉";
@@ -87,7 +93,6 @@ export const useEntrepriseStore = defineStore("entreprise", {
       }
     },
 
-    // ✅ Supprimer une entreprise
     async deleteEntreprise(id) {
       this.isLoading = true;
       this.error = null;

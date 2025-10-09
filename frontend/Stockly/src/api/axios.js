@@ -1,23 +1,40 @@
 // src/api/axios.js
 import axios from "axios";
-import { useAuthStore } from "@/stores/authStore"; // adapte le chemin selon ton projet
+import { useAuthStore } from "@/stores/authStore";
+import { useEntrepriseStore } from "@/stores/entrepriseStore";
 
 const API = axios.create({
-  baseURL: "http://localhost:5000/api", // ton backend
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
 });
 
-// Intercepteur pour ajouter le token automatiquement
+// Intercepteur pour ajouter automatiquement le token et l'entreprise active
 API.interceptors.request.use(
   (config) => {
     const authStore = useAuthStore();
+    const entrepriseStore = useEntrepriseStore();
 
+    // ✅ Ajouter le token si présent
     if (authStore.token) {
       config.headers.Authorization = `Bearer ${authStore.token}`;
+    }
+
+    // ✅ Ajouter l'entreprise active si définie
+    if (entrepriseStore.activeEntreprise) {
+      config.headers["X-Entreprise-Id"] = entrepriseStore.activeEntreprise.id;
     }
 
     return config;
   },
   (error) => Promise.reject(error)
+);
+
+// Intercepteur pour gérer les erreurs globales (optionnel)
+API.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // Ici tu peux gérer les erreurs 401, 403 ou autres globalement
+    return Promise.reject(error);
+  }
 );
 
 export default API;

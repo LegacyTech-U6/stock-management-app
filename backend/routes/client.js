@@ -8,6 +8,7 @@ const {
   deleteclient,
 } = require("../controller/client");
 const authenticateUser = require("../middleware/AuthenticatedUser");
+const getActiveEntreprise = require('../middleware/activeEntreprise');
 
 router.get("/", getAll);
 router.post("/", create);

@@ -104,6 +104,10 @@ const routes = [
         path:'/company',
         name:'company',
         component:()=>import('@/views/CreateEntreprise.vue')
+      },{
+        path:'/admin',
+        name:'admin',
+        component:()=>import('@/views/MainPage.vue')
       }
     ],
   },

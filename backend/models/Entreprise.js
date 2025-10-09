@@ -1,9 +1,9 @@
 // backend/models/Entreprise.js
-const db = require('../config/db'); // instance mysql2/promise avec pool
+const {pool} = require('../config/db'); // instance mysql2/promise avec pool
 
 class Entreprise {
   static async create({ user_id, name, description, logo_url }) {
-    const [result] = await db.query(
+    const [result] = await pool.query(
       `INSERT INTO Entreprises (user_id, name, description, logo_url) VALUES (?, ?, ?, ?)`,
       [user_id, name, description, logo_url]
     );
@@ -11,7 +11,7 @@ class Entreprise {
   }
 
   static async getAllByUser(user_id) {
-    const [rows] = await db.query(
+    const [rows] = await pool.query(
       `SELECT * FROM Entreprises WHERE user_id = ?`,
       [user_id]
     );
@@ -19,7 +19,7 @@ class Entreprise {
   }
 
   static async getById(id) {
-    const [rows] = await db.query(
+    const [rows] = await pool.query(
       `SELECT * FROM Entreprises WHERE id = ?`,
       [id]
     );
@@ -27,14 +27,14 @@ class Entreprise {
   }
 
   static async update(id, { name, description, logo_url }) {
-    await db.query(
+    await pool.query(
       `UPDATE Entreprises SET name = ?, description = ?, logo_url = ? WHERE id = ?`,
       [name, description, logo_url, id]
     );
   }
 
   static async delete(id) {
-    await db.query(`DELETE FROM Entreprises WHERE id = ?`, [id]);
+    await pool.query(`DELETE FROM Entreprises WHERE id = ?`, [id]);
   }
 }
 
