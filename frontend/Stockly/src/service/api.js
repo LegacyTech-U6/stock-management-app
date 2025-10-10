@@ -1,3 +1,4 @@
+import { all } from 'axios'
 import API from '../api/axios'
 // const API_BASE_URL = "http://localhost:5000/api";
 export async function CreateClient(clientData) {
@@ -220,3 +221,39 @@ export async function deleteEntreprise(id) {
   const { data } = await API.delete(`/entreprises/${id}`)
   return data
 }
+
+/////////////////////////////////////////////////////////
+// Worker management
+/////////////////////////////////////////////////////////
+
+// 🔹 Récupérer tous les workers
+export async function getAllWorkers() {
+  const { data } = await API.get('/workers')
+  return data
+}
+
+// 🔹 Récupérer un worker par ID
+export async function getWorkerById(id) {
+  const { data } = await API.get(`/workers/${id}`)
+  return data
+}
+
+// 🔹 Créer un nouveau worker
+export async function createWorker(workerData) {
+  // workerData = { email, password, position, entreprise_id, roles: [] }
+  const { data } = await API.post('/workers', workerData)
+  return data
+}
+
+// 🔹 Mettre à jour un worker
+export async function updateWorker(id, updatedData) {
+  const { data } = await API.put(`/workers/${id}`, updatedData)
+  return data
+}
+
+// 🔹 Supprimer un worker
+export async function deleteWorker(id) {
+  const { data } = await API.delete(`/workers/${id}`)
+  return data
+}
+

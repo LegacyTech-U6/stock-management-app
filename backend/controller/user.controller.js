@@ -72,7 +72,7 @@ const login = [
 
     try {
       // Chercher l’utilisateur par email
-      const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+      const [rows] = await pool.query('SELECT * FROM all_users WHERE email = ?', [email]);
       if (rows.length === 0) {
         return res.status(400).json({ message: 'Email ou mot de passe incorrect' });
       }

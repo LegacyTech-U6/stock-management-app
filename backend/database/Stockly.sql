@@ -27,7 +27,9 @@ CREATE TABLE `roles` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `name` VARCHAR(100) NOT NULL,
   `description` TEXT
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
 
 -- =============================================================
 -- Table des permissions optionnelles
@@ -36,7 +38,7 @@ CREATE TABLE `permissions` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `name` VARCHAR(100) NOT NULL,
   `description` TEXT
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `role_permissions` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -44,7 +46,7 @@ CREATE TABLE `role_permissions` (
   `permission_id` INT NOT NULL,
   FOREIGN KEY (`role_id`) REFERENCES `roles`(`id`) ON DELETE CASCADE,
   FOREIGN KEY (`permission_id`) REFERENCES `permissions`(`id`) ON DELETE CASCADE
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- =============================================================
 -- Table des entreprises créées par les admins
@@ -57,7 +59,29 @@ CREATE TABLE `Entreprises` (
   `logo_url` VARCHAR(255) DEFAULT NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- ============================================================
+-- Table des travailleurs (employés) liés à une entreprise
+-- ============================================================
+CREATE TABLE `Workers` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `image` VARCHAR(100),
+  `date_of_birth` DATE,
+  `email` VARCHAR(150) NOT NULL UNIQUE,
+  `name` VARCHAR(20),
+  `entreprise_id` INT NOT NULL,
+  `user_id` INT NOT NULL,
+  `position` VARCHAR(100),
+  `date_hired` DATE,
+  `password_hash` VARCHAR(255) NOT NULL, 
+  `status` ENUM('active', 'inactive', 'suspended') DEFAULT 'active',
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `role_id` INT,
+  FOREIGN KEY (`role_id`) REFERENCES `roles`(`id`) ON DELETE SET NULL,
+  FOREIGN KEY (`entreprise_id`) REFERENCES `Entreprises`(`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
 -- =============================================================
 -- Table des utilisateurs internes à une entreprise
@@ -70,7 +94,7 @@ CREATE TABLE `EntrepriseUsers` (
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (`entreprise_id`) REFERENCES `Entreprises`(`id`) ON DELETE CASCADE,
   FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- =============================================================
 -- Table Client
@@ -84,7 +108,7 @@ CREATE TABLE `Client` (
   `location` VARCHAR(255),
   `email` VARCHAR(50),
   FOREIGN KEY (`entreprise_id`) REFERENCES `Entreprises`(`id`) ON DELETE CASCADE
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- =============================================================
 -- Table Category
@@ -96,7 +120,7 @@ CREATE TABLE `Category` (
   `description` TEXT,
   UNIQUE (`entreprise_id`, `name`),
   FOREIGN KEY (`entreprise_id`) REFERENCES `Entreprises`(`id`) ON DELETE CASCADE
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- =============================================================
 -- Table Supplier
@@ -112,7 +136,7 @@ CREATE TABLE `Supplier` (
   `preferred_channel` ENUM('email', 'whatsapp', 'phone') DEFAULT 'email',
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (`entreprise_id`) REFERENCES `Entreprises`(`id`) ON DELETE CASCADE
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- =============================================================
 -- Table Product
@@ -135,7 +159,7 @@ CREATE TABLE `Product` (
   FOREIGN KEY (`entreprise_id`) REFERENCES `Entreprises`(`id`) ON DELETE CASCADE,
   FOREIGN KEY (`supplier`) REFERENCES `Supplier`(`id`) ON DELETE SET NULL,
   FOREIGN KEY (`category_id`) REFERENCES `Category`(`id`) ON DELETE SET NULL
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- =============================================================
 -- Table Factures
@@ -158,7 +182,7 @@ CREATE TABLE `Factures` (
   FOREIGN KEY (`entreprise_id`) REFERENCES `Entreprises`(`id`) ON DELETE CASCADE,
   FOREIGN KEY (`client_id`) REFERENCES `Client`(`id`) ON DELETE CASCADE,
   FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE SET NULL
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- =============================================================
 -- Table FactureItems
@@ -174,8 +198,7 @@ CREATE TABLE `FactureItems` (
   `total_item` INT GENERATED ALWAYS AS ((quantity * unit_price * (1 + tva / 100)) - discount) STORED,
   FOREIGN KEY (`facture_id`) REFERENCES `Factures`(`id`) ON DELETE CASCADE,
   FOREIGN KEY (`product_id`) REFERENCES `Product`(`id`)
-);
-
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 -- =============================================================
 -- Table Sales
 -- =============================================================
@@ -189,7 +212,7 @@ CREATE TABLE `Sales` (
   `sale_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (`entreprise_id`) REFERENCES `Entreprises`(`id`) ON DELETE CASCADE,
   FOREIGN KEY (`product_id`) REFERENCES `Product`(`id`) ON DELETE CASCADE
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- =============================================================
 -- Table Orders
@@ -206,7 +229,7 @@ CREATE TABLE `Orders` (
   FOREIGN KEY (`entreprise_id`) REFERENCES `Entreprises`(`id`) ON DELETE CASCADE,
   FOREIGN KEY (`product_id`) REFERENCES `Product`(`id`) ON DELETE SET NULL,
   FOREIGN KEY (`supplier_id`) REFERENCES `Supplier`(`id`) ON DELETE SET NULL
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- =============================================================
 -- Table Mouvements de stock
@@ -222,7 +245,7 @@ CREATE TABLE `Mouvements_stock` (
   FOREIGN KEY (`entreprise_id`) REFERENCES `Entreprises`(`id`) ON DELETE CASCADE,
   FOREIGN KEY (`produit_id`) REFERENCES `Product`(`id`),
   FOREIGN KEY (`created_by`) REFERENCES `EntrepriseUsers`(`id`)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- =============================================================
 -- Table Settings
@@ -232,7 +255,7 @@ CREATE TABLE `Settings` (
   `entreprise_id` INT NOT NULL,
   `stock_alert_threshold` INT NOT NULL DEFAULT 5,
   FOREIGN KEY (`entreprise_id`) REFERENCES `Entreprises`(`id`) ON DELETE CASCADE
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 -- =============================================================
 -- Table Activity (Journal des actions)
 -- =============================================================
@@ -251,5 +274,16 @@ CREATE TABLE `Activity` (
   FOREIGN KEY (`entreprise_id`) REFERENCES `Entreprises`(`id`) ON DELETE CASCADE,
   FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- ============================================================
+-- Vues pour simplifier les requêtes courantes
+-- ============================================================
+-- Vue combinée des utilisateurs (admins SaaS + travailleurs)
+CREATE OR REPLACE VIEW all_users AS
+SELECT id, email COLLATE utf8mb4_general_ci AS email, password_hash, 'admin' AS type
+FROM users
+UNION ALL
+SELECT id, email COLLATE utf8mb4_general_ci AS email, password_hash, 'worker' AS type
+FROM Workers;
+
 
 COMMIT;
