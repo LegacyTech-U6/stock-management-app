@@ -171,10 +171,11 @@ import { useClientStore } from '@/stores/clientStore';
 const store = useClientStore();
 
 const props = defineProps({
-  open: Boolean
+  open: Boolean,
+  form: Object
 });
 
-const emit = defineEmits(['close', 'success']);
+const emit = defineEmits(['close', 'success', 'submit']);
 
 const errors = reactive({
   nom: '',

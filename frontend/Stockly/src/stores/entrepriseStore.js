@@ -52,6 +52,7 @@ loadActiveEntreprise() {
 
       try {
         const data = await getEntreprises();
+        console.log(data.entreprises)
         this.entreprises = data.entreprises; // ⚠️ pas .entreprises si backend renvoie un tableau
       } catch (err) {
         this.error = err.response?.data?.message || "Impossible de récupérer les entreprises ❌";

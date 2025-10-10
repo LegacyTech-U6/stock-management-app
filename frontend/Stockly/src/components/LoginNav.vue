@@ -1,33 +1,32 @@
 <template>
   <div class="fixed">
     <!-- Mobile Menu Button -->
-    <button 
-      class="mobile-menu-btn" 
-      @click="sidebarOpen = !sidebarOpen"
-      aria-label="Toggle menu"
-    >
+    <button class="mobile-menu-btn" @click="sidebarOpen = !sidebarOpen" aria-label="Toggle menu">
       <svg v-if="!sidebarOpen" width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <path d="M3 12H21M3 6H21M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path
+          d="M3 12H21M3 6H21M3 18H21"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
       </svg>
       <svg v-else width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path
+          d="M18 6L6 18M6 6L18 18"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
       </svg>
     </button>
 
     <!-- Overlay -->
     <transition name="fade">
-      <div 
-        v-if="sidebarOpen" 
-        class="overlay"
-        @click="sidebarOpen = false"
-      ></div>
+      <div v-if="sidebarOpen" class="overlay" @click="sidebarOpen = false"></div>
     </transition>
 
     <!-- Sidebar -->
-    <aside 
-      class="sidebar fixe"
-      :class="{ 'sidebar-open': sidebarOpen }"
-    >
+    <aside class="sidebar fixe" :class="{ 'sidebar-open': sidebarOpen }">
       <!-- Logo Section -->
       <div class="logo-section">
         <div class="logo-icon">
@@ -44,16 +43,20 @@
         <div>
           <h1 class="logo-title">StockFlow</h1>
           <p class="logo-subtitle">Inventory System</p>
+          <h2 class="text-2xl font-bold mb-4">
+            Managing: {{ activeEntreprise?.name || 'No enterprise selected' }}
+          </h2>
         </div>
-        
+
         <!-- Mobile Close Button -->
-        <button 
-          class="mobile-close-btn"
-          @click="sidebarOpen = false"
-          aria-label="Close menu"
-        >
+        <button class="mobile-close-btn" @click="sidebarOpen = false" aria-label="Close menu">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path
+              d="M18 6L6 18M6 6L18 18"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
           </svg>
         </button>
       </div>
@@ -63,7 +66,12 @@
         <!-- Overview -->
         <div class="nav-section">
           <span class="nav-section-label">Overview</span>
-          <router-link to="/dashboard" class="nav-item" active-class="nav-item-active" @click="closeMobileMenu">
+          <router-link
+            to="/dashboard"
+            class="nav-item"
+            active-class="nav-item-active"
+            @click="closeMobileMenu"
+          >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
               <path
                 d="M3 9L12 2L21 9V20C21 20.53 20.79 21.04 20.41 21.41C20.04 21.79 19.53 22 19 22H5C4.47 22 3.96 21.79 3.59 21.41C3.21 21.04 3 20.53 3 20V9Z"
@@ -120,10 +128,20 @@
 
           <transition name="submenu">
             <div v-show="inventoryExpanded" class="submenu">
-              <router-link to="/products" class="submenu-item" active-class="submenu-item-active" @click="closeMobileMenu">
+              <router-link
+                to="/products"
+                class="submenu-item"
+                active-class="submenu-item-active"
+                @click="closeMobileMenu"
+              >
                 <span>All Products</span><span class="badge-sm">6</span>
               </router-link>
-              <router-link to="/steper" class="submenu-item" active-class="submenu-item-active" @click="closeMobileMenu">
+              <router-link
+                to="/steper"
+                class="submenu-item"
+                active-class="submenu-item-active"
+                @click="closeMobileMenu"
+              >
                 <span class="flex-center"> <span class="add-symbol">+</span>Add New Product </span>
               </router-link>
             </div>
@@ -178,14 +196,24 @@
 
             <transition name="submenu">
               <div v-show="categoryExpanded" class="submenu">
-                <router-link to="/categories" class="submenu-item" active-class="submenu-item-active" @click="closeMobileMenu">
+                <router-link
+                  to="/categories"
+                  class="submenu-item"
+                  active-class="submenu-item-active"
+                  @click="closeMobileMenu"
+                >
                   <span>All Categories</span><span class="badge-sm">{{ totalCategories }}</span>
                 </router-link>
                 <button
                   class="submenu-item"
-                  @click="showAddCategory = true; closeMobileMenu()"
+                  @click="
+                    showAddCategory = true,
+                    closeMobileMenu()
+                  "
                 >
-                  <span class="flex-center"> <span class="add-symbol">+</span>Add New Category </span>
+                  <span class="flex-center">
+                    <span class="add-symbol">+</span>Add New Category
+                  </span>
                 </button>
               </div>
             </transition>
@@ -196,7 +224,12 @@
         <div class="nav-section">
           <span class="nav-section-label">Sales & Orders</span>
 
-          <router-link to="/sales" class="nav-item" active-class="nav-item-active" @click="closeMobileMenu">
+          <router-link
+            to="/sales"
+            class="nav-item"
+            active-class="nav-item-active"
+            @click="closeMobileMenu"
+          >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
               <path
                 d="M6 2L3 6V20C3 20.53 3.21 21.04 3.59 21.41C3.96 21.79 4.47 22 5 22H19C19.53 22 20.04 21.79 20.41 21.41C20.79 21.04 21 20.53 21 20V6L18 2H6Z"
@@ -209,11 +242,36 @@
             <span>Sales Interface</span>
           </router-link>
 
-          <router-link to="/clients" class="nav-item" active-class="nav-item-active" @click="closeMobileMenu">
+          <router-link
+            to="/clients"
+            class="nav-item"
+            active-class="nav-item-active"
+            @click="closeMobileMenu"
+          >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path
+                d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <circle
+                cx="9"
+                cy="7"
+                r="4"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
             </svg>
             <span>Client Management</span>
           </router-link>
@@ -222,7 +280,12 @@
         <!-- Invoice Management -->
         <div class="nav-section">
           <span class="nav-section-label">Invoice Management</span>
-          <router-link to="/invoices" class="nav-item" active-class="nav-item-active" @click="closeMobileMenu">
+          <router-link
+            to="/invoices"
+            class="nav-item"
+            active-class="nav-item-active"
+            @click="closeMobileMenu"
+          >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
               <path
                 d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z"
@@ -231,8 +294,20 @@
                 stroke-linecap="round"
                 stroke-linejoin="round"
               />
-              <path d="M14 2V8H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M16 13H8M16 17H8M10 9H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path
+                d="M14 2V8H20"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M16 13H8M16 17H8M10 9H8"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
             </svg>
             <span>Invoices</span>
           </router-link>
@@ -285,7 +360,12 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useEntrepriseStore } from '@/stores/entrepriseStore'
 
+
+const entrepriseStore = useEntrepriseStore()
+
+const activeEntreprise = computed(() => entrepriseStore.activeEntreprise)
 const showAddCategory = ref(false)
 const sidebarOpen = ref(false)
 const inventoryExpanded = ref(false)
@@ -296,7 +376,7 @@ const categoriesData = ref([
   { id: 2, name: 'Mobile Devices', productCount: 3 },
   { id: 3, name: 'Computers', productCount: 1 },
   { id: 4, name: 'Peripherals', productCount: 2 },
-  { id: 5, name: 'Gaming', productCount: 0 }
+  { id: 5, name: 'Gaming', productCount: 0 },
 ])
 
 const toggleInventory = () => {
@@ -349,7 +429,9 @@ onUnmounted(() => {
   border-radius: 0.75rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .mobile-menu-btn:hover {
@@ -400,7 +482,9 @@ onUnmounted(() => {
   transform: translateX(-100%);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 .sidebar-open {

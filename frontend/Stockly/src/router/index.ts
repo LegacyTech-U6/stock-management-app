@@ -25,6 +25,18 @@ const routes = [
     meta: { showNavbarAndFooter: false },
   },
   {
+    path: '/company',
+    name: 'company',
+    component: () => import('@/views/CreateEntreprise.vue'),
+     meta: { showNavbarAndFooter: false },
+  },
+  {
+    path: '/admin',
+    name: 'admin',
+    component: () => import('@/views/MainPage.vue'),
+     meta: { showNavbarAndFooter: false },
+  },
+  {
     path: '/real',
     name: 'real',
     component: () => import('../views/LayoutPage.vue'),
@@ -63,10 +75,10 @@ const routes = [
         meta: { showNavbarAndFooter: false },
       },
       {
-        path:'/product/:reStockId',
-        name:'restock',
-        component:()=>import('@/views/RestockView.vue'),
-        props:true,
+        path: '/product/:reStockId',
+        name: 'restock',
+        component: () => import('@/views/RestockView.vue'),
+        props: true,
         meta: { showNavbarAndFooter: false },
       },
       {
@@ -76,39 +88,31 @@ const routes = [
         meta: { showNavbarAndFooter: false },
       },
       {
-        path:'/invoices',
-        name:'invoices',
-        component:()=>import('@/views/InvoiceView.vue')
+        path: '/invoices',
+        name: 'invoices',
+        component: () => import('@/views/InvoiceView.vue'),
       },
       {
-        path:'/categories',
-        name:'categories',
-          component:()=>import('@/views/CategoryView .vue')
-
+        path: '/categories',
+        name: 'categories',
+        component: () => import('@/views/CategoryView .vue'),
       },
       {
-        path:'/outOfStock',
-        name:'/outOfStock',
-        component:()=>import('@/views/OutofStock.vue')
+        path: '/outOfStock',
+        name: '/outOfStock',
+        component: () => import('@/views/OutofStock.vue'),
       },
       {
-        path:'/lowStock',
-        name:'lowStock',
-        component:()=>import('@/views/LowStock.vue')
-      },{
-        path:'/detail/:id',
-        name:'category-detail',
-        component:()=>import('@/views/CategoryDetail.vue'),
+        path: '/lowStock',
+        name: 'lowStock',
+        component: () => import('@/views/LowStock.vue'),
+      },
+      {
+        path: '/detail/:id',
+        name: 'category-detail',
+        component: () => import('@/views/CategoryDetail.vue'),
         props: true,
-      },{
-        path:'/company',
-        name:'company',
-        component:()=>import('@/views/CreateEntreprise.vue')
-      },{
-        path:'/admin',
-        name:'admin',
-        component:()=>import('@/views/MainPage.vue')
-      }
+      },
     ],
   },
 ]
