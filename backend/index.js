@@ -13,6 +13,7 @@ const clientRoute = require("./routes/client");
 const user = require("./routes/Auths.route");
 const entreprise = require("./routes/entreprise.routes");
 const workers = require("./routes/workers.routes")
+const rolesRoutes = require("./routes/roles.routes")
 app.use(express.json());
 app.use((req, res, next) => {
   console.log(`Requête reçue : ${req.method} ${req.url}`);
@@ -35,6 +36,7 @@ app.use("/api/factures", factureRoutes);
 app.use("/api/client", clientRoute);
 app.use("/api/auth", user);
 app.use("/api/entreprises", entreprise);
-app.use("/api/workers",workers)
+app.use("/api/workers",workers);
+app.use("/api/roles", rolesRoutes)
 
 module.exports = app;

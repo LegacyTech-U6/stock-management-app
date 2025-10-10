@@ -257,3 +257,35 @@ export async function deleteWorker(id) {
   return data
 }
 
+////////////////////////////////////////////////////////////
+// Role management
+///////////////////////////////////////////////////////////////
+// ✅ Récupérer tous les rôles
+export async function getAllRoles() {
+  const { data } = await API.get("/roles")
+  return data
+}
+
+// ✅ Récupérer un rôle par ID
+export async function getRoleById(id) {
+  const { data } = await API.get(`/roles/${id}`)
+  return data
+}
+
+// ✅ Créer un nouveau rôle
+export async function createRole(roleData) {
+  const { data } = await API.post("/roles", roleData)
+  return data
+}
+
+// ✅ Mettre à jour un rôle
+export async function updateRole(id, roleData) {
+  const { data } = await API.put(`/roles/${id}`, roleData)
+  return data
+}
+
+// ✅ Supprimer un rôle
+export async function deleteRole(id) {
+  const { data } = await API.delete(`/roles/${id}`)
+  return data
+}
