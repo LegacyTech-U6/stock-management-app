@@ -20,8 +20,12 @@
           <button class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
             <Settings class="w-5 h-5 text-gray-600" />
           </button>
+          <router-link to="/workers" class="text-gray-400 hover:text-blue-600 transition">  <button class="text-gray-400 hover:text-blue-600 transition">workers</button></router-link>
           <div class="flex items-center gap-2 pl-4 border-l border-gray-200">
             <div class="text-right">
+
+
+
               <p class="text-sm font-semibold text-gray-900">Demo User</p>
               <p class="text-xs text-gray-500">demo@demo.com</p>
             </div>
