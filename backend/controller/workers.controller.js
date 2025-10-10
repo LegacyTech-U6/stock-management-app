@@ -1,29 +1,58 @@
 // WorkersController.js
 const {pool} = require("../config/db"); // your MySQL connection
 const { validationResult } = require("express-validator");
-
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+// Secret JWT (idéalement mettre dans .env)
+const JWT_SECRET = process.env.JWT_SECRET;
 const WorkersController = {
   // Create a new worker
-  createWorker: async (req, res) => {
+  createWorker:async (req, res) => {
+    // Vérification des erreurs de validation
     const errors = validationResult(req);
-    if (!errors.isEmpty())
+    if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
+    }
 
-    const { entreprise_id, user_id, position, date_hired, status, role } =
-      req.body;
+    const {
+      email,
+      entreprise_id,
+      user_id = null, // null par défaut si non fourni
+      position = null,
+      date_hired = null,
+      status = "active",
+      role, // ici on attend l'id du rôle
+      password,
+    } = req.body;
 
     try {
-      const [result] = await pool.execute(
-        `INSERT INTO Workers (entreprise_id, user_id, position, date_hired, status, role) 
-         VALUES (?, ?, ?, ?, ?, ?)`,
-        [entreprise_id, user_id, position, date_hired, status || "active", role]
+      // 1️⃣ Vérifier si l'email existe déjà dans Workers
+      const [existing] = await pool.execute(
+        "SELECT id FROM Workers WHERE email = ?",
+        [email]
       );
-      res
-        .status(201)
-        .json({ message: "Worker created", workerId: result.insertId });
+      if (existing.length > 0) {
+        return res.status(400).json({ message: "Email déjà utilisé pour un worker" });
+      }
+
+      // 2️⃣ Hacher le mot de passe
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      // 3️⃣ Insérer le worker
+      const [result] = await pool.execute(
+        `INSERT INTO Workers 
+        (email, entreprise_id, user_id, position, date_hired, status, password_hash ,role_id)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [email, entreprise_id, user_id, position, date_hired, status, hashedPassword, role]
+      );
+
+      const workerId = result.insertId;
+
+      // 5️⃣ Réponse
+      res.status(201).json({ message: "Worker créé avec succès", workerId });
     } catch (err) {
       console.error(err);
-      res.status(500).json({ error: "Database error" });
+      res.status(500).json({ message: "Erreur serveur" });
     }
   },
 

@@ -37,6 +37,12 @@ const routes = [
      meta: { showNavbarAndFooter: false },
   },
   {
+    path:'/workers',
+    name:'workers',
+    component:()=>import('@/views/WorkerPage.vue'),
+    meta: { showNavbarAndFooter: false },
+  },
+  {
     path: '/real',
     name: 'real',
     component: () => import('../views/LayoutPage.vue'),
