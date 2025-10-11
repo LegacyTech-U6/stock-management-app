@@ -12,7 +12,7 @@ export const useEntrepriseStore = defineStore("entreprise", {
   state: () => ({
     entreprises: [],
     currentEntreprise: null,
-    activeEntreprise: null,
+    activeEntreprise: JSON.parse(localStorage.getItem('activeEntreprise')) || null,
     isLoading: false,
     error: null,
     successMessage: null,

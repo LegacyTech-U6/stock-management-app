@@ -72,16 +72,14 @@ async function createInvoice(
       await pool.query(
         `INSERT INTO FactureItems (
           facture_id,
-          entreprise_id,   -- <-- ajout entreprise
           product_id,
           quantity,
           unit_price,
           tva,
           discount
-        ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        ) VALUES (?, ?, ?, ?, ?, ?)`,
         [
           factureId,
-          entrepriseId,     // <-- ici
           item.id,
           item.quantity,
           item.selling_price,
@@ -117,8 +115,8 @@ async function getAllInvoices(entrepriseId) {
   );
   for (const facture of factures) {
     const [items] = await pool.query(
-      `SELECT * FROM FactureItems WHERE facture_id = ? AND entreprise_id = ?`,
-      [facture.id, entrepriseId]
+      `SELECT * FROM FactureItems WHERE facture_id = ? `,
+      [facture.id]
     );
     facture.items = items;
   }

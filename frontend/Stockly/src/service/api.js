@@ -289,3 +289,73 @@ export async function deleteRole(id) {
   const { data } = await API.delete(`/roles/${id}`)
   return data
 }
+
+
+////////////////////////////////////////////////////////////
+// Statistics / Analytics API
+///////////////////////////////////////////////////////////////
+
+// ✅ Récupérer le total des ventes par produit (global)
+export async function getProductSales() {
+  const { data } = await API.get("/stats/product-sales");
+  return data;
+}
+
+// ✅ Récupérer le rapport des ventes pour une période donnée
+// period = "day" | "week" | "month"
+export async function getSalesReport(period = "month") {
+  const { data } = await API.get("/stats/sales-report", { params: { period } });
+  return data;
+}
+
+// ✅ Récupérer le meilleur produit vendu pour une période
+export async function getBestSellingProduct(period = "month") {
+  const { data } = await API.get("/stats/best-selling", { params: { period } });
+  return data;
+}
+
+// ✅ Récupérer la meilleure catégorie globale
+export async function getBestCategory() {
+  const { data } = await API.get("/stats/best-category");
+  return data;
+}
+
+// ✅ Récupérer les meilleurs produits par catégorie
+export async function getBestByCategory(categoryId) {
+  const { data } = await API.get(`/stats/best-by-category/${categoryId}`);
+  return data;
+}
+
+// ✅ Récupérer le chiffre d'affaires pour une période
+// period = "day" | "month" | "year"
+export async function getRevenue(period = "day") {
+  const { data } = await API.get("/stats/revenue", { params: { period } });
+  return data;
+}
+
+// ✅ Récupérer le profit pour une période
+// period = "day" | "month"
+export async function getProfit(period = "month") {
+  const { data } = await API.get("/stats/profit", { params: { period } });
+  return data;
+}
+
+// ✅ Comparer les ventes actuelles vs période précédente
+// period = "day" | "month"
+export async function compareSales(period = "month") {
+  const { data } = await API.get("/stats/compare-sales", { params: { period } });
+  return data;
+}
+
+// ✅ Récupérer les ventes par trimestre pour analyse saisonnière
+export async function getQuarterlySales() {
+  const { data } = await API.get("/stats/quarterly-sales");
+  return data;
+}
+
+// ✅ Récupérer la tendance des ventes pour graphique
+// period = "month" | "year"
+export async function getSalesTrend(period = "month") {
+  const { data } = await API.get("/stats/sales-trend", { params: { period } });
+  return data;
+}

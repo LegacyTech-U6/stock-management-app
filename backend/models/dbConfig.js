@@ -95,7 +95,7 @@ async function createProduct(
       Prod_Description,
       code_bar,
       date_of_arrival,
-      supplier,
+      supplier || null,
       Prod_image,
       min_stock_level,
       max_stock_level
@@ -194,12 +194,137 @@ async function getSales(entrepriseId) {
   return rows;
 }
 
+// ==============================
+// 🔹 Get products by category ID
+// ==============================
+async function getProductsByCategoryId(categoryId, entrepriseId) {
+  const [rows] = await pool.query(
+    `SELECT * 
+     FROM Product 
+     WHERE category_id = ? 
+       AND entreprise_id = ?
+     ORDER BY Prod_name`,
+    [categoryId, entrepriseId]
+  );
+  return rows;
+}
+
+// ==========================================
+// 🔹 Get low-stock products (global threshold)
+// ==========================================
+async function getLowStockProductsGlobal(entrepriseId, thresholdParam) {
+  let threshold = thresholdParam;
+
+  // Si aucun seuil n’est passé, on récupère celui des Settings de l’entreprise
+  if (typeof threshold === "undefined" || threshold === null) {
+    const [settings] = await pool.query(
+      `SELECT stock_alert_threshold 
+       FROM Settings 
+       WHERE entreprise_id = ? 
+       LIMIT 1`,
+      [entrepriseId]
+    );
+    threshold = settings[0]?.stock_alert_threshold ?? 5; // par défaut 5
+  }
+
+  console.log("🔸 Seuil utilisé:", threshold);
+
+  const [products] = await pool.query(
+    `SELECT * 
+     FROM Product 
+     WHERE quantity <= ? 
+       AND entreprise_id = ?`,
+    [threshold, entrepriseId]
+  );
+
+  console.log("⚠️ Produits bas en stock:", products);
+  return { threshold, products };
+}
+
+// =====================================
+// 🔹 Check if a specific product is low
+// =====================================
+async function checkLowStock(productId, entrepriseId) {
+  // Récupérer le seuil global
+  const [settings] = await pool.query(
+    `SELECT stock_alert_threshold 
+     FROM Settings 
+     WHERE entreprise_id = ? 
+     LIMIT 1`,
+    [entrepriseId]
+  );
+  const threshold = settings[0]?.stock_alert_threshold || 0;
+
+  // Récupérer le produit
+  const [product] = await pool.query(
+    `SELECT Prod_name, quantity 
+     FROM Product 
+     WHERE id = ? 
+       AND entreprise_id = ?`,
+    [productId, entrepriseId]
+  );
+
+  if (!product.length) return { alert: false };
+
+  const prod = product[0];
+  return {
+    alert: prod.quantity <= threshold,
+    product: prod,
+    threshold,
+  };
+}
+
+// ==================================
+// 🔹 Get all out-of-stock products
+// ==================================
+async function getOutOfStockProducts(entrepriseId) {
+  const [products] = await pool.query(
+    `SELECT 
+        p.id,
+        p.Prod_name,
+        p.quantity,
+        p.cost_price,
+        p.selling_price,
+        p.supplier,
+        c.name AS category_name,
+        s.supplier_name
+     FROM Product p
+     LEFT JOIN Category c ON p.category_id = c.id
+     LEFT JOIN supplier s ON p.supplier = s.id
+     WHERE p.quantity = 0
+       AND p.entreprise_id = ?`,
+    [entrepriseId]
+  );
+
+  return products;
+}
+
+// =====================================
+// 🔹 Update product quantity (safe)
+// =====================================
+async function updateProductQuantity(id, newQuantity, entrepriseId) {
+  const [result] = await pool.query(
+    `UPDATE Product 
+     SET quantity = ? 
+     WHERE id = ? 
+       AND entreprise_id = ?`,
+    [newQuantity, id, entrepriseId]
+  );
+  return result;
+}
+
+
 module.exports = {
   getProduct,
   createProduct,
   getOneProduct,
-  updateProduct,
   deleteProduct,
+  updateProduct,
+  updateProductQuantity,
   createSale,
+  getProductsByCategoryId,
+  getLowStockProductsGlobal,
+  checkLowStock,
+  getOutOfStockProducts,
   getSales,
 };

@@ -5,9 +5,10 @@ const { createInvoice, getAllInvoices, getInvoiceById } = require("../models/Fac
 async function createInvoiceController(req, res) {
   try {
     const { client_id, items, reduction = 0, reduction_type, tva = 0, notes, mode_paiement, date_of_creation, date_echeance, status } = req.body;
-
+     console.log('🧾 Requête reçue:', req.body) // <--- ajoute ceci
     // L'ID de l'entreprise vient du middleware
     const entreprise_id = req.entrepriseId; 
+    console.log('Entreprise ID:', req.entrepriseId)
     if (!entreprise_id) {
       return res.status(400).json({ message: "Entreprise non définie" });
     }
