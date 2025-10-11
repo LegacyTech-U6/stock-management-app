@@ -67,7 +67,7 @@
         <div class="nav-section">
           <span class="nav-section-label">Overview</span>
           <router-link
-            to="/dashboard"
+            to="/dashboar"
             class="nav-item"
             active-class="nav-item-active"
             @click="closeMobileMenu"
@@ -204,13 +204,7 @@
                 >
                   <span>All Categories</span><span class="badge-sm">{{ totalCategories }}</span>
                 </router-link>
-                <button
-                  class="submenu-item"
-                  @click="
-                    showAddCategory = true,
-                    closeMobileMenu()
-                  "
-                >
+                <button class="submenu-item" @click="((showAddCategory = true), closeMobileMenu())">
                   <span class="flex-center">
                     <span class="add-symbol">+</span>Add New Category
                   </span>
@@ -336,6 +330,12 @@
           </div>
         </div>
       </nav>
+      <button
+        @click="logoutEntreprise"
+        class="text-red-500 border border-red-500 px-4 py-2 rounded-md hover:bg-red-50"
+      >
+        Quitter l'entreprise
+      </button>
 
       <!-- User Profile -->
       <div class="user-profile">
@@ -361,9 +361,16 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useEntrepriseStore } from '@/stores/entrepriseStore'
+import { useRouter } from 'vue-router'
 
-
+const router = useRouter()
 const entrepriseStore = useEntrepriseStore()
+
+const logoutEntreprise = () => {
+  entrepriseStore.clearActiveEntreprise()
+  router.push('/admin') // retour à la page de sélection
+}
+
 
 const activeEntreprise = computed(() => entrepriseStore.activeEntreprise)
 const showAddCategory = ref(false)

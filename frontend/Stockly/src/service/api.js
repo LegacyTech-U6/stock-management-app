@@ -366,3 +366,9 @@ export async function getRevenueByCategory(period = "month") {
   const { data } = await API.get("/stats/revenue-by-category", { params: { period } });
   return data;
 }
+
+export async function getProductDistributionByCategory() {
+  const response = await API.get("/stats/products/distribution-by-category")
+  return response.data
+}
+

@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import { useEntrepriseStore } from '@/stores/entrepriseStore'
 
 const routes = [
   {
@@ -59,6 +60,11 @@ const routes = [
     meta: { showNavbarAndFooter: false },
     redirect: '/real/sales', // Optional: redirect to a default page
     children: [
+      {
+        path:'/dashboar',
+        name:'EDashboard',
+        component:()=> import('@/views/Enterprise.vue')
+      },
       {
         path: '/sales',
         name: 'sales',
@@ -136,6 +142,15 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+})
+
+router.afterEach((to, from) => {
+  // Si on revient sur la page /entreprises, on désactive l’entreprise
+  if (to.path === '/admin') {
+    localStorage.removeItem('activeEnterprise')
+    const store = useEntrepriseStore()
+    store.clearActiveEntreprise()
+  }
 })
 
 export default router

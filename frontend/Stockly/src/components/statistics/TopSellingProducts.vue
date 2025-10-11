@@ -13,10 +13,10 @@
       </thead>
       <tbody class="divide-y divide-gray-200">
         <tr v-for="product in topProducts" :key="product.id">
-          <td class="px-4 py-2 text-gray-700">{{ product.name }}</td>
-          <td class="px-4 py-2 text-right">{{ product.quantity_sold }}</td>
-          <td class="px-4 py-2 text-right">{{ product.revenue.toFixed(2) }}</td>
-          <td class="px-4 py-2 text-right">{{ product.profit.toFixed(2) }}</td>
+          <td class="px-4 py-2 text-gray-700">{{ product.name || 'N/A' }}</td>
+          <td class="px-4 py-2 text-right">{{ product.quantity_sold || 0 }}</td>
+          <td class="px-4 py-2 text-right">{{ (product.revenue ?? 0).toFixed(2) }}</td>
+          <td class="px-4 py-2 text-right">{{ (product.profit ?? 0).toFixed(2) }}</td>
         </tr>
       </tbody>
     </table>
@@ -28,17 +28,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useStatisticsStore } from '@/stores/statisticStore'
+import { ref, onMounted } from "vue";
+import { useStatisticsStore } from "@/stores/statisticStore";
 
-const statisticsStore = useStatisticsStore()
-const topProducts = ref([])
+const statisticsStore = useStatisticsStore();
+const topProducts = ref([]);
 
 onMounted(async () => {
   // Fetch top products from the store or API
-  await statisticsStore.fetchBestSellingProduct()
-  topProducts.value = statisticsStore.bestSellingProduct
-})
+  await statisticsStore.fetchTopProducts();
+  topProducts.value = statisticsStore.topProducts;
+});
 </script>
 
 <style scoped>

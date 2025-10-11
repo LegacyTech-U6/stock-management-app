@@ -137,6 +137,8 @@
       @submit="handleSubmit"
       @close="clientStore.fermerFormulaire"
     />
+    <SalesPerformanceChart />
+    <RevenueCatgeory />
   </div>
 </template>
 
@@ -151,6 +153,8 @@ import ClientCard from '@/components/clients/ClientCard.vue'
 import FromModal from '../components/clients/FromModal.vue'
 import { useClientStore } from '@/stores/clientStore'
 import { onMounted, ref, computed } from 'vue'
+import SalesPerformanceChart from '@/components/statistics/SalesPerformanceChart.vue'
+import RevenueCatgeory from '@/components/statistics/RevenueCatgeory.vue'
 
 const clientStore = useClientStore()
 const search = ref('')

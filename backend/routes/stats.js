@@ -1,33 +1,32 @@
 const express = require("express");
 const router = express.Router();
+
+const authenticateUser = require("../middleware/AuthenticatedUser");
+const getActiveEntreprise = require("../middleware/activeEntreprise");
+
 const statsController = require("../controller/statistics/productStats");
 
-/**
- * ============================================================
- * 📊 STATISTICS ROUTES
- * ------------------------------------------------------------
- * All routes related to analytics, KPIs, revenue, profit, and trends.
- * Base path: /api/stats
- * ============================================================
- */
+// 🌐 Tous les endpoints passent par les deux middlewares
+// - authenticateUser : garantit que l'utilisateur est connecté
+// - getActiveEntreprise : fournit req.entrepriseId si header X-Entreprise-Id présent
+router.use(authenticateUser);
+router.use(getActiveEntreprise);
 
-// Product-level stats
+// ----------------------------
+// STATISTICS ROUTES
+// ----------------------------
 router.get("/product-sales", statsController.productSales);
 router.get("/sales-report", statsController.getSalesReport);
-router.get("/best-selling", statsController.getBestSellingProduct);
-
-// Category-level stats
 router.get("/best-category", statsController.getBestCategory);
 router.get("/best-by-category/:id", statsController.getBestByCategory);
-
-// Financial stats
+router.get("/best-selling", statsController.getBestSellingProduct);
 router.get("/revenue", statsController.getRevenue);
 router.get("/profit", statsController.getProfit);
 router.get("/compare-sales", statsController.compareSales);
-
-// Trend and seasonal analysis
 router.get("/quarterly-sales", statsController.getQuarterlySales);
 router.get("/sales-trend", statsController.getSalesTrend);
-router.get("/revenue-by-category",statsController.revenueByCategory)
-
+router.get("/revenue-by-category", statsController.getRevenueByCategory);
+router.get(
+  "/products/distribution-by-category", statsController.getProductDistributionByCategory
+);
 module.exports = router;

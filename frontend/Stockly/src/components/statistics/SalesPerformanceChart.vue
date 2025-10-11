@@ -1,5 +1,5 @@
 <template>
-  <div class="h-64">
+  <div class="h-96 w-full">
     <Line v-if="chartReady" :data="chartData" :options="chartOptions" />
   </div>
 </template>
@@ -36,21 +36,25 @@ const chartReady = ref(false)
 
 onMounted(async () => {
   await statsStore.fetchSalesTrend('month')
-  chartReady.value = true // only render chart after data fetched
+  chartReady.value = true
 })
 
-// Computed chart data with safe defaults
 const chartData = computed(() => ({
-  labels: statsStore.salesTrend?.map((d) => d.label) || [],
+  labels: statsStore.salesTrend?.map((d) => d.label) || ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
   datasets: [
     {
-      label: 'Revenue',
-      data: statsStore.salesTrend?.map((d) => d.revenue) || [],
-      borderColor: '#3B82F6',
-      backgroundColor: 'rgba(59, 130, 246, 0.2)',
-      tension: 0.3,
+      label: 'Sales ($)',
+      data: statsStore.salesTrend?.map((d) => d.revenue) || [4000, 3000, 4500, 4000, 5500, 6000, 6500],
+      borderColor: '#8B5CF6',
+      backgroundColor: 'rgba(139, 92, 246, 0.3)',
+      tension: 0.4,
       fill: true,
-      pointRadius: 3,
+      pointRadius: 0,
+      pointBackgroundColor: '#8B5CF6',
+      pointBorderColor: '#ffffff',
+      pointBorderWidth: 2,
+      pointHoverRadius: 6,
+      borderWidth: 3,
     },
   ],
 }))
@@ -59,14 +63,73 @@ const chartOptions = {
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
-    legend: { position: 'top' },
+    legend: {
+      position: 'top',
+      align: 'end',
+      labels: {
+        usePointStyle: true,
+        pointStyle: 'circle',
+        padding: 20,
+        font: {
+          size: 12,
+          weight: '500',
+        },
+        color: '#6B7280',
+      }
+    },
+    tooltip: {
+      mode: 'index',
+      intersect: false,
+      backgroundColor: 'rgba(31, 41, 55, 0.95)',
+      padding: 12,
+      titleFont: {
+        size: 13,
+        weight: '600',
+      },
+      bodyFont: {
+        size: 12,
+      },
+      cornerRadius: 8,
+      displayColors: true,
+      borderColor: 'rgba(255, 255, 255, 0.1)',
+      borderWidth: 1,
+    },
   },
   scales: {
     y: {
       beginAtZero: true,
-      ticks: { callback: (v) => `$${v.toLocaleString()}` },
+      max: 8000,
+      grid: {
+        color: 'rgba(0, 0, 0, 0.05)',
+        drawBorder: false,
+      },
+      ticks: {
+        callback: (v) => v.toLocaleString(),
+        stepSize: 2000,
+        font: {
+          size: 11,
+        },
+        color: '#9CA3AF',
+      },
     },
-    x: { ticks: { autoSkip: true, maxTicksLimit: 10 } },
+    x: {
+      grid: {
+        display: false,
+        drawBorder: false,
+      },
+      ticks: {
+        autoSkip: false,
+        font: {
+          size: 11,
+        },
+        color: '#9CA3AF',
+      }
+    },
+  },
+  interaction: {
+    mode: 'nearest',
+    axis: 'x',
+    intersect: false
   },
 }
 </script>
