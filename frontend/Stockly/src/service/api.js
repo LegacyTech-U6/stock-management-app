@@ -314,21 +314,21 @@ export async function getBestSellingProduct(period = "month") {
   return data;
 }
 
-// ✅ Récupérer la meilleure catégorie globale
-export async function getBestCategory() {
-  const { data } = await API.get("/stats/best-category");
+// ✅ Récupérer la meilleure catégorie globale pour une période
+export async function getBestCategory(period = "month") {
+  const { data } = await API.get("/stats/best-category", { params: { period } });
   return data;
 }
 
 // ✅ Récupérer les meilleurs produits par catégorie
-export async function getBestByCategory(categoryId) {
-  const { data } = await API.get(`/stats/best-by-category/${categoryId}`);
+export async function getBestByCategory(categoryId, period = "month") {
+  const { data } = await API.get(`/stats/best-by-category/${categoryId}`, { params: { period } });
   return data;
 }
 
 // ✅ Récupérer le chiffre d'affaires pour une période
 // period = "day" | "month" | "year"
-export async function getRevenue(period = "day") {
+export async function getRevenue(period = "month") {
   const { data } = await API.get("/stats/revenue", { params: { period } });
   return data;
 }
@@ -348,8 +348,8 @@ export async function compareSales(period = "month") {
 }
 
 // ✅ Récupérer les ventes par trimestre pour analyse saisonnière
-export async function getQuarterlySales() {
-  const { data } = await API.get("/stats/quarterly-sales");
+export async function getQuarterlySales(period = "year") {
+  const { data } = await API.get("/stats/quarterly-sales", { params: { period } });
   return data;
 }
 
@@ -360,10 +360,9 @@ export async function getSalesTrend(period = "month") {
   return data;
 }
 
-
-// Recuperer la tendance des revenu par category
-
-export async function getRevenueByCategory() {
-  const { data } = await API.get("/stats/revenue-by-category");
+// ✅ Récupérer la tendance des revenus par catégorie
+// period = "month" | "year"
+export async function getRevenueByCategory(period = "month") {
+  const { data } = await API.get("/stats/revenue-by-category", { params: { period } });
   return data;
 }

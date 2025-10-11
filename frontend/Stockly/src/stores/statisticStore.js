@@ -11,6 +11,7 @@ import {
   compareSales,
   getQuarterlySales,
   getSalesTrend,
+  getRevenueByCategory
 } from "@/service/api";
 
 export const useStatisticsStore = defineStore("statistics", {
