@@ -4,7 +4,10 @@
       Product Distribution
     </h2>
 
-    <canvas ref="doughnutCanvas" class="w-full h-64"></canvas>
+    <!-- Chart container -->
+    <div class="relative w-full max-w-sm mx-auto" style="height:250px">
+      <canvas ref="doughnutCanvas" class="w-full h-full"></canvas>
+    </div>
 
     <div v-if="totalProducts === 0" class="text-gray-500 text-sm text-center mt-4">
       No products found for this enterprise.
@@ -22,78 +25,66 @@ const statsStore = useStatisticsStore()
 const doughnutCanvas = ref(null)
 let doughnutChart = null
 
+// Total products for percentage calculation
 const totalProducts = computed(() => {
-  return statsStore.productDistributionByCategory?.reduce(
-    (sum, item) => sum + item.total_products,
-    0
-  ) || 0
+  return statsStore.revenueByCategory?.reduce((sum, item) => sum + item.revenue, 0) || 0
 })
 
+// Fetch data
 onMounted(async () => {
-  await statsStore.fetchProductDistributionByCategory()
+  await statsStore.fetchRevenueByCategory()
   renderChart()
 })
 
-watch(() => statsStore.productDistributionByCategory, () => {
+// Watch for data changes
+watch(() => statsStore.revenueByCategory, () => {
   renderChart()
 }, { deep: true })
 
 function renderChart() {
   if (!doughnutCanvas.value) return
+  if (doughnutChart) doughnutChart.destroy()
 
-  if (doughnutChart) {
-    doughnutChart.destroy()
-  }
+  const labels = statsStore.revenueByCategory?.map(item => item.category_name.toUpperCase()) || []
+  const dataValues = statsStore.revenueByCategory?.map(item => item.revenue) || []
 
-  const labels = statsStore.productDistributionByCategory?.map(item => item.category_name.toUpperCase()) || []
-  const dataValues = statsStore.productDistributionByCategory?.map(item => item.total_products) || []
-
-  const colors = [
-    "#3B82F6", // blue
-    "#10B981", // green
-    "#F59E0B", // yellow
-    "#EF4444", // red
-    "#8B5CF6", // purple
-    "#EC4899", // pink
-    "#14B8A6", // teal
-  ]
+  // Vibrant colors
+  const colors = ["#6366F1", "#EC4899", "#FBBF24", "#10B981", "#F43F5E", "#8B5CF6", "#14B8A6"]
 
   doughnutChart = new Chart(doughnutCanvas.value, {
-    type: 'doughnut', // still doughnut type
+    type: 'doughnut',
     data: {
       labels,
       datasets: [{
         data: dataValues,
         backgroundColor: colors,
-        borderWidth: 0
+        borderWidth: 2,
+        borderColor: '#fff'
       }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      cutout: '0%', // FULL doughnut (looks like a pie chart)
+      cutout: '0%', // FULL pie
       plugins: {
-        legend: { display: false },
+        legend: { display: false }, // hide default legend
         tooltip: {
           callbacks: {
             label: (context) => {
               const value = context.raw
               const percentage = totalProducts.value === 0 ? 0 : Math.round((value / totalProducts.value) * 100)
-              return `${context.label}: ${value} products (${percentage}%)`
+              return `${context.label}: ${value} (${percentage}%)`
             }
           }
         },
         datalabels: {
           color: '#fff',
-          font: {
-            weight: 'bold',
-            size: 14
-          },
-          textAlign: 'center',
+          font: { weight: 'bold', size: 12 },
+          anchor: 'center',
+          align: 'center',
           formatter: (value, ctx) => {
             const percentage = totalProducts.value === 0 ? 0 : Math.round((value / totalProducts.value) * 100)
-            const label = ctx.chart.data.labels[ctx.dataIndex]
-            return `${label}\n${percentage}%`
+            return `${ctx.chart.data.labels[ctx.dataIndex]}: ${percentage}%`
           }
         }
       }
@@ -106,46 +97,7 @@ function renderChart() {
 <style scoped>
 :deep(canvas) {
   display: block;
-  max-width: 100%;
-  max-height: 100%;
+  width: 100% !important;
+  height: 100% !important;
 }
 </style>
-
-
-
-ChartJS.register(Title, Tooltip, Legend, ArcElement);
-
-const statsStore = useStatisticsStore();
-
-onMounted(() => {
-  statsStore.fetchRevenueByCategory();
-});
-
-const chartData = computed(() => ({
-  labels: statsStore.revenueByCategory.map(c => c.category_name),
-  datasets: [
-    {
-      data: statsStore.revenueByCategory.map(c => c.revenue),
-      backgroundColor: [
-        "#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#8B5CF6",
-      ],
-      borderWidth: 1,
-    },
-  ],
-}));
-
-const chartOptions = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: "bottom",
-    },
-    tooltip: {
-      callbacks: {
-        label: function(context: any) {
-          return `${context.label}: $${context.raw}`;
-        },
-      },
-    },
-  },
-};

@@ -1,5 +1,6 @@
 <template>
-  <div class="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+  <div class="px-30">
+    <div class="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
     <!-- 🔹 Loop through stats array -->
     <StatsCards
       v-for="(stat, index) in stats"
@@ -17,12 +18,24 @@
   <ChartRevenue />
 
   <div>
+    <div class="grid grid-cols-4 gap-4 p-4">
+      <div class="col-span-3 bg-white rounded-xl border-2 border-gray-300 p-10">
+           <SalesPerformanceChart />
+      </div>
+      <div class="p-5  bg-white rounded-xl border-2 border-gray-300">
+           <RevenueCatgeory />
+      </div>
+
+    </div>
     <!-- Sales Chart -->
-    <SalesPerformanceChart />
-    <RevenueCatgeory />
+
+
+
     <ProfitMarginChart />
     <TopSellingProducts />
   </div>
+  </div>
+
 </template>
 
 <script setup>
