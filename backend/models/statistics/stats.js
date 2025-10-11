@@ -164,16 +164,18 @@ async function getProfitByPeriod(period = "month") {
   else if (period === "month")
     condition =
       "WHERE YEAR(sale_date) = YEAR(CURDATE()) AND MONTH(sale_date) = MONTH(CURDATE())";
+  else if (period === "year") condition = "WHERE YEAR(sale_date) = YEAR(CURDATE())";
 
   const [rows] = await pool.query(`
     SELECT 
-      SUM(s.quantity_sold * (p.unit_price - p.cost_price)) AS total_profit
+      SUM(s.quantity_sold * (p.selling_price - p.cost_price)) AS total_profit
     FROM Sales s
     JOIN Product p ON s.product_id = p.id
     ${condition}
   `);
   return rows[0].total_profit || 0;
 }
+
 
 /**
  * 🔹 compareSales(period)
@@ -260,6 +262,24 @@ async function getSalesTrend(period = "month") {
 }
 
 /**
+ * revenu breakdown by category
+ * 
+ */
+async function getRevenueByCategory() {
+  const [rows] = await pool.query(`
+    SELECT 
+      c.name AS category_name,
+      SUM(s.total_price) AS revenue
+    FROM Sales s
+    JOIN Product p ON s.product_id = p.id
+    JOIN Category c ON p.category_id = c.id
+    GROUP BY c.id, c.name
+    ORDER BY revenue DESC
+  `);
+  return rows;
+}
+
+/**
  * ============================================================
  * ✅ EXPORTS
  * ------------------------------------------------------------
@@ -277,4 +297,5 @@ module.exports = {
   compareSales,
   getQuarterlySales,
   getSalesTrend,
+  getRevenueByCategory
 };

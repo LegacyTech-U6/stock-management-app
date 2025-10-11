@@ -9,6 +9,7 @@ const {
   compareSales,
   getQuarterlySales,
   getSalesTrend,
+  getRevenueByCategory
 } = require("../../models/statistics/stats");
 
 /**
@@ -219,6 +220,18 @@ module.exports = {
       res.json({ period, trend });
     } catch (error) {
       console.error("Erreur getSalesTrend:", error);
+      res.status(500).json({ error: error.message });
+    }
+  },
+  
+
+
+   revenueByCategory: async (req, res) => {
+    try {
+      const data = await getRevenueByCategory();
+      res.json(data);
+    } catch (error) {
+      console.error("Erreur getRevenueByCategory:", error);
       res.status(500).json({ error: error.message });
     }
   },

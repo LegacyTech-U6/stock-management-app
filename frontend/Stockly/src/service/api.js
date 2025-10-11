@@ -359,3 +359,11 @@ export async function getSalesTrend(period = "month") {
   const { data } = await API.get("/stats/sales-trend", { params: { period } });
   return data;
 }
+
+
+// Recuperer la tendance des revenu par category
+
+export async function getRevenueByCategory() {
+  const { data } = await API.get("/stats/revenue-by-category");
+  return data;
+}

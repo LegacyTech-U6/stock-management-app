@@ -46,6 +46,11 @@ const routes = [
     name:'roles',
     component:()=>import('@/views/RoleManagement.vue'),
     meta: { showNavbarAndFooter: false },
+  },{
+    path:'/dashboard',
+    name:'dashboard',
+    component:()=>import('@/views/Statistics/DashBoard.vue'),
+     meta: { showNavbarAndFooter: false },
   },
   {
     path: '/real',

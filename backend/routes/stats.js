@@ -28,5 +28,6 @@ router.get("/compare-sales", statsController.compareSales);
 // Trend and seasonal analysis
 router.get("/quarterly-sales", statsController.getQuarterlySales);
 router.get("/sales-trend", statsController.getSalesTrend);
+router.get("/revenue-by-category",statsController.revenueByCategory)
 
 module.exports = router;
