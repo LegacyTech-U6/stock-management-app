@@ -41,6 +41,11 @@ const routes = [
     name:'workers',
     component:()=>import('@/views/WorkerPage.vue'),
     meta: { showNavbarAndFooter: false },
+  },{
+    path:'/roles',
+    name:'roles',
+    component:()=>import('@/views/RoleManagement.vue'),
+    meta: { showNavbarAndFooter: false },
   },
   {
     path: '/real',

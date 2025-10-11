@@ -6,13 +6,12 @@ const WorkerModel = require("../models/WorkerModel");
 const WorkersController = {
   // ✅ Créer un nouveau worker
   async createWorker(req, res) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
-
+    // const errors = validationResult(req);
+    // if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+const user_id = req.user.id
     const {
       email,
       entreprise_id,
-      user_id = null,
       position = null,
       date_hired = null,
       status = "active",
@@ -20,6 +19,11 @@ const WorkersController = {
       password,
       name
     } = req.body;
+
+    console.log('====================================');
+    console.log(req.body);
+    console.log(user_id)
+    console.log('====================================');
 
     try {
       // 1️⃣ Vérifier si l'email existe déjà
@@ -52,7 +56,11 @@ const WorkersController = {
   // ✅ Récupérer tous les workers
   async getAllWorkers(req, res) {
     try {
-      const workers = await WorkerModel.getAll();
+        const user_id = req.user.id;
+        console.log('====================================');
+        console.log(user_id);
+        console.log('====================================');
+      const workers = await WorkerModel.getAll(user_id);
       res.json({workers});
     } catch (err) {
       console.error(err);
@@ -62,6 +70,7 @@ const WorkersController = {
 
   // ✅ Récupérer un worker par ID
   async getWorkerById(req, res) {
+    const user_id = req.user.id;
     const { id } = req.params;
     try {
       const worker = await WorkerModel.getById(id);
@@ -75,6 +84,7 @@ const WorkersController = {
 
   // ✅ Mise à jour
   async updateWorker(req, res) {
+    const user_id = req.user.id;
     const { id } = req.params;
     const { position, date_hired, status } = req.body;
     try {
@@ -89,6 +99,7 @@ const WorkersController = {
 
   // ✅ Suppression
   async deleteWorker(req, res) {
+    const user_id = req.user.id;
     const { id } = req.params;
     try {
       const affected = await WorkerModel.delete(id);

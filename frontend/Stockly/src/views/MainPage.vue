@@ -80,13 +80,13 @@
 
       <!-- Enterprise Cards Grid -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <EnterpriseCard @view="handleOpenEnterprise" v-for="enterprise in filteredEntreprises" :key="enterprise.id" :enterprise="enterprise" />
+        <EnterpriseCard @view="handleOpenEnterprise" @edit="handleEditEnterprise" v-for="enterprise in filteredEntreprises" :key="enterprise.id" :enterprise="enterprise" />
       </div>
     </div>
     <!-- Create Modal -->
     <div v-if="showCreateModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
-        <h2 class="text-xl font-bold text-gray-900 mb-4">Add New Entreprise</h2>
+        <h2 class="text-xl font-bold text-gray-900 mb-4"> {{ isEditing ? 'Edit enterprise' : 'Add new enterprise' }}</h2>
         <div class="space-y-4">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
@@ -121,9 +121,10 @@
             </button>
             <button
               @click="createEntreprise"
+               :disabled="isSubmitting"
               class="flex-1 px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800"
             >
-              Create
+              {{ isSubmitting ? 'Saving...' : (isEditing ? 'Update' : 'Create') }}
             </button>
           </div>
         </div>
@@ -164,7 +165,8 @@ const deleteEntreprise = async (id) => {
 const selectEntreprise = (entreprise) => {
   store.setActiveEntreprise(entreprise)
 }
-
+const isSubmitting = ref(false)
+const isEditing = ref(false)
 const enterprises = store.entreprises
 console.log(enterprises)
 const router = useRouter()
@@ -187,6 +189,12 @@ const activeEntreprisesCount = computed(() => {
 const inactiveEntreprisesCount = computed(() => {
   return entreprises.value.filter(e => !e.active).length
 })
+// Methods
+const handleEditEnterprise = (enterprise) => {
+  isEditing.value = true
+  entrepriseData.value = { ...enterprise }
+  showCreateModal.value = true
+}
 
 const handleOpenEnterprise =(enterprise)=>{
   console.log("clicked")
@@ -202,19 +210,36 @@ const formatDate = (date) => {
 }
 
 
-const createEntreprise = () => {
+const createEntreprise = async () => {
+  isSubmitting.value = true
   try {
-    store.createEntreprise(entrepriseData.value)
-    alert("created succesfully")
-  } catch (error) {
-    console.error(error)
-    alert("erros creating")
+  if (isEditing.value) {
+    await store.updateEntreprise(entrepriseData.value.id, entrepriseData.value)
+    alert("Edited successfully ✅")
+  } else {
+    await store.createEntreprise(entrepriseData.value)
+    alert("Created successfully ✅")
+  }
+  closeModal()
+} catch (error) {
+  console.error(error)
+  alert("Error creating or updating ❌")
+} finally {
+  isSubmitting.value = false
+}
 
-  }finally{
-    showCreateModal.value = false
+
+
   }
 
-
+  const closeModal=()=>{
+    showCreateModal.value= false
+    isEditing.value = false
+    entrepriseData.value={
+      name:'',
+      description:'',
+      logo_url:''
+    }
   }
 
 

@@ -45,7 +45,7 @@
               :style="{ width: `${((step - 1) / 3) * 100}%` }"
             ></div>
           </div>
-          
+
           <!-- Step Indicators -->
           <div class="relative flex justify-between">
             <div
@@ -595,7 +595,6 @@ const validateStep = (currentStep) => {
     if (!form.name.trim()) errors.name = 'Product name is required'
     if (!form.barcode.trim()) errors.barcode = 'Barcode is required'
     if (!form.category) errors.category = 'Category is required'
-    if (!form.supplier) errors.supplier = 'Supplier is required'
   }
 
   if (currentStep === 2) {

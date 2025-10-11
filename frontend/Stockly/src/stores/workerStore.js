@@ -32,59 +32,59 @@ export const useWorkerStore = defineStore('worker', {
 
     // 🔹 Récupérer un worker spécifique
     async fetchWorkerById(id) {
-      loading = true
-      error = null
+      this.loading = true
+      this.error = null
       try {
-        currentWorker = await workerAPI.getWorkerById(id)
+        this.currentWorker = await workerAPI.getWorkerById(id)
       } catch (err) {
-        error = err.message || 'Erreur lors du chargement du worker'
+        this.error = err.message || 'Erreur lors du chargement du worker'
       } finally {
-        loading = false
+        this.loading = false
       }
     },
     // 🔹 Créer un worker
     async addWorker(workerData) {
-      loading = true
-      error = null
+      this.loading = true
+      this.error = null
       try {
         const newWorker = await workerAPI.createWorker(workerData)
-        workers.push(newWorker)
+        this.workers.push(newWorker)
         return newWorker
       } catch (err) {
-        error = err.message || 'Erreur lors de la création du worker'
+        this.error = err.message || 'Erreur lors de la création du worker'
         throw err
       } finally {
-        loading = false
+        this.loading = false
       }
     },
     // 🔹 Mettre à jour un worker
     async updateWorker(id, updatedData) {
-      loading = true
-      error = null
+      this.loading = true
+      this.error = null
       try {
         const updatedWorker = await workerAPI.updateWorker(id, updatedData)
-        const index = workers.findIndex((w) => w.id === id)
-        if (index !== -1) workers[index] = updatedWorker
+        const index = this.workers.findIndex((w) => w.id === id)
+        if (index !== -1) this.workers[index] = updatedWorker
         return updatedWorker
       } catch (err) {
-        error = err.message || 'Erreur lors de la mise à jour du worker'
+        this.error = err.message || 'Erreur lors de la mise à jour du worker'
         throw err
       } finally {
-        loading = false
+        this.loading = false
       }
     },
     // 🔹 Supprimer un worker
     async removeWorker(id) {
-      loading = true
-      error = null
+      this.loading = true
+      this.error = null
       try {
         await workerAPI.deleteWorker(id)
-        workers = workers.filter((w) => w.id !== id)
+        this.workers = this.workers.filter((w) => w.id !== id)
       } catch (err) {
-        error = err.message || 'Erreur lors de la suppression du worker'
+        this.error = err.message || 'Erreur lors de la suppression du worker'
         throw err
       } finally {
-        loading = false
+        this.loading = false
       }
     },
   },
