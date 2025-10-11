@@ -9,8 +9,8 @@ const statsController = require("../controller/statistics/productStats");
 // 🌐 Tous les endpoints passent par les deux middlewares
 // - authenticateUser : garantit que l'utilisateur est connecté
 // - getActiveEntreprise : fournit req.entrepriseId si header X-Entreprise-Id présent
-router.use(authenticateUser);
-router.use(getActiveEntreprise);
+// router.use(authenticateUser);
+// router.use(getActiveEntreprise);
 
 // ----------------------------
 // STATISTICS ROUTES

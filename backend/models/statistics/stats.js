@@ -65,10 +65,12 @@ async function getSalesReportByPeriod(period = "month", { enterpriseId = null, u
   let condition = [];
   let params = [];
 
+  // 1️⃣ Filter by period
   if (period === "day") condition.push("DATE(s.sale_date) = CURDATE()");
   else if (period === "week") condition.push("YEARWEEK(s.sale_date,1) = YEARWEEK(CURDATE(),1)");
   else if (period === "month") condition.push("YEAR(s.sale_date) = YEAR(CURDATE()) AND MONTH(s.sale_date) = MONTH(CURDATE())");
 
+  // 2️⃣ Filter by enterprise or user's enterprises
   if (enterpriseId) {
     condition.push("p.entreprise_id = ?");
     params.push(enterpriseId);
@@ -79,17 +81,29 @@ async function getSalesReportByPeriod(period = "month", { enterpriseId = null, u
     params.push(...enterpriseIds);
   }
 
+  // 3️⃣ SQL query
   const [rows] = await pool.query(`
-    SELECT p.id AS product_id, p.Prod_name, SUM(s.quantity_sold) AS total_sold
+    SELECT 
+      s.sale_date,
+      p.id AS product_id,
+      p.Prod_name,
+      p.cost_price,
+      p.selling_price,
+      SUM(s.quantity_sold) AS total_sold,
+      SUM(s.quantity_sold * p.cost_price) AS total_cost,
+      SUM(s.quantity_sold * p.selling_price) AS total_revenue,
+      SUM(s.quantity_sold * (p.selling_price - p.cost_price)) AS total_profit
     FROM Sales s
     JOIN Product p ON s.product_id = p.id
     ${condition.length ? "WHERE " + condition.join(" AND ") : ""}
-    GROUP BY p.id, p.Prod_name
-    ORDER BY total_sold DESC
+    GROUP BY s.sale_date, p.id, p.Prod_name, p.cost_price, p.selling_price
+    ORDER BY s.sale_date, total_sold DESC
   `, params);
 
   return rows;
 }
+
+
 
 /**
  * 🔹 getBestCategory({ enterpriseId, userId })

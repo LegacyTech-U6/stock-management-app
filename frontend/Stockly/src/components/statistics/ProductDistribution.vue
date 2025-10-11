@@ -1,152 +1,109 @@
 <template>
-  <div class="bg-white rounded-2xl p-6 ">
+  <div class="bg-white rounded-2xl p-6">
     <h2 class="text-lg font-semibold mb-6 text-gray-700">
       Product Distribution
     </h2>
 
-    <div v-if="chartData.labels.length > 0" class="flex flex-col md:flex-row items-center justify-between">
-      <!-- Chart -->
-      <div class="w-48 h-48 mb-6 md:mb-0 relative">
-        <Doughnut :data="chartData" :options="chartOptions" />
-      </div>
+    <canvas ref="doughnutCanvas" class="w-full h-64"></canvas>
 
-      <!-- Legend with percentages and ticks -->
-      <div class="space-y-4 min-w-48">
-        <div
-          v-for="(item, index) in statsStore.productDistributionByCategory"
-          :key="item.category_name"
-          class="flex items-center justify-between"
-        >
-          <div class="flex items-center space-x-3">
-            <!-- Color indicator with tick -->
-            <div class="relative">
-              <div
-                class="w-4 h-4 rounded-sm"
-                :style="{ backgroundColor: chartData.datasets[0].backgroundColor[index] }"
-              ></div>
-              <!-- Tick mark -->
-              <svg
-                v-if="showTick(index)"
-                class="w-3 h-3 absolute -top-1 -right-1 text-white"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-              </svg>
-            </div>
-            <span class="text-sm font-medium text-gray-700">{{ formatLabel(item.category_name) }}</span>
-          </div>
-          <span class="text-sm font-semibold text-gray-900">
-            {{ calculatePercentage(item.total_products) }}%
-          </span>
-        </div>
-      </div>
-    </div>
-
-    <div v-else class="text-gray-500 text-sm text-center mt-4">
+    <div v-if="totalProducts === 0" class="text-gray-500 text-sm text-center mt-4">
       No products found for this enterprise.
     </div>
   </div>
 </template>
 
 <script setup>
-import { Doughnut } from "vue-chartjs"
-import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement } from "chart.js"
-import { computed, onMounted, ref } from "vue"
-import { useStatisticsStore } from "@/stores/statisticStore"
-
-ChartJS.register(Title, Tooltip, Legend, ArcElement)
+import { ref, onMounted, watch, computed } from 'vue'
+import Chart from 'chart.js/auto'
+import ChartDataLabels from 'chartjs-plugin-datalabels'
+import { useStatisticsStore } from '@/stores/statisticStore'
 
 const statsStore = useStatisticsStore()
+const doughnutCanvas = ref(null)
+let doughnutChart = null
 
-// 🔹 Chargement des données au montage
+const totalProducts = computed(() => {
+  return statsStore.productDistributionByCategory?.reduce(
+    (sum, item) => sum + item.total_products,
+    0
+  ) || 0
+})
+
 onMounted(async () => {
   await statsStore.fetchProductDistributionByCategory()
+  renderChart()
 })
 
-// Calculate total products for percentage
-const totalProducts = computed(() => {
-  return statsStore.productDistributionByCategory?.reduce((sum, item) => sum + item.total_products, 0) || 0
-})
+watch(() => statsStore.productDistributionByCategory, () => {
+  renderChart()
+}, { deep: true })
 
-// Calculate percentage for each category
-const calculatePercentage = (categoryCount) => {
-  if (totalProducts.value === 0) return 0
-  return Math.round((categoryCount / totalProducts.value) * 100)
-}
+function renderChart() {
+  if (!doughnutCanvas.value) return
 
-// Format labels to match the screenshot exactly
-const formatLabel = (categoryName) => {
-  // Convert to uppercase to match the screenshot style
-  return categoryName.toUpperCase()
-}
-
-// Determine which categories should show ticks (largest segment or based on some logic)
-const showTick = (index) => {
-  // Show tick for the largest segment, or customize as needed
-  const data = statsStore.productDistributionByCategory?.map(item => item.total_products) || []
-  if (data.length === 0) return false
-
-  const maxValue = Math.max(...data)
-  const currentValue = data[index]
-  return currentValue === maxValue
-}
-
-// 🔹 Données du graphique - Using exact data from screenshot
-const chartData = computed(() => {
-  // Map your actual data to match the screenshot labels
-  const labelMap = {
-    'Electronics': 'ELECTRONICS',
-    'Mobile': 'MOBILE',
-    'Peripherals': 'PERIPHERALS',
-    'Audio': 'AUDIO'
+  if (doughnutChart) {
+    doughnutChart.destroy()
   }
 
-  return {
-    labels: statsStore.productDistributionByCategory?.map((item) => labelMap[item.category_name] || item.category_name.toUpperCase()) || [],
-    datasets: [
-      {
-        label: "Products per Category",
-        data: statsStore.productDistributionByCategory?.map((item) => item.total_products) || [],
-        backgroundColor: [
-          "#3B82F6", // blue - ELECTRONICS
-          "#10B981", // green - MOBILE
-          "#F59E0B", // yellow - PERIPHERALS
-          "#EF4444", // red - AUDIO
-          "#8B5CF6", // purple
-          "#EC4899", // pink
-          "#14B8A6", // teal
-        ],
-        borderWidth: 0,
-        spacing: 0, // Remove spacing to make it filled
-      },
-    ],
-  }
-})
+  const labels = statsStore.productDistributionByCategory?.map(item => item.category_name.toUpperCase()) || []
+  const dataValues = statsStore.productDistributionByCategory?.map(item => item.total_products) || []
 
-// 🔹 Options du graphique
-const chartOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-  cutout: "0%", // Remove cutout to make it a filled pie chart
-  plugins: {
-    legend: {
-      display: false,
+  const colors = [
+    "#3B82F3", // blue
+    "#10B986", // green
+    "#F59E0B", // yellow
+    "#EF4444", // red
+    "#8B5CF6", // purple
+    "#EC4899", // pink
+    "#14B8A6", // teal
+  ]
+
+  doughnutChart = new Chart(doughnutCanvas.value, {
+    type: 'doughnut', // still doughnut type
+    data: {
+      labels,
+      datasets: [{
+        data: dataValues,
+        backgroundColor: colors,
+        borderWidth: 0
+      }]
     },
-    tooltip: {
-      callbacks: {
-        label: (context) => {
-          const percentage = calculatePercentage(context.raw)
-          return `${context.label}: ${context.raw} products (${percentage}%)`
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '0%', // FULL doughnut (looks like a pie chart)
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (context) => {
+              const value = context.raw
+              const percentage = totalProducts.value === 0 ? 0 : Math.round((value / totalProducts.value) * 100)
+              return `${context.label}: ${value} products (${percentage}%)`
+            }
+          }
         },
-      },
+        datalabels: {
+          color: '#fff',
+          font: {
+            weight: 'bold',
+            size: 14
+          },
+          textAlign: 'center',
+          formatter: (value, ctx) => {
+            const percentage = totalProducts.value === 0 ? 0 : Math.round((value / totalProducts.value) * 100)
+            const label = ctx.chart.data.labels[ctx.dataIndex]
+            return `${label}\n${percentage}%`
+          }
+        }
+      }
     },
-  },
+    plugins: [ChartDataLabels]
+  })
 }
 </script>
 
 <style scoped>
-/* Custom styles for the chart container */
 :deep(canvas) {
   display: block;
   max-width: 100%;

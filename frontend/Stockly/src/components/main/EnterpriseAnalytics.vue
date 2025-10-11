@@ -39,7 +39,7 @@
     <!-- Charts and Workers -->
     <div class="grid grid-cols-3 gap-6">
       <div class="col-span-2">
-        <SalesTrendChart :data="salesTrendData" />
+
       </div>
       <WorkersPanel :topWorker="topWorker" :otherWorkers="otherWorkers" />
     </div>
@@ -47,7 +47,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref,onMounted,computed,watch } from 'vue';
 import {
   TrendingUp,
   AlertTriangle,
@@ -56,12 +56,25 @@ import {
   Users,
   ShoppingCart
 } from 'lucide-vue-next';
-
+import {useStatisticsStore} from '@/stores/statisticStore'
 import SectionTitle from '@/components/SectionTitle.vue';
 import StatsCards from '@/components/StartsCards.vue';
 import AlertCard from '@/components/AlertCard.vue';
 import SalesTrendChart from '@/components/SalesTrendChart.vue';
 import WorkersPanel from '@/components/WorkersPanel.vue';
+import { useEntrepriseStore } from '@/stores/entrepriseStore'
+const entrepriseStore = useEntrepriseStore()
+
+const statisticStore = useStatisticsStore()
+
+
+const activeEntreprise = computed(() => entrepriseStore.activeEntreprise)
+
+watch(activeEntreprise, (newEntreprise) => {
+  if (newEntreprise?.id) {
+    statisticStore.fetchRevenue(newEntreprise.id)
+  }
+}, { immediate: true })
 
 const salesTrendData = ref([
   { day: 'Mon', sales: 3000, orders: 45 },
@@ -73,7 +86,7 @@ const salesTrendData = ref([
   { day: 'Sun', sales: 7000, orders: 72 }
 ])
 
-const topStats = ref([
+const topStats = computed(() => [
   {
     id: 1,
     icon: Users,
@@ -96,7 +109,7 @@ const topStats = ref([
     id: 3,
     icon: DollarSign,
     label: 'Total Sales',
-    value: '$124,580.00',
+    value: statisticStore.revenue,
     subtext: '+18.5% from last period',
     color: 'bg-green-500',
     containerClass:"border-2  p-6 rounded-xl border-green-200 bg-gradient-to-br from-green-50 to-white"

@@ -12,24 +12,19 @@ export const useEntrepriseStore = defineStore('entreprise', {
   state: () => ({
     entreprises: [],
     currentEntreprise: null,
-    activeEntreprise: JSON.parse(localStorage.getItem('activeEntreprise')) || null,
+    activeEntreprise:null,
     isLoading: false,
     error: null,
     successMessage: null,
   }),
   actions: {
+     // ✅ Gestion de l’entreprise active
     setActiveEntreprise(entreprise) {
       this.activeEntreprise = entreprise
-      localStorage.setItem('activeEntreprise', JSON.stringify(entreprise))
-    },
-    clearActiveEntreprise() {
-      this.activeEntreprise = null
-      localStorage.removeItem('activeEntreprise')
     },
 
-    loadActiveEntreprise() {
-      const stored = localStorage.getItem('activeEntreprise')
-      if (stored) this.activeEntreprise = JSON.parse(stored)
+    clearActiveEntreprise() {
+      this.activeEntreprise = null
     },
     async createEntreprise(entrepriseData) {
       this.isLoading = true
@@ -111,5 +106,15 @@ export const useEntrepriseStore = defineStore('entreprise', {
         this.isLoading = false
       }
     },
+  },
+    persist: {
+    enabled: true,
+    strategies: [
+      {
+        key: 'stockly_entreprise',
+        storage: localStorage,
+        paths: ['activeEntreprise'], // on persiste seulement ça
+      },
+    ],
   },
 })

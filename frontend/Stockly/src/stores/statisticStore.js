@@ -12,7 +12,7 @@ import {
   getQuarterlySales,
   getSalesTrend,
   getRevenueByCategory,
-  getProductDistributionByCategory 
+  getProductDistributionByCategory
 } from "@/service/api"
 
 export const useStatisticsStore = defineStore("statistics", {
@@ -47,6 +47,7 @@ export const useStatisticsStore = defineStore("statistics", {
       this.loading = true;
       try {
         this.productSales = await getProductSales();
+        console.log(this.productSales)
       } catch (err) {
         this.error = err.message;
       } finally {
