@@ -214,7 +214,8 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { getOneProduct as fetchProductById } from '@/service/api'
-
+import { useActionMessage } from '@/composable/useActionMessage'
+const { showSuccess, showError } = useActionMessage()
 interface Product {
   id?: string | number
   Prod_name: string
@@ -250,6 +251,7 @@ onMounted(async () => {
 
       console.log('Processed product:', product.value)
     } catch (error) {
+      showError('Error fetching products')
       console.error('Error fetching product:', error)
     }
   }

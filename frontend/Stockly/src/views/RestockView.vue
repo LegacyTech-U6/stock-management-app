@@ -300,7 +300,9 @@ import { ref, computed, onMounted } from 'vue'
 import {  useRoute } from 'vue-router'
 import { getOneProduct as fetchProductById } from '@/service/api'
 import { useProductStore } from '@/stores/productStore'
-
+import { useActionMessage } from '@/composable/useActionMessage'
+import router from '@/router'
+const { showSuccess, showError } = useActionMessage()
 const quantity = ref(1)
 const unitCost = ref(0)
 const supplier = ref('Peripheral Plus')
@@ -329,6 +331,7 @@ onMounted(async () => {
       product.value = response
     }
   } catch (error) {
+    showError('Error fetching products')
     console.error("Error fetching product:", error)
   }
 })
@@ -398,12 +401,14 @@ const getStatusBadge = (status) => {
 }
 
 const Restock = async () => {
-  const id = route.params.id
+
   submitError.value = ''
   try {
     await productStore.addStockLevel(product.value.id, realqty)
-    console.log("Restock successful:", realqty, product.value.id)
-    // Optionally redirect or show success message
+
+      showSuccess('Restock successful')
+    
+
   } catch (error) {
     submitError.value =
       error?.response?.data?.message ||

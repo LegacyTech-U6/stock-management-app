@@ -226,6 +226,8 @@
 import { ref, computed, onMounted } from 'vue'
 import { OutOfStock } from '@/service/api'
 import { useRoute,useRouter } from 'vue-router'
+import { useActionMessage } from '@/composable/useActionMessage'
+const { showSuccess, showError } = useActionMessage()
 const finishedProducts = ref([]) // ✅ Start as an empty array
 const message = ref('')
 const orders = ref([])
@@ -252,6 +254,7 @@ async function fetchFinishedProducts() {
     orders.value = data.orders
     finishedProducts.value = data.products || [] // Important
   } catch (err) {
+    showError('Failed to fetch out-of-stock products')
     console.error('❌ Error fetching out-of-stock products:', err)
   }
 }

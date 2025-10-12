@@ -55,7 +55,8 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useEntrepriseStore } from '@/stores/entrepriseStore'
-
+import { useActionMessage } from '@/composable/useActionMessage'
+const { showSuccess, showError } = useActionMessage()
 const router = useRouter()
 const store = useEntrepriseStore()
 

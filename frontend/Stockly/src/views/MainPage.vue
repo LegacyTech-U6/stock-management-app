@@ -1,16 +1,27 @@
-[file name]: MainPage.vue
-[file content begin]
+[file name]: MainPage.vue [file content begin]
 <template>
   <div class="min-h-screen bg-gray-50">
     <!-- Main Content -->
-    <div class="max-w-7xl mx-auto px-6 py-8">
+    <div v-if="loadingClients" class="max-w-7xl mx-auto">
+      <LazyLoader :loading="loadingClients" :skeleton-count="6">
+        <template #icon>
+          <n-spin size="40" />
+        </template>
+        <template #message>
+          <p class="text-lg font-semibold text-gray-800">Loading clients...</p>
+        </template>
+      </LazyLoader>
+    </div>
+    <div v-else class="max-w-7xl mx-auto px-6 py-8">
       <!-- Welcome Section -->
       <div class="flex items-center justify-between mb-8">
         <div>
           <h2 class="text-3xl font-bold text-gray-900 mb-2">Welcome back, {{ userName }}! 👋</h2>
           <p class="text-gray-600">Here's what's happening with your enterprises today</p>
         </div>
-        <button class="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+        <button
+          class="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+        >
           <BarChart3 class="w-4 h-4" />
           <span class="text-sm font-semibold text-gray-700">Export Report</span>
         </button>
@@ -33,11 +44,16 @@
           />
         </div>
         <div class="flex items-center gap-3">
-          <button class="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+          <button
+            class="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+          >
             <Filter class="w-4 h-4" />
             <span class="text-sm">Filter: all</span>
           </button>
-          <button @click="showCreateModal = true" class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold">
+          <button
+            @click="showCreateModal = true"
+            class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+          >
             <Plus class="w-4 h-4" />
             Create Enterprise
           </button>
@@ -46,30 +62,38 @@
 
       <!-- Enterprise Cards Grid -->
       <div v-if="filteredEntreprises.length > 0" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <EnterpriseCard 
-          @view="handleOpenEnterprise" 
-          @edit="handleEditEnterprise" 
-          v-for="enterprise in filteredEntreprises" 
-          :key="enterprise.id" 
-          :enterprise="enterprise" 
+        <EnterpriseCard
+          @view="handleOpenEnterprise"
+          @edit="handleEditEnterprise"
+          v-for="enterprise in filteredEntreprises"
+          :key="enterprise.id"
+          :enterprise="enterprise"
         />
       </div>
-      
+
       <!-- Empty State -->
       <div v-else class="text-center py-12">
         <Building2 class="w-16 h-16 text-gray-300 mx-auto mb-4" />
         <h3 class="text-lg font-semibold text-gray-900 mb-2">No enterprises found</h3>
         <p class="text-gray-600 mb-6">Create your first enterprise to get started</p>
-        <button @click="showCreateModal = true" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold">
+        <button
+          @click="showCreateModal = true"
+          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+        >
           Create Enterprise
         </button>
       </div>
     </div>
 
     <!-- Create/Edit Modal -->
-    <div v-if="showCreateModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div
+      v-if="showCreateModal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    >
       <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
-        <h2 class="text-xl font-bold text-gray-900 mb-4">{{ isEditing ? 'Edit enterprise' : 'Add new enterprise' }}</h2>
+        <h2 class="text-xl font-bold text-gray-900 mb-4">
+          {{ isEditing ? 'Edit enterprise' : 'Add new enterprise' }}
+        </h2>
         <div class="space-y-4">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
@@ -107,7 +131,7 @@
               :disabled="isSubmitting"
               class="flex-1 px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
-              {{ isSubmitting ? 'Saving...' : (isEditing ? 'Update' : 'Create') }}
+              {{ isSubmitting ? 'Saving...' : isEditing ? 'Update' : 'Create' }}
             </button>
           </div>
         </div>
@@ -118,13 +142,28 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import { Building2, Heart, DollarSign, ShoppingCart, Users, Activity, Search, Plus, Filter, BarChart3,Package,TrendingUp } from 'lucide-vue-next'
+import {
+  Building2,
+  Heart,
+  DollarSign,
+  ShoppingCart,
+  Users,
+  Activity,
+  Search,
+  Plus,
+  Filter,
+  BarChart3,
+  Package,
+  TrendingUp,
+} from 'lucide-vue-next'
 import StatCard from '@/components/StatCard.vue'
 import EnterpriseCard from '@/components/EnterpriseCard.vue'
 import { useEntrepriseStore } from '@/stores/entrepriseStore'
 import { useAuthStore } from '@/stores/authStore'
 import { useRouter } from 'vue-router'
-
+import { useActionMessage } from '@/composable/useActionMessage'
+const { showSuccess, showError } = useActionMessage()
+import LazyLoader from '@/components/ui/LazyLoader.vue'
 const store = useEntrepriseStore()
 const authStore = useAuthStore()
 const router = useRouter()
@@ -143,60 +182,65 @@ const userName = computed(() => {
 
 const filteredEntreprises = computed(() => {
   if (!searchQuery.value) return store.entreprises
-  return store.entreprises.filter(e =>
-    e.name?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-    e.description?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-    e.category?.toLowerCase().includes(searchQuery.value.toLowerCase())
+  return store.entreprises.filter(
+    (e) =>
+      e.name?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      e.description?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      e.category?.toLowerCase().includes(searchQuery.value.toLowerCase()),
   )
 })
 
 const selectEntreprise = (entreprise) => {
   store.setActiveEntreprise(entreprise)
 }
+const loadingClients = ref(true)
 
 // Calculate real stats from enterprises data
 // Calculate real stats from enterprises data
 const stats = computed(() => {
   const totalRevenue = store.entreprises.reduce((sum, e) => sum + (Number(e.totalRevenue) || 0), 0)
-  const totalInventory = store.entreprises.reduce((sum, e) => sum + (Number(e.inventoryValue) || 0), 0)
+  const totalInventory = store.entreprises.reduce(
+    (sum, e) => sum + (Number(e.inventoryValue) || 0),
+    0,
+  )
   const totalMembers = store.entreprises.reduce((sum, e) => sum + (Number(e.totalMembers) || 0), 0)
-  
+
   return [
-    { 
-      icon: Building2, 
-      label: 'Enterprises', 
-      value: store.entreprises.length.toString(), 
-      color: 'bg-blue-500' 
+    {
+      icon: Building2,
+      label: 'Enterprises',
+      value: store.entreprises.length.toString(),
+      color: 'bg-blue-500',
     },
-    { 
-      icon: DollarSign, 
-      label: 'Total Revenue', 
-      value: `$${totalRevenue.toLocaleString()}`, 
-      color: 'bg-green-500' 
+    {
+      icon: DollarSign,
+      label: 'Total Revenue',
+      value: `$${totalRevenue.toLocaleString()}`,
+      color: 'bg-green-500',
     },
-    { 
-      icon: Package, 
-      label: 'Inventory Value', 
-      value: `$${totalInventory.toLocaleString()}`, 
-      color: 'bg-purple-500' 
+    {
+      icon: Package,
+      label: 'Inventory Value',
+      value: `$${totalInventory.toLocaleString()}`,
+      color: 'bg-purple-500',
     },
-    { 
-      icon: Users, 
-      label: 'Total Team', 
-      value: totalMembers.toString(), 
-      color: 'bg-orange-500' 
+    {
+      icon: Users,
+      label: 'Total Team',
+      value: totalMembers.toString(),
+      color: 'bg-orange-500',
     },
-    { 
-      icon: Activity, 
-      label: 'Active', 
-      value: store.entreprises.length.toString(), 
-      color: 'bg-cyan-500' 
+    {
+      icon: Activity,
+      label: 'Active',
+      value: store.entreprises.length.toString(),
+      color: 'bg-cyan-500',
     },
-    { 
-      icon: TrendingUp, 
-      label: 'Avg Health', 
-      value: calculateAverageHealth(), 
-      color: 'bg-pink-500' 
+    {
+      icon: TrendingUp,
+      label: 'Avg Health',
+      value: calculateAverageHealth(),
+      color: 'bg-pink-500',
     },
   ]
 })
@@ -208,8 +252,8 @@ const handleEditEnterprise = (enterprise) => {
   showCreateModal.value = true
 }
 
-const handleOpenEnterprise =(enterprise)=>{
-  console.log("clicked")
+const handleOpenEnterprise = (enterprise) => {
+  console.log('clicked')
   selectEntreprise(enterprise)
   router.push('/dashboar')
 }
@@ -218,9 +262,19 @@ const createEntreprise = async () => {
   isSubmitting.value = true
   try {
     if (isEditing.value) {
-      await store.updateEntreprise(entrepriseData.value.id, entrepriseData.value)
+      const success = await store.updateEntreprise(entrepriseData.value.id, entrepriseData.value)
+      if (success) {
+        showSuccess('Enterprise updated succesfully')
+      } else {
+        showError('not updated')
+      }
     } else {
-      await store.createEntreprise(entrepriseData.value)
+      const success = await store.createEntreprise(entrepriseData.value)
+      if (success) {
+        showSuccess('Enterprise created successfully')
+      } else {
+        showError('Failed to create enterprise')
+      }
     }
     closeModal()
   } catch (error) {
@@ -239,25 +293,28 @@ const closeModal = () => {
 // Helper function to calculate average health score
 const calculateAverageHealth = () => {
   if (store.entreprises.length === 0) return '0%'
-  
+
   const totalHealth = store.entreprises.reduce((sum, e) => {
     // Calculate health based on available data
     let health = 50 // Base health
-    
+
     if (e.total_products > 0) health += 20
     if (e.total_revenue > 0) health += 20
     if (e.total_orders > 0) health += 10
-    
+
     return sum + Math.min(health, 100)
   }, 0)
-  
+
   const averageHealth = Math.round(totalHealth / store.entreprises.length)
   return `${averageHealth}%`
 }
 
 // Lifecycle
 onMounted(async () => {
+    loadingClients.value = true
+    await new Promise((resolve) => setTimeout(resolve, 2000))
   await store.fetchEntreprises()
+  loadingClients.value = false
 })
 </script>
 [file content end]

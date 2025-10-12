@@ -81,12 +81,13 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue'
+import { defineProps, ref,defineEmits } from 'vue'
 import PhoneIcon from '@/assets/icon svg/PhoneIcon.vue'
 import WriteIcon from '@/assets/icon svg/WriteIcon.vue'
 import DustbinIcon from '@/assets/icon svg/DustbinIcon.vue'
 import MailIcon from '@/assets/icon svg/MailIcon.vue'
 import LocationIcon from '@/assets/icon svg/LocationIcon.vue'
+import LazyLoader from '@/components/ui/LazyLoader.vue'
 
 const props = defineProps<{
   client: {
@@ -103,6 +104,8 @@ const props = defineProps<{
     lastOrder?: string
   }
 }>()
+
+const loadingClients = ref(true)
 
 const emit = defineEmits<{
   edit: [client: typeof props.client]

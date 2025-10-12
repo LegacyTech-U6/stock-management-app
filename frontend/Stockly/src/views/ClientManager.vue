@@ -1,4 +1,7 @@
 <template>
+  <div class="main">
+
+
   <div class="min-h-screen pt-10 bg-gray-50 py-6 px-4 sm:px-6 lg:px-8">
     <div class="space-y-6">
       <!-- Header Section -->
@@ -84,10 +87,21 @@
           {{ filteredClients.length }} result{{ filteredClients.length !== 1 ? 's' : '' }}
         </span>
       </div>
+   <div v-if="loadingClients">
+  <LazyLoader :loading="loadingClients" :skeleton-count="6">
+    <template #icon>
+      <n-spin size="40" />
+    </template>
+    <template #message>
+      <p class="text-lg font-semibold text-gray-800">Loading clients...</p>
+    </template>
+  </LazyLoader>
+</div>
+
 
       <!-- Client Cards Grid -->
       <div
-        v-if="filteredClients.length > 0"
+        v-else-if="filteredClients.length > 0"
         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 pb-8"
       >
         <ClientCard
@@ -137,8 +151,16 @@
       @submit="handleSubmit"
       @close="clientStore.fermerFormulaire"
     />
-    <SalesPerformanceChart />
-    <RevenueCatgeory />
+
+  </div>
+  <ActionModal
+    v-model="showDeleteModal"
+    title="Delete Category"
+    :message="`Are you sure you want to delete ${selectedClient?.client_name}? This action cannot be undone.`"
+    confirm-text="Delete"
+    cancel-text="Cancel"
+    @confirm="confirmDelete"
+  />
   </div>
 </template>
 
@@ -155,12 +177,27 @@ import { useClientStore } from '@/stores/clientStore'
 import { onMounted, ref, computed } from 'vue'
 import SalesPerformanceChart from '@/components/statistics/SalesPerformanceChart.vue'
 import RevenueCatgeory from '@/components/statistics/RevenueCatgeory.vue'
+import ActionModal from '@/components/ui/ActionModal.vue'
+import { useActionMessage } from '@/composable/useActionMessage'
 
+const { showSuccess, showError } = useActionMessage()
 const clientStore = useClientStore()
 const search = ref('')
+const showDeleteModal = ref(false)
+const selectedClient = ref(null)
+import LazyLoader from '@/components/ui/LazyLoader.vue'
+
+const handleDeleteClient = (client: any) => {
+  selectedClient.value = client
+  showDeleteModal.value = true
+}
+const loadingClients = ref(true)
 
 onMounted(async () => {
+  loadingClients.value = true
+    await new Promise((resolve) => setTimeout(resolve, 2000))
   await clientStore.fetchClients()
+  loadingClients.value = false
 })
 
 // Filtered clients based on search
@@ -216,7 +253,12 @@ const handleAddClient = () => {
 }
 const handleSubmit = async () => {
   try {
-    await clientStore.addClient()
+    const success = await clientStore.addClient()
+    if (success) {
+      showSuccess('Client created successfully')
+    } else {
+      showError('Failed to create client.')
+    }
   } catch (error) {
     throw error
   }
@@ -225,19 +267,21 @@ const handleSubmit = async () => {
 const handleEditClient = (client: any) => {
   // Open edit client modal/form
 
-  console.log('Edit client:', client)
+  showSuccess('Client created successfully')
 }
 
-const handleDeleteClient = async (client: any) => {
-  // Show confirmation dialog and delete
-  if (confirm(`Are you sure you want to delete ${client.client_name}?`)) {
-    // clientStore.deleteClient(client.id)
+const confirmDelete = async () => {
+  if (!selectedClient.value) return
 
-    if (await clientStore.deleteclient(client.id)) {
-      alert('client deleted:')
-    }else alert('client not deleted')
-
+  const success = await clientStore.deleteclient(selectedClient.value.id)
+  if (success) {
+    showSuccess('Client deleted successfully!')
+  } else {
+    showError('Failed to delete client.')
   }
+
+  showDeleteModal.value = false
+  selectedClient.value = null
 }
 </script>
 

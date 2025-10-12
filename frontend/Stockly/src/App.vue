@@ -16,7 +16,8 @@ const route = useRoute()
       </div>
     </div>
   </header>
-  <RouterView />
+  <RouterView  />
+
   <FooTer v-if="$route.meta.showNavbarAndFooter !== false" />
 </template>
 
@@ -55,6 +56,7 @@ nav a {
 nav a:first-of-type {
   border: 0;
 }
+
 
 @media (min-width: 1024px) {
   header {

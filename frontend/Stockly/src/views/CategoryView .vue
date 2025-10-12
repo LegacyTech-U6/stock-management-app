@@ -135,6 +135,14 @@
       @save="handleSaveCategory"
       @close="closeModal"
     />
+    <ActionModal
+      v-model="showDeleteModal"
+      title="Delete Category"
+      message="Are you sure you want to delete this category? This action cannot be undone."
+      confirm-text="Delete"
+      cancel-text="Cancel"
+      @confirm="confirmDelete"
+    />
   </div>
 </template>
 
@@ -145,6 +153,9 @@ import AddCategoryModal from '../components/AddCategoryModal .vue'
 import { useCategoryStore } from '@/stores/CategoryStore'
 import { toast } from 'vue-sonner'
 import { useRouter } from 'vue-router'
+import ActionModal from '@/components/ui/ActionModal.vue'
+import { useActionMessage } from '@/composable/useActionMessage'
+const { showSuccess, showError } = useActionMessage()
 // Mock data - replace with actual API calls
 const categoryStore = useCategoryStore()
 const router = useRouter()
@@ -186,40 +197,52 @@ const handleEditCategory = (category) => {
   editingCategory.value = { ...category }
   showAddCategory.value = true
 }
+// ✅ Add modal visibility + id to delete
+const showDeleteModal = ref(false)
+const categoryToDelete = ref(null)
 
-const handleDeleteCategory = async (categoryId) => {
-  if (!confirm('Are you sure you want to delete this category?')) return
+const handleDeleteCategory = (categoryId) => {
+  categoryToDelete.value = categoryId
+  showDeleteModal.value = true
+}
 
+const confirmDelete = async () => {
   try {
-    // 🔹 Call the store action to delete from backend
-    await categoryStore.Delete(categoryId)
-
-    // 🔹 Refresh the categories list after deletion
+    await categoryStore.Delete(categoryToDelete.value)
     await categoryStore.fetchCategory()
-
-    // 🔹 Optional: show success toast
-    // toast.success('Category deleted successfully!')
+    showSuccess('Category deleted successfully!')
   } catch (error) {
     console.error('Error deleting category:', error)
-    // toast.error('Failed to delete category')
+    showError('Failed to delete category')
+  } finally {
+    showDeleteModal.value = false
+    categoryToDelete.value = null
   }
 }
 const handleSaveCategory = async (categoryData) => {
   try {
     if (categoryData.id) {
       // 🔹 Mise à jour d'une catégorie existante
-      await categoryStore.Update(categoryData.id, {
+      const success = await categoryStore.Update(categoryData.id, {
         name: categoryData.name,
         description: categoryData.description,
       })
-      toast.success('Catégorie mise à jour avec succès !')
+      if (success) {
+        showSuccess('Catégorie mise à jour avec succès !')
+      } else {
+        showError('Échec de la mise à jour de la catégorie')
+      }
     } else {
       // 🔹 Création d'une nouvelle catégorie
-      await categoryStore.Create({
+      const success = await categoryStore.Create({
         name: categoryData.name,
         description: categoryData.description,
       })
-      toast.success('Nouvelle catégorie créée avec succès !')
+      if (success) {
+        showSuccess('Nouvelle catégorie créée avec succès !')
+      } else {
+        showError('Echec de la creation de la category')
+      }
     }
 
     // 🔄 Recharge la liste pour garder l'UI à jour

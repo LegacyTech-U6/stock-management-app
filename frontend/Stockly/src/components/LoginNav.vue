@@ -26,28 +26,24 @@
     </transition>
 
     <!-- Sidebar -->
-    <aside class="sidebar fixe" :class="{ 'sidebar-open': sidebarOpen }">
+    <aside class="sidebar fixed" :class="{ 'sidebar-open': sidebarOpen }">
       <!-- Logo Section -->
       <div class="logo-section">
         <div class="logo-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
             <path
               d="M20 7L12 3L4 7M20 7L12 11M20 7V17L12 21M12 11L4 7M12 11V21M4 7V17L12 21"
-              stroke="white"
+              stroke="currentColor"
               stroke-width="2"
               stroke-linecap="round"
               stroke-linejoin="round"
             />
           </svg>
         </div>
-        <div>
+        <div class="logo-text">
           <h1 class="logo-title">StockFlow</h1>
           <p class="logo-subtitle">Inventory System</p>
-          <h2 class="text-2xl font-bold mb-4">
-            Managing: {{ activeEntreprise?.name || 'No enterprise selected' }}
-          </h2>
         </div>
-
         <!-- Mobile Close Button -->
         <button class="mobile-close-btn" @click="sidebarOpen = false" aria-label="Close menu">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -65,7 +61,7 @@
       <nav class="nav">
         <!-- Overview -->
         <div class="nav-section">
-          <span class="nav-section-label">Overview</span>
+          <span class="nav-section-label">OVERVIEW</span>
           <router-link
             to="/dashboar"
             class="nav-item"
@@ -87,74 +83,85 @@
 
         <!-- Inventory -->
         <div class="nav-section">
-          <span class="nav-section-label">Inventory Management</span>
-          <div
-            class="nav-item nav-toggle"
-            :class="{ 'nav-item-active': inventoryExpanded }"
-            @click="toggleInventory"
-          >
-            <div class="flex-between">
-              <div class="flex-center">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M21 16V8C21 7.65 20.91 7.3 20.73 7.00C20.55 6.70 20.30 6.45 20 6.27L13 2.27C12.70 2.09 12.35 2 12 2C11.65 2 11.30 2.09 11 2.27L4 6.27C3.70 6.45 3.44 6.70 3.27 7.00C3.09 7.30 3 7.65 3 8V16C3 16.35 3.09 16.70 3.27 17.00C3.44 17.30 3.70 17.55 4 17.73L11 21.73C11.30 21.91 11.65 22 12 22C12.35 22 12.70 21.91 13 21.73L20 17.73C20.30 17.55 20.55 17.30 20.73 17.00C20.91 16.70 21 16.35 21 16Z"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-                <span>Product Inventory</span>
-                <span class="badge">6</span>
+          <span class="nav-section-label">INVENTORY MANAGEMENT</span>
+
+          <!-- Product Inventory -->
+          <div class="nav-group">
+            <div
+              class="nav-item nav-toggle"
+              :class="{ 'nav-item-active': inventoryExpanded }"
+              @click="toggleInventory"
+            >
+              <div class="nav-item-content">
+                <div class="nav-item-main">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M21 16V8C21 7.65 20.91 7.3 20.73 7.00C20.55 6.70 20.30 6.45 20 6.27L13 2.27C12.70 2.09 12.35 2 12 2C11.65 2 11.30 2.09 11 2.27L4 6.27C3.70 6.45 3.44 6.70 3.27 7.00C3.09 7.30 3 7.65 3 8V16C3 16.35 3.09 16.70 3.27 17.00C3.44 17.30 3.70 17.55 4 17.73L11 21.73C11.30 21.91 11.65 22 12 22C12.35 22 12.70 21.91 13 21.73L20 17.73C20.30 17.55 20.55 17.30 20.73 17.00C20.91 16.70 21 16.35 21 16Z"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                  <span>Product Inventory</span>
+                </div>
+                <div class="nav-item-end">
+                  <span class="badge">6</span>
+                  <svg
+                    class="arrow"
+                    :class="{ rotated: inventoryExpanded }"
+                    width="16"
+                    height="16"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M9 18L15 12L9 6"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
               </div>
-              <svg
-                class="arrow"
-                :class="{ rotated: inventoryExpanded }"
-                width="16"
-                height="16"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M9 18L15 12L9 6"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
             </div>
+
+            <transition name="submenu">
+              <div v-show="inventoryExpanded" class="submenu">
+                <router-link
+                  to="/products"
+                  class="submenu-item"
+                  active-class="submenu-item-active"
+                  @click="closeMobileMenu"
+                >
+                  <span>All Products</span>
+                  <span class="badge-sm">6</span>
+                </router-link>
+                <router-link
+                  to="/steper"
+                  class="submenu-item"
+                  active-class="submenu-item-active"
+                  @click="closeMobileMenu"
+                >
+                  <div class="submenu-add">
+                    <span class="add-symbol">+</span>
+                    <span>Add New Product</span>
+                  </div>
+                </router-link>
+              </div>
+            </transition>
           </div>
 
-          <transition name="submenu">
-            <div v-show="inventoryExpanded" class="submenu">
-              <router-link
-                to="/products"
-                class="submenu-item"
-                active-class="submenu-item-active"
-                @click="closeMobileMenu"
-              >
-                <span>All Products</span><span class="badge-sm">6</span>
-              </router-link>
-              <router-link
-                to="/steper"
-                class="submenu-item"
-                active-class="submenu-item-active"
-                @click="closeMobileMenu"
-              >
-                <span class="flex-center"> <span class="add-symbol">+</span>Add New Product </span>
-              </router-link>
-            </div>
-          </transition>
-
-          <div>
+          <!-- Categories -->
+          <div class="nav-group">
             <div
               class="nav-item nav-toggle"
               :class="{ 'nav-item-active': categoryExpanded }"
               @click="toggleCategory"
             >
-              <div class="flex-between">
-                <div class="flex-center">
+              <div class="nav-item-content">
+                <div class="nav-item-main">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                     <path
                       d="M4 6H20M4 12H20M4 18H20"
@@ -163,34 +170,28 @@
                       stroke-linecap="round"
                       stroke-linejoin="round"
                     />
+                  </svg>
+                  <span>Categories</span>
+                </div>
+                <div class="nav-item-end">
+                  <span class="badge">{{ totalCategories }}</span>
+                  <svg
+                    class="arrow"
+                    :class="{ rotated: categoryExpanded }"
+                    width="16"
+                    height="16"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
                     <path
-                      d="M8 6V20M16 6V20"
+                      d="M9 18L15 12L9 6"
                       stroke="currentColor"
                       stroke-width="2"
                       stroke-linecap="round"
                       stroke-linejoin="round"
-                      opacity="0.5"
                     />
                   </svg>
-                  <span>Categories</span>
-                  <span class="badge">{{ totalCategories }}</span>
                 </div>
-                <svg
-                  class="arrow"
-                  :class="{ rotated: categoryExpanded }"
-                  width="16"
-                  height="16"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="M9 18L15 12L9 6"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
               </div>
             </div>
 
@@ -202,22 +203,23 @@
                   active-class="submenu-item-active"
                   @click="closeMobileMenu"
                 >
-                  <span>All Categories</span><span class="badge-sm">{{ totalCategories }}</span>
+                  <span>All Categories</span>
+                  <span class="badge-sm">{{ totalCategories }}</span>
                 </router-link>
                 <button class="submenu-item" @click="((showAddCategory = true), closeMobileMenu())">
-                  <span class="flex-center">
-                    <span class="add-symbol">+</span>Add New Category
-                  </span>
+                  <div class="submenu-add">
+                    <span class="add-symbol">+</span>
+                    <span>Add New Category</span>
+                  </div>
                 </button>
               </div>
             </transition>
           </div>
         </div>
 
-        <!-- Sales -->
+        <!-- Sales & Orders -->
         <div class="nav-section">
-          <span class="nav-section-label">Sales & Orders</span>
-
+          <span class="nav-section-label">SALES & ORDERS</span>
           <router-link
             to="/sales"
             class="nav-item"
@@ -273,7 +275,7 @@
 
         <!-- Invoice Management -->
         <div class="nav-section">
-          <span class="nav-section-label">Invoice Management</span>
+          <span class="nav-section-label">INVOICE MANAGEMENT</span>
           <router-link
             to="/invoices"
             class="nav-item"
@@ -295,13 +297,6 @@
                 stroke-linecap="round"
                 stroke-linejoin="round"
               />
-              <path
-                d="M16 13H8M16 17H8M10 9H8"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
             </svg>
             <span>Invoices</span>
           </router-link>
@@ -309,50 +304,52 @@
 
         <!-- Inventory Status -->
         <div class="nav-section">
-          <span class="nav-section-label">Inventory Status</span>
-
-          <div class="status-item">
-            <div class="dot green"></div>
-            <span>In Stock</span>
-            <span class="badge">4</span>
-          </div>
-
-          <div class="status-item">
-            <div class="dot amber"></div>
-            <span>Low Stock</span>
-            <span class="badge">1</span>
-          </div>
-
-          <div class="status-item">
-            <div class="dot red"></div>
-            <span>Out of Stock</span>
-            <span class="badge-danger">1</span>
+          <span class="nav-section-label">INVENTORY STATUS</span>
+          <div class="status-grid">
+            <div class="status-item">
+              <div class="status-indicator in-stock"></div>
+              <span class="status-label">In Stock</span>
+              <span class="status-count">4</span>
+            </div>
+            <div class="status-item">
+              <div class="status-indicator low-stock"></div>
+              <span class="status-label">Low Stock</span>
+              <span class="status-count">1</span>
+            </div>
+            <div class="status-item">
+              <div class="status-indicator out-of-stock"></div>
+              <span class="status-label">Out of Stock</span>
+              <span class="status-count">1</span>
+            </div>
           </div>
         </div>
       </nav>
-      <button
-        @click="logoutEntreprise"
-        class="text-red-500 border border-red-500 px-4 py-2 rounded-md hover:bg-red-50"
-      >
-        Quitter l'entreprise
-      </button>
 
-      <!-- User Profile -->
-      <div class="user-profile">
-        <img src="https://i.pravatar.cc/40" alt="Demo User" class="avatar" />
-        <div class="user-info">
-          <h4>Demo User</h4>
-          <p>user@demo.com</p>
+      <!-- Footer Section -->
+      <div class="sidebar-footer">
+        <button
+          @click="logoutEntreprise"
+          class="logout-btn"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          Quitter l'entreprise
+        </button>
+
+        <div class="user-profile">
+          <img src="https://i.pravatar.cc/40" alt="Demo User" class="avatar" />
+          <div class="user-info">
+            <h4>Demo User</h4>
+            <p>user@demo.com</p>
+          </div>
         </div>
-        <svg class="arrow-right" width="16" height="16" viewBox="0 0 24 24" fill="none">
-          <path
-            d="M9 18L15 12L9 6"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
       </div>
     </aside>
   </div>
@@ -368,9 +365,8 @@ const entrepriseStore = useEntrepriseStore()
 
 const logoutEntreprise = () => {
   entrepriseStore.clearActiveEntreprise()
-  router.push('/ad/admin') // retour à la page de sélection
+  router.push('/ad/admin')
 }
-
 
 const activeEntreprise = computed(() => entrepriseStore.activeEntreprise)
 const showAddCategory = ref(false)
@@ -430,24 +426,17 @@ onUnmounted(() => {
   justify-content: center;
   width: 2.75rem;
   height: 2.75rem;
-  background: #4f46e5;
+  background: #1f2937;
   color: white;
   border: none;
-  border-radius: 0.75rem;
+  border-radius: 0.5rem;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .mobile-menu-btn:hover {
-  background: #4338ca;
-  transform: scale(1.05);
-}
-
-.mobile-menu-btn:active {
-  transform: scale(0.95);
+  background: #374151;
 }
 
 @media (min-width: 1024px) {
@@ -483,15 +472,13 @@ onUnmounted(() => {
   flex-direction: column;
   height: 100vh;
   width: 280px;
-  background: #fff;
+  background: #ffffff;
   border-right: 1px solid #e5e7eb;
   z-index: 1000;
   transform: translateX(-100%);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
-  box-shadow:
-    0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
 }
 
 .sidebar-open {
@@ -506,22 +493,12 @@ onUnmounted(() => {
   }
 }
 
-@media (max-width: 480px) {
-  .sidebar {
-    width: 100%;
-    max-width: 320px;
-  }
-}
-
 /* Logo Section */
 .logo-section {
   position: relative;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid #e5e7eb;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 1.5rem;
+  
+  background: #ffffff;
 }
 
 .mobile-close-btn {
@@ -530,17 +507,17 @@ onUnmounted(() => {
   right: 1rem;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(255, 255, 255, 0.2);
+  background: #f3f4f6;
   border: none;
-  border-radius: 0.5rem;
+  border-radius: 0.375rem;
   padding: 0.5rem;
-  color: white;
+  color: #374151;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .mobile-close-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: #e5e7eb;
 }
 
 @media (max-width: 1023px) {
@@ -555,24 +532,37 @@ onUnmounted(() => {
   justify-content: center;
   width: 2.5rem;
   height: 2.5rem;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 0.75rem;
-  backdrop-filter: blur(10px);
+  background: #1f2937;
+  border-radius: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.logo-text {
+  margin-bottom: 0.5rem;
 }
 
 .logo-title {
   font-weight: 700;
-  color: white;
-  font-size: 1.125rem;
-  margin: 0;
+  color: #111827;
+  font-size: 1.25rem;
+  margin: 0 0 0.25rem 0;
   letter-spacing: -0.025em;
 }
 
 .logo-subtitle {
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.875rem;
+  color: #6b7280;
   margin: 0;
   font-weight: 500;
+}
+
+.enterprise-name {
+  font-size: 0.875rem;
+  color: #374151;
+  font-weight: 600;
+  margin: 0;
+  padding: 0.5rem 0;
+  border-top: 1px solid #f3f4f6;
 }
 
 /* Navigation */
@@ -583,88 +573,76 @@ onUnmounted(() => {
 }
 
 .nav-section {
-  margin-bottom: 1.75rem;
+  margin-bottom: 1.5rem;
 }
 
 .nav-section-label {
   display: block;
   padding: 0 1.5rem;
-  margin-bottom: 0.5rem;
-  font-size: 0.6875rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.75rem;
   color: #6b7280;
   text-transform: uppercase;
   font-weight: 600;
   letter-spacing: 0.05em;
 }
 
+.nav-group {
+  margin-bottom: 0.25rem;
+}
+
 /* Navigation Items */
 .nav-item {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
   padding: 0.75rem 1.5rem;
-  margin: 0.125rem 0.75rem;
+  margin: 0.125rem 0;
   font-size: 0.875rem;
   font-weight: 500;
-  color: #4b5563;
+  color: #374151;
   text-decoration: none;
-  border-radius: 0.75rem;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: pointer;
   border: none;
   background: transparent;
-  width: calc(100% - 1.5rem);
+  width: 100%;
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
 
 .nav-item:hover {
   background: #f9fafb;
   color: #111827;
-  transform: translateX(4px);
 }
 
 .nav-item-active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  box-shadow: 0 4px 6px -1px rgba(102, 126, 234, 0.3);
+  background: #f3f4f6;
+  color: #111827;
+  border-right: 3px solid #1f2937;
 }
 
-.nav-item-active:hover {
-  transform: translateX(0);
-}
-
-/* Flex Utilities */
-.flex-between {
+.nav-item-content {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   width: 100%;
 }
 
-.flex-center {
+.nav-item-main {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  flex: 1;
 }
 
-.add-symbol {
-  display: inline-flex;
+.nav-item-end {
+  display: flex;
   align-items: center;
-  justify-content: center;
-  width: 1.25rem;
-  height: 1.25rem;
-  background: #4f46e5;
-  color: white;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-  font-weight: 600;
+  gap: 0.5rem;
 }
 
 /* Submenu */
 .submenu {
-  margin-top: 0.25rem;
-  margin-left: 1.5rem;
-  padding-left: 1.5rem;
-  border-left: 2px solid #e5e7eb;
+  margin-top: 0.125rem;
+  padding-left: 2.75rem;
   overflow: hidden;
 }
 
@@ -676,9 +654,8 @@ onUnmounted(() => {
   margin: 0.125rem 0;
   font-size: 0.875rem;
   color: #6b7280;
-  border-radius: 0.5rem;
   text-decoration: none;
-  transition: all 0.2s;
+  transition: all 0.15s ease;
   border: none;
   background: transparent;
   width: 100%;
@@ -686,27 +663,44 @@ onUnmounted(() => {
 }
 
 .submenu-item:hover {
-  background: #f3f4f6;
-  color: #4b5563;
+  color: #374151;
 }
 
 .submenu-item-active {
-  background: #eef2ff;
-  color: #4f46e5;
+  color: #111827;
+  font-weight: 600;
+}
+
+.submenu-add {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.add-symbol {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  background: #1f2937;
+  color: white;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
   font-weight: 600;
 }
 
 /* Transitions */
 .submenu-enter-active,
 .submenu-leave-active {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .submenu-enter-from,
 .submenu-leave-to {
   opacity: 0;
   max-height: 0;
-  transform: translateY(-10px);
+  transform: translateY(-8px);
 }
 
 .submenu-enter-to,
@@ -718,7 +712,7 @@ onUnmounted(() => {
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.3s ease;
+  transition: opacity 0.2s ease;
 }
 
 .fade-enter-from,
@@ -728,68 +722,99 @@ onUnmounted(() => {
 
 /* Badges */
 .badge,
-.badge-sm,
-.badge-danger {
-  font-size: 0.6875rem;
+.badge-sm {
+  font-size: 0.75rem;
   font-weight: 600;
-  border-radius: 0.5rem;
+  border-radius: 0.375rem;
   padding: 0.25rem 0.5rem;
   line-height: 1;
-}
-
-.badge {
   background: #f3f4f6;
-  color: #6b7280;
+  color: #374151;
 }
 
 .badge-sm {
-  background: #f3f4f6;
-  color: #6b7280;
-  padding: 0.25rem 0.5rem;
+  font-size: 0.6875rem;
+  padding: 0.125rem 0.375rem;
 }
 
-.badge-danger {
-  background: #fee2e2;
-  color: #dc2626;
+/* Status Grid */
+.status-grid {
+  padding: 0 1.5rem;
 }
 
-/* Status Items */
 .status-item {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.75rem 1.5rem;
-  margin: 0.125rem 0.75rem;
+  padding: 0.75rem 0;
   font-size: 0.875rem;
-  color: #4b5563;
-  border-radius: 0.75rem;
-  transition: all 0.2s;
+  color: #374151;
 }
 
-.status-item:hover {
-  background: #f9fafb;
-}
-
-.dot {
+.status-indicator {
   width: 0.5rem;
   height: 0.5rem;
   border-radius: 9999px;
-  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
 }
 
-.dot.green {
-  background: #22c55e;
-  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
+.status-indicator.in-stock {
+  background: #10b981;
 }
 
-.dot.amber {
+.status-indicator.low-stock {
   background: #f59e0b;
-  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
 }
 
-.dot.red {
+.status-indicator.out-of-stock {
   background: #ef4444;
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+.status-label {
+  flex: 1;
+  font-weight: 500;
+}
+
+.status-count {
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Arrow */
+.arrow {
+  transition: transform 0.2s ease;
+  color: #6b7280;
+}
+
+.rotated {
+  transform: rotate(90deg);
+}
+
+/* Sidebar Footer */
+.sidebar-footer {
+  border-top: 1px solid #f3f4f6;
+  padding: 1rem;
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.logout-btn:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
 }
 
 /* User Profile */
@@ -797,22 +822,21 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 1rem 1.5rem;
-  border-top: 1px solid #e5e7eb;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
   cursor: pointer;
-  transition: all 0.2s;
-  background: linear-gradient(to right, #f9fafb, #ffffff);
+  transition: all 0.15s ease;
 }
 
 .user-profile:hover {
-  background: #f3f4f6;
+  background: #f9fafb;
 }
 
 .avatar {
-  width: 2.75rem;
-  height: 2.75rem;
-  border-radius: 9999px;
-  border: 2px solid #e5e7eb;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
   object-fit: cover;
 }
 
@@ -840,23 +864,9 @@ onUnmounted(() => {
   text-overflow: ellipsis;
 }
 
-.arrow {
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  color: #6b7280;
-}
-
-.rotated {
-  transform: rotate(90deg);
-}
-
-.arrow-right {
-  color: #9ca3af;
-  flex-shrink: 0;
-}
-
 /* Scrollbar */
 .nav::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 .nav::-webkit-scrollbar-track {
@@ -866,15 +876,9 @@ onUnmounted(() => {
 .nav::-webkit-scrollbar-thumb {
   background: #d1d5db;
   border-radius: 9999px;
-  transition: background 0.2s;
 }
 
 .nav::-webkit-scrollbar-thumb:hover {
   background: #9ca3af;
-}
-
-/* Toggle Button Styling */
-.nav-toggle {
-  cursor: pointer;
 }
 </style>

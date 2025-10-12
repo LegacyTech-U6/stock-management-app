@@ -363,6 +363,15 @@
       </div>
     </div>
   </div>
+   <ActionModal
+      v-model="showDeleteModal"
+      title="Delete Worker"
+      message="Are you sure you want to delete this worker? This action cannot be undone."
+      confirm-text="Delete"
+      cancel-text="Cancel"
+      @confirm="confirmDelete"
+    />
+
 </template>
 
 <script setup>
@@ -371,7 +380,9 @@ import { useRouter } from 'vue-router'
 import { useWorkerStore } from '@/stores/workerStore'
 import { useEntrepriseStore } from '@/stores/entrepriseStore'
 import { useRoleStore } from '@/stores/roleStore'
-
+import { useActionMessage } from '@/composable/useActionMessage'
+import ActionModal from '@/components/ui/ActionModal.vue'
+const { showSuccess, showError } = useActionMessage()
 const router = useRouter()
 const store = useWorkerStore()
 const enterpriseStore = useEntrepriseStore()
@@ -431,26 +442,64 @@ const handleSubmit = async () => {
   isSubmitting.value = true
   try {
     if (isEditing.value) {
-      await store.updateWorker(formWorker.value.worker_id, formWorker.value)
+     const success = await store.updateWorker(formWorker.value.worker_id, formWorker.value)
+      if (success) {
+        showSuccess('Worker updated successfully!')
+      } else {
+        showError('Failed to update worker')
+      }
     } else {
-      await store.addWorker(formWorker.value)
+
+     const success = await store.addWorker(formWorker.value)
+     if (success) {
+       showSuccess('Worker created successfully!')
+     } else {
+       showError('Failed to create worker')
+     }
     }
     closeModal()
   } catch (error) {
     console.error('Error saving worker:', error)
-    alert('Error saving worker. Please try again.')
+    showError('Error saving worker. Please try again.')
   } finally {
     isSubmitting.value = false
   }
 }
+const showDeleteModal = ref(false)
+const workerToDelete = ref(null)
+const handleDeleteWorker = (workerId) => {
+  workerToDelete.value = workerId
+  showDeleteModal.value = true
+}
 
-const handleDeleteWorker = (id) => {
+const confirmDelete = async () => {
+  try {
+   const successfully = await workerStore.removeWorker(workerToDelete.value)
+    await workerStore.fetchWorkers()
+    if (successfully) {
+      showSuccess('Worker deleted successfully!')
+    } else {
+      showError('Failed to delete worker')
+    }
+  } catch (error) {
+    console.error('Error deleting worker:', error)
+    showError('Failed to delete worker')
+  } finally {
+    showDeleteModal.value = false
+    categoryToDelete.value = null
+  }
+const handleDeleteWorke = (id) => {
   if (confirm('Are you sure you want to delete this worker?')) {
     try {
-      store.removeWorker(id)
+     const successfully = store.removeWorker(id)
+     if (successfully) {
+        showSuccess('deleted successfully')
+     }else{
+      showError('errors deleting')
+     }
     } catch (error) {
       console.error('Error deleting worker:', error)
-      alert('Error deleting worker.')
+      showError('Error deleting worker.')
     }
   }
 }

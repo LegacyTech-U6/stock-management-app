@@ -2,7 +2,18 @@
 [file content begin]
 <template>
   <div class="px-30">
-    <div class="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+     <div v-if="loadingClients">
+  <LazyLoader :loading="loadingClients" :skeleton-count="6">
+    <template #icon>
+      <n-spin size="40" />
+    </template>
+    <template #message>
+      <p class="text-lg font-semibold text-gray-800">Loading clients...</p>
+    </template>
+  </LazyLoader>
+</div>
+<div v-else >
+<div class="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       <!-- 🔹 Loop through stats array -->
       <StatsCards
         v-for="(stat, index) in stats"
@@ -31,10 +42,13 @@
       <TopSellingProducts />
       <ChartRevenue />
     </div>
+</div>
+
   </div>
 </template>
 
 <script setup lang="ts">
+import LazyLoader from '@/components/ui/LazyLoader.vue'
 import { ref, computed, onMounted } from 'vue'
 import { Users, DollarSign, TrendingUp, Percent, ArrowUp, ArrowDown } from 'lucide-vue-next'
 import StatsCards from '@/components/StartsCards.vue'
@@ -52,7 +66,7 @@ const totalSales = ref(0)
 const avgRevenue = ref(0)
 const profit = ref(0)
 const margin = ref(0)
-
+const loadingClients = ref(true)
 // 🔹 Trend percentages from backend
 const revenueTrendPercent = ref(0)
 const profitTrendPercent = ref(0)
@@ -60,10 +74,12 @@ const salesTrendPercent = ref(0)
 
 // 🔹 Fetch stats from backend
 onMounted(async () => {
+    loadingClients.value = true
+    await new Promise((resolve) => setTimeout(resolve, 2000))
   await statsStore.fetchSalesReport('month')
   await statsStore.fetchRevenue('day')
   await statsStore.fetchProfit('day')
-
+  loadingClients.value = false
   // Total Sales
   totalSales.value = statsStore.salesReport?.reduce(
     (sum, p) => sum + (p.total_sold || 0),
@@ -132,4 +148,4 @@ const stats = computed(() => [
   },
 ])
 </script>
-[file content end]
+

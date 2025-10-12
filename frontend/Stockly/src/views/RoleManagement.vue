@@ -108,7 +108,7 @@
               </svg>
             </button>
             <button
-              @click="handleDeleteRole(role.id)"
+              @click="handleDeleteRole"
               class="text-gray-400 hover:text-red-500 transition-colors p-2"
             >
               <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -208,12 +208,21 @@
       </div>
     </div>
   </div>
+    <ActionModal
+      v-model="showDeleteModal"
+      title="Delete Role"
+      message="Are you sure you want to delete this role? This action cannot be undone."
+      confirm-text="Delete"
+      cancel-text="Cancel"
+      @confirm="confirmDelete"
+    />
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from "vue"
 import { useRoleStore } from "@/stores/roleStore"
-
+import { useActionMessage } from '@/composable/useActionMessage'
+const { showSuccess, showError } = useActionMessage()
 const roleStore = useRoleStore()
 const searchQuery = ref("")
 const showModal = ref(false)
@@ -227,6 +236,27 @@ onMounted(() => {
   roleStore.fetchRoles()
 })
 
+const showDeleteModal = ref(false)
+const roleToDelete = ref(null)
+
+const handleDeleteRole = (roleId) => {
+  roleToDelete.value = roleId
+  showDeleteModal.value = true
+}
+
+const confirmDelete = async () => {
+  try {
+    await roleStore.removeRole(roleToDelete.value)
+    await roleStore.fetchRoles()
+    showSuccess('Role deleted successfully!')
+  } catch (error) {
+    console.error('Error deleting role:', error)
+    showError('Failed to delete role')
+  } finally {
+    showDeleteModal.value = false
+    roleToDelete.value = null
+  }
+}
 const filteredRoles = computed(() => {
   if (!searchQuery.value) return roleStore.roles
   return roleStore.roles.filter(role =>
@@ -269,19 +299,25 @@ async function handleSubmitForm() {
   if (!formData.value.name) return
 
   if (editingRole.value) {
-    await roleStore.editRole(editingRole.value.id, formData.value)
+    const success = await roleStore.editRole(editingRole.value.id, formData.value)
+    if (success) {
+      showSuccess('Role updated successfully!')
+    } else {
+      showError('Failed to update role')
+    }
   } else {
-    await roleStore.addRole(formData.value)
+    const success = await roleStore.addRole(formData.value)
+    if (success) {
+      showSuccess('Role created successfully!')
+    } else {
+      showError('Failed to create role')
+    }
   }
 
   closeModal()
 }
 
-async function handleDeleteRole(id) {
-  if (confirm("Are you sure you want to delete this role?")) {
-    await roleStore.removeRole(id)
-  }
-}
+
 </script>
 
 <style scoped>
