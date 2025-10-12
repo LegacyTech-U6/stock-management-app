@@ -1,46 +1,56 @@
-<!-- components/StatCard.vue -->
+[file name]: StartsCards.vue
+[file content begin]
 <template>
-  <div :class="containerClass">
-    <div class="flex items-start justify-between">
-      <div>
-        <p class="text-gray-600 text-sm font-medium">{{ label }}</p>
-        <h3 class="text-2xl font-bold text-gray-900 mt-2">{{ value }}</h3>
-        <p v-if="subtext" :class="subtext.includes('+') ? 'text-green-600' : 'text-red-600'" class="text-xs mt-2">
-          {{ subtext }}
-        </p>
+  <div :class="['p-4 rounded-xl border shadow-sm flex justify-between items-center', containerClass]">
+    <!-- Left: Icon and info -->
+    <div>
+      <div class="flex items-center gap-2">
+        <div :class="['p-2 rounded-full text-white', color]">
+          <component :is="icon" class="w-5 h-5"/>
+        </div>
+        <div>
+          <p class="text-xs text-gray-500">{{ title }}</p>
+          <p class="text-xl font-bold mt-1">{{ valueDisplay }}</p>
+        </div>
       </div>
-      <div :class="color" class="p-3 rounded-lg">
-        <component :is="icon" class="w-6 h-6 text-white" />
-      </div>
+      <p v-if="subtitle" class="text-xs text-gray-400 mt-1">{{ subtitle }}</p>
+    </div>
+
+    <!-- Right: Trend -->
+    <div class="flex flex-col items-end">
+      <span :class="trend >= 0 ? 'text-green-500' : 'text-red-500'" class="text-sm font-semibold flex items-center gap-1">
+        <span v-if="trend >= 0">⬆</span>
+        <span v-else>⬇</span>
+        {{ Math.abs(trend).toFixed(1) }}%
+      </span>
     </div>
   </div>
 </template>
 
-<script setup>
-defineProps({
-  icon: {
-    type: [Object ,Function],
-    required: true
-  },
-  label: {
-    type: String,
-    required: true
-  },
-  value: {
-     type: [String, Number],
-    required: true
-  },
-  subtext: {
-    type: String,
-    default: null
-  },
-  containerClass: {
-    type: String,
-    default: 'bg-white rounded-lg p-6 shadow-sm border border-gray-200'
-  },
-  color: {
-    type: String,
-    required: true
+<script setup lang="ts">
+import { computed, defineProps } from 'vue'
+
+const props = defineProps({
+  title: { type: String, required: true },
+  value: { type: [Number, String], required: true },
+  trend: { type: Number, default: 0 },
+  subtitle: { type: String, default: '' },
+  icon: { type: [Object, Function], required: true },
+  color: { type: String, default: 'bg-blue-500' },
+  containerClass: { type: String, default: '' }
+})
+
+const valueDisplay = computed(() => {
+  if (typeof props.value === 'number') {
+    if (props.title.toLowerCase().includes('revenue') || props.title.toLowerCase().includes('profit')) {
+      return '$' + props.value.toLocaleString()
+    } else if (props.title.toLowerCase().includes('margin')) {
+      return props.value + '%'
+    } else {
+      return props.value.toLocaleString()
+    }
   }
-});
+  return props.value
+})
 </script>
+[file content end]

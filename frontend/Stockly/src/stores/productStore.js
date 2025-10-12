@@ -110,10 +110,13 @@ export const useProductStore = defineStore('product', {
         this.loading = false
       }
     },
-    async addStockLevel(productId, quantity) {
+    async addStockLevel(productId, quantityAdd) {
       this.loading = true
       try {
-        await addProductStock(productId, quantity)
+        console.log('====================================');
+        console.log(productId, ",",quantityAdd);
+        console.log('====================================');
+        await addProductStock(productId, quantityAdd)
         this.error = null
       } catch (err) {
         this.error = err

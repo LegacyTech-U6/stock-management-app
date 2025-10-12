@@ -25,10 +25,16 @@ const statsStore = useStatisticsStore()
 const doughnutCanvas = ref(null)
 let doughnutChart = null
 
-// Total products for percentage calculation
+// Total products for percentage calculation - FIXED
 const totalProducts = computed(() => {
-  return statsStore.revenueByCategory?.reduce((sum, item) => sum + item.revenue, 0) || 0
+  return statsStore.revenueByCategory?.reduce((sum, item) => sum + (item.revenue || item.product_count || 0), 0) || 0
 })
+
+// Safe percentage calculation
+const calculatePercentage = (value) => {
+  if (totalProducts.value === 0) return 0
+  return Math.round((value / totalProducts.value) * 100)
+}
 
 // Fetch data
 onMounted(async () => {
@@ -45,8 +51,13 @@ function renderChart() {
   if (!doughnutCanvas.value) return
   if (doughnutChart) doughnutChart.destroy()
 
-  const labels = statsStore.revenueByCategory?.map(item => item.category_name.toUpperCase()) || []
-  const dataValues = statsStore.revenueByCategory?.map(item => item.revenue) || []
+  const labels = statsStore.revenueByCategory?.map(item => item.category_name?.toUpperCase() || 'UNKNOWN') || []
+  const dataValues = statsStore.revenueByCategory?.map(item => item.revenue || item.product_count || 0) || []
+
+  // If no data, show empty state
+  if (dataValues.length === 0 || totalProducts.value === 0) {
+    return
+  }
 
   // Vibrant colors
   const colors = ["#6366F1", "#EC4899", "#FBBF24", "#10B981", "#F43F5E", "#8B5CF6", "#14B8A6"]
@@ -71,20 +82,28 @@ function renderChart() {
         tooltip: {
           callbacks: {
             label: (context) => {
-              const value = context.raw
-              const percentage = totalProducts.value === 0 ? 0 : Math.round((value / totalProducts.value) * 100)
-              return `${context.label}: ${value} (${percentage}%)`
+              const value = context.raw || 0
+              const percentage = calculatePercentage(value)
+              return `${context.label}: ${value} products (${percentage}%)`
             }
           }
         },
         datalabels: {
           color: '#fff',
-          font: { weight: 'bold', size: 12 },
+          font: {
+            weight: 'bold',
+            size: (ctx) => {
+              // Dynamic font size based on segment size
+              const value = ctx.dataset.data[ctx.dataIndex] || 0
+              const percentage = calculatePercentage(value)
+              return percentage < 10 ? 10 : 12
+            }
+          },
           anchor: 'center',
           align: 'center',
           formatter: (value, ctx) => {
-            const percentage = totalProducts.value === 0 ? 0 : Math.round((value / totalProducts.value) * 100)
-            return `${ctx.chart.data.labels[ctx.dataIndex]}: ${percentage}%`
+            const percentage = calculatePercentage(value)
+            return `${percentage}%`
           }
         }
       }

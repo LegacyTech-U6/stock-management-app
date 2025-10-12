@@ -190,7 +190,7 @@ const seConnecter = async () => {
 
   if (authStore.token) {
     console.log('✅ Connexion réussie :', authStore.user)
-    router.push('/admin')
+    router.push('/ad/admin')
   } else {
     console.warn('❌ Connexion échouée :', authStore.error)
   }

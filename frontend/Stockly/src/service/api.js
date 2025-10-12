@@ -295,11 +295,14 @@ export async function deleteRole(id) {
 // Statistics / Analytics API
 ///////////////////////////////////////////////////////////////
 
-// ✅ Récupérer le total des ventes par produit (global)
-export async function getProductSales() {
-  const { data } = await API.get("/stats/product-sales");
+// ✅ Récupérer le total des ventes par produit (global) with period
+export async function getProductSales(period) {
+  const { data } = await API.get("/stats/product-sales", {
+    params: { period }  // send period as query parameter
+  });
   return data;
 }
+
 
 // ✅ Récupérer le rapport des ventes pour une période donnée
 // period = "day" | "week" | "month"

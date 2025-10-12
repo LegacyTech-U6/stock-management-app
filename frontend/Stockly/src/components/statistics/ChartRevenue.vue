@@ -64,15 +64,24 @@ const aggregatedTotals = computed(() => {
   if (!report.length) return { labels: [], revenue: [], cost: [], profit: [] };
 
   const grouped = {};
+
   report.forEach((sale) => {
     const date = new Date(sale.sale_date);
     let label = "";
 
-    if (selectedPeriod.value === "month") label = date.toLocaleString("default", { month: "short", year: "numeric" });
-    else if (selectedPeriod.value === "week") {
-      const week = Math.ceil(date.getDate() / 7);
-      label = `W${week} ${date.getFullYear()}`;
-    } else label = date.toLocaleDateString();
+    // 🔹 Dynamic grouping by selected period
+    if (selectedPeriod.value === "month") {
+      // Group by day number (1–31)
+      label = date.getDate().toString(); // e.g. "1", "2", "3"
+
+    } else if (selectedPeriod.value === "week") {
+      // Group by day of week
+      label = date.toLocaleString("default", { weekday: "short" }); // e.g. "Mon", "Tue"
+
+    } else if (selectedPeriod.value === "day") {
+      // Group by hour of the day
+      label = date.getHours().toString().padStart(2, "0") + ":00"; // e.g. "09:00"
+    }
 
     if (!grouped[label]) grouped[label] = { revenue: 0, cost: 0, profit: 0 };
     grouped[label].revenue += Number(sale.total_revenue);
@@ -80,7 +89,19 @@ const aggregatedTotals = computed(() => {
     grouped[label].profit += Number(sale.total_profit);
   });
 
-  const labels = Object.keys(grouped);
+  // 🔹 Sort labels in logical order
+  let labels = Object.keys(grouped);
+
+  if (selectedPeriod.value === "week") {
+    const daysOrder = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    labels.sort((a, b) => daysOrder.indexOf(a) - daysOrder.indexOf(b));
+  } else if (selectedPeriod.value === "day") {
+    labels.sort((a, b) => a.localeCompare(b)); // Sort hours ascending
+  } else if (selectedPeriod.value === "month") {
+    labels = labels.map(Number).sort((a, b) => a - b); // Sort day numbers ascending
+  }
+
+  // 🔹 Build data arrays for chart
   const revenue = labels.map((l) => grouped[l].revenue);
   const cost = labels.map((l) => grouped[l].cost);
   const profit = labels.map((l) => grouped[l].profit);

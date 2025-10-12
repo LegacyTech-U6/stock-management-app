@@ -316,7 +316,7 @@ const product = ref(null)
 let realqty = null
 const reStockId = route.params.reStockId;
 onMounted(async () => {
-  const id = route.params.id
+  const id = route.params.reStockId
   if (!reStockId) return console.error("No product ID found in route")
 
   try {
@@ -398,6 +398,7 @@ const getStatusBadge = (status) => {
 }
 
 const Restock = async () => {
+  const id = route.params.id
   submitError.value = ''
   try {
     await productStore.addStockLevel(product.value.id, realqty)

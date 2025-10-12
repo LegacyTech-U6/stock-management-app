@@ -10,8 +10,7 @@ const {
   getQuarterlySales,
   getSalesTrend,
   getRevenueByCategory,
-  getProductDistributionByCategory
-
+  getProductDistributionByCategory,
 } = require("../../models/statistics/stats");
 
 /**
@@ -26,7 +25,6 @@ const {
  * ============================================================
  */
 module.exports = {
-
   /**
    * 🔹 productSales
    * ------------------------------------------------------------
@@ -35,16 +33,22 @@ module.exports = {
    */
   productSales: async (req, res) => {
     try {
+      const period = req.query.period; // default to month if not provided
+
       const stats = await getProductSalesStats({
         enterpriseId: req?.enterpriseId,
-        userId: req.user?.id
+        userId: req.user?.id,
+        period,
       });
-      console.log('====================================');
-      console.log(req?.enterpriseI);
-      console.log(req.user.id);
-      console.log('====================================');
 
-      if (!stats.length) return res.json({ message: "No sales data available" });
+      console.log("====================================");
+      console.log("Enterprise ID:", req?.enterpriseId);
+      console.log("User ID:", req.user?.id);
+      console.log("Period:", period);
+      console.log("====================================");
+
+      if (!stats.length)
+        return res.json({ message: "No sales data available" });
 
       res.json({ stats });
     } catch (error) {
@@ -64,14 +68,15 @@ module.exports = {
       const period = req.query.period || "month";
       const report = await getSalesReportByPeriod(period, {
         enterpriseId: req?.enterpriseId,
-        userId: req.user?.id
+        userId: req.user?.id,
       });
-        console.log('====================================');
+      console.log("====================================");
       console.log(req?.enterpriseId);
       console.log(req.user?.id);
-      console.log('====================================');
+      console.log("====================================");
 
-      if (!report.length) return res.json({ message: "No sales data for this period" });
+      if (!report.length)
+        return res.json({ message: "No sales data for this period" });
 
       res.json({ period, report });
     } catch (error) {
@@ -90,14 +95,15 @@ module.exports = {
     try {
       const bestCategory = await getBestCategory({
         enterpriseId: req?.enterpriseId,
-        userId: req.user?.id
+        userId: req.user?.id,
       });
-  console.log('====================================');
+      console.log("====================================");
       console.log(req?.enterpriseId);
       console.log(req.user?.id);
 
-      console.log('====================================');
-      if (!bestCategory.length) return res.json({ message: "No sales data available" });
+      console.log("====================================");
+      if (!bestCategory.length)
+        return res.json({ message: "No sales data available" });
 
       res.json({ bestCategory });
     } catch (error) {
@@ -117,15 +123,16 @@ module.exports = {
       const categoryId = req.params.id;
       const bestProducts = await bestProductByCategory(categoryId, {
         enterpriseId: req?.enterpriseId,
-        userId: req.user?.id
+        userId: req.user?.id,
       });
-        console.log('====================================');
+      console.log("====================================");
       console.log(req?.enterpriseId);
       console.log(req.user?.id);
 
-      console.log('====================================');
+      console.log("====================================");
 
-      if (!bestProducts.length) return res.json({ message: "No products found for this category" });
+      if (!bestProducts.length)
+        return res.json({ message: "No products found for this category" });
 
       res.json({ bestProducts });
     } catch (error) {
@@ -145,15 +152,16 @@ module.exports = {
       const period = req.query.period || "month";
       const product = await getBestSellingProduct(period, {
         enterpriseId: req?.enterpriseId,
-        userId: req.user?.id
+        userId: req.user?.id,
       });
-        console.log('====================================');
+      console.log("====================================");
       console.log(req?.enterpriseId);
       console.log(req.user?.id);
 
-      console.log('====================================');
+      console.log("====================================");
 
-      if (!product) return res.json({ message: "No sales data available for this period" });
+      if (!product)
+        return res.json({ message: "No sales data available for this period" });
 
       res.json({ period, product });
     } catch (error) {
@@ -173,13 +181,13 @@ module.exports = {
       const period = req.query.period || "day";
       const revenue = await getRevenueByPeriod(period, {
         enterpriseId: req?.enterpriseId,
-        userId: req.user?.id
+        userId: req.user?.id,
       });
-        console.log('====================================');
+      console.log("====================================");
       console.log(req?.enterpriseId);
       console.log(req.user?.id);
 
-      console.log('====================================');
+      console.log("====================================");
 
       res.json({ period, revenue });
     } catch (error) {
@@ -196,16 +204,16 @@ module.exports = {
    */
   getProfit: async (req, res) => {
     try {
-      const period = req.query.period || "month";
+      const period = req.query.period || "day";
       const profit = await getProfitByPeriod(period, {
         enterpriseId: req?.entrepriseId,
-        userId: req.user?.id
+        userId: req.user?.id,
       });
-        console.log('====================================');
+      console.log("====================================");
       console.log(req?.entrepriseId);
       console.log(req.user?.id);
 
-      console.log('====================================');
+      console.log("====================================");
 
       res.json({ period, profit });
     } catch (error) {
@@ -225,13 +233,13 @@ module.exports = {
       const period = req.query.period || "month";
       const comparison = await compareSales(period, {
         enterpriseId: req?.entrepriseId,
-        userId: req.user?.id
+        userId: req.user?.id,
       });
-        console.log('====================================');
+      console.log("====================================");
       console.log(req?.entrepriseId);
       console.log(req.user?.id);
 
-      console.log('====================================');
+      console.log("====================================");
 
       res.json({ period, ...comparison });
     } catch (error) {
@@ -250,13 +258,13 @@ module.exports = {
     try {
       const quarters = await getQuarterlySales({
         enterpriseId: req?.entrepriseId,
-        userId: req.user?.id
+        userId: req.user?.id,
       });
-        console.log('====================================');
+      console.log("====================================");
       console.log(req?.entrepriseId);
       console.log(req.user?.id);
 
-      console.log('====================================');
+      console.log("====================================");
 
       res.json({ quarters });
     } catch (error) {
@@ -276,13 +284,13 @@ module.exports = {
       const period = req.query.period || "month";
       const trend = await getSalesTrend(period, {
         enterpriseId: req?.entrepriseId,
-        userId: req.user?.id
+        userId: req.user?.id,
       });
-        console.log('====================================');
+      console.log("====================================");
       console.log(req?.entrepriseId);
       console.log(req.user?.id);
 
-      console.log('====================================');
+      console.log("====================================");
 
       res.json({ period, trend });
     } catch (error) {
@@ -301,13 +309,13 @@ module.exports = {
     try {
       const data = await getRevenueByCategory({
         enterpriseId: req?.entrepriseId,
-        userId: req.user?.id
+        userId: req.user?.id,
       });
-        console.log('====================================');
+      console.log("====================================");
       console.log(req?.entrepriseId);
       console.log(req.user?.id);
 
-      console.log('====================================');
+      console.log("====================================");
 
       res.json({ data });
     } catch (error) {
@@ -316,20 +324,21 @@ module.exports = {
     }
   },
   getProductDistributionByCategory: async (req, res) => {
-  try {
-    const entrepriseId = req?.entrepriseId
+    try {
+      const entrepriseId = req?.entrepriseId;
 
-    if (!entrepriseId) {
-      return res.status(400).json({ error: "Entreprise non spécifiée" })
+      if (!entrepriseId) {
+        return res.status(400).json({ error: "Entreprise non spécifiée" });
+      }
+
+      const rows = await getProductDistributionByCategory(entrepriseId);
+
+      res.status(200).json(rows);
+    } catch (error) {
+      console.error("❌ Erreur dans getProductDistributionByCategory:", error);
+      res
+        .status(500)
+        .json({ error: "Erreur serveur lors du calcul des statistiques" });
     }
-
-    const rows = await getProductDistributionByCategory(entrepriseId)
-
-    res.status(200).json(rows)
-  } catch (error) {
-    console.error("❌ Erreur dans getProductDistributionByCategory:", error)
-    res.status(500).json({ error: "Erreur serveur lors du calcul des statistiques" })
-  }
-}
-
+  },
 };

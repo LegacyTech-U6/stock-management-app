@@ -26,32 +26,41 @@ const routes = [
     meta: { showNavbarAndFooter: false },
   },
   {
-    path: '/company',
-    name: 'company',
-    component: () => import('@/views/CreateEntreprise.vue'),
-     meta: { showNavbarAndFooter: false },
-  },
-  {
-    path: '/admin',
-    name: 'admin',
-    component: () => import('@/views/MainPage.vue'),
-     meta: { showNavbarAndFooter: false },
-  },
-  {
-    path:'/workers',
-    name:'workers',
-    component:()=>import('@/views/WorkerPage.vue'),
+    path: '/ad',
+    component: () => import('@/views/AdminLayout.vue'),
     meta: { showNavbarAndFooter: false },
-  },{
-    path:'/roles',
-    name:'roles',
-    component:()=>import('@/views/RoleManagement.vue'),
-    meta: { showNavbarAndFooter: false },
-  },{
-    path:'/dashboard',
-    name:'dashboard',
-    component:()=>import('@/views/Statistics/DashBoard.vue'),
-     meta: { showNavbarAndFooter: false },
+    children: [
+      {
+        path: 'admin',
+        name: 'admin',
+        component: () => import('@/views/MainPage.vue'),
+        meta: { showNavbarAndFooter: false },
+      },
+      {
+        path: 'workers',
+        name: 'workers',
+        component: () => import('@/views/WorkerPage.vue'),
+        meta: { showNavbarAndFooter: false },
+      },
+      {
+        path: 'roles',
+        name: 'roles',
+        component: () => import('@/views/RoleManagement.vue'),
+        meta: { showNavbarAndFooter: false },
+      },
+      {
+        path: 'dashboard',
+        name: 'dashboard',
+        component: () => import('@/views/Statistics/DashBoard.vue'),
+        meta: { showNavbarAndFooter: false },
+      },
+      {
+        path: 'company',
+        name: 'company',
+        component: () => import('@/views/CreateEntreprise.vue'),
+        meta: { showNavbarAndFooter: false },
+      },
+    ],
   },
   {
     path: '/real',
@@ -61,9 +70,9 @@ const routes = [
     redirect: '/real/sales', // Optional: redirect to a default page
     children: [
       {
-        path:'/dashboar',
-        name:'EDashboard',
-        component:()=> import('@/views/Enterprise.vue')
+        path: '/dashboar',
+        name: 'EDashboard',
+        component: () => import('@/views/Enterprise.vue'),
       },
       {
         path: '/sales',

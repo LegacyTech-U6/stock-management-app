@@ -29,10 +29,11 @@ async function getUserEnterpriseIds(userId) {
  * - enterpriseId: stats for a specific enterprise
  * - userId: stats across all user enterprises
  */
-async function getProductSalesStats({ enterpriseId = null, userId = null } = {}) {
+async function getProductSalesStats({ enterpriseId = null, userId = null, period = "day" } = {}) {
   let condition = [];
   let params = [];
 
+  // Filter by enterprise or user's enterprises
   if (enterpriseId) {
     condition.push("p.entreprise_id = ?");
     params.push(enterpriseId);
@@ -43,17 +44,103 @@ async function getProductSalesStats({ enterpriseId = null, userId = null } = {})
     params.push(...enterpriseIds);
   }
 
-  const [rows] = await pool.query(`
-    SELECT p.id AS product_id, p.Prod_name, SUM(s.quantity_sold) AS total_sold
+  // Determine date format based on period
+  let dateFormat;
+  switch (period) {
+    case "day":
+      dateFormat = "%Y-%m-%d";
+      break;
+    case "week":
+      dateFormat = "%x-%v"; // YEAR-WEEK
+      break;
+    case "month":
+      dateFormat = "%Y-%m";
+      break;
+    case "year":
+      dateFormat = "%Y";
+      break;
+    default:
+      dateFormat = "%Y-%m";
+  }
+
+  // Main query: aggregate sales per product per period
+  const [rows] = await pool.query(
+    `
+    SELECT
+      e.name AS enterprise_name,
+      c.name AS category_name,
+      p.id AS product_id,
+      p.Prod_name,
+      DATE_FORMAT(s.sale_date, '${dateFormat}') AS period_label,
+      SUM(s.quantity_sold) AS total_sold,
+      SUM(s.quantity_sold * p.selling_price) AS total_revenue
     FROM Sales s
     JOIN Product p ON s.product_id = p.id
+    JOIN Entreprises e ON p.entreprise_id = e.id
+    LEFT JOIN Category c ON p.category_id = c.id
     ${condition.length ? "WHERE " + condition.join(" AND ") : ""}
-    GROUP BY p.id, p.Prod_name
-    ORDER BY total_sold DESC
-  `, params);
+    GROUP BY p.id, p.Prod_name, e.name, c.name, period_label
+    ORDER BY p.id, period_label
+    `,
+    params
+  );
 
-  return rows;
+  // Transform into structured products
+  let productsMap = {};
+
+  rows.forEach(row => {
+    const key = row.product_id;
+
+    if (!productsMap[key]) {
+      productsMap[key] = {
+        product_id: row.product_id,
+        Prod_name: row.Prod_name,
+        enterprise_name: row.enterprise_name,
+        category_name: row.category_name,
+        total_sold: 0,
+        total_revenue: 0,
+        sales_history: []
+      };
+    }
+
+    // ✅ Force numeric addition to avoid string concatenation
+    const sold = Number(row.total_sold || 0);
+    const revenue = Number(row.total_revenue || 0);
+
+    productsMap[key].total_sold += sold;
+    productsMap[key].total_revenue += revenue;
+
+    productsMap[key].sales_history.push({
+      period: row.period_label,
+      sold,
+      revenue
+    });
+  });
+
+  // Calculate percentage growth per period and overall
+  Object.values(productsMap).forEach(product => {
+    const history = product.sales_history;
+
+    for (let i = 1; i < history.length; i++) {
+      const prev = history[i - 1].sold;
+      const current = history[i].sold;
+      history[i].growth_percent = prev > 0 ? ((current - prev) / prev) * 100 : 0;
+    }
+
+    if (history.length) history[0].growth_percent = 0;
+
+    product.overall_growth_percent = history.length > 1
+      ? ((history[history.length - 1].sold - history[0].sold) / history[0].sold) * 100
+      : 0;
+  });
+
+  // Rank products by total sold in selected period
+  const rankedProducts = Object.values(productsMap).sort((a, b) => b.total_sold - a.total_sold);
+
+  return rankedProducts;
 }
+
+
 
 /**
  * 🔹 getSalesReportByPeriod(period, { enterpriseId, userId })
@@ -217,65 +304,130 @@ async function getBestSellingProduct(period = "month", { enterpriseId = null, us
  * ------------------------------------------------------------
  * Calculates total revenue for a period (day/month/year)
  */
-async function getRevenueByPeriod(period = "day", { enterpriseId = null, userId = null } = {}) {
+/**
+ * 🔹 getRevenueByPeriod
+ * ------------------------------------------------------------
+ * Returns total revenue + history + trend % per period
+ */
+async function getRevenueByPeriod(period = "month", { enterpriseId = null, userId = null } = {}) {
   let condition = [];
   let params = [];
 
-  if (period === "day") condition.push("DATE(s.sale_date) = CURDATE()");
-  else if (period === "month") condition.push("YEAR(s.sale_date) = YEAR(CURDATE()) AND MONTH(s.sale_date) = MONTH(CURDATE())");
-  else if (period === "year") condition.push("YEAR(s.sale_date) = YEAR(CURDATE())");
+  // Determine SQL date format
+  let dateFormat;
+  switch (period) {
+    case "day": dateFormat = "%Y-%m-%d"; break;
+    case "week": dateFormat = "%x-%v"; break; // YEAR-WEEK
+    case "month": dateFormat = "%Y-%m"; break;
+    case "year": dateFormat = "%Y"; break;
+    default: dateFormat = "%Y-%m";
+  }
 
+  // Enterprise/User filter
   if (enterpriseId) {
     condition.push("p.entreprise_id = ?");
     params.push(enterpriseId);
   } else if (userId) {
     const enterpriseIds = await getUserEnterpriseIds(userId);
-    if (enterpriseIds.length === 0) return 0;
+    if (enterpriseIds.length === 0) return { total: 0, overall_growth_percent: 0, history: [] };
     condition.push(`p.entreprise_id IN (${enterpriseIds.map(() => "?").join(",")})`);
     params.push(...enterpriseIds);
   }
 
+  // Query revenue grouped by period
   const [rows] = await pool.query(`
-    SELECT SUM(s.total_price) AS total_revenue
+    SELECT
+      DATE_FORMAT(s.sale_date, '${dateFormat}') AS period_label,
+      SUM(s.total_price) AS total_revenue
     FROM Sales s
     JOIN Product p ON s.product_id = p.id
     ${condition.length ? "WHERE " + condition.join(" AND ") : ""}
+    GROUP BY period_label
+    ORDER BY period_label
   `, params);
 
-  return rows[0].total_revenue || 0;
+  // Build history + growth %
+  const history = rows.map(r => ({
+    period: r.period_label,
+    value: Number(r.total_revenue) || 0,
+    growth_percent: 0
+  }));
+
+  for (let i = 1; i < history.length; i++) {
+    const prev = history[i - 1].value;
+    const current = history[i].value;
+    history[i].growth_percent = prev > 0 ? ((current - prev) / prev) * 100 : 0;
+  }
+
+  const total = history.reduce((sum, h) => sum + h.value, 0);
+  const overall_growth_percent = history.length > 1
+    ? ((history[history.length - 1].value - history[0].value) / (history[0].value || 1)) * 100
+    : 0;
+
+  return { total, overall_growth_percent, history };
 }
 
 /**
- * 🔹 getProfitByPeriod(period, { enterpriseId, userId })
+ * 🔹 getProfitByPeriod
  * ------------------------------------------------------------
- * Calculates total profit: SUM(quantity_sold * (selling_price - cost_price))
+ * Returns total profit + history + trend % per period
  */
-async function getProfitByPeriod(period = "month", { enterpriseId = null, userId = null } = {}) {
+async function getProfitByPeriod(period = "day", { enterpriseId = null, userId = null } = {}) {
   let condition = [];
   let params = [];
 
-  if (period === "day") condition.push("DATE(s.sale_date) = CURDATE()");
-  else if (period === "month") condition.push("YEAR(s.sale_date) = YEAR(CURDATE()) AND MONTH(s.sale_date) = MONTH(CURDATE())");
-  else if (period === "year") condition.push("YEAR(s.sale_date) = YEAR(CURDATE())");
+  // Determine SQL date format
+  let dateFormat;
+  switch (period) {
+    case "day": dateFormat = "%Y-%m-%d"; break;
+    case "week": dateFormat = "%x-%v"; break;
+    case "month": dateFormat = "%Y-%m"; break;
+    case "year": dateFormat = "%Y"; break;
+    default: dateFormat = "%Y-%m";
+  }
 
+  // Enterprise/User filter
   if (enterpriseId) {
     condition.push("p.entreprise_id = ?");
     params.push(enterpriseId);
   } else if (userId) {
     const enterpriseIds = await getUserEnterpriseIds(userId);
-    if (enterpriseIds.length === 0) return 0;
+    if (enterpriseIds.length === 0) return { total: 0, overall_growth_percent: 0, history: [] };
     condition.push(`p.entreprise_id IN (${enterpriseIds.map(() => "?").join(",")})`);
     params.push(...enterpriseIds);
   }
 
+  // Query profit grouped by period
   const [rows] = await pool.query(`
-    SELECT SUM(s.quantity_sold * (p.selling_price - p.cost_price)) AS total_profit
+    SELECT
+      DATE_FORMAT(s.sale_date, '${dateFormat}') AS period_label,
+      SUM(s.quantity_sold * (p.selling_price - p.cost_price)) AS total_profit
     FROM Sales s
     JOIN Product p ON s.product_id = p.id
     ${condition.length ? "WHERE " + condition.join(" AND ") : ""}
+    GROUP BY period_label
+    ORDER BY period_label
   `, params);
 
-  return rows[0].total_profit || 0;
+  // Build history + growth %
+  const history = rows.map(r => ({
+    period: r.period_label,
+    value: Number(r.total_profit) || 0,
+    growth_percent: 0
+  }));
+
+  for (let i = 1; i < history.length; i++) {
+    const prev = history[i - 1].value;
+    const current = history[i].value;
+    history[i].growth_percent = prev > 0 ? ((current - prev) / prev) * 100 : 0;
+  }
+
+  const total = history.reduce((sum, h) => sum + h.value, 0);
+  const overall_growth_percent = history.length > 1
+    ? ((history[history.length - 1].value - history[0].value) / (history[0].value || 1)) * 100
+    : 0;
+
+  return { total, overall_growth_percent, history };
 }
 
 /**

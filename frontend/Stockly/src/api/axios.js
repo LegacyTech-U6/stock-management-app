@@ -4,7 +4,7 @@ import { useAuthStore } from "@/stores/authStore";
 import { useEntrepriseStore } from "@/stores/entrepriseStore";
 
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:4000/api",
 });
 
 // Intercepteur pour ajouter automatiquement le token et l'entreprise active

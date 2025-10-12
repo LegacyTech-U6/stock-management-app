@@ -107,21 +107,34 @@ async function createInvoice(
   }
 }
 
-// Récupérer toutes les factures d'une entreprise
+// ✅ Récupérer toutes les factures d'une entreprise avec tous les champs + nom du client + items
 async function getAllInvoices(entrepriseId) {
+  // 1️⃣ Get all invoice fields + client name
   const [factures] = await pool.query(
-    `SELECT * FROM Factures WHERE entreprise_id = ? ORDER BY id DESC`,
+    `
+    SELECT 
+      f.*,               -- all fields from Factures
+      c.client_name      -- client name from Clients
+    FROM Factures f
+    JOIN Client c ON f.client_id = c.id
+    WHERE f.entreprise_id = ?
+    ORDER BY f.id DESC
+    `,
     [entrepriseId]
   );
+
+  // 2️⃣ For each invoice, get related items
   for (const facture of factures) {
     const [items] = await pool.query(
-      `SELECT * FROM FactureItems WHERE facture_id = ? `,
+      `SELECT * FROM FactureItems WHERE facture_id = ?`,
       [facture.id]
     );
     facture.items = items;
   }
+
   return factures;
 }
+
 
 // Récupérer une facture par ID et entreprise
 async function getInvoiceById(id, entrepriseId) {

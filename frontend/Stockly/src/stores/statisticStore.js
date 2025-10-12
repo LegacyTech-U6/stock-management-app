@@ -43,17 +43,24 @@ export const useStatisticsStore = defineStore("statistics", {
 
   actions: {
     // 🔹 Fetch total product sales
-    async fetchProductSales() {
-      this.loading = true;
-      try {
-        this.productSales = await getProductSales();
-        console.log(this.productSales)
-      } catch (err) {
-        this.error = err.message;
-      } finally {
-        this.loading = false;
-      }
-    },
+async fetchProductSales(period = "month") {
+  this.loading = true;
+  try {
+    // Pass the selected period to your backend API
+    const data = await getProductSales({ period });
+
+    // Store the returned stats
+    this.topProducts = data.stats || [];
+
+    console.log(this.topProducts);
+  } catch (err) {
+    this.error = err.message;
+  } finally {
+    this.loading = false;
+  }
+}
+
+,
 
     // 🔹 Fetch sales report for a given period
     async fetchSalesReport(period = "month") {
@@ -113,6 +120,9 @@ export const useStatisticsStore = defineStore("statistics", {
       this.loading = true;
       try {
         const data = await getRevenue(period);
+        console.log('====================================');
+        console.log(data);
+        console.log('====================================');
         this.revenue = data.revenue || 0;
       } catch (err) {
         this.error = err.message;

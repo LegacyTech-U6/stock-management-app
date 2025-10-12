@@ -368,7 +368,7 @@ const entrepriseStore = useEntrepriseStore()
 
 const logoutEntreprise = () => {
   entrepriseStore.clearActiveEntreprise()
-  router.push('/admin') // retour à la page de sélection
+  router.push('/ad/admin') // retour à la page de sélection
 }
 
 

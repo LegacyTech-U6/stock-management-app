@@ -156,7 +156,7 @@
               </svg>
               <h2 class="text-lg font-semibold text-gray-800">Product Distribution</h2>
             </div>
-            <ProductDistribution />
+          
           </div>
         </div>
 
