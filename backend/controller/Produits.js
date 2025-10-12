@@ -232,24 +232,27 @@ module.exports = {
   },
 
   // --- Vérification stock faible ---
-  checkLowStockGlobal: async (req, res) => {
-    try {
-      const entrepriseId = req.entrepriseId;
-      const thresholdParam = req.query.threshold ? parseInt(req.query.threshold) : undefined;
-      const { threshold, products } = await getLowStockProductsGlobal(thresholdParam, entrepriseId);
+ checkLowStockGlobal: async (req, res) => {
+  try {
+    const entrepriseId = req.entrepriseId;
+    const { threshold, products } = await getLowStockProductsGlobal(entrepriseId);
 
-      if (products.length === 0) {
-        return res.json({ message: "All products have sufficient stock", threshold });
-      }
-
-      res.json({
-        message: `Some products are below the stock threshold of ${threshold}`,
-        products,
-      });
-    } catch (error) {
-      res.status(500).json({ error: error.message });
+    if (products.length === 0) {
+      return res.json({ message: "All products have sufficient stock", threshold });
     }
-  },
+
+    res.json({
+      message: `Some products are below the stock threshold of ${threshold}`,
+      products,
+    });
+    console.log('====================================');
+    console.log(products);
+    console.log('====================================');
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+,
 
   // --- Vérification produits en rupture ---
   checkOutOfStockGlobal: async (req, res) => {

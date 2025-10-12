@@ -212,23 +212,21 @@ async function getProductsByCategoryId(categoryId, entrepriseId) {
 // ==========================================
 // 🔹 Get low-stock products (global threshold)
 // ==========================================
-async function getLowStockProductsGlobal(entrepriseId, thresholdParam) {
-  let threshold = thresholdParam;
+async function getLowStockProductsGlobal(entrepriseId) {
+  // 🔹 Récupérer le seuil depuis la table Settings
+  const [settings] = await pool.query(
+    `SELECT stock_alert_threshold 
+     FROM Settings 
+     WHERE entreprise_id = ? 
+     LIMIT 1`,
+    [entrepriseId]
+  );
 
-  // Si aucun seuil n’est passé, on récupère celui des Settings de l’entreprise
-  if (typeof threshold === "undefined" || threshold === null) {
-    const [settings] = await pool.query(
-      `SELECT stock_alert_threshold 
-       FROM Settings 
-       WHERE entreprise_id = ? 
-       LIMIT 1`,
-      [entrepriseId]
-    );
-    threshold = settings[0]?.stock_alert_threshold ?? 5; // par défaut 5
-  }
-
+  // Par défaut 5 si aucun seuil défini
+  const threshold = settings[0]?.stock_alert_threshold ?? 5;
   console.log("🔸 Seuil utilisé:", threshold);
 
+  // 🔹 Récupérer les produits dont le stock est inférieur ou égal au seuil
   const [products] = await pool.query(
     `SELECT * 
      FROM Product 
@@ -238,8 +236,11 @@ async function getLowStockProductsGlobal(entrepriseId, thresholdParam) {
   );
 
   console.log("⚠️ Produits bas en stock:", products);
+
   return { threshold, products };
 }
+
+
 
 // =====================================
 // 🔹 Check if a specific product is low
@@ -290,7 +291,7 @@ async function getOutOfStockProducts(entrepriseId) {
         s.supplier_name
      FROM Product p
      LEFT JOIN Category c ON p.category_id = c.id
-     LEFT JOIN supplier s ON p.supplier = s.id
+     LEFT JOIN Supplier s ON p.supplier = s.id
      WHERE p.quantity = 0
        AND p.entreprise_id = ?`,
     [entrepriseId]

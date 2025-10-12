@@ -1,32 +1,28 @@
 <template>
   <div class="invoice-items">
-    <div class="table-container">
-      <table class="items-table">
-        <thead>
-          <tr>
-            <th class="text-left">#</th>
-            <th class="text-left">Item Description</th>
-            <th class="text-right">Quantity</th>
-            <th class="text-right">Unit Price</th>
-            <th class="text-right">Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(item, index) in items" :key="item.id" class="item-row">
-            <td class="index-cell">{{ index + 1 }}</td>
-            <td class="description-cell">
-              <div class="item-description">
-                <div class="item-name">{{ item.Prod_name }}</div>
-                <div v-if="item.description" class="item-desc">{{ item.description }}</div>
-              </div>
-            </td>
-            <td class="quantity-cell">{{ item.quantity }}</td>
-            <td class="price-cell">${{ item.selling_price.toFixed(2) }}</td>
-            <td class="total-cell">${{ (item.quantity * item.selling_price).toFixed(2) }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <table class="items-table">
+      <thead>
+        <tr>
+          <th class="text-left">#</th>
+          <th class="text-left">Description</th>
+          <th class="text-center">Qty</th>
+          <th class="text-right">Unit Price</th>
+          <th class="text-right">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(item, index) in items" :key="item.id">
+          <td class="index">{{ index + 1 }}</td>
+          <td class="description">
+            <div class="item-name">{{ item.Prod_name }}</div>
+            <div v-if="item.description" class="item-desc">{{ item.description }}</div>
+          </td>
+          <td class="quantity">{{ item.quantity }}</td>
+          <td class="unit-price">${{ item.selling_price.toFixed(2) }}</td>
+          <td class="amount">${{ (item.quantity * item.selling_price).toFixed(2) }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
@@ -38,105 +34,80 @@ defineProps({
 
 <style scoped>
 .invoice-items {
-  margin: 2rem 0;
-}
-
-.table-container {
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin: 1.5rem 0;
 }
 
 .items-table {
   width: 100%;
   border-collapse: collapse;
-  background: white;
+  font-size: 0.875rem;
 }
 
 .items-table th {
-  background: #f8fafc;
-  padding: 1rem 1.25rem;
-  font-weight: 600;
-  color: #374151;
-  font-size: 0.875rem;
+  background: #f5f5f5;
+  padding: 0.75rem 0.5rem;
+  font-weight: 700;
+  color: #000;
+  border: 1px solid #ddd;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border-bottom: 1px solid #e5e7eb;
+  letter-spacing: 0.5px;
+  font-size: 0.75rem;
 }
 
 .items-table td {
-  padding: 1rem 1.25rem;
-  border-bottom: 1px solid #f3f4f6;
+  padding: 0.75rem 0.5rem;
+  border: 1px solid #ddd;
 }
 
-.items-table tr:last-child td {
-  border-bottom: none;
+.items-table tr:nth-child(even) {
+  background: #fafafa;
 }
 
-.item-row:hover {
-  background: #f9fafb;
-}
-
-.index-cell {
+.index {
   font-weight: 500;
-  color: #6b7280;
-  width: 50px;
+  color: #666;
+  width: 40px;
+  text-align: center;
 }
 
-.description-cell {
+.description {
   min-width: 200px;
-}
-
-.item-description {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
 }
 
 .item-name {
   font-weight: 500;
-  color: #1f2937;
+  color: #000;
 }
 
 .item-desc {
-  font-size: 0.875rem;
-  color: #6b7280;
+  color: #666;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
 }
 
-.quantity-cell,
-.price-cell,
-.total-cell {
-  font-weight: 500;
-  color: #374151;
+.quantity {
+  text-align: center;
+  width: 60px;
 }
 
-.text-right {
+.unit-price,
+.amount {
   text-align: right;
+  width: 100px;
+  font-family: 'Courier New', monospace;
 }
 
-.text-left {
-  text-align: left;
-}
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
 
 @media (max-width: 768px) {
-  .table-container {
+  .invoice-items {
     overflow-x: auto;
   }
 
   .items-table {
-    min-width: 600px;
-  }
-}
-
-@media print {
-  .table-container {
-    box-shadow: none;
-    border: 1px solid #d1d5db;
-  }
-
-  .item-row:hover {
-    background: transparent;
+    min-width: 500px;
   }
 }
 </style>

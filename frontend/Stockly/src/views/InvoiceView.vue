@@ -349,7 +349,7 @@
               <td class="px-6 whitespace-nowrap">
                 <div class="flex items-center gap-1">
                   <button
-                    @click="viewInvoice(invoice.id)"
+                    @click="viewInvoice(invoice)"
                     class="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                     title="View"
                   >
@@ -415,6 +415,11 @@
     cancel-text="Cancel"
     @confirm="confirmDelete"
   />
+   <CreateInvoiceForm
+      v-if="showInvoiceModal"
+    :invoice="modalInvoice"
+    @close="showInvoiceModal = false"
+    />
   </div>
 
 </template>
@@ -424,6 +429,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useInvoiceStore } from '@/stores/FactureStore'
 import ActionModal from '@/components/ui/ActionModal.vue'
 import { useActionMessage } from '@/composable/useActionMessage'
+import CreateInvoiceForm from '@/components/invoices/CreateInvoiceForm.vue'
 import LazyLoader from '@/components/ui/LazyLoader.vue'
 const { showSuccess, showError } = useActionMessage()
 const factureStore = useInvoiceStore()
@@ -440,6 +446,8 @@ const stats = ref({
   pendingAmount: 0,
   overdueAmount: 0,
 })
+const showInvoiceModal = ref(false)
+const modalInvoice = ref(null)
 const handleDeleteInvoice = (invoiceId) => {
   invoiceToDelete.value = invoiceId
   showDeleteModal.value = true
@@ -497,9 +505,9 @@ function createInvoice() {
   console.log('Create invoice')
 }
 
-function viewInvoice(id) {
-  // Redirect to invoice details page
-  console.log('View invoice:', id)
+function viewInvoice(invoice) {
+   modalInvoice.value = { ...invoice }
+  showInvoiceModal.value = true
 }
 
 const formatPrice = (amount) =>

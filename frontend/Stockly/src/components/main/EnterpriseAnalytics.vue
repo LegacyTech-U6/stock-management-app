@@ -63,11 +63,18 @@ import AlertCard from '@/components/AlertCard.vue';
 import SalesTrendChart from '@/components/SalesTrendChart.vue';
 import WorkersPanel from '@/components/WorkersPanel.vue';
 import { useEntrepriseStore } from '@/stores/entrepriseStore'
+import { useProductStore } from '@/stores/productStore';
 const entrepriseStore = useEntrepriseStore()
 
 const statisticStore = useStatisticsStore()
 
+const productStore = useProductStore()
 
+
+onMounted(async()=>{
+  productStore.fetchFinishedProducts()
+  productStore.fetchLowStockProducts()
+})
 const activeEntreprise = computed(() => entrepriseStore.activeEntreprise)
 
 watch(activeEntreprise, (newEntreprise) => {
@@ -129,7 +136,7 @@ const alerts = ref([
   {
     id: 1,
     title: 'Low Stock Alerts',
-    count: '8',
+    count: productStore?.lowProducts.length,
     color: 'border-yellow-300 bg-yellow-50',
     action: { label: 'View', color: 'border-yellow-400 text-yellow-600' }
   },

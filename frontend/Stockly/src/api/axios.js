@@ -1,40 +1,46 @@
 // src/api/axios.js
-import axios from "axios";
-import { useAuthStore } from "@/stores/authStore";
-import { useEntrepriseStore } from "@/stores/entrepriseStore";
+import axios from 'axios'
+import { useAuthStore } from '@/stores/authStore'
+import { useEntrepriseStore } from '@/stores/entrepriseStore'
 
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:4000/api",
-});
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:4000/api',
+})
 
 // Intercepteur pour ajouter automatiquement le token et l'entreprise active
 API.interceptors.request.use(
   (config) => {
-    const authStore = useAuthStore();
-    const entrepriseStore = useEntrepriseStore();
+    const authStore = useAuthStore()
+    const entrepriseStore = useEntrepriseStore()
 
     // ✅ Ajouter le token si présent
     if (authStore.token) {
-      config.headers.Authorization = `Bearer ${authStore.token}`;
+      config.headers.Authorization = `Bearer ${authStore.token}`
     }
 
     // ✅ Ajouter l'entreprise active si définie
     if (entrepriseStore.activeEntreprise) {
-      config.headers["X-Entreprise-Id"] = entrepriseStore.activeEntreprise.id;
+      config.headers['X-Entreprise-Id'] = entrepriseStore.activeEntreprise.id
     }
 
-    return config;
+    // 🧠 Debug complet ici :
+    console.log('🔍 [Axios Request Interceptor]')
+    console.log('➡️ URL:', config.baseURL + config.url)
+    console.log('📦 Method:', config.method)
+    console.log('🧾 Headers:', config.headers)
+    console.log('🏢 Entreprise active:', entrepriseStore.activeEntreprise.id)
+    return config
   },
-  (error) => Promise.reject(error)
-);
+  (error) => Promise.reject(error),
+)
 
 // Intercepteur pour gérer les erreurs globales (optionnel)
 API.interceptors.response.use(
   (response) => response,
   (error) => {
     // Ici tu peux gérer les erreurs 401, 403 ou autres globalement
-    return Promise.reject(error);
-  }
-);
+    return Promise.reject(error)
+  },
+)
 
-export default API;
+export default API

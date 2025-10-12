@@ -10,7 +10,12 @@
           <p class="text-3xl font-bold text-gray-900">{{ count }}</p>
         </div>
       </div>
-      <button v-if="action" :class="action.color" class="px-4 py-2 rounded border">
+      <button
+        v-if="action"
+        :class="action.color"
+        class="px-4 py-2 rounded border hover:bg-opacity-10 transition-colors"
+        @click="$emit('action-click')"
+      >
         {{ action.label }}
       </button>
     </div>
@@ -38,6 +43,7 @@ defineProps({
     default: null
   }
 });
-</script>
 
----
+// Emit event when action button is clicked
+defineEmits(['action-click']);
+</script>

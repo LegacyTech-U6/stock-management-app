@@ -187,7 +187,9 @@
             </div>
             <div class="flex justify-between">
               <span class="text-gray-500">Selling price</span>
-              <span class="text-gray-900 font-medium">${{ formatNumber(product.selling_price) }}</span>
+              <span class="text-gray-900 font-medium"
+                >${{ formatNumber(product.selling_price) }}</span
+              >
             </div>
             <div class="flex justify-between">
               <span class="text-gray-500">Supplier</span>
@@ -225,7 +227,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { OutOfStock } from '@/service/api'
-import { useRoute,useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useActionMessage } from '@/composable/useActionMessage'
 const { showSuccess, showError } = useActionMessage()
 const finishedProducts = ref([]) // ✅ Start as an empty array
@@ -235,11 +237,11 @@ const router = useRouter()
 const searchQuery = ref('')
 const selectedCategory = ref('all')
 const sortBy = ref('daysEmpty')
-const highValueCount = ref(0);
-const categories = ref([]);
-const outOfStockProducts = ref([]);
-const totalLostRevenue = ref(0);
-const averageDaysEmpty = ref(0);
+const highValueCount = ref(0)
+const categories = ref([])
+const outOfStockProducts = ref([])
+const totalLostRevenue = ref(0)
+const averageDaysEmpty = ref(0)
 onMounted(async () => {
   await fetchFinishedProducts()
 })
@@ -297,11 +299,11 @@ const formatNumber = (num) => {
 }
 
 const handleRestock = (finishedProduct) => {
-  if (!finishedProduct) return console.error("❌ No product loaded")
+  if (!finishedProduct) return console.error('❌ No product loaded')
 
   router.push({
     name: 'restock',
-    params: { reStockId: finishedProduct.id }
+    params: { reStockId: finishedProduct.id },
   })
   console.log('Restock product:', finishedProduct.id)
 }

@@ -4,17 +4,17 @@ const router = express.Router();
 const authenticateUser = require("../middleware/AuthenticatedUser");
 const getActiveEntreprise = require("../middleware/activeEntreprise");
 
-const statsController = require("../controller/statistics/productStats");
 
 // 🌐 Tous les endpoints passent par les deux middlewares
 // - authenticateUser : garantit que l'utilisateur est connecté
 // - getActiveEntreprise : fournit req.entrepriseId si header X-Entreprise-Id présent
-// router.use(authenticateUser);
-// router.use(getActiveEntreprise);
+router.use(authenticateUser);
+router.use(getActiveEntreprise);
 
 // ----------------------------
 // STATISTICS ROUTES
 // ----------------------------
+const statsController = require("../controller/statistics/productStats");
 router.get("/product-sales", statsController.productSales);
 router.get("/sales-report", statsController.getSalesReport);
 router.get("/best-category", statsController.getBestCategory);

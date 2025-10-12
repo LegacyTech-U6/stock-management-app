@@ -130,7 +130,7 @@ const routes = [
       },
       {
         path: '/outOfStock',
-        name: '/outOfStock',
+        name: 'outOfStock',
         component: () => import('@/views/OutofStock.vue'),
       },
       {

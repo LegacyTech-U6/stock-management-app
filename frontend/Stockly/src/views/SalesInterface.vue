@@ -211,7 +211,7 @@
           <!-- Cart Items -->
           <div class="bg-white border border-gray-200 rounded-lg p-4">
             <h3 class="font-semibold text-gray-900 mb-3">Cart Items ({{ saleItems.length }})</h3>
-            
+
             <div v-if="saleItems.length <= 0" class="flex flex-col justify-center items-center py-12 text-gray-400">
               <svg class="w-16 h-16 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
@@ -280,9 +280,9 @@
     </Transition>
 
     <CreateInvoiceForm
-      v-if="showInvoiceForm"
-      :invoice="invoiceData"
-      :selectedClient="selectedClient"
+      v-if="showInvoiceModal"
+    :invoice="modalInvoice"
+    @close="showInvoiceModal = false"
     />
   </div>
 </template>
@@ -300,14 +300,20 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 const productStore = useProductStore()
 const invoiceStore = useInvoiceStore()
+const showInvoiceModal = ref(false)
+const modalInvoice = ref(null)
 
+function openInvoice(invoice, client) {
+  modalInvoice.value = { ...invoice, client }
+  showInvoiceModal.value = true
+}
 const products = ref([])
 const selectedClient = ref(null)
 const saleItems = ref([])
 const discount = ref(0)
 const taxRate = ref(10)
 const showInvoiceForm = ref(false)
-const invoiceData = ref(null)
+const invoice = ref(null)
 
 // Mobile modals
 const showProductModal = ref(false)
@@ -353,12 +359,8 @@ function removeItem(id) {
 }
 
 async function createInvoice() {
-  console.log('🧾 Invoice created:', {
-    client_id: selectedClient.value.id,
-    items: saleItems.value,
-    discount: discount.value,
-    taxRate: taxRate.value,
-  })
+
+
 
   const data = {
     client_id: selectedClient.value.id,
@@ -367,17 +369,11 @@ async function createInvoice() {
     tva: taxRate.value,
   }
 
-  router.push({
-    name: 'invoice',
-    state: {
-      invoice: invoiceData.value,
-      client: selectedClient.value
-    }
-  })
 
-  invoiceData.value = data
-  localStorage.setItem('invoiceData', JSON.stringify(invoiceData.value))
+  invoice.value = data
 
+  modalInvoice.value = { ...invoice.value, client_id: data.client_id }
+  showInvoiceModal.value = true
   // Close cart modal on mobile
   showCartModal.value = false
 }

@@ -36,13 +36,13 @@ module.exports = {
       const period = req.query.period; // default to month if not provided
 
       const stats = await getProductSalesStats({
-        enterpriseId: req?.enterpriseId,
+        enterpriseId: req?.entrepriseId,
         userId: req.user?.id,
         period,
       });
 
       console.log("====================================");
-      console.log("Enterprise ID:", req?.enterpriseId);
+      console.log("Enterprise ID:", req?.entrepriseId);
       console.log("User ID:", req.user?.id);
       console.log("Period:", period);
       console.log("====================================");
@@ -67,11 +67,11 @@ module.exports = {
     try {
       const period = req.query.period || "month";
       const report = await getSalesReportByPeriod(period, {
-        enterpriseId: req?.enterpriseId,
+        enterpriseId: req?.entrepriseId,
         userId: req.user?.id,
       });
       console.log("====================================");
-      console.log(req?.enterpriseId);
+      console.log(req?.entrepriseId);
       console.log(req.user?.id);
       console.log("====================================");
 
@@ -94,11 +94,11 @@ module.exports = {
   getBestCategory: async (req, res) => {
     try {
       const bestCategory = await getBestCategory({
-        enterpriseId: req?.enterpriseId,
+        enterpriseId: req?.entrepriseId,
         userId: req.user?.id,
       });
       console.log("====================================");
-      console.log(req?.enterpriseId);
+      console.log(req?.entrepriseId);
       console.log(req.user?.id);
 
       console.log("====================================");
@@ -122,11 +122,11 @@ module.exports = {
     try {
       const categoryId = req.params.id;
       const bestProducts = await bestProductByCategory(categoryId, {
-        enterpriseId: req?.enterpriseId,
+        enterpriseId: req?.entrepriseId,
         userId: req.user?.id,
       });
       console.log("====================================");
-      console.log(req?.enterpriseId);
+      console.log(req?.entrepriseId);
       console.log(req.user?.id);
 
       console.log("====================================");
@@ -151,11 +151,11 @@ module.exports = {
     try {
       const period = req.query.period || "month";
       const product = await getBestSellingProduct(period, {
-        enterpriseId: req?.enterpriseId,
+        enterpriseId: req?.entrepriseId,
         userId: req.user?.id,
       });
       console.log("====================================");
-      console.log(req?.enterpriseId);
+      console.log(req?.entrepriseId);
       console.log(req.user?.id);
 
       console.log("====================================");
@@ -180,11 +180,11 @@ module.exports = {
     try {
       const period = req.query.period || "day";
       const revenue = await getRevenueByPeriod(period, {
-        enterpriseId: req?.enterpriseId,
+        enterpriseId: req?.entrepriseId,
         userId: req.user?.id,
       });
       console.log("====================================");
-      console.log(req?.enterpriseId);
+      console.log(req?.entrepriseId);
       console.log(req.user?.id);
 
       console.log("====================================");

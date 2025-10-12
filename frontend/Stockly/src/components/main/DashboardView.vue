@@ -11,10 +11,24 @@
         :subtext="stat.subtext"
         :color="stat.color"
         :containerClass="stat.containerClass"
+        :trend="stat.trendPercent || 0"
       />
     </div>
 
-    <!-- Main Dashboard Grid -->
+    <!-- Alert Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+      <AlertCard
+        v-for="alert in alerts"
+        :key="alert.id"
+        :title="alert.title"
+        :count="alert.count"
+        :color="alert.color"
+        :action="alert.action"
+        @action-click="handleAlertAction(alert.id)"
+      />
+    </div>
+
+    <!-- Rest of your dashboard content -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <!-- Left Column: Charts (2/3 width) -->
       <div class="lg:col-span-2 space-y-8">
@@ -101,16 +115,78 @@ import {
   PieChart,
   Clock,
 } from 'lucide-vue-next'
+import AlertCard from '@/components/AlertCard.vue'
 import { useStatisticsStore } from '@/stores/statisticStore'
 import { useEntrepriseStore } from '@/stores/entrepriseStore'
 const entrepriseStore = useEntrepriseStore()
+import { LowStock, OutOfStock } from '@/service/api'
+import router from '@/router'
+
 const productStore = useProductStore()
 const loading = ref(false)
+const totalSales = ref(0)
+const salesTrendPercent = ref(0)
+const avgRevenue = ref(0)
+const profit = ref(0)
+const margin = ref(0)
+const revenueTrendPercent = ref(0)
+const statisticStore = useStatisticsStore()
+const finishedProducts = ref([])
+const message = ref('')
+const error = ref(null)
+
+// Handle alert card actions
+const handleAlertAction = (alertId) => {
+  switch (alertId) {
+    case 1: // Low Stock Alert
+      router.push({ name: 'lowStock' })
+      break
+    case 2: // Out of Stock
+      router.push({ name: 'outOfStock' }) // Make sure you have this route defined
+      break
+    default:
+      console.warn('Unknown alert ID:', alertId)
+  }
+}
+
+// Remove the old handleLowStock function since we're using handleAlertAction now
 
 onMounted(async () => {
   loading.value = true
   await productStore.fetchProducts()
+  await statisticStore.fetchRevenue('day')
+  productStore.fetchFinishedProducts()
+  await fetchLowStockProducts()
+  await fetchFinishedProducts()
   loading.value = false
+  console.log('====================================')
+  console.log(lowStockProducts.value?.length)
+  console.log('====================================')
+  // Revenue
+  avgRevenue.value = statisticStore.revenue?.total || 0
+  revenueTrendPercent.value =
+    statisticStore.revenue?.history[statisticStore.revenue.history.length - 1].growth_percent || 0
+
+  // Margin %
+  margin.value =
+    statisticStore.profit?.total && statisticStore.revenue?.total
+      ? Number(((statisticStore.profit.total / statisticStore.revenue.total) * 100).toFixed(2))
+      : 0
+
+  // Calculate sales trend percentage (you might need to add this to your backend)
+  // For now, using a placeholder calculation
+  if (statisticStore.salesReport && statisticStore.salesReport.length > 1) {
+    const currentPeriod =
+      statisticStore.salesReport[statisticStore.salesReport.length - 1]?.total_sold || 0
+    const previousPeriod =
+      statisticStore.salesReport[statisticStore.salesReport.length - 2]?.total_sold || 0
+    salesTrendPercent.value =
+      previousPeriod > 0
+        ? ((currentPeriod - previousPeriod) / previousPeriod) * 100
+        : currentPeriod > 0
+          ? 100
+          : 0
+  }
 })
 
 const totalProductsValue = computed(() =>
@@ -119,14 +195,44 @@ const totalProductsValue = computed(() =>
     return sum + productTotal
   }, 0),
 )
+const lowStockProducts = ref([])
 
-const statisticStore = useStatisticsStore()
+async function fetchLowStockProducts() {
+  try {
+    const data = await LowStock()
+    lowStockProducts.value = Array.isArray(data.products) ? data.products : []
+    console.log('✅ Low products loaded:', lowStockProducts.value.length)
+  } catch (err) {
+    console.error('❌ Error fetching low stock:', err)
+    lowStockProducts.value = []
+  }
+}
+
+async function fetchFinishedProducts() {
+  try {
+    const data = await OutOfStock()
+    console.log('✅ API Response:', data)
+
+    // ✅ Store data properly
+    message.value = data.message
+    orders.value = data.orders
+    finishedProducts.value = data.products || [] // Important
+  } catch (err) {
+    showError('Failed to fetch out-of-stock products')
+    console.error('❌ Error fetching out-of-stock products:', err)
+  }
+}
+
+console.log('====================================')
+console.log(lowStockProducts.value)
+console.log('====================================')
+
 const topStats = computed(() => [
   {
     id: 1,
     icon: Users,
-    label: 'Total Workers',
-    value: productStore.products.length,
+    label: 'Total products',
+    value: lowStockProducts.value.length,
     subtext: 'Under this enterprise',
     color: 'bg-blue-500',
     containerClass:
@@ -135,7 +241,7 @@ const topStats = computed(() => [
   {
     id: 2,
     icon: Package,
-    label: 'Total Products',
+    label: 'Total Products Value',
     value: totalProductsValue,
     subtext: 'In stock catalog',
     color: 'bg-purple-500',
@@ -146,11 +252,12 @@ const topStats = computed(() => [
     id: 3,
     icon: DollarSign,
     label: 'Total Sales',
-    value: statisticStore.revenue,
+    value: avgRevenue.value,
     subtext: '+18.5% from last period',
     color: 'bg-green-500',
     containerClass:
       'border-2  p-6 rounded-xl border-green-200 bg-gradient-to-br from-green-50 to-white',
+    trendPercent: revenueTrendPercent.value,
   },
   {
     id: 4,
@@ -164,23 +271,24 @@ const topStats = computed(() => [
   },
 ])
 
-const alerts = ref([
+const alerts = computed(() => [
   {
     id: 1,
     title: 'Low Stock Alerts',
-    count: '8',
+    count: lowStockProducts.value.length,
     color: 'border-yellow-300 bg-yellow-50',
     action: { label: 'View', color: 'border-yellow-400 text-yellow-600' },
   },
   {
     id: 2,
     title: 'Out of Stock',
-    count: '3',
+    count: finishedProducts.value.length,
     color: 'border-red-300 bg-red-50',
     action: { label: 'Restock', color: 'border-red-400 text-red-600' },
   },
 ])
-const notifications = ref([
+
+const notifications = computed(() => [
   {
     id: 1,
     type: 'low-stock',
