@@ -19,7 +19,9 @@ import {
   PointElement,
   LinearScale,
   CategoryScale,
+
 } from 'chart.js'
+import type { InteractionModeMap } from 'chart.js'
 import { useStatisticsStore } from '@/stores/statisticStore'
 
 ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, LinearScale, CategoryScale)
@@ -72,7 +74,7 @@ const chartOptions = {
       },
     },
     tooltip: {
-      mode: 'index',
+      mode: 'index' as keyof InteractionModeMap,
       intersect: false,
     },
   },

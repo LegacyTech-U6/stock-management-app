@@ -31,7 +31,7 @@ defineProps({
     required: true
   },
   count: {
-    type: String,
+    type: [String, Number],
     required: true
   },
   color: {

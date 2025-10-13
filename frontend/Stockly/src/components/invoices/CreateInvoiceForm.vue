@@ -1,17 +1,21 @@
 <template>
-  <div class="fixed inset-0 z-50 bg-white/80 bg-opacity-50 flex justify-center items-start pt-5 overflow-auto mb-5">
-
+  <div
+    class="fixed inset-0 z-50 bg-white/80 bg-opacity-50 flex justify-center items-start pt-5 overflow-auto mb-5"
+  >
     <div class="bg-white rounded shadow max-w-4xl w-full relative">
       <!-- Action Buttons -->
       <div class="action-buttons">
-          <button class="btn btn-secondary" @click="$emit('close')">Close</button>
-          <button class="btn btn-primary" @click="downloadPDF">Download PDF</button>
-          <button class="btn" @click="printInvoice">Print</button>
-        </div>
-
+        <button class="btn btn-secondary" @click="$emit('close')">Close</button>
+        <button class="btn btn-primary" @click="downloadPDF">Download PDF</button>
+        <button class="btn" @click="printInvoice">Print</button>
+      </div>
 
       <div class="p-6">
-        <div ref="invoiceContent" class="invoice-content">
+        <div v-if="loading" class="text-center py-8">
+          <div class="text-gray-500">Loading invoice data...</div>
+        </div>
+
+        <div v-else ref="invoiceContent" class="invoice-content">
           <!-- Classic Invoice Layout -->
           <CompanyInfo />
 
@@ -24,7 +28,7 @@
               />
             </div>
             <div class="client-section">
-              <BillTo :client="invoice.client" />
+              <BillTo :client="clientData" />
             </div>
           </div>
 
@@ -36,9 +40,6 @@
           />
           <PaymentTerms />
         </div>
-
-
-
       </div>
     </div>
   </div>
@@ -51,14 +52,39 @@ import BillTo from './BillTo.vue'
 import InvoiceItemsTable from './InvoiceItemsTable.vue'
 import InvoiceSummary from './InvoiceSummary.vue'
 import PaymentTerms from './PaymentTerms.vue'
-import { ref } from 'vue'
+import { ref, onMounted,computed } from 'vue'
 import { useInvoiceStore } from '@/stores/FactureStore'
-
-const props = defineProps({
-  invoice: Object
-})
+import { useClientStore } from '@/stores/clientStore'
+const clientStore = useClientStore()
 const invoiceContent = ref(null)
+const loading = ref(true)
 const invoiceStore = useInvoiceStore()
+const props = defineProps({
+  invoice: Object,
+})
+
+onMounted(async () => {
+  try {
+    console.log('Fetching client with ID:', props.invoice.client_id)
+    await clientStore.fetchClientById(props.invoice.client_id)
+    console.log('Selected Client after fetch:', clientStore.selectedClient)
+  } catch (error) {
+    console.error('Error fetching client:', error)
+  } finally {
+    loading.value = false
+  }
+})
+// Add a computed property to check if client data is available
+const clientData = computed(() => {
+  console.log('Current selectedClient:', clientStore.selectedClient)
+  return clientStore.selectedClient
+})
+
+
+
+console.log('====================================')
+console.log(props.invoice.client_id)
+console.log('====================================')
 
 async function downloadPDF() {
   await invoiceStore.createInvoice(props.invoice)

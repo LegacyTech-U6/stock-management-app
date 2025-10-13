@@ -105,6 +105,7 @@ import LowStockAlertsPanel from '@/components/main/LowStockAlertsPanel.vue'
 import SalesPerformanceChart from '@/components/statistics/SalesPerformanceChart.vue'
 import StatsCards from '@/components/StartsCards.vue'
 // Lucide Vue Next icons
+import { useActionMessage } from '@/composable/useActionMessage'
 import {
   Package,
   TrendingUp,
@@ -134,7 +135,7 @@ const statisticStore = useStatisticsStore()
 const finishedProducts = ref([])
 const message = ref('')
 const error = ref(null)
-
+const { showSuccess, showError } = useActionMessage()
 // Handle alert card actions
 const handleAlertAction = (alertId) => {
   switch (alertId) {
@@ -210,6 +211,7 @@ async function fetchLowStockProducts() {
 
 async function fetchFinishedProducts() {
   try {
+    const orders = null
     const data = await OutOfStock()
     console.log('✅ API Response:', data)
 

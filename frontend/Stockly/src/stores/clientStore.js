@@ -41,6 +41,9 @@ export const useClientStore = defineStore('client', {
       this.error = null
       try {
         this.selectedClient = await getClientById(id)
+        console.log('====================================');
+        console.log(this.selectedClient);
+        console.log('====================================');
       } catch (err) {
         this.error = err.response?.data?.message || err.message || 'Failed to fetch client details'
         console.error('Error fetching client:', err)

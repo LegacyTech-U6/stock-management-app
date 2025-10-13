@@ -3,13 +3,13 @@
     <h3 class="section-title">BILL TO</h3>
 
     <div class="client-details">
-      <div class="client-name">{{ client.name || 'Client Name' }}</div>
+      <div class="client-name">{{ client.client_name || 'Client Name' }}</div>
       <div class="client-company">{{ client.company || 'Company Name' }}</div>
 
       <div class="client-contact">
-        <div class="contact-line" v-if="client.address">{{ client.address }}</div>
+        <div class="contact-line" v-if="client.location">{{ client.location }}</div>
         <div class="contact-line" v-if="client.email">Email: {{ client.email }}</div>
-        <div class="contact-line" v-if="client.phone">Phone: {{ client.phone }}</div>
+        <div class="contact-line" v-if="client.client_PhoneNumber">Phone: {{ client.client_PhoneNumber }}</div>
       </div>
     </div>
   </div>
