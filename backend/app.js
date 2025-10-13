@@ -1,7 +1,7 @@
 // index.js
 const app = require('./index');
 const http = require('http');
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT ;
 
 const server = http.createServer(app);
 

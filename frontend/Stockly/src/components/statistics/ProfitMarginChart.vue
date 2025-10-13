@@ -65,7 +65,7 @@ const chartOptions = {
   maintainAspectRatio: false,
   plugins: {
     legend: {
-      position: 'bottom',
+      position: 'bottom' as const,
       labels: {
         boxWidth: 12,
         color: '#374151',
@@ -77,8 +77,8 @@ const chartOptions = {
     },
   },
   interaction: {
-    mode: 'nearest',
-    axis: 'x',
+   mode: 'index' as const,
+    axis: 'x' as const,
     intersect: false,
   },
   scales: {

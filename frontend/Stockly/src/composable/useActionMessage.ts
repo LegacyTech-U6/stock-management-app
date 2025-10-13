@@ -11,22 +11,13 @@ interface Options {
 }
 
 export function useActionMessage() {
-  const defaultStyle = {
-    fontSize: '16px',
-    minWidth: '250px',
-    padding: '12px 20px',
-  }
+ 
 
   const showSuccess = (content: string, options: Options = {}) => {
     message.success(content, {
       duration: options.duration ?? 5000,
       closable: options.closable ?? true,
-      contentStyle: {
-        ...defaultStyle,
-        fontSize: options.fontSize,
-        minWidth: options.minWidth,
-        padding: options.padding,
-      }
+
     })
   }
 
@@ -34,12 +25,8 @@ export function useActionMessage() {
     message.error(content, {
       duration: options.duration ?? 5000,
       closable: options.closable ?? true,
-      contentStyle: {
-        ...defaultStyle,
-        fontSize: options.fontSize,
-        minWidth: options.minWidth,
-        padding: options.padding,
-      }
+
+
     })
   }
 
@@ -47,12 +34,8 @@ export function useActionMessage() {
     message.info(content, {
       duration: options.duration ?? 3000,
       closable: options.closable ?? true,
-      contentStyle: {
-        ...defaultStyle,
-        fontSize: options.fontSize,
-        minWidth: options.minWidth,
-        padding: options.padding,
-      }
+
+
     })
   }
 
@@ -60,12 +43,7 @@ export function useActionMessage() {
     message.warning(content, {
       duration: options.duration ?? 3000,
       closable: options.closable ?? true,
-      contentStyle: {
-        ...defaultStyle,
-        fontSize: options.fontSize,
-        minWidth: options.minWidth,
-        padding: options.padding,
-      }
+
     })
   }
 

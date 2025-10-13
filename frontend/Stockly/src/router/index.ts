@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import type { RouteRecordRaw } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import { useEntrepriseStore } from '@/stores/entrepriseStore'
-
-const routes = [
+const routes: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'home',
@@ -144,6 +144,11 @@ const routes = [
         component: () => import('@/views/CategoryDetail.vue'),
         props: true,
       },
+      {
+        path: '/invoices/:id',
+        name: 'InvoiceDetail',
+        component: () => import('@/components/invoices/InvoiceDetail.vue'),
+      },
     ],
   },
 ]
@@ -157,8 +162,8 @@ router.afterEach((to, from) => {
   // Si on revient sur la page /entreprises, on désactive l’entreprise
   if (to.path === '/admin') {
     localStorage.removeItem('activeEnterprise')
-    const store = useEntrepriseStore()
-    store.clearActiveEntreprise()
+   
+
   }
 })
 

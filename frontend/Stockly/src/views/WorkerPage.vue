@@ -6,7 +6,8 @@
         <div>
           <h1 class="text-4xl font-bold text-gray-900 mb-2">Worker Management</h1>
           <p class="text-gray-600">
-            Manage your team members • <span class="font-semibold">{{ store.workers.length }}</span> workers total
+            Manage your team members •
+            <span class="font-semibold">{{ store.workers.length }}</span> workers total
           </p>
         </div>
         <button
@@ -54,8 +55,18 @@
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
         <div class="bg-white rounded-lg p-6 border border-gray-200 hover:shadow-sm transition">
           <div class="flex items-center gap-3 mb-3">
-            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+            <svg
+              class="w-5 h-5 text-gray-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+              />
             </svg>
             <span class="text-gray-600 text-sm font-medium">Total Workers</span>
           </div>
@@ -64,8 +75,18 @@
 
         <div class="bg-white rounded-lg p-6 border border-gray-200 hover:shadow-sm transition">
           <div class="flex items-center gap-3 mb-3">
-            <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg
+              class="w-5 h-5 text-green-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
             <span class="text-gray-600 text-sm font-medium">Active Workers</span>
           </div>
@@ -74,8 +95,18 @@
 
         <div class="bg-white rounded-lg p-6 border border-gray-200 hover:shadow-sm transition">
           <div class="flex items-center gap-3 mb-3">
-            <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg
+              class="w-5 h-5 text-orange-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
             <span class="text-gray-600 text-sm font-medium">Inactive Workers</span>
           </div>
@@ -84,8 +115,18 @@
 
         <div class="bg-white rounded-lg p-6 border border-gray-200 hover:shadow-sm transition">
           <div class="flex items-center gap-3 mb-3">
-            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" />
+            <svg
+              class="w-5 h-5 text-blue-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"
+              />
             </svg>
             <span class="text-gray-600 text-sm font-medium">Departments</span>
           </div>
@@ -94,7 +135,10 @@
       </div>
 
       <!-- Workers Grid -->
-      <div v-if="filteredWorkers.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div
+        v-if="filteredWorkers.length > 0"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+      >
         <div
           v-for="worker in filteredWorkers"
           :key="worker.id"
@@ -184,8 +228,18 @@
           <!-- Stats Row -->
           <div class="mt-4 pt-4 border-t border-gray-100 text-xs text-gray-600">
             <div class="flex items-center gap-2">
-              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+              <svg
+                class="w-4 h-4 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+                />
               </svg>
               <span>ID: {{ worker.worker_id }}</span>
             </div>
@@ -289,11 +343,7 @@
               required
             >
               <option value="">Select a role</option>
-              <option
-                v-for="role in roleStore.roles"
-                :key="role.id"
-                :value="role.id"
-              >
+              <option v-for="role in roleStore.roles" :key="role.id" :value="role.id">
                 {{ role.name }}
               </option>
             </select>
@@ -356,22 +406,21 @@
               :disabled="isSubmitting"
               class="px-6 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {{ isSubmitting ? 'Saving...' : (isEditing ? 'Update' : 'Create') }}
+              {{ isSubmitting ? 'Saving...' : isEditing ? 'Update' : 'Create' }}
             </button>
           </div>
         </form>
       </div>
     </div>
   </div>
-   <ActionModal
-      v-model="showDeleteModal"
-      title="Delete Worker"
-      message="Are you sure you want to delete this worker? This action cannot be undone."
-      confirm-text="Delete"
-      cancel-text="Cancel"
-      @confirm="confirmDelete"
-    />
-
+  <ActionModal
+    v-model="showDeleteModal"
+    title="Delete Worker"
+    message="Are you sure you want to delete this worker? This action cannot be undone."
+    confirm-text="Delete"
+    cancel-text="Cancel"
+    @confirm="confirmDelete"
+  />
 </template>
 
 <script setup>
@@ -488,21 +537,8 @@ const confirmDelete = async () => {
     showDeleteModal.value = false
     categoryToDelete.value = null
   }
-const handleDeleteWorke = (id) => {
-  if (confirm('Are you sure you want to delete this worker?')) {
-    try {
-     const successfully = store.removeWorker(id)
-     if (successfully) {
-        showSuccess('deleted successfully')
-     }else{
-      showError('errors deleting')
-     }
-    } catch (error) {
-      console.error('Error deleting worker:', error)
-      showError('Error deleting worker.')
-    }
-  }
 }
+
 
 const closeModal = () => {
   showModal.value = false
@@ -555,8 +591,9 @@ const getColorForWorker = (workerId) => {
   const index = Math.abs(hash % colors.length)
   return colors[index]
 }
-</script>
 
-<style scoped>
-/* Add any component-specific styles here if needed */
-</style>
+
+
+
+
+</script>

@@ -73,13 +73,13 @@
           <div>
             <div class="text-xs text-gray-500 mb-0.5">Selling Price</div>
             <div class="text-lg font-semibold text-gray-900">
-              ${{ parseFloat(product.selling_price).toFixed(2) }}
+             ${{ parseFloat(String(product.selling_price)).toFixed(2) }}
             </div>
           </div>
           <div class="text-right">
             <div class="text-xs text-gray-500 mb-0.5">Cost Price</div>
             <div class="text-sm text-gray-600">
-              ${{ parseFloat(product.cost_price).toFixed(2) }}
+              ${{ parseFloat(String(product.cost_price)).toFixed(2) }}
             </div>
           </div>
         </div>

@@ -22,7 +22,7 @@ export const useEntrepriseStore = defineStore('entreprise', {
     setActiveEntreprise(entreprise) {
       this.activeEntreprise = entreprise
     },
-
+    
     clearActiveEntreprise() {
       this.activeEntreprise = null
     },
