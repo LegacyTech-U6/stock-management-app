@@ -17,7 +17,7 @@
 
         <div v-else ref="invoiceContent" class="invoice-content">
           <!-- Classic Invoice Layout -->
-          <CompanyInfo />
+          <CompanyInfo :entreprise="entrepriseData" />
 
           <div class="invoice-grid">
             <div class="invoice-header-section">
@@ -52,9 +52,12 @@ import BillTo from './BillTo.vue'
 import InvoiceItemsTable from './InvoiceItemsTable.vue'
 import InvoiceSummary from './InvoiceSummary.vue'
 import PaymentTerms from './PaymentTerms.vue'
-import { ref, onMounted,computed } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useInvoiceStore } from '@/stores/FactureStore'
 import { useClientStore } from '@/stores/clientStore'
+import { useEntrepriseStore } from '@/stores/entrepriseStore'
+
+const entreprise = useEntrepriseStore()
 const clientStore = useClientStore()
 const invoiceContent = ref(null)
 const loading = ref(true)
@@ -67,24 +70,32 @@ onMounted(async () => {
   try {
     console.log('Fetching client with ID:', props.invoice.client_id)
     await clientStore.fetchClientById(props.invoice.client_id)
+
+    // ✅ CORRECTION : Passer l'ID de l'entreprise active
+    if (entreprise.activeEntreprise && entreprise.activeEntreprise.id) {
+      await entreprise.fetchEntrepriseById(entreprise.activeEntreprise.id)
+    
+    }
+
     console.log('Selected Client after fetch:', clientStore.selectedClient)
+    console.log('Current Entreprise:', entreprise.currentEntreprise)
   } catch (error) {
-    console.error('Error fetching client:', error)
+    console.error('Error fetching data:', error)
   } finally {
     loading.value = false
   }
 })
+
 // Add a computed property to check if client data is available
 const clientData = computed(() => {
   console.log('Current selectedClient:', clientStore.selectedClient)
   return clientStore.selectedClient
 })
 
-
-
-console.log('====================================')
-console.log(props.invoice.client_id)
-console.log('====================================')
+// Ajouter aussi les données de l'entreprise pour CompanyInfo
+const entrepriseData = computed(() => {
+  return entreprise.currentEntreprise || entreprise.activeEntreprise
+})
 
 async function downloadPDF() {
   await invoiceStore.createInvoice(props.invoice)
@@ -96,7 +107,6 @@ function printInvoice() {
 
 defineEmits(['close'])
 </script>
-
 <style scoped>
 .invoice-content {
   padding: 2rem;

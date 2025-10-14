@@ -418,12 +418,12 @@
   <InvoiceDetailModal
    v-if="showInvoiceModal"
   :invoice="selectedInvoice"
+  :entreprise="entreprise"
   @close="showInvoiceModal = false"
    />
   </div>
 
 </template>
-
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useInvoiceStore } from '@/stores/FactureStore'
@@ -431,15 +431,20 @@ import ActionModal from '@/components/ui/ActionModal.vue'
 import { useActionMessage } from '@/composable/useActionMessage'
 import LazyLoader from '@/components/ui/LazyLoader.vue'
 import InvoiceDetailModal from '@/components/invoices/InvoiceDetailModal.vue'
+
 const { showSuccess, showError } = useActionMessage()
-const factureStore = useInvoiceStore()
-const invoices = ref([])
+const invoiceStore = useInvoiceStore() // ✅ Renommer pour cohérence
 const searchQuery = ref('')
 const showDeleteModal = ref(false)
 const invoiceToDelete = ref(null)
-// Add these to your script section
 const showInvoiceModal = ref(false)
 const selectedInvoice = ref(null)
+const loadingClients = ref(true)
+
+// ✅ Utiliser computed pour les invoices depuis le store
+const invoices = computed(() => invoiceStore.invoices.factures || [])
+const entreprise = computed(() => invoiceStore.invoices.entreprise || {})
+
 const stats = ref({
   total: 0,
   paid: 0,
@@ -449,15 +454,15 @@ const stats = ref({
   pendingAmount: 0,
   overdueAmount: 0,
 })
+
 const handleDeleteInvoice = (invoiceId) => {
   invoiceToDelete.value = invoiceId
   showDeleteModal.value = true
 }
-const loadingClients = ref(true)
+
 const confirmDelete = async () => {
   try {
-    await factureStore.Delete(invoiceToDelete.value)
-    await factureStore.fetchInvoice()
+    await invoiceStore.deleteInvoice(invoiceToDelete.value) // ✅ Utiliser la méthode du store
     showSuccess('Invoice deleted successfully!')
   } catch (error) {
     console.error('Error deleting invoice:', error)
@@ -467,48 +472,65 @@ const confirmDelete = async () => {
     invoiceToDelete.value = null
   }
 }
+
 onMounted(async () => {
-  invoices.value = await factureStore.fetchInvoice()
   loadingClients.value = true
-  await new Promise((resolve) => setTimeout(resolve, 2000))
-  loadingClients.value = false
-  // Compute stats
-  stats.value.total = invoices.value.length
-  stats.value.paid = invoices.value.filter((i) => i.status === 'payée').length
-  stats.value.pending = invoices.value.filter((i) => i.status === 'en_attente').length
-  stats.value.overdue = invoices.value.filter((i) => i.status === 'overdue').length
+  try {
+    // ✅ Appeler la méthode correcte du store
+    await invoiceStore.fetchInvoices()
 
-  stats.value.paidAmount = invoices.value
-    .filter((i) => i.status === 'payée')
-    .reduce((acc, cur) => acc + (cur.total || 0), 0)
+    // ✅ Calculer les stats après le chargement
+    stats.value.total = invoices.value.length
+    stats.value.paid = invoices.value.filter((i) => i.status === 'payée').length
+    stats.value.pending = invoices.value.filter((i) => i.status === 'en_attente').length
+    stats.value.overdue = invoices.value.filter((i) => i.status === 'overdue').length
 
-  stats.value.pendingAmount = invoices.value
-    .filter((i) => i.status === 'en_attente')
-    .reduce((acc, cur) => acc + (cur.total || 0), 0)
+    stats.value.paidAmount = invoices.value
+      .filter((i) => i.status === 'payée')
+      .reduce((acc, cur) => acc + (cur.total || 0), 0)
 
-  stats.value.overdueAmount = invoices.value
-    .filter((i) => i.status === 'overdue')
-    .reduce((acc, cur) => acc + (cur.total || 0), 0)
+    stats.value.pendingAmount = invoices.value
+      .filter((i) => i.status === 'en_attente')
+      .reduce((acc, cur) => acc + (cur.total || 0), 0)
+
+    stats.value.overdueAmount = invoices.value
+      .filter((i) => i.status === 'overdue')
+      .reduce((acc, cur) => acc + (cur.total || 0), 0)
+
+    console.log('📈 Stats calculated:', stats.value)
+  } catch (error) {
+    console.error('❌ Error loading invoices:', error)
+    showError('Failed to load invoices')
+  } finally {
+    loadingClients.value = false
+  }
 })
 
-const filteredInvoices = computed(() =>
-  invoices.value.filter(
+const filteredInvoices = computed(() => {
+  if (!searchQuery.value) return invoices.value
+
+  return invoices.value.filter(
     (i) =>
       i.id.toString().toLowerCase().includes(searchQuery.value.toLowerCase()) ||
       (i.client_name && i.client_name.toLowerCase().includes(searchQuery.value.toLowerCase())) ||
       (i.client_email && i.client_email.toLowerCase().includes(searchQuery.value.toLowerCase())) ||
       (i.mode_paiement && i.mode_paiement.toLowerCase().includes(searchQuery.value.toLowerCase())),
-  ),
-)
+  )
+})
 
 function createInvoice() {
   // Redirect to invoice creation
   console.log('Create invoice')
+  // router.push('/invoices/create') // Décommentez si vous avez une route de création
 }
 
 function viewInvoice(id) {
+  console.log('====================================');
+  console.log(id);
+  console.log('====================================');
   selectedInvoice.value = invoices.value.find(inv => inv.id === id)
   showInvoiceModal.value = true
+  console.log('👀 Viewing invoice:', selectedInvoice.value)
 }
 
 const formatPrice = (amount) =>

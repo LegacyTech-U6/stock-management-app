@@ -145,12 +145,16 @@
         </button>
       </div>
     </div>
-    <FromModal
-      :open="clientStore.isFormOpen"
-      :form="clientStore.clientForm"
+     <FromModal
+      :open="showModal"
+      :isEdit="isEditMode"
+      :clientData="selectedClient"
+      :loading="loading"
+      :error="error"
+      @close="handleCloseModal"
       @submit="handleSubmit"
-      @close="clientStore.fermerFormulaire"
     />
+
 
   </div>
   <ActionModal
@@ -164,73 +168,96 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import DollarIcon from '@/assets/icon svg/DollarIcon.vue'
-import EmptyStateIcon from '@/assets/icon svg/EmptyStateIcon.vue'
-import GraphIcon from '@/assets/icon svg/GraphIcon.vue'
-import SearchIcon from '@/assets/icon svg/SearchIcon.vue'
-import TickIcon from '@/assets/icon svg/TickIcon.vue'
-import UserGroupIcon from '@/assets/icon svg/userGroupIcon.vue'
-import ClientCard from '@/components/clients/ClientCard.vue'
-import FromModal from '../components/clients/FromModal.vue'
-import { useClientStore } from '@/stores/clientStore'
-import { onMounted, ref, computed } from 'vue'
-import SalesPerformanceChart from '@/components/statistics/SalesPerformanceChart.vue'
-import RevenueCatgeory from '@/components/statistics/RevenueCatgeory.vue'
-import ActionModal from '@/components/ui/ActionModal.vue'
-import { useActionMessage } from '@/composable/useActionMessage'
+<script setup>
+import { ref, computed, onMounted } from 'vue';
+import { useClientStore } from '@/stores/clientStore';
+import { useActionMessage } from '@/composable/useActionMessage';
+import ClientCard from '@/components/clients/ClientCard.vue';
+import FromModal from '../components/clients/FromModal.vue';
+import ActionModal from '@/components/ui/ActionModal.vue';
+import LazyLoader from '@/components/ui/LazyLoader.vue';
 
-const { showSuccess, showError } = useActionMessage()
-const clientStore = useClientStore()
-const search = ref('')
-const showDeleteModal = ref(false)
-const selectedClient = ref(null)
-import LazyLoader from '@/components/ui/LazyLoader.vue'
+const { showSuccess, showError } = useActionMessage();
+const clientStore = useClientStore();
 
-const handleDeleteClient = (client: any) => {
-  selectedClient.value = client
-  showDeleteModal.value = true
-}
-const loadingClients = ref(true)
+const search = ref('');
+const showModal = ref(false);
+const showDeleteModal = ref(false);
+const isEditMode = ref(false);
+const selectedClient = ref(null);
+const loading = ref(false);
+const error = ref('');
+const loadingClients = ref(true);
 
-onMounted(async () => {
-  loadingClients.value = true
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-  await clientStore.fetchClients()
-  loadingClients.value = false
-})
-
-// Filtered clients based on search
+// Computed
 const filteredClients = computed(() =>
-  clientStore.clients.filter(
-    (c) =>
-      c.client_name?.toLowerCase().includes(search.value.toLowerCase()) ||
-      c.email?.toLowerCase().includes(search.value.toLowerCase()) ||
-      c.company?.toLowerCase().includes(search.value.toLowerCase()),
-  ),
-)
-
-// Active clients count
-const activeClientsCount = computed(
-  () => clientStore.clients.filter((c) => (c.status || 'active').toLowerCase() === 'active').length,
-)
-
-// Total revenue calculation
-const totalRevenue = computed(() =>
-  clientStore.clients.reduce((sum, client) => sum + (client.totalSpent || 0), 0),
-)
-
-// Average order value calculation
-const avgOrderValue = computed(() => {
-  const totalOrders = clientStore.clients.reduce(
-    (sum, client) => sum + (client.totalOrders || 0),
-    0,
+  clientStore.clients.filter(client =>
+    client.client_name?.toLowerCase().includes(search.value.toLowerCase()) ||
+    client.email?.toLowerCase().includes(search.value.toLowerCase())
   )
-  return totalOrders > 0 ? totalRevenue.value / totalOrders : 0
-})
+);
 
+// Methods
+const handleAddClient = () => {
+  isEditMode.value = false;
+  selectedClient.value = null;
+  showModal.value = true;
+  error.value = '';
+};
+
+const handleEditClient = (client) => {
+  isEditMode.value = true;
+  selectedClient.value = client;
+  showModal.value = true;
+  error.value = '';
+};
+
+const handleCloseModal = () => {
+  showModal.value = false;
+  error.value = '';
+};
+
+const handleSubmit = async (formData) => {
+  loading.value = true;
+  error.value = '';
+
+  try {
+    if (isEditMode.value) {
+      await clientStore.updateClient(selectedClient.value.id, formData);
+      showSuccess('Client updated successfully!');
+    } else {
+      await clientStore.addClient(formData);
+      showSuccess('Client created successfully!');
+    }
+
+    showModal.value = false;
+    await clientStore.fetchClients();
+  } catch (err) {
+    error.value = err.response?.data?.message || 'Operation failed';
+  } finally {
+    loading.value = false;
+  }
+};
+
+const handleDeleteClient = (client) => {
+  selectedClient.value = client;
+  showDeleteModal.value = true;
+};
+
+const confirmDelete = async () => {
+  try {
+    await clientStore.deleteclient(selectedClient.value.id);
+    showSuccess('Client deleted successfully!');
+    await clientStore.fetchClients();
+  } catch (err) {
+    showError('Failed to delete client');
+  } finally {
+    showDeleteModal.value = false;
+    selectedClient.value = null;
+  }
+};
 // Format currency
-const formatCurrency = (amount: number): string => {
+const formatCurrency = (amount) => {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -239,52 +266,13 @@ const formatCurrency = (amount: number): string => {
   }).format(amount)
 }
 
-// Event handlers
-const handleBackToSales = () => {
-  // Navigate back to sales page
-  // Example: router.push('/sales')
-  console.log('Navigate to sales')
-}
-
-const handleAddClient = () => {
-  // Open add client modal/form
-  clientStore.ouvrirFormulaire()
-  console.log('Open add client modal')
-}
-const handleSubmit = async () => {
-  try {
-    const success = await clientStore.addClient()
-    if (success) {
-      showSuccess('Client created successfully')
-    } else {
-      showError('Failed to create client.')
-    }
-  } catch (error) {
-    throw error
-  }
-}
-
-const handleEditClient = (client: any) => {
-  // Open edit client modal/form
-
-  showSuccess('Client created successfully')
-}
-
-const confirmDelete = async () => {
-  if (!selectedClient.value) return
-
-  const success = await clientStore.deleteclient(selectedClient.value.id)
-  if (success) {
-    showSuccess('Client deleted successfully!')
-  } else {
-    showError('Failed to delete client.')
-  }
-
-  showDeleteModal.value = false
-  selectedClient.value = null
-}
+// Lifecycle
+onMounted(async () => {
+  loadingClients.value = true;
+  await clientStore.fetchClients();
+  loadingClients.value = false;
+});
 </script>
-
 <style scoped>
 /* Add any additional custom styles here if needed */
 </style>

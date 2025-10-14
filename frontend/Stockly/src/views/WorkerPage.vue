@@ -432,7 +432,7 @@ import { useRoleStore } from '@/stores/roleStore'
 import { useActionMessage } from '@/composable/useActionMessage'
 import ActionModal from '@/components/ui/ActionModal.vue'
 const { showSuccess, showError } = useActionMessage()
-const router = useRouter()
+
 const store = useWorkerStore()
 const enterpriseStore = useEntrepriseStore()
 const roleStore = useRoleStore()
@@ -456,7 +456,7 @@ const formWorker = ref({
 
 // Load data on mount
 onMounted(async () => {
-  await store.fetchAllWorkers()
+   store.fetchAllWorkers()
   await roleStore.fetchRoles()
   await enterpriseStore.fetchEntreprises()
 })

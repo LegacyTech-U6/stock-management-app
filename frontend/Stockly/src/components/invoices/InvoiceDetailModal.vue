@@ -81,9 +81,8 @@
             <div>
               <h1 class="text-3xl font-bold text-black mb-2">INVOICE</h1>
               <div class="text-sm text-gray-600">
-                <div>123 Business Street</div>
-                <div>City, State 12345</div>
-                <div>Phone: (555) 123-4567</div>
+                <CompanyInfo :entreprise="entreprise" />
+                
               </div>
             </div>
             <div class="text-right">
@@ -93,11 +92,11 @@
               </div>
               <div class="mb-2">
                 <span class="font-semibold text-gray-700">Date:</span>
-                <span class="ml-2 text-black">{{ formatDate(invoice.date) }}</span>
+                <span class="ml-2 text-black">{{ formatDate(invoice.date_of_creation) }}</span>
               </div>
               <div>
                 <span class="font-semibold text-gray-700">Due Date:</span>
-                <span class="ml-2 text-black">{{ formatDate(invoice.due_date) }}</span>
+                <span class="ml-2 text-black">{{ formatDate(invoice.date_echeance) }}</span>
               </div>
             </div>
           </div>
@@ -108,9 +107,9 @@
           <h3 class="font-bold text-black text-lg mb-3 border-b border-gray-300 pb-2">BILL TO</h3>
           <div class="text-sm">
             <div class="font-semibold text-black">{{ invoice.client_name || 'Client Name' }}</div>
-            <div class="text-gray-600">{{ invoice.client_company || 'Company Name' }}</div>
+            <div class="text-gray-600">{{ invoice.client_adresse || 'Address not specified' }}</div>
             <div class="text-gray-600" v-if="invoice.client_email">Email: {{ invoice.client_email }}</div>
-            <div class="text-gray-600" v-if="invoice.client_phone">Phone: {{ invoice.client_phone }}</div>
+            <div class="text-gray-600" v-if="invoice.client_telephone">Phone: {{ invoice.client_telephone }}</div>
           </div>
         </div>
 
@@ -130,13 +129,15 @@
               <tr v-for="(item, index) in invoice.items" :key="item.id">
                 <td class="border border-gray-300 px-3 py-2 text-center">{{ index + 1 }}</td>
                 <td class="border border-gray-300 px-3 py-2">
-                  <div class="font-medium">{{ item.Prod_name }}</div>
+                  <div class="font-medium">{{ item.product_name }}</div>
                   <div class="text-xs text-gray-600" v-if="item.description">{{ item.description }}</div>
                 </td>
                 <td class="border border-gray-300 px-3 py-2 text-center">{{ item.quantity }}</td>
-                <td class="border border-gray-300 px-3 py-2 text-right font-mono">${{ item.selling_price.toFixed(2) }}</td>
+                <td class="border border-gray-300 px-3 py-2 text-right font-mono">
+                  {{ formatPrice(item.unit_price) }}
+                </td>
                 <td class="border border-gray-300 px-3 py-2 text-right font-mono font-semibold">
-                  ${{ (item.quantity * item.selling_price).toFixed(2) }}
+                  {{ formatPrice(item.total_item) }}
                 </td>
               </tr>
             </tbody>
@@ -148,19 +149,19 @@
           <div class="w-72 border border-gray-300 text-sm">
             <div class="flex justify-between px-3 py-2 border-b border-gray-300">
               <span class="font-semibold">Subtotal:</span>
-              <span class="font-mono">${{ calculateSubtotal().toFixed(2) }}</span>
+              <span class="font-mono">{{ formatPrice(invoice.total_hors_reduction) }}</span>
             </div>
-            <div v-if="invoice.discount > 0" class="flex justify-between px-3 py-2 border-b border-gray-300">
-              <span class="font-semibold">Discount ({{ invoice.discount }}%):</span>
-              <span class="font-mono text-red-600">- ${{ calculateDiscount().toFixed(2) }}</span>
+            <!-- <div v-if="invoice.reduction > 0" class="flex justify-between px-3 py-2 border-b border-gray-300">
+              <span class="font-semibold">Discount ({{ invoice.reduction }}%):</span>
+              <span class="font-mono text-red-600">- {{ formatPrice(calculateDiscount()) }}</span>
             </div>
             <div class="flex justify-between px-3 py-2 border-b border-gray-300">
               <span class="font-semibold">Tax ({{ invoice.tva }}%):</span>
-              <span class="font-mono">${{ calculateTax().toFixed(2) }}</span>
-            </div>
+              <span class="font-mono">{{ formatPrice(calculateTax()) }}</span>
+            </div> -->
             <div class="flex justify-between px-3 py-2 bg-gray-100 font-bold">
               <span>TOTAL:</span>
-              <span class="font-mono">${{ invoice.total.toFixed(2) }}</span>
+              <span class="font-mono">{{ formatPrice(invoice.total) }}</span>
             </div>
           </div>
         </div>
@@ -188,39 +189,75 @@
               <p class="text-gray-600">{{ invoice.mode_paiement || 'Not specified' }}</p>
             </div>
           </div>
+          <!-- Notes Section -->
+          <div v-if="invoice.notes" class="mt-4">
+            <h4 class="font-bold text-black mb-2">NOTES</h4>
+            <p class="text-gray-600 text-sm">{{ invoice.notes }}</p>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </template>
 
+
 <script setup>
 import { ref } from 'vue'
 import { useInvoiceStore } from '@/stores/FactureStore'
+import CompanyInfo from './CompanyInfo.vue'
 
 const invoiceStore = useInvoiceStore()
-const invoice = ref({
-  id: '',
-  date: '',
-  due_date: '',
-  client_name: '',
-  client_company: '',
-  client_email: '',
-  client_phone: '',
-  items: [],
-  discount: 0,
-  tva: 0,
-  total: 0,
-  mode_paiement: '',
-  status: ''
-})
+// const invoice = ref({
+//       id: '',
+//       date_of_creation: '',
+//       date_echeance: '',
+//       client_name: '',
+//       client_adresse: '',
+//       client_email: '',
+//       client_telephone: '',
+//       items: [],
+//       reduction: 0,
+//       tva: 0,
+//       total: 0,
+//       total_hors_reduction: 0,
+//       mode_paiement: '',
+//       status: '',
+//       notes: null
 
-defineProps({
+// })
+
+const props = defineProps({
   invoice: {
     type: Object,
-    required: true
+    required: true,
+    default: () => ({})
+  },
+  entreprise:{
+    type:Object,
+    required:true,
+    default: ()=>({})
   }
 })
+
+// ✅ Calculs basés sur la structure réelle des données
+function calculateDiscount() {
+  const subtotal = props.invoice.value.total_hors_reduction || 0
+  return (subtotal * (invoice.value.reduction || 0)) / 100
+}
+
+function calculateTax() {
+  const subtotal = props.invoice.value.total_hors_reduction || 0
+  const discount = calculateDiscount()
+  return ((subtotal - discount) * (props.invoice.value.tva || 0)) / 100
+}
+
+// ✅ Format price avec devise XAF
+const formatPrice = (amount) => {
+  return new Intl.NumberFormat('fr-FR', {
+    style: 'currency',
+    currency: 'XAF'
+  }).format(amount || 0)
+}
 
 defineEmits(['close'])
 
@@ -228,16 +265,8 @@ function calculateSubtotal() {
   return invoice.value.items.reduce((sum, item) => sum + (item.selling_price * item.quantity), 0)
 }
 
-function calculateDiscount() {
-  const subtotal = calculateSubtotal()
-  return (subtotal * invoice.value.discount) / 100
-}
 
-function calculateTax() {
-  const subtotal = calculateSubtotal()
-  const discount = calculateDiscount()
-  return ((subtotal - discount) * invoice.value.tva) / 100
-}
+
 
 function formatDate(date) {
   if (!date) return 'N/A'

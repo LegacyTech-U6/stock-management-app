@@ -79,8 +79,10 @@ export async function createInvoice(invoiceData) {
 }
 
 // ✅ Factures : Récupérer toutes les factures
+// Dans votre service API
 export async function getAllInvoices() {
   const { data } = await API.get('/factures')
+  console.log('📄 API Response structure:', data) // ✅ Voir la structure
   return data
 }
 

@@ -24,11 +24,8 @@ API.interceptors.request.use(
     }
 
     // 🧠 Debug complet ici :
-    console.log('🔍 [Axios Request Interceptor]')
-    console.log('➡️ URL:', config.baseURL + config.url)
-    console.log('📦 Method:', config.method)
-    console.log('🧾 Headers:', config.headers)
-   
+
+
     return config
   },
   (error) => Promise.reject(error),
