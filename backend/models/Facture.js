@@ -107,32 +107,82 @@ async function createInvoice(
   }
 }
 
-// ✅ Récupérer toutes les factures d'une entreprise avec tous les champs + nom du client + items
+// ✅ Récupérer toutes les factures d'une entreprise avec tous les détails
 async function getAllInvoices(entrepriseId) {
-  // 1️⃣ Get all invoice fields + client name
-  const [factures] = await pool.query(
+  // 1️⃣ Récupérer les infos entreprise
+  const [entrepriseRows] = await pool.query(
     `
     SELECT 
-      f.*,               -- all fields from Factures
-      c.client_name      -- client name from Clients
-    FROM Factures f
-    JOIN Client c ON f.client_id = c.id
-    WHERE f.entreprise_id = ?
-    ORDER BY f.id DESC
+      e.id,
+      e.uuid,
+      e.name AS entreprise_name,
+      e.description,
+      e.logo_url,
+      e.numero_fiscal,
+      e.nui,
+      e.adresse,
+      e.ville,
+      e.code_postal,
+      e.email_contact,
+      e.telephone_contact,
+      e.informations_bancaires
+    FROM Entreprises e
+    WHERE e.id = ?
     `,
     [entrepriseId]
   );
 
-  // 2️⃣ For each invoice, get related items
-  for (const facture of factures) {
+  if (entrepriseRows.length === 0) {
+    throw new Error("Entreprise introuvable");
+  }
+
+  const entreprise = entrepriseRows[0];
+
+const [factures] = await pool.query(
+  `
+  SELECT 
+    f.*, 
+    c.client_name,
+    c.email AS client_email,
+    c.client_PhoneNumber AS client_telephone,
+    c.location AS client_adresse
+  FROM Factures f
+  JOIN Client c ON f.client_id = c.id
+  WHERE f.entreprise_id = ?
+  ORDER BY f.id DESC
+  `,
+  [entrepriseId]
+);
+
+
+  // 3️⃣ Pour chaque facture, récupérer les items (produits)
+    for (const facture of factures) {
     const [items] = await pool.query(
-      `SELECT * FROM FactureItems WHERE facture_id = ?`,
+      `
+      SELECT 
+        fi.id,
+        fi.quantity,
+        fi.unit_price,
+        fi.tva,
+        fi.discount,
+        fi.total_item,
+        p.Prod_name AS product_name,     -- ✅ nom du produit
+        
+        p.category_id                    -- si tu veux catégoriser plus tard
+      FROM FactureItems fi
+      JOIN Product p ON fi.product_id = p.id
+      WHERE fi.facture_id = ?
+      `,
       [facture.id]
     );
     facture.items = items;
   }
 
-  return factures;
+  // 4️⃣ Retour complet
+  return {
+    entreprise,
+    factures,
+  };
 }
 
 
