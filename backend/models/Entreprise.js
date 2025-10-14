@@ -1,83 +1,94 @@
 // backend/models/Entreprise.js
-const {pool} = require('../config/db'); // instance mysql2/promise avec pool
+const { pool } = require('../config/db');
+const { v4: uuidv4 } = require('uuid');
 
 class Entreprise {
-  static async create({ user_id, name, description, logo_url }) {
+  // Créer une entreprise
+  static async create({
+    user_id,
+    name,
+    description = null,
+    logo_url = null,
+    numero_fiscal = null,
+    nui = null,
+    adresse = null,
+    ville = null,
+    code_postal = null,
+    email_contact = null,
+    telephone_contact = null,
+    informations_bancaires = null
+  }) {
+    const uuid = uuidv4(); // Générer UUID
     const [result] = await pool.query(
-      `INSERT INTO Entreprises (user_id, name, description, logo_url) VALUES (?, ?, ?, ?)`,
-      [user_id, name, description, logo_url]
+      `INSERT INTO Entreprises 
+      (uuid, user_id, name, description, logo_url, numero_fiscal, nui, adresse, ville, code_postal, email_contact, telephone_contact, informations_bancaires)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        uuid,
+        user_id,
+        name,
+        description,
+        logo_url,
+        numero_fiscal,
+        nui,
+        adresse,
+        ville,
+        code_postal,
+        email_contact,
+        telephone_contact,
+        informations_bancaires
+      ]
     );
-    return { id: result.insertId, user_id, name, description, logo_url };
+
+    return { id: result.insertId, uuid, user_id, name, description, logo_url, numero_fiscal, nui, adresse, ville, code_postal, email_contact, telephone_contact, informations_bancaires };
   }
 
- static async getAllByUser(user_id) {
- // 1️⃣ Get enterprises owned by this admin
-  const [entreprises] = await pool.query(
-    `SELECT * FROM Entreprises WHERE user_id = ?`,
-    [user_id]
-  );
+  // Récupérer toutes les entreprises d’un utilisateur
+  static async getAllByUser(user_id) {
+    const [entreprises] = await pool.query(
+      `SELECT * FROM Entreprises WHERE user_id = ?`,
+      [user_id]
+    );
+    return entreprises;
+  }
 
-  // 2️⃣ Loop through enterprises to compute stats
-  const result = await Promise.all(
-    entreprises.map(async (e) => {
-      const entrepriseId = e.id;
-
-      // 🔹 Total revenue
-      const [revenueRows] = await pool.query(
-        `SELECT SUM(total_price) AS total_revenue
-         FROM Sales
-         WHERE entreprise_id = ?`,
-        [entrepriseId]
-      );
-      const totalRevenue = revenueRows[0]?.total_revenue || 0;
-
-      // 🔹 Inventory value
-      const [inventoryRows] = await pool.query(
-        `SELECT SUM(quantity * selling_price) AS inventory_value
-         FROM Product
-         WHERE entreprise_id = ?`,
-        [entrepriseId]
-      );
-      const inventoryValue = inventoryRows[0]?.inventory_value || 0;
-
-      // 🔹 Total members (workers + entreprise users)
-      const [memberRows] = await pool.query(
-        `SELECT 
-           (SELECT COUNT(*) FROM Workers WHERE entreprise_id = ?) +
-           (SELECT COUNT(*) FROM EntrepriseUsers WHERE entreprise_id = ?) AS total_members`,
-        [entrepriseId, entrepriseId]
-      );
-      const totalMembers = memberRows[0]?.total_members || 0;
-
-      return {
-        ...e,
-        totalRevenue,
-        inventoryValue,
-        totalMembers
-      };
-    })
-  );
-
-  return result;
-}
-
-  static async getById(id) {
+  // Récupérer par UUID
+  static async getByUuid(uuid) {
     const [rows] = await pool.query(
-      `SELECT * FROM Entreprises WHERE id = ?`,
-      [id]
+      `SELECT * FROM Entreprises WHERE uuid = ?`,
+      [uuid]
     );
     return rows[0];
   }
 
-  static async update(id, { name, description, logo_url }) {
+  // Mettre à jour par UUID
+  static async updateByUuid(
+    uuid,
+    {
+      name,
+      description,
+      logo_url,
+      numero_fiscal,
+      nui,
+      adresse,
+      ville,
+      code_postal,
+      email_contact,
+      telephone_contact,
+      informations_bancaires
+    }
+  ) {
     await pool.query(
-      `UPDATE Entreprises SET name = ?, description = ?, logo_url = ? WHERE id = ?`,
-      [name, description, logo_url, id]
+      `UPDATE Entreprises
+       SET name = ?, description = ?, logo_url = ?, numero_fiscal = ?, nui = ?, adresse = ?, ville = ?, code_postal = ?, email_contact = ?, telephone_contact = ?, informations_bancaires = ?
+       WHERE uuid = ?`,
+      [name, description, logo_url, numero_fiscal, nui, adresse, ville, code_postal, email_contact, telephone_contact, informations_bancaires, uuid]
     );
   }
 
-  static async delete(id) {
-    await pool.query(`DELETE FROM Entreprises WHERE id = ?`, [id]);
+  // Supprimer par UUID
+  static async deleteByUuid(uuid) {
+    await pool.query(`DELETE FROM Entreprises WHERE uuid = ?`, [uuid]);
   }
 }
 

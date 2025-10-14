@@ -90,52 +90,151 @@
       v-if="showCreateModal"
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
     >
-      <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
-        <h2 class="text-xl font-bold text-gray-900 mb-4">
-          {{ isEditing ? 'Edit enterprise' : 'Add new enterprise' }}
-        </h2>
-        <div class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
-            <input
-              v-model="entrepriseData.name"
-              type="text"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-            <textarea
-              v-model="entrepriseData.description"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              rows="3"
-            ></textarea>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
-            <input
-              v-model="entrepriseData.category"
-              type="text"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div class="flex gap-3 mt-6">
-            <button
-              @click="closeModal"
-              class="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-            >
-              Cancel
-            </button>
-            <button
-              @click="createEntreprise"
-              :disabled="isSubmitting"
-              class="flex-1 px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed"
-            >
-              {{ isSubmitting ? 'Saving...' : isEditing ? 'Update' : 'Create' }}
-            </button>
-          </div>
-        </div>
+        <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+    <h2 class="text-xl font-bold text-gray-900 mb-4">
+      {{ isEditing ? 'Edit enterprise' : 'Add new enterprise' }}
+    </h2>
+
+    <div class="space-y-4">
+      <!-- Nom -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+        <input
+          v-model="entrepriseData.name"
+          type="text"
+          placeholder="Nom de l'entreprise"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
       </div>
+
+      <!-- Description -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+        <textarea
+          v-model="entrepriseData.description"
+          placeholder="Description de l'entreprise"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          rows="3"
+        ></textarea>
+      </div>
+
+      <!-- Adresse -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Adresse</label>
+        <input
+          v-model="entrepriseData.adresse"
+          type="text"
+          placeholder="Rue, numéro"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <!-- Ville -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Ville</label>
+        <input
+          v-model="entrepriseData.ville"
+          type="text"
+          placeholder="Ville"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <!-- Code postal -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Code postal</label>
+        <input
+          v-model="entrepriseData.code_postal"
+          type="text"
+          placeholder="Code postal"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <!-- Logo -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Logo URL</label>
+        <input
+          v-model="entrepriseData.logo_url"
+          type="text"
+          placeholder="Lien vers le logo"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <!-- Numéro fiscal -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Numéro fiscal</label>
+        <input
+          v-model="entrepriseData.numero_fiscal"
+          type="text"
+          placeholder="Numéro fiscal / SIRET"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <!-- NUI -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">NUI</label>
+        <input
+          v-model="entrepriseData.nui"
+          type="text"
+          placeholder="Numéro d’Identification Unique"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <!-- Email contact -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Email contact</label>
+        <input
+          v-model="entrepriseData.email_contact"
+          type="email"
+          placeholder="Email du contact principal"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <!-- Téléphone contact -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Téléphone contact</label>
+        <input
+          v-model="entrepriseData.telephone_contact"
+          type="text"
+          placeholder="Téléphone du contact principal"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <!-- Informations bancaires -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Informations bancaires</label>
+        <input
+          v-model="entrepriseData.informations_bancaires"
+          type="text"
+          placeholder="IBAN / compte bancaire"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <!-- Boutons -->
+      <div class="flex gap-3 mt-6">
+        <button
+          @click="closeModal"
+          class="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+        >
+          Cancel
+        </button>
+        <button
+          @click="createEntreprise"
+          :disabled="isSubmitting"
+          class="flex-1 px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed"
+        >
+          {{ isSubmitting ? 'Saving...' : isEditing ? 'Update' : 'Create' }}
+        </button>
+      </div>
+    </div>
+  </div>
     </div>
   </div>
 </template>
@@ -173,7 +272,20 @@ const isSubmitting = ref(false)
 const isEditing = ref(false)
 const searchQuery = ref('')
 const showCreateModal = ref(false)
-const entrepriseData = ref({ name: '', description: '', category: '' })
+const entrepriseData = ref({
+  name: '',
+  description: '',
+  adresse: '',
+  ville: '',
+  code_postal: '',
+  logo_url: '',
+  numero_fiscal: '',
+  nui: '',
+  email_contact: '',
+  telephone_contact: '',
+  informations_bancaires: '',
+})
+
 
 // Computed properties
 const userName = computed(() => {

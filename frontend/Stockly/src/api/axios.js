@@ -4,7 +4,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { useEntrepriseStore } from '@/stores/entrepriseStore'
 
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL 
+  baseURL: import.meta.env.VITE_API_URL
 })
 
 // Intercepteur pour ajouter automatiquement le token et l'entreprise active
@@ -28,7 +28,7 @@ API.interceptors.request.use(
     console.log('➡️ URL:', config.baseURL + config.url)
     console.log('📦 Method:', config.method)
     console.log('🧾 Headers:', config.headers)
-    console.log('🏢 Entreprise active:', entrepriseStore.activeEntreprise.id)
+   
     return config
   },
   (error) => Promise.reject(error),

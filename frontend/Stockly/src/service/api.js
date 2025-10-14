@@ -192,6 +192,8 @@ export async function deleteSupplier(supplierId) {
 // Entreprise Management
 ///////////////////////////////////////
 
+
+
 // ✅ Créer une entreprise
 export async function createEntreprise(entrepriseData) {
   const { data } = await API.post('/entreprises', entrepriseData)
@@ -204,23 +206,24 @@ export async function getEntreprises() {
   return data
 }
 
-// ✅ Récupérer une entreprise par ID
-export async function getEntrepriseById(id) {
-  const { data } = await API.get(`/entreprises/${id}`)
+// ✅ Récupérer une entreprise par UUID
+export async function getEntrepriseById(uuid) {
+  const { data } = await API.get(`/entreprises/${uuid}`)
   return data
 }
 
-// ✅ Mettre à jour une entreprise
-export async function updateEntreprise(id, entrepriseData) {
-  const { data } = await API.put(`/entreprises/${id}`, entrepriseData)
+// ✅ Mettre à jour une entreprise par UUID
+export async function updateEntreprise(uuid, entrepriseData) {
+  const { data } = await API.put(`/entreprises/${uuid}`, entrepriseData)
   return data
 }
 
-// ✅ Supprimer une entreprise
-export async function deleteEntreprise(id) {
-  const { data } = await API.delete(`/entreprises/${id}`)
+// ✅ Supprimer une entreprise par UUID
+export async function deleteEntreprise(uuid) {
+  const { data } = await API.delete(`/entreprises/${uuid}`)
   return data
 }
+
 
 /////////////////////////////////////////////////////////
 // Worker management

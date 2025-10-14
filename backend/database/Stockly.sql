@@ -52,14 +52,24 @@ CREATE TABLE `role_permissions` (
 -- Table des entreprises créées par les admins
 -- =============================================================
 CREATE TABLE `Entreprises` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `user_id` INT NOT NULL, -- admin SaaS
-  `name` VARCHAR(150) NOT NULL,
-  `description` TEXT DEFAULT NULL,
-  `logo_url` VARCHAR(255) DEFAULT NULL,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `id` INT AUTO_INCREMENT PRIMARY KEY,                -- Identifiant interne
+  `uuid` CHAR(36) NOT NULL UNIQUE,                    -- Identifiant universel unique
+  `user_id` INT NOT NULL,                              -- Admin / propriétaire (SaaS)
+  `name` VARCHAR(150) NOT NULL,                        -- Nom de l’entreprise
+  `description` TEXT DEFAULT NULL,                     -- Description optionnelle
+  `logo_url` VARCHAR(255) DEFAULT NULL,               -- Logo / branding
+  `numero_fiscal` VARCHAR(50) DEFAULT NULL,          -- Numéro fiscal / SIRET / TIN
+  `nui` VARCHAR(50) UNIQUE DEFAULT NULL,             -- Numéro d’Identification Unique
+  `adresse` VARCHAR(500) DEFAULT NULL,               -- Rue et numéro
+  `ville` VARCHAR(100) DEFAULT NULL,                 -- Ville
+  `code_postal` VARCHAR(20) DEFAULT NULL,            -- Code postal
+  `email_contact` VARCHAR(255) DEFAULT NULL,         -- Email du contact principal
+  `telephone_contact` VARCHAR(50) DEFAULT NULL,      -- Téléphone du contact principal
+  `informations_bancaires` VARCHAR(255) DEFAULT NULL, -- IBAN / compte bancaire
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  -- Date de création
   FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
-)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 -- ============================================================
 -- Table des travailleurs (employés) liés à une entreprise
 -- ============================================================

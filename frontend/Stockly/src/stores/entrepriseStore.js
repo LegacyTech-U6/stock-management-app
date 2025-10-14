@@ -12,20 +12,20 @@ export const useEntrepriseStore = defineStore('entreprise', {
   state: () => ({
     entreprises: [],
     currentEntreprise: null,
-    activeEntreprise:null,
+    activeEntreprise: null,
     isLoading: false,
     error: null,
     successMessage: null,
   }),
   actions: {
-     // ✅ Gestion de l’entreprise active
     setActiveEntreprise(entreprise) {
       this.activeEntreprise = entreprise
     },
-    
+
     clearActiveEntreprise() {
       this.activeEntreprise = null
     },
+
     async createEntreprise(entrepriseData) {
       this.isLoading = true
       this.error = null
@@ -33,7 +33,7 @@ export const useEntrepriseStore = defineStore('entreprise', {
 
       try {
         const data = await createEntreprise(entrepriseData)
-        this.entreprises.push(data)
+        this.entreprises.push(data) // data.id est maintenant un UUID
         this.successMessage = 'Entreprise créée avec succès 🎉'
         return data
       } catch (err) {
@@ -49,8 +49,7 @@ export const useEntrepriseStore = defineStore('entreprise', {
 
       try {
         const data = await getEntreprises()
-        console.log(data.entreprises)
-        this.entreprises = data.entreprises // ⚠️ pas .entreprises si backend renvoie un tableau
+        this.entreprises = data.entreprises // data.entreprises contient maintenant id = UUID
       } catch (err) {
         this.error = err.response?.data?.message || 'Impossible de récupérer les entreprises ❌'
       } finally {
@@ -58,12 +57,12 @@ export const useEntrepriseStore = defineStore('entreprise', {
       }
     },
 
-    async fetchEntrepriseById(id) {
+    async fetchEntrepriseById(uuid) {
       this.isLoading = true
       this.error = null
 
       try {
-        const data = await getEntrepriseById(id)
+        const data = await getEntrepriseById(uuid) // passer l'UUID
         this.currentEntreprise = data
         return data
       } catch (err) {
@@ -73,14 +72,14 @@ export const useEntrepriseStore = defineStore('entreprise', {
       }
     },
 
-    async updateEntreprise(id, entrepriseData) {
+    async updateEntreprise(uuid, entrepriseData) {
       this.isLoading = true
       this.error = null
       this.successMessage = null
 
       try {
-        const data = await updateEntreprise(id, entrepriseData)
-        const index = this.entreprises.findIndex((e) => e.id === id)
+        const data = await updateEntreprise(uuid, entrepriseData)
+        const index = this.entreprises.findIndex((e) => e.id === uuid)
         if (index !== -1) this.entreprises[index] = data
         this.successMessage = 'Entreprise mise à jour avec succès 🎉'
         return data
@@ -91,14 +90,14 @@ export const useEntrepriseStore = defineStore('entreprise', {
       }
     },
 
-    async deleteEntreprise(id) {
+    async deleteEntreprise(uuid) {
       this.isLoading = true
       this.error = null
       this.successMessage = null
 
       try {
-        await deleteEntreprise(id)
-        this.entreprises = this.entreprises.filter((e) => e.id !== id)
+        await deleteEntreprise(uuid)
+        this.entreprises = this.entreprises.filter((e) => e.id !== uuid)
         this.successMessage = 'Entreprise supprimée avec succès 🎉'
       } catch (err) {
         this.error = err.response?.data?.message || 'Erreur lors de la suppression ❌'
@@ -107,13 +106,13 @@ export const useEntrepriseStore = defineStore('entreprise', {
       }
     },
   },
-    persist: {
+  persist: {
     enabled: true,
     strategies: [
       {
         key: 'stockly_entreprise',
         storage: localStorage,
-        paths: ['activeEntreprise'], // on persiste seulement ça
+        paths: ['activeEntreprise'],
       },
     ],
   },
