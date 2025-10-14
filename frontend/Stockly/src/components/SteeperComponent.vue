@@ -149,7 +149,9 @@
                     Generate
                   </button>
                 </div>
-                <p v-if="errors.barcode" class="text-red-600 text-xs mt-1.5">{{ errors.barcode }}</p>
+                <p v-if="errors.barcode" class="text-red-600 text-xs mt-1.5">
+                  {{ errors.barcode }}
+                </p>
               </div>
 
               <div>
@@ -165,7 +167,9 @@
                   <option value="">Select category</option>
                   <option v-for="c in categories" :key="c.id" :value="c.id">{{ c.name }}</option>
                 </select>
-                <p v-if="errors.category" class="text-red-600 text-xs mt-1.5">{{ errors.category }}</p>
+                <p v-if="errors.category" class="text-red-600 text-xs mt-1.5">
+                  {{ errors.category }}
+                </p>
               </div>
             </div>
 
@@ -184,7 +188,9 @@
                   {{ s.supplier_name }}
                 </option>
               </select>
-              <p v-if="errors.supplier" class="text-red-600 text-xs mt-1.5">{{ errors.supplier }}</p>
+              <p v-if="errors.supplier" class="text-red-600 text-xs mt-1.5">
+                {{ errors.supplier }}
+              </p>
             </div>
           </div>
 
@@ -211,7 +217,9 @@
                     :disabled="loading"
                   />
                 </div>
-                <p v-if="errors.costPrice" class="text-red-600 text-xs mt-1.5">{{ errors.costPrice }}</p>
+                <p v-if="errors.costPrice" class="text-red-600 text-xs mt-1.5">
+                  {{ errors.costPrice }}
+                </p>
               </div>
 
               <div>
@@ -294,7 +302,11 @@
                     ${{ (form.sellingPrice - form.costPrice).toFixed(2) }}
                   </p>
                   <p class="text-xs text-gray-600">
-                    {{ ((((form.sellingPrice - form.costPrice) / form.costPrice) * 100) || 0).toFixed(1) }}% margin
+                    {{
+                      (((form.sellingPrice - form.costPrice) / form.costPrice) * 100 || 0).toFixed(
+                        1,
+                      )
+                    }}% margin
                   </p>
                 </div>
               </div>
@@ -309,12 +321,11 @@
 
             <div>
               <label class="block text-sm font-medium text-gray-900 mb-2">Product Image URL</label>
-              <input
-                v-model="form.imageUrl"
-                type="url"
-                class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black"
-                placeholder="https://example.com/image.jpg"
-                :disabled="loading"
+              <ImageUploader
+                v-model="image"
+                :maxSize="5"
+                accept="image/png, image/jpeg"
+                :preview="true"
               />
               <p class="text-xs text-gray-500 mt-1.5">Optional: Add a URL to your product image</p>
             </div>
@@ -328,9 +339,7 @@
                 placeholder="Describe your product, including key features, specifications, or other relevant details..."
                 :disabled="loading"
               ></textarea>
-              <p class="text-xs text-gray-500 mt-1.5">
-                {{ form.description.length }} characters
-              </p>
+              <p class="text-xs text-gray-500 mt-1.5">{{ form.description.length }} characters</p>
             </div>
           </div>
 
@@ -362,7 +371,9 @@
                   </div>
                   <div class="flex justify-between py-2.5 border-b border-gray-200">
                     <dt class="text-sm text-gray-600">Barcode</dt>
-                    <dd class="text-sm font-mono font-medium text-gray-900">{{ form.barcode || '-' }}</dd>
+                    <dd class="text-sm font-mono font-medium text-gray-900">
+                      {{ form.barcode || '-' }}
+                    </dd>
                   </div>
                   <div class="flex justify-between py-2.5 border-b border-gray-200">
                     <dt class="text-sm text-gray-600">Category</dt>
@@ -373,7 +384,10 @@
                   <div class="flex justify-between py-2.5 border-b border-gray-200">
                     <dt class="text-sm text-gray-600">Supplier</dt>
                     <dd class="text-sm font-medium text-gray-900">
-                      {{ supplierStore.suppliers.find((s) => s.id == form.supplier)?.supplier_name || '-' }}
+                      {{
+                        supplierStore.suppliers.find((s) => s.id == form.supplier)?.supplier_name ||
+                        '-'
+                      }}
                     </dd>
                   </div>
                 </dl>
@@ -395,7 +409,9 @@
                 <dl class="space-y-3">
                   <div class="flex justify-between py-2.5 border-b border-gray-200">
                     <dt class="text-sm text-gray-600">Cost Price</dt>
-                    <dd class="text-sm font-semibold text-gray-900">${{ form.costPrice.toFixed(2) || '0.00' }}</dd>
+                    <dd class="text-sm font-semibold text-gray-900">
+                      ${{ form.costPrice.toFixed(2) || '0.00' }}
+                    </dd>
                   </div>
                   <div class="flex justify-between py-2.5 border-b border-gray-200">
                     <dt class="text-sm text-gray-600">Selling Price</dt>
@@ -408,13 +424,19 @@
                     <dd class="text-sm font-semibold text-blue-600">
                       ${{ (form.sellingPrice - form.costPrice).toFixed(2) }}
                       <span class="text-xs text-gray-500 ml-1">
-                        ({{ ((((form.sellingPrice - form.costPrice) / form.costPrice) * 100) || 0).toFixed(1) }}%)
+                        ({{
+                          (
+                            ((form.sellingPrice - form.costPrice) / form.costPrice) * 100 || 0
+                          ).toFixed(1)
+                        }}%)
                       </span>
                     </dd>
                   </div>
                   <div class="flex justify-between py-2.5 border-b border-gray-200">
                     <dt class="text-sm text-gray-600">Initial Quantity</dt>
-                    <dd class="text-sm font-medium text-gray-900">{{ form.quantity || 0 }} units</dd>
+                    <dd class="text-sm font-medium text-gray-900">
+                      {{ form.quantity || 0 }} units
+                    </dd>
                   </div>
                   <div class="flex justify-between py-2.5 border-b border-gray-200">
                     <dt class="text-sm text-gray-600">Stock Range</dt>
@@ -466,7 +488,12 @@
           <!-- Error Message -->
           <div v-if="submitError" class="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
             <div class="flex gap-3">
-              <svg class="w-5 h-5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                class="w-5 h-5 text-red-600 flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -479,7 +506,9 @@
           </div>
 
           <!-- Navigation Buttons -->
-          <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mt-8 pt-8 border-t border-gray-200">
+          <div
+            class="flex flex-col sm:flex-row justify-between items-center gap-4 mt-8 pt-8 border-t border-gray-200"
+          >
             <button
               @click="step--"
               :disabled="step === 1 || loading"
@@ -509,7 +538,13 @@
               <div v-if="loading" class="loader-small"></div>
               <template v-else>
                 <span>{{ step < 4 ? 'Next' : 'Add Product' }}</span>
-                <svg v-if="step < 4" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg
+                  v-if="step < 4"
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -539,6 +574,7 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import { useProductStore } from '@/stores/productStore' // Adjust path to your store
 import { useCategoryStore } from '@/stores/CategoryStore'
 import { useSupplierStore } from '@/stores/SupplierStore'
+import ImageUploader from './main/ImageUploader.vue'
 
 // Initialize store
 const productStore = useProductStore()
