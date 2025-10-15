@@ -41,37 +41,13 @@
         </div>
 
         <!-- Active Clients -->
-        <div class="bg-white border border-gray-200 rounded-lg p-4">
-          <div class="flex items-center gap-2 mb-3">
-            <div class="w-8 h-8 bg-green-50 rounded-full flex items-center justify-center">
-              <TickIcon />
-            </div>
-            <span class="text-xs font-medium text-gray-600">Active Clients</span>
-          </div>
-          <div class="text-2xl font-bold text-gray-900">{{ activeClientsCount }}</div>
-        </div>
+
 
         <!-- Total Revenue -->
-        <div class="bg-white border border-gray-200 rounded-lg p-4">
-          <div class="flex items-center gap-2 mb-3">
-            <div class="w-8 h-8 bg-purple-50 rounded-full flex items-center justify-center">
-              <DollarIcon />
-            </div>
-            <span class="text-xs font-medium text-gray-600">Total Revenue</span>
-          </div>
-          <div class="text-2xl font-bold text-gray-900">{{ formatCurrency(totalRevenue) }}</div>
-        </div>
+
 
         <!-- Avg Order Value -->
-        <div class="bg-white border border-gray-200 rounded-lg p-4">
-          <div class="flex items-center gap-2 mb-3">
-            <div class="w-8 h-8 bg-orange-50 rounded-full flex items-center justify-center">
-              <GraphIcon />
-            </div>
-            <span class="text-xs font-medium text-gray-600">Avg Order Value</span>
-          </div>
-          <div class="text-2xl font-bold text-gray-900">{{ formatCurrency(avgOrderValue) }}</div>
-        </div>
+        
       </div>
 
       <!-- Search Bar -->

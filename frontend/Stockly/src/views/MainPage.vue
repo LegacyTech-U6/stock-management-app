@@ -367,7 +367,7 @@ const handleEditEnterprise = (enterprise) => {
 const handleOpenEnterprise = (enterprise) => {
   console.log('clicked')
   selectEntreprise(enterprise)
-  router.push('/dashboar')
+  router.push(`/${store.activeEntreprise.uuid}/dashboar`)
 }
 
 const createEntreprise = async () => {

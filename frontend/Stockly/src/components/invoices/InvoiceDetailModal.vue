@@ -1,157 +1,171 @@
 <template>
-  <div class="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-start pt-10 overflow-auto">
-    <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full relative m-4">
-      <!-- Header -->
-      <div class="flex items-center justify-between p-6 border-b border-gray-200">
-        <div class="flex items-center gap-4">
-          <button
-            @click="$emit('close')"
-            class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-          <div>
-            <h2 class="text-xl font-bold text-gray-900">Invoice #{{ invoice.id }}</h2>
-            <p class="text-sm text-gray-500">Invoice details</p>
-          </div>
-        </div>
+  <div style="" class="w-full">
 
-        <div class="flex items-center gap-2">
-          <button
-            @click="printInvoice"
-            class="bg-white border border-gray-300 text-gray-700 px-3 py-2 rounded-lg font-medium flex items-center gap-2 hover:bg-gray-50 transition-colors text-sm"
+    <div
+      class="fixed z-50 bg-black bg-opacity-50 flex justify-center items-start  overflow-auto"
+      style="
+        background-color: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(4px);
+        inset: 0px;
+        margin-bottom: -1px;
+      "
+    >
+      <div
+      class="flex  absolute  justify-between w-full p-4"
+      style="z-index: 701"
+    >
+       <button
+        @click="$emit('close')"
+        class=" text-gray-500 bg-gray-400 p-4  hover:text-gray-700 hover:bg-gray-100 rounded-2xl transition-colors"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
+      <div class="flex items-center gap-2">
+        <button
+          @click="printInvoice"
+          class="bg-white border border-gray-300 text-gray-700 px-3 py-2 rounded-lg font-medium flex items-center gap-2 hover:bg-gray-50 transition-colors text-sm"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-4 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
-              />
-            </svg>
-            Print
-          </button>
-          <button
-            @click="downloadPDF"
-            class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg font-medium flex items-center gap-2 transition-colors text-sm"
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+            />
+          </svg>
+          Print
+        </button>
+        <button
+          @click="downloadPDF"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg font-medium flex items-center gap-2 transition-colors text-sm"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-4 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              />
-            </svg>
-            PDF
-          </button>
-        </div>
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            />
+          </svg>
+          PDF
+        </button>
       </div>
+    </div>
 
-      <!-- Invoice Content -->
-      <div class="p-8">
-        <!-- Classic Invoice Design -->
-        <div class="border-b-2 border-black pb-6 mb-6">
-          <div class="flex justify-between items-end">
-            <div>
-              <h1 class="text-3xl font-bold text-black mb-2">INVOICE</h1>
-              <div class="text-sm text-gray-600">
-                <CompanyInfo :entreprise="entreprise" />
-                
-              </div>
-            </div>
-            <div class="text-right">
-              <div class="mb-2">
-                <span class="font-semibold text-gray-700">Invoice #:</span>
-                <span class="ml-2 font-bold text-black">{{ invoice.id }}</span>
-              </div>
-              <div class="mb-2">
-                <span class="font-semibold text-gray-700">Date:</span>
-                <span class="ml-2 text-black">{{ formatDate(invoice.date_of_creation) }}</span>
-              </div>
+      <div class="bg-white rounded shadow-xl max-w-3xl w-full h-screen pb-10 relative m-4">
+        <!-- Header -->
+
+        <!-- Invoice Content -->
+        <div class="p-8">
+          <!-- Classic Invoice Design -->
+          <div class="border-b-2 border-black pb-6 mb-4">
+            <div class="flex justify-between items-end">
               <div>
-                <span class="font-semibold text-gray-700">Due Date:</span>
-                <span class="ml-2 text-black">{{ formatDate(invoice.date_echeance) }}</span>
+                <h1 class="text-3xl font-bold text-black">INVOICE</h1>
+                <div class="text-sm text-gray-600">
+                  <CompanyInfo :entreprise="entreprise" />
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="mb-2">
+                  <span class="font-semibold text-gray-700">Invoice #:</span>
+                  <span class="ml-2 font-bold text-black">{{ invoice.id }}</span>
+                </div>
+                <div class="mb-2">
+                  <span class="font-semibold text-gray-700">Date:</span>
+                  <span class="ml-2 text-black">{{ formatDate(invoice.date_of_creation) }}</span>
+                </div>
+                <div>
+                  <span class="font-semibold text-gray-700">Due Date:</span>
+                  <span class="ml-2 text-black">{{ formatDate(invoice.date_echeance) }}</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Bill To -->
-        <div class="mb-6">
-          <h3 class="font-bold text-black text-lg mb-3 border-b border-gray-300 pb-2">BILL TO</h3>
-          <div class="text-sm">
-            <div class="font-semibold text-black">{{ invoice.client_name || 'Client Name' }}</div>
-            <div class="text-gray-600">{{ invoice.client_adresse || 'Address not specified' }}</div>
-            <div class="text-gray-600" v-if="invoice.client_email">Email: {{ invoice.client_email }}</div>
-            <div class="text-gray-600" v-if="invoice.client_telephone">Phone: {{ invoice.client_telephone }}</div>
-          </div>
-        </div>
-
-        <!-- Items Table -->
-        <div class="mb-6">
-          <table class="w-full border-collapse border border-gray-300 text-sm">
-            <thead>
-              <tr class="bg-gray-100">
-                <th class="border border-gray-300 px-3 py-2 text-left font-bold">#</th>
-                <th class="border border-gray-300 px-3 py-2 text-left font-bold">Description</th>
-                <th class="border border-gray-300 px-3 py-2 text-center font-bold">Qty</th>
-                <th class="border border-gray-300 px-3 py-2 text-right font-bold">Unit Price</th>
-                <th class="border border-gray-300 px-3 py-2 text-right font-bold">Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(item, index) in invoice.items" :key="item.id">
-                <td class="border border-gray-300 px-3 py-2 text-center">{{ index + 1 }}</td>
-                <td class="border border-gray-300 px-3 py-2">
-                  <div class="font-medium">{{ item.product_name }}</div>
-                  <div class="text-xs text-gray-600" v-if="item.description">{{ item.description }}</div>
-                </td>
-                <td class="border border-gray-300 px-3 py-2 text-center">{{ item.quantity }}</td>
-                <td class="border border-gray-300 px-3 py-2 text-right font-mono">
-                  {{ formatPrice(item.unit_price) }}
-                </td>
-                <td class="border border-gray-300 px-3 py-2 text-right font-mono font-semibold">
-                  {{ formatPrice(item.total_item) }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Summary -->
-        <div class="flex justify-end">
-          <div class="w-72 border border-gray-300 text-sm">
-            <div class="flex justify-between px-3 py-2 border-b border-gray-300">
-              <span class="font-semibold">Subtotal:</span>
-              <span class="font-mono">{{ formatPrice(invoice.total_hors_reduction) }}</span>
+          <!-- Bill To -->
+          <div class="mb-6">
+            <h3 class="font-bold text-black text-lg mb-3 border-b border-gray-300 pb-2">BILL TO</h3>
+            <div class="text-sm">
+              <div class="font-semibold text-black">{{ invoice.client_name || 'Client Name' }}</div>
+              <div class="text-gray-600">
+                {{ invoice.client_adresse || 'Address not specified' }}
+              </div>
+              <div class="text-gray-600" v-if="invoice.client_email">
+                Email: {{ invoice.client_email }}
+              </div>
+              <div class="text-gray-600" v-if="invoice.client_telephone">
+                Phone: {{ invoice.client_telephone }}
+              </div>
             </div>
-            <!-- <div v-if="invoice.reduction > 0" class="flex justify-between px-3 py-2 border-b border-gray-300">
+          </div>
+
+          <!-- Items Table -->
+          <div class="mb-2">
+            <table class="w-full border-collapse border border-gray-300 text-sm">
+              <thead>
+                <tr class="bg-gray-100">
+                  <th class="border border-gray-300 px-3 py-2 text-left font-bold">#</th>
+                  <th class="border border-gray-300 px-3 py-2 text-left font-bold">Description</th>
+                  <th class="border border-gray-300 px-3 py-2 text-center font-bold">Qty</th>
+                  <th class="border border-gray-300 px-3 py-2 text-right font-bold">Unit Price</th>
+                  <th class="border border-gray-300 px-3 py-2 text-right font-bold">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(item, index) in invoice.items" :key="item.id">
+                  <td class="border border-gray-300 px-3 py-2 text-center">{{ index + 1 }}</td>
+                  <td class="border border-gray-300 px-3 py-2">
+                    <div class="font-medium">{{ item.product_name }}</div>
+                    <div class="text-xs text-gray-600" v-if="item.description">
+                      {{ item.description }}
+                    </div>
+                  </td>
+                  <td class="border border-gray-300 px-3 py-2 text-center">{{ item.quantity }}</td>
+                  <td class="border border-gray-300 px-3 py-2 text-right font-mono">
+                    {{ formatPrice(item.unit_price) }}
+                  </td>
+                  <td class="border border-gray-300 px-3 py-2 text-right font-mono font-semibold">
+                    {{ formatPrice(item.total_item) }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Summary -->
+          <div class="flex justify-end">
+            <div class="w-72 border border-gray-300 text-sm">
+              <div class="flex justify-between px-3 py-2 border-b border-gray-300">
+                <span class="font-semibold">Subtotal:</span>
+                <span class="font-mono">{{ formatPrice(invoice.total_hors_reduction) }}</span>
+              </div>
+              <!-- <div v-if="invoice.reduction > 0" class="flex justify-between px-3 py-2 border-b border-gray-300">
               <span class="font-semibold">Discount ({{ invoice.reduction }}%):</span>
               <span class="font-mono text-red-600">- {{ formatPrice(calculateDiscount()) }}</span>
             </div>
@@ -159,47 +173,48 @@
               <span class="font-semibold">Tax ({{ invoice.tva }}%):</span>
               <span class="font-mono">{{ formatPrice(calculateTax()) }}</span>
             </div> -->
-            <div class="flex justify-between px-3 py-2 bg-gray-100 font-bold">
-              <span>TOTAL:</span>
-              <span class="font-mono">{{ formatPrice(invoice.total) }}</span>
+              <div class="flex justify-between px-3 py-2 bg-gray-100 font-bold">
+                <span>TOTAL:</span>
+                <span class="font-mono">{{ formatPrice(invoice.total) }}</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- Status and Payment Info -->
-        <div class="mt-8 pt-6 border-t border-gray-300">
-          <div class="grid grid-cols-2 gap-6 text-sm">
-            <div>
-              <h4 class="font-bold text-black mb-2">STATUS</h4>
-              <span
-                :class="[
-                  'inline-flex items-center px-3 py-1 rounded-full text-xs font-medium',
-                  invoice.status === 'payée'
-                    ? 'bg-green-100 text-green-800'
-                    : invoice.status === 'en_attente'
-                      ? 'bg-yellow-100 text-yellow-800'
-                      : 'bg-red-100 text-red-800',
-                ]"
-              >
-                {{ formatStatus(invoice.status) }}
-              </span>
+          <!-- Status and Payment Info -->
+          <div class="mt-3 border-t border-gray-300">
+            <div class="grid grid-cols-2 gap-6 text-sm">
+              <div>
+                <h4 class="font-bold text-black mb-2">STATUS</h4>
+                <span
+                  :class="[
+                    'inline-flex items-center px-3 py-1 rounded-full text-xs font-medium',
+                    invoice.status === 'payée'
+                      ? 'bg-green-100 text-green-800'
+                      : invoice.status === 'en_attente'
+                        ? 'bg-yellow-100 text-yellow-800'
+                        : 'bg-red-100 text-red-800',
+                  ]"
+                >
+                  {{ formatStatus(invoice.status) }}
+                </span>
+              </div>
+              <div>
+                <h4 class="font-bold text-black mb-2">PAYMENT METHOD</h4>
+                <p class="text-gray-600">{{ invoice.mode_paiement || 'Not specified' }}</p>
+              </div>
             </div>
-            <div>
-              <h4 class="font-bold text-black mb-2">PAYMENT METHOD</h4>
-              <p class="text-gray-600">{{ invoice.mode_paiement || 'Not specified' }}</p>
+            <!-- Notes Section -->
+            <div v-if="invoice.notes" class="mt-4">
+              <h4 class="font-bold text-black mb-2">NOTES</h4>
+              <p class="text-gray-600 text-sm">{{ invoice.notes }}</p>
             </div>
-          </div>
-          <!-- Notes Section -->
-          <div v-if="invoice.notes" class="mt-4">
-            <h4 class="font-bold text-black mb-2">NOTES</h4>
-            <p class="text-gray-600 text-sm">{{ invoice.notes }}</p>
           </div>
         </div>
       </div>
     </div>
+    <div></div>
   </div>
 </template>
-
 
 <script setup>
 import { ref } from 'vue'
@@ -230,13 +245,13 @@ const props = defineProps({
   invoice: {
     type: Object,
     required: true,
-    default: () => ({})
+    default: () => ({}),
   },
-  entreprise:{
-    type:Object,
-    required:true,
-    default: ()=>({})
-  }
+  entreprise: {
+    type: Object,
+    required: true,
+    default: () => ({}),
+  },
 })
 
 // ✅ Calculs basés sur la structure réelle des données
@@ -255,18 +270,15 @@ function calculateTax() {
 const formatPrice = (amount) => {
   return new Intl.NumberFormat('fr-FR', {
     style: 'currency',
-    currency: 'XAF'
+    currency: 'XAF',
   }).format(amount || 0)
 }
 
 defineEmits(['close'])
 
 function calculateSubtotal() {
-  return invoice.value.items.reduce((sum, item) => sum + (item.selling_price * item.quantity), 0)
+  return invoice.value.items.reduce((sum, item) => sum + item.selling_price * item.quantity, 0)
 }
-
-
-
 
 function formatDate(date) {
   if (!date) return 'N/A'
@@ -274,7 +286,7 @@ function formatDate(date) {
     return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
     })
   } catch {
     return 'N/A'

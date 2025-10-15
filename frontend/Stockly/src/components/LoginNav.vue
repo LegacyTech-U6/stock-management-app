@@ -63,7 +63,7 @@
         <div class="nav-section">
           <span class="nav-section-label">OVERVIEW</span>
           <router-link
-            to="/dashboar"
+            to="dashboar"
             class="nav-item"
             active-class="nav-item-active"
             @click="closeMobileMenu"
@@ -130,7 +130,7 @@
             <transition name="submenu">
               <div v-show="inventoryExpanded" class="submenu">
                 <router-link
-                  to="/products"
+                  to="products"
                   class="submenu-item"
                   active-class="submenu-item-active"
                   @click="closeMobileMenu"
@@ -198,7 +198,7 @@
             <transition name="submenu">
               <div v-show="categoryExpanded" class="submenu">
                 <router-link
-                  to="/categories"
+                  to="categories"
                   class="submenu-item"
                   active-class="submenu-item-active"
                   @click="closeMobileMenu"
@@ -221,7 +221,7 @@
         <div class="nav-section">
           <span class="nav-section-label">SALES & ORDERS</span>
           <router-link
-            to="/sales"
+            to="sales"
             class="nav-item"
             active-class="nav-item-active"
             @click="closeMobileMenu"
@@ -239,7 +239,7 @@
           </router-link>
 
           <router-link
-            to="/clients"
+            to="clients"
             class="nav-item"
             active-class="nav-item-active"
             @click="closeMobileMenu"
@@ -277,7 +277,7 @@
         <div class="nav-section">
           <span class="nav-section-label">INVOICE MANAGEMENT</span>
           <router-link
-            to="/invoices"
+            to="invoices"
             class="nav-item"
             active-class="nav-item-active"
             @click="closeMobileMenu"
@@ -302,27 +302,7 @@
           </router-link>
         </div>
 
-        <!-- Inventory Status -->
-        <div class="nav-section">
-          <span class="nav-section-label">INVENTORY STATUS</span>
-          <div class="status-grid">
-            <div class="status-item">
-              <div class="status-indicator in-stock"></div>
-              <span class="status-label">In Stock</span>
-              <span class="status-count">4</span>
-            </div>
-            <div class="status-item">
-              <div class="status-indicator low-stock"></div>
-              <span class="status-label">Low Stock</span>
-              <span class="status-count">1</span>
-            </div>
-            <div class="status-item">
-              <div class="status-indicator out-of-stock"></div>
-              <span class="status-label">Out of Stock</span>
-              <span class="status-count">1</span>
-            </div>
-          </div>
-        </div>
+    
       </nav>
 
       <!-- Footer Section -->
@@ -497,7 +477,7 @@ onUnmounted(() => {
 .logo-section {
   position: relative;
   padding: 1.5rem;
-  
+
   background: #ffffff;
 }
 

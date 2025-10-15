@@ -45,22 +45,7 @@
         </div>
       </div>
 
-      <div class="stat-card">
-        <div class="stat-icon-wrapper green">
-          <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-            ></path>
-          </svg>
-        </div>
-        <div class="stat-content">
-          <div class="stat-label">Active Categories</div>
-          <div class="stat-value">{{ categoriesWithProducts }}</div>
-        </div>
-      </div>
+    
 
       <div class="stat-card">
         <div class="stat-icon-wrapper purple">
@@ -170,8 +155,8 @@ const filteredProducts = computed(() => {
   const query = searchQuery.value.toLowerCase()
   return products.value.filter(
     (product) =>
-      product.Prod_name.toLowerCase().includes(query) 
-     
+      product.Prod_name.toLowerCase().includes(query)
+
   )
 })
 

@@ -1,16 +1,25 @@
 <template>
   <div
-    class="fixed inset-0 z-50 bg-white/80 bg-opacity-50 flex justify-center items-start pt-5 overflow-auto mb-5"
+    class="fixed inset-0 z-50 bg-white/80 bg-opacity-50 flex flex-col  justify-center items-center  overflow-auto mb-5"  style="
+        background-color: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(4px);
+        inset: 0px;
+        margin-bottom: -1px;
+      "
   >
-    <div class="bg-white rounded shadow max-w-4xl w-full relative">
-      <!-- Action Buttons -->
-      <div class="action-buttons">
+  <div class="action-buttons w-full pt-10 px-5">
         <button class="btn btn-secondary" @click="$emit('close')">Close</button>
-        <button class="btn btn-primary" @click="downloadPDF">Download PDF</button>
+        <div class="flex space-x-5">
+             <button class="btn btn-primary" @click="downloadPDF">Confirm</button>
         <button class="btn" @click="printInvoice">Print</button>
-      </div>
+        </div>
 
-      <div class="p-6">
+      </div>
+    <div class="bg-white rounded shadow max-w-3xl w-full relative">
+      <!-- Action Buttons -->
+
+
+      <div class="p-1">
         <div v-if="loading" class="text-center py-8">
           <div class="text-gray-500">Loading invoice data...</div>
         </div>
@@ -53,9 +62,12 @@ import InvoiceItemsTable from './InvoiceItemsTable.vue'
 import InvoiceSummary from './InvoiceSummary.vue'
 import PaymentTerms from './PaymentTerms.vue'
 import { ref, onMounted, computed } from 'vue'
+import { useActionMessage } from '@/composable/useActionMessage'
+
 import { useInvoiceStore } from '@/stores/FactureStore'
 import { useClientStore } from '@/stores/clientStore'
 import { useEntrepriseStore } from '@/stores/entrepriseStore'
+const { showSuccess, showError } = useActionMessage()
 
 const entreprise = useEntrepriseStore()
 const clientStore = useClientStore()
@@ -74,7 +86,6 @@ onMounted(async () => {
     // ✅ CORRECTION : Passer l'ID de l'entreprise active
     if (entreprise.activeEntreprise && entreprise.activeEntreprise.id) {
       await entreprise.fetchEntrepriseById(entreprise.activeEntreprise.id)
-    
     }
 
     console.log('Selected Client after fetch:', clientStore.selectedClient)
@@ -98,7 +109,10 @@ const entrepriseData = computed(() => {
 })
 
 async function downloadPDF() {
-  await invoiceStore.createInvoice(props.invoice)
+   await invoiceStore.createInvoice(props.invoice)
+
+    showSuccess('invoice created  succesfully')
+  $emit('close')
 }
 
 function printInvoice() {
@@ -123,10 +137,10 @@ defineEmits(['close'])
 .action-buttons {
   display: flex;
   gap: 1rem;
-  justify-content: center;
+  justify-content: space-between;
   margin-top: 2rem;
   padding-top: 1rem;
-  border-top: 1px solid #ddd;
+  
 }
 
 .btn {

@@ -1,31 +1,41 @@
-// middleware/upload.js
-const multer = require("multer");
-const path = require("path");
+const multer = require ("multer");
+const  path = require ("path");
+const  fs  = require ("fs");
 
-// Configure storage (where and how files are saved)
+// 📁 Créer le dossier uploads s'il n'existe pas
+const uploadPath = path.join(process.cwd(), "uploads");
+if (!fs.existsSync(uploadPath)) {
+  fs.mkdirSync(uploadPath);
+}
+
+// ⚙️ Configuration du stockage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/"); // folder where files will be stored
+    cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
-    const uniqueName = Date.now() + "-" + file.originalname;
+    const uniqueName =
+      Date.now() + "-" + Math.round(Math.random() * 1e9) + path.extname(file.originalname);
     cb(null, uniqueName);
   },
 });
 
-// Optional: filter file types (only images)
-const fileFilter = (req, file, cb) => {
-  const allowedTypes = /jpeg|jpg|png|webp/;
-  const extname = allowedTypes.test(
-    path.extname(file.originalname).toLowerCase()
-  );
-  const mimetype = allowedTypes.test(file.mimetype);
-
-  if (extname && mimetype) {
-    cb(null, true);
-  } else {
-    cb(new Error("Only images are allowed"));
+// ✅ Filtre de validation du type de fichier
+function fileFilter(req, file, cb) {
+  const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+  if (!allowedTypes.includes(file.mimetype)) {
+    return cb(new Error("Seuls les fichiers JPG, PNG et WEBP sont autorisés"));
   }
-};
+  cb(null, true);
+}
 
-module.exports = multer({ storage, fileFilter });
+// 🚀 Créer l'instance multer
+const upload = multer({
+  storage,
+  fileFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5 Mo max
+  },
+});
+
+module.exports =   upload;

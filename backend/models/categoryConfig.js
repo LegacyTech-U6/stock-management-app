@@ -5,22 +5,22 @@ const { pool } = require("../config/db");
 async function getAllCategories(entreprise_id) {
   console.log("Entreprise ID passé :", entreprise_id);
 
-  // const [rows] = await pool.query(`
-  //   SELECT 
-  //     c.id, 
-  //     c.name, 
-  //     c.description,
-  //     COUNT(p.id) AS productCount
-  //   FROM Category c
-  //   LEFT JOIN Product p ON p.category_id = c.id
-  //   WHERE c.entreprise_id = ?
-  //   GROUP BY c.id
-  //   ORDER BY c.name
-  // `, [entreprise_id]);
+  const [rows] = await pool.query(`
+    SELECT 
+      c.id, 
+      c.name, 
+      c.description,
+      COUNT(p.id) AS productCount
+    FROM Category c
+    LEFT JOIN Product p ON p.category_id = c.id
+    WHERE c.entreprise_id = ?
+    GROUP BY c.id
+    ORDER BY c.name
+  `, [entreprise_id]);
 
-  const [rows] = await pool.query("SELECT * FROM Category WHERE entreprise_id = ?",
-    [entreprise_id]
-  );
+  // const [rows] = await pool.query("SELECT * FROM Category WHERE entreprise_id = ?",
+  //   [entreprise_id]
+  // );
   console.log(rows);
   return rows;
 }

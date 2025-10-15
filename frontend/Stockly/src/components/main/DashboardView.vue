@@ -1,7 +1,7 @@
 <template>
   <div class="p-8 space-y-8">
     <!-- Stat Cards Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <StatsCards
         v-for="stat in topStats"
         :key="stat.id"
@@ -16,7 +16,7 @@
     </div>
 
     <!-- Alert Cards Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-8">
       <AlertCard
         v-for="alert in alerts"
         :key="alert.id"
@@ -238,7 +238,7 @@ const topStats = computed(() => [
     subtext: 'Under this enterprise',
     color: 'bg-blue-500',
     containerClass:
-      'p-6 rounded-xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-white',
+      'p-6 rounded-xl border-2 border-blue-400 bg-blue-100 to-white',
   },
   {
     id: 2,
@@ -248,7 +248,7 @@ const topStats = computed(() => [
     subtext: 'In stock catalog',
     color: 'bg-purple-500',
     containerClass:
-      'border-2 p-6 rounded-xl border-purple-200 bg-gradient-to-br from-purple-50 to-white',
+      'border-2 p-6 rounded-xl border-purple-400 bg-purple-100 to-white',
   },
   {
     id: 3,
@@ -258,31 +258,16 @@ const topStats = computed(() => [
     subtext: '+18.5% from last period',
     color: 'bg-green-500',
     containerClass:
-      'border-2  p-6 rounded-xl border-green-200 bg-gradient-to-br from-green-50 to-white',
+      'border-2  p-6 rounded-xl border-green-400 bg-green-100 to-white',
     trendPercent: revenueTrendPercent.value,
   },
-  {
-    id: 4,
-    icon: TrendingUp,
-    label: 'Invoices Issued',
-    value: '342',
-    subtext: '+12.3% from last period',
-    color: 'bg-orange-500',
-    containerClass:
-      'p-6 rounded-xl border-2 border-orange-200 bg-gradient-to-br from-orange-50 to-white',
-  },
+
 ])
 
 const alerts = computed(() => [
+
   {
     id: 1,
-    title: 'Low Stock Alerts',
-    count: lowStockProducts.value.length,
-    color: 'border-yellow-300 bg-yellow-50',
-    action: { label: 'View', color: 'border-yellow-400 text-yellow-600' },
-  },
-  {
-    id: 2,
     title: 'Out of Stock',
     count: finishedProducts.value.length,
     color: 'border-red-300 bg-red-50',

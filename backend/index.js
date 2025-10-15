@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-
+const  path= require ("path");
 const app = express();
 
 const ProductRoute = require("./routes/product");
@@ -26,6 +26,7 @@ app.use(
   })
 );
 
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 app.use("/api/products", ProductRoute);
 app.use("/api/category", CategoryRoute);

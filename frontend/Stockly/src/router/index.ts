@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import { useAuthStore } from '@/stores/authStore'
 import { useEntrepriseStore } from '@/stores/entrepriseStore'
 const routes: RouteRecordRaw[] = [
   {
@@ -63,73 +64,73 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   {
-    path: '/real',
+    path: '/:uuid',
     name: 'real',
     component: () => import('../views/LayoutPage.vue'),
     meta: { showNavbarAndFooter: false },
     redirect: '/real/sales', // Optional: redirect to a default page
     children: [
       {
-        path: '/dashboar',
+        path: 'dashboar',
         name: 'EDashboard',
         component: () => import('@/views/Enterprise.vue'),
       },
       {
-        path: '/sales',
+        path: 'sales',
         name: 'sales',
         component: () => import('../views/SalesInterface.vue'),
         meta: { showNavbarAndFooter: false },
       },
       {
-        path: '/invoice',
+        path: 'invoice',
         name: 'invoice',
         component: () => import('../components/invoices/CreateInvoiceForm.vue'),
         meta: { showNavbarAndFooter: false },
       },
       {
-        path: '/products',
+        path: 'products',
         name: 'product',
         component: () => import('../views/ProductView.vue'),
         meta: { showNavbarAndFooter: false },
       },
       {
-        path: '/steper',
+        path: 'steper',
         name: 'steper',
         component: () => import('../components/SteeperComponent.vue'),
         meta: { showNavbarAndFooter: false },
       },
       {
-        path: '/product/:id',
+        path: 'product/:id',
         name: 'product-detail',
         component: () => import('@/views/ProductDetailPage.vue'),
         props: true,
         meta: { showNavbarAndFooter: false },
       },
       {
-        path: '/product/:reStockId',
+        path: 'product/:reStockId',
         name: 'restock',
         component: () => import('@/views/RestockView.vue'),
         props: true,
         meta: { showNavbarAndFooter: false },
       },
       {
-        path: '/clients',
+        path: 'clients',
         name: 'client',
         component: () => import('../views/ClientManager.vue'),
         meta: { showNavbarAndFooter: false },
       },
       {
-        path: '/invoices',
+        path: 'invoices',
         name: 'invoices',
         component: () => import('@/views/InvoiceView.vue'),
       },
       {
-        path: '/categories',
+        path: 'categories',
         name: 'categories',
         component: () => import('@/views/CategoryView .vue'),
       },
       {
-        path: '/outOfStock',
+        path: 'outOfStock',
         name: 'outOfStock',
         component: () => import('@/views/OutofStock.vue'),
       },
@@ -139,13 +140,13 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/views/LowStock.vue'),
       },
       {
-        path: '/detail/:id',
+        path: 'detail/:id',
         name: 'category-detail',
         component: () => import('@/views/CategoryDetail.vue'),
         props: true,
       },
       {
-        path: '/invoices/:id',
+        path: 'invoices/:id',
         name: 'InvoiceDetail',
         component: () => import('@/components/invoices/InvoiceDetail.vue'),
       },
@@ -157,12 +158,26 @@ const router = createRouter({
   history: createWebHistory(),
   routes,
 })
+// router.beforeEach(async (to, from, next) => {
+//   const auth = useAuthStore();
+
+//   if (auth.user === null) {
+//     await auth.initialize();
+//   }
+
+//   if (to.meta.requiresAuth && !auth.isAuthenticated) {
+//     return next('/login');
+//   }
+
+//   next();
+// });
+
 
 router.afterEach((to, from) => {
   // Si on revient sur la page /entreprises, on désactive l’entreprise
   if (to.path === '/admin') {
     localStorage.removeItem('activeEnterprise')
-   
+
 
   }
 })

@@ -1,39 +1,22 @@
 <template>
   <div class="flex h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-    <!-- Left Section - Marketing Content -->
-    <div class="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-12 space-y-8">
-      <div class="text-center space-y-4">
-        <h1 class="text-4xl font-bold text-gray-900">Stockly</h1>
-        <p class="text-lg text-gray-600">Your Inventory Management Solution</p>
-      </div>
+    <!-- Left Section - Form -->
 
-      <div class="relative w-full max-w-sm">
-        <div class="rounded-2xl overflow-hidden shadow-lg">
-          <img
-            src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&h=400&fit=crop"
-            alt="Team collaboration"
-            class="w-full h-80 object-cover"
-          />
-        </div>
-      </div>
+ <div class="flex-1 flex w-full lg:h-screen items-center justify-center lg:p-28 pt-20 pb-8 px-4 lg:px-0 lg:bg-background bg-transparent">
+     <div class="w-full lg:max-w-md max-w-sm space-y-3">
 
-      <div class="space-y-2 text-center max-w-sm">
-        <h2 class="text-2xl font-bold text-blue-600">Manage with Confidence</h2>
-        <p class="text-gray-600">Track inventory, manage clients, and generate professional invoices all in one place. Built for modern businesses.</p>
-      </div>
-    </div>
-
-    <!-- Right Section - Form -->
-    <div class="w-full lg:w-1/2 flex flex-col items-center justify-center p-4 lg:p-8">
-      <div class="w-full max-w-md space-y-8">
-        <!-- Branding -->
-        <div class="space-y-2">
-          <h1 class="text-3xl font-bold text-gray-900">Stockly</h1>
-          <p class="text-gray-600">Sign in to your account</p>
-        </div>
+       <button
+          @click="goBack"
+          class="lg:flex hidden items-center text-gray-600 hover:text-gray-900 transition mb-2"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          Back to Home
+        </button>
 
         <!-- Form Card -->
-        <div class="bg-white rounded-2xl shadow-md p-8 space-y-6">
+        <div class="lg:bg-white lg:rounded-2xl lg:shadow-md lg:p-8 space-y-2">
           <div>
             <h2 class="text-lg font-semibold text-gray-800">Welcome back</h2>
             <p class="text-sm text-gray-600 mt-1">Enter your credentials to continue</p>
@@ -73,7 +56,7 @@
           </div>
 
           <!-- Form -->
-          <form @submit.prevent="seConnecter" class="space-y-5">
+          <form @submit.prevent="seConnecter" class="space-y-3">
             <!-- Email -->
             <div>
               <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
@@ -169,6 +152,30 @@
         </div>
       </div>
     </div>
+     <!-- Right Section - image -->
+        <div class="hidden lg:flex lg:w-1/2 flex-col items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10 p-12 space-y-8">
+      <div class="text-center space-y-4">
+        <h1 class="text-4xl font-bold text-gray-900">Stockly</h1>
+        <p class="text-lg text-gray-600">Your Inventory Management Solution</p>
+      </div>
+
+      <div class="relative w-full max-w-sm">
+        <div class="rounded-2xl overflow-hidden shadow-lg">
+          <img
+            src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&h=400&fit=crop"
+            alt="Team collaboration"
+            class="w-full h-80 object-cover"
+          />
+        </div>
+      </div>
+
+      <div class="space-y-2 text-center max-w-sm">
+        <h2 class="text-2xl font-bold text-blue-600">Manage with Confidence</h2>
+        <p class="text-gray-600">Track inventory, manage clients, and generate professional invoices all in one place. Built for modern businesses.</p>
+      </div>
+    </div>
+
+
   </div>
 </template>
 
@@ -195,4 +202,7 @@ const seConnecter = async () => {
     console.warn('❌ Connexion échouée :', authStore.error)
   }
 }
+const goBack = () => {
+  router.push('/')
+};
 </script>

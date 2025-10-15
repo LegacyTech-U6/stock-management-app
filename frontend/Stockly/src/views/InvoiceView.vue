@@ -1,14 +1,14 @@
 <template>
-  <div class="min-h-screen bg-white p-6">
+  <div class="min-h-screen bg-gray-100 p-6">
     <!-- Header Section -->
     <div class="flex items-center justify-between mb-8">
       <div>
         <h1 class="text-3xl font-bold text-gray-900">Invoices</h1>
-        <p class="text-sm text-gray-500 mt-1">Manage and track all your invoices</p>
+        <p class="text-sm text-gray-500 mt-1">Manage Billing Documents</p>
       </div>
       <button
         @click="createInvoice"
-        class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-medium flex items-center gap-2 shadow-sm transition-colors"
+        class="bg-green-700 hover:bg-white hover:border-2 hover:border-green-700 hover:text-green-700 text-white px-5 py-2.5 rounded font-medium flex items-center gap-2 shadow-sm transition-colors"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -27,9 +27,9 @@
     </div>
 
     <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-2">
       <!-- Total Invoices -->
-      <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+      <div class="bg-white rounded p-6 inset-200 border border-gray-100">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm text-gray-600 font-medium">Total Invoices</p>
@@ -52,7 +52,7 @@
       </div>
 
       <!-- Paid Amount -->
-      <div class="bg-white rounded-2xl p-6 shadow-sm border border-green-100">
+      <div class="bg-white rounded p-6 shadow-sm border border-green-100">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm text-gray-600 font-medium">Paid Amount</p>
@@ -73,7 +73,7 @@
       </div>
 
       <!-- Pending Amount -->
-      <div class="bg-white rounded-2xl p-6 shadow-sm border border-yellow-100">
+      <div class="bg-white rounded p-6 shadow-sm border border-yellow-100">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm text-gray-600 font-medium">Pending Amount</p>
@@ -98,7 +98,7 @@
       </div>
 
       <!-- Overdue Amount -->
-      <div class="bg-white rounded-2xl p-6 shadow-sm border border-red-100">
+      <div class="bg-white rounded p-6 shadow-sm border border-red-100">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm text-gray-600 font-medium">Overdue Amount</p>
@@ -122,7 +122,7 @@
     </div>
 
     <!-- Main Content -->
-    <div class="bg-white rounded-2xl border border-gray-200">
+    <div class="bg-white rounded-md border border-gray-200">
       <!-- Toolbar -->
       <div class="flex items-center justify-between p-6 border-b border-gray-100">
         <div class="flex-1 max-w-md">
@@ -149,46 +149,7 @@
             />
           </div>
         </div>
-        <div class="flex items-center gap-3 ml-4">
-          <button
-            class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors flex items-center gap-2 text-sm font-medium"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2z"
-              />
-            </svg>
-            All Status
-          </button>
-          <button
-            class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors flex items-center gap-2 text-sm font-medium"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              />
-            </svg>
-            Export
-          </button>
-        </div>
+
       </div>
       <div v-if="loadingClients">
         <LazyLoader :loading="loadingClients" :skeleton-count="6">
@@ -253,6 +214,7 @@
               v-for="invoice in filteredInvoices"
               :key="invoice.id"
               class="hover:bg-gray-50 transition-colors"
+              @click="viewInvoice(invoice.id)"
             >
               <td class="px-6 whitespace-nowrap">
                 <div class="flex items-center gap-3">
@@ -350,10 +312,10 @@
                 <div class="flex items-center gap-1">
                   <button
                     @click="viewInvoice(invoice.id)"
-                    class="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                    class="p-2 text-gray-400 hover:text-green-600  rounded transition-colors"
                     title="View"
-                  >
-                    <svg
+                  > >
+                    <!-- <svg
                       xmlns="http://www.w3.org/2000/svg"
                       class="h-5 w-5"
                       fill="currentColor"
@@ -362,7 +324,7 @@
                       <path
                         d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
                       />
-                    </svg>
+                    </svg> -->
                   </button>
                   <button
                     @click="handleDeleteInvoice"
@@ -519,7 +481,7 @@ const filteredInvoices = computed(() => {
 })
 
 function createInvoice() {
-  // Redirect to invoice creation
+
   console.log('Create invoice')
   // router.push('/invoices/create') // Décommentez si vous avez une route de création
 }

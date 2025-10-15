@@ -322,7 +322,7 @@
             <div>
               <label class="block text-sm font-medium text-gray-900 mb-2">Product Image URL</label>
               <ImageUploader
-                v-model="image"
+                v-model="form.image"
                 :maxSize="5"
                 accept="image/png, image/jpeg"
                 :preview="true"
@@ -599,7 +599,7 @@ const form = reactive({
   minStock: 10,
   maxStock: 100,
   arrivalDate: new Date().toISOString().split('T')[0],
-  imageUrl: '',
+  image: '',
   description: '',
 })
 const categories = ref([])
@@ -662,7 +662,7 @@ const submit = async () => {
       code_bar: form.barcode,
       date_of_arrival: form.arrivalDate,
       supplier: form.supplier,
-      Prod_image: form.imageUrl,
+      Prod_image: form.image,
       min_stock_level: form.minStock,
       max_stock_level: form.maxStock,
     }

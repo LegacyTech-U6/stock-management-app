@@ -6,7 +6,7 @@ const upload = require("../middleware/upload");
 const getActiveEntreprise = require('../middleware/activeEntreprise');
 // Product routes
 router.use(getActiveEntreprise);
-router.post('/', ProductController.post);
+router.post('/',upload.single("prod_image"), ProductController.post);
 router.get('/', ProductController.get);
 router.get('/low-stock', ProductController.checkLowStockGlobal);
 router.get('/out-of-stock', ProductController.checkOutOfStockGlobal);

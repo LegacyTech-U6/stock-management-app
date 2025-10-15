@@ -50,6 +50,7 @@
 
     <!-- View All Button -->
     <button
+    @click="handleView"
       class="w-full mt-6 py-3 text-center text-gray-700 font-medium border border-gray-300 hover:bg-gray-50 hover:border-gray-400 rounded-lg transition-all duration-200 text-sm"
     >
       View All Products
@@ -58,6 +59,7 @@
 </template>
 
 <script setup>
+import router from '@/router';
 import { defineProps } from 'vue'
 
 defineProps({
@@ -66,4 +68,7 @@ defineProps({
     default: () => []
   }
 })
+function handleView(){
+router.push('/lowStock')
+}
 </script>
