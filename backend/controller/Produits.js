@@ -18,43 +18,39 @@ const { createOrder } = require("../models/Orders");
 const { getOnesupplier } = require("../models/Suppliers");
 
 module.exports = {
-  // --- Récupérer tous les produits ---
+  // ✅ Obtenir tous les produits
   get: async (req, res) => {
     try {
       const entrepriseId = req.entrepriseId;
-      const products_Data = await getProduct(entrepriseId);
-      res.json(products_Data);
+      const products = await getProduct(entrepriseId);
+      res.json(products);
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Server error", error: error.message });
+      console.error("❌ Error fetching products:", error);
+      res.status(500).json({ message: error.message });
     }
   },
 
-  // --- Récupérer un produit ---
+  // ✅ Obtenir un produit
   get2: async (req, res) => {
     try {
       const entrepriseId = req.entrepriseId;
       const id = parseInt(req.params.id);
-      const product_Data = await getOneProduct(id, entrepriseId);
-      if (!product_Data) {
-        return res.status(404).json({ message: "Product not found" });
-      }
-      res.json(product_Data);
+      const product = await getOneProduct(id, entrepriseId);
+      if (!product) return res.status(404).json({ message: "Product not found" });
+      res.json(product);
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Server error", error: error.message });
+      res.status(500).json({ message: error.message });
     }
   },
 
-  // --- Ajouter de la quantité à un produit existant ---
+  // ✅ Ajouter de la quantité
   addProduct: async (req, res) => {
     try {
       const entrepriseId = req.entrepriseId;
       const { productId, quantityAdd } = req.body;
 
-      if (!productId || !quantityAdd || quantityAdd <= 0) {
+      if (!productId || !quantityAdd || quantityAdd <= 0)
         return res.status(400).json({ message: "Invalid product ID or quantity" });
-      }
 
       const product = await getOneProduct(productId, entrepriseId);
       if (!product) return res.status(404).json({ message: "Product not found" });
@@ -62,32 +58,26 @@ module.exports = {
       const newQuantity = product.quantity + quantityAdd;
       await updateProductQuantity(productId, newQuantity, entrepriseId);
 
-      res.status(200).json({
-        message: "Quantity added successfully",
-        product: { ...product, quantity: newQuantity },
-      });
+      res.json({ message: "Quantity updated", product: { ...product, quantity: newQuantity } });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Server error", error: error.message });
+      res.status(500).json({ message: error.message });
     }
   },
 
-  // --- Acheter un produit (création de vente) ---
+  // ✅ Acheter un produit (crée une vente)
   buyProduct: async (req, res) => {
     try {
       const entrepriseId = req.entrepriseId;
       const { productId, quantitySold } = req.body;
 
-      if (!productId || !quantitySold || quantitySold <= 0) {
+      if (!productId || !quantitySold || quantitySold <= 0)
         return res.status(400).json({ message: "Invalid product ID or quantity" });
-      }
 
       const product = await getOneProduct(productId, entrepriseId);
       if (!product) return res.status(404).json({ message: "Product not found" });
 
-      if (product.quantity < quantitySold) {
-        return res.status(400).json({ message: "Not enough stock available" });
-      }
+      if (product.quantity < quantitySold)
+        return res.status(400).json({ message: "Not enough stock" });
 
       const newQuantity = product.quantity - quantitySold;
       await updateProductQuantity(productId, newQuantity, entrepriseId);
@@ -97,20 +87,21 @@ module.exports = {
 
       const lowStockCheck = await checkLowStock(productId, entrepriseId);
 
-      res.status(200).json({
-        message: "Purchase successful",
+      res.json({
+        message: "Sale recorded successfully",
         product: { ...product, quantity: newQuantity },
-        sale: { productId, quantitySold, totalPrice },
         lowStockAlert: lowStockCheck.alert,
       });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Server error", error: error.message });
+      res.status(500).json({ message: error.message });
     }
   },
 
-  // --- Créer un nouveau produit ---
+  // ✅ Créer un produit
   post: async (req, res) => {
+    console.log('req.body =', req.body)
+console.log('req.file =', req.file)
+
     try {
       const entrepriseId = req.entrepriseId;
       const {
@@ -145,14 +136,14 @@ module.exports = {
         entrepriseId
       );
 
-      res.status(201).json({ message: "Product added successfully", product: newProduct });
+      res.status(201).json({ message: "Product added", product: newProduct });
     } catch (error) {
-      console.error("Error adding product:", error);
-      res.status(500).json({ error: "Failed to add product" });
+      console.error("❌ Error adding product:", error);
+      res.status(500).json({ message: error.message });
     }
   },
 
-  // --- Mettre à jour un produit ---
+  // ✅ Mettre à jour un produit
   updated: async (req, res) => {
     try {
       const entrepriseId = req.entrepriseId;
@@ -162,7 +153,7 @@ module.exports = {
         quantity,
         cost_price,
         selling_price,
-        category,
+        category_id,
         Prod_Description,
         code_bar,
         date_of_arrival,
@@ -171,15 +162,25 @@ module.exports = {
         max_stock_level,
       } = req.body;
 
-      let prod_image = req.file ? `/uploads/${req.file.filename}` : null;
+      const product = await getOneProduct(id, entrepriseId);
+      if (!product) return res.status(404).json({ message: "Product not found" });
 
-      const updated = await updateProduct(
+      let prod_image = product.Prod_image;
+      if (req.file) {
+        // Supprime l’ancienne image
+        if (prod_image && fs.existsSync(path.join(__dirname, "..", prod_image))) {
+          fs.unlinkSync(path.join(__dirname, "..", prod_image));
+        }
+        prod_image = `/uploads/${req.file.filename}`;
+      }
+
+      await updateProduct(
         id,
         Prod_name,
         quantity,
         cost_price,
         selling_price,
-        category,
+        category_id,
         Prod_Description,
         code_bar,
         date_of_arrival,
@@ -190,33 +191,28 @@ module.exports = {
         entrepriseId
       );
 
-      if (!updated) return res.status(404).json({ message: "Product not found" });
-
       res.json({ message: "Product updated successfully" });
     } catch (error) {
-      console.error("Error updating product:", error);
-      res.status(500).json({ error: "Failed to update product" });
+      res.status(500).json({ message: error.message });
     }
   },
 
-  // --- Supprimer un produit ---
+  // ✅ Supprimer un produit
   delete: async (req, res) => {
     try {
       const entrepriseId = req.entrepriseId;
       const { id } = req.params;
 
       const deleted = await deleteProduct(id, entrepriseId);
-
       if (!deleted) return res.status(404).json({ message: "Product not found" });
 
-      res.json({ message: "Product deleted successfully" });
+      res.json({ message: "Product deleted" });
     } catch (error) {
-      console.error("Error deleting product:", error);
-      res.status(500).json({ error: "Failed to delete product" });
+      res.status(500).json({ message: error.message });
     }
   },
 
-  // --- Produits par catégorie ---
+  // ✅ Produits par catégorie
   getProductsByCategory: async (req, res) => {
     try {
       const entrepriseId = req.entrepriseId;
@@ -226,77 +222,56 @@ module.exports = {
       const products = await getProductsByCategoryId(categoryId, entrepriseId);
       res.json(products);
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ message: error.message });
     }
   },
 
-  // --- Vérification stock faible ---
- checkLowStockGlobal: async (req, res) => {
-  try {
-    const entrepriseId = req.entrepriseId;
-    const { threshold, products } = await getLowStockProductsGlobal(entrepriseId);
-
-    if (products.length === 0) {
-      return res.json({ message: "All products have sufficient stock", threshold });
+  // ✅ Vérification du stock faible
+  checkLowStockGlobal: async (req, res) => {
+    try {
+      const entrepriseId = req.entrepriseId;
+      const { threshold, products } = await getLowStockProductsGlobal(entrepriseId);
+      res.json({ threshold, products });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
     }
+  },
 
-    res.json({
-      message: `Some products are below the stock threshold of ${threshold}`,
-      products,
-    });
-    console.log('====================================');
-    console.log(products);
-    console.log('====================================');
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-}
-,
-
-  // --- Vérification produits en rupture ---
+  // ✅ Vérification des produits en rupture
   checkOutOfStockGlobal: async (req, res) => {
     try {
       const entrepriseId = req.entrepriseId;
       const products = await getOutOfStockProducts(entrepriseId);
 
-      if (products.length === 0) {
-        return res.json({ message: "All products have stock available", products: [] });
-      }
+      if (products.length === 0)
+        return res.json({ message: "All products have stock available" });
 
       const quantity = 5;
       const orders = [];
 
-      for (let prod of products) {
+      for (const prod of products) {
         const product = await getOneProduct(prod.id, entrepriseId);
-        if (!product) return res.status(404).json({ message: "Product not found" });
-
         const supplier = await getOnesupplier(prod.supplier);
-        if (!supplier) return res.status(404).json({ message: "Supplier not found" });
-
-        const order = await createOrder(product.id, supplier.id, quantity);
-        orders.push(order);
+        if (product && supplier) {
+          const order = await createOrder(product.id, supplier.id, quantity);
+          orders.push(order);
+        }
       }
 
       res.json({ message: "Some products are out of stock", products, orders });
     } catch (error) {
-      console.error("Error in checkOutOfStockGlobal:", error);
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ message: error.message });
     }
   },
 
-  // --- Récupérer les ventes ---
+  // ✅ Récupérer les ventes
   getsales: async (req, res) => {
     try {
       const entrepriseId = req.entrepriseId;
       const sales = await getSales(entrepriseId);
-
-      if (sales.length === 0) return res.json({ message: "No sales data available" });
-
       res.json({ sales });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ message: error.message });
     }
   },
 };

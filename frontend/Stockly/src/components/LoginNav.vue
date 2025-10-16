@@ -1,29 +1,6 @@
 <template>
   <div class="fixed">
-    <!-- Mobile Menu Button -->
-    <button class="mobile-menu-btn" @click="sidebarOpen = !sidebarOpen" aria-label="Toggle menu">
-      <svg v-if="!sidebarOpen" width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <path
-          d="M3 12H21M3 6H21M3 18H21"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-        />
-      </svg>
-      <svg v-else width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <path
-          d="M18 6L6 18M6 6L18 18"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-        />
-      </svg>
-    </button>
-
-    <!-- Overlay -->
-    <transition name="fade">
-      <div v-if="sidebarOpen" class="overlay" @click="sidebarOpen = false"></div>
-    </transition>
+    <!-- ... existing mobile menu and overlay code ... -->
 
     <!-- Sidebar -->
     <aside class="sidebar fixed" :class="{ 'sidebar-open': sidebarOpen }">
@@ -44,6 +21,10 @@
           <h1 class="logo-title">StockFlow</h1>
           <p class="logo-subtitle">Inventory System</p>
         </div>
+        <!-- Enterprise Name -->
+        <div v-if="activeEntreprise" class="enterprise-name">
+          {{ activeEntreprise.name }}
+        </div>
         <!-- Mobile Close Button -->
         <button class="mobile-close-btn" @click="sidebarOpen = false" aria-label="Close menu">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -63,7 +44,7 @@
         <div class="nav-section">
           <span class="nav-section-label">OVERVIEW</span>
           <router-link
-            to="dashboar"
+            :to="dashboardRoute"
             class="nav-item"
             active-class="nav-item-active"
             @click="closeMobileMenu"
@@ -130,7 +111,7 @@
             <transition name="submenu">
               <div v-show="inventoryExpanded" class="submenu">
                 <router-link
-                  to="products"
+                  :to="productsRoute"
                   class="submenu-item"
                   active-class="submenu-item-active"
                   @click="closeMobileMenu"
@@ -139,7 +120,7 @@
                   <span class="badge-sm">6</span>
                 </router-link>
                 <router-link
-                  to="/steper"
+                  :to="steperRoute"
                   class="submenu-item"
                   active-class="submenu-item-active"
                   @click="closeMobileMenu"
@@ -198,7 +179,7 @@
             <transition name="submenu">
               <div v-show="categoryExpanded" class="submenu">
                 <router-link
-                  to="categories"
+                  :to="categoriesRoute"
                   class="submenu-item"
                   active-class="submenu-item-active"
                   @click="closeMobileMenu"
@@ -221,7 +202,7 @@
         <div class="nav-section">
           <span class="nav-section-label">SALES & ORDERS</span>
           <router-link
-            to="sales"
+            :to="salesRoute"
             class="nav-item"
             active-class="nav-item-active"
             @click="closeMobileMenu"
@@ -239,7 +220,7 @@
           </router-link>
 
           <router-link
-            to="clients"
+            :to="clientsRoute"
             class="nav-item"
             active-class="nav-item-active"
             @click="closeMobileMenu"
@@ -277,7 +258,7 @@
         <div class="nav-section">
           <span class="nav-section-label">INVOICE MANAGEMENT</span>
           <router-link
-            to="invoices"
+            :to="invoicesRoute"
             class="nav-item"
             active-class="nav-item-active"
             @click="closeMobileMenu"
@@ -301,8 +282,6 @@
             <span>Invoices</span>
           </router-link>
         </div>
-
-    
       </nav>
 
       <!-- Footer Section -->
@@ -338,17 +317,31 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useEntrepriseStore } from '@/stores/entrepriseStore'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
+const route = useRoute()
 const entrepriseStore = useEntrepriseStore()
+
+// Get current UUID from route params
+const currentUuid = computed(() => route.params.uuid)
+
+// Computed properties for routes with UUID
+const dashboardRoute = computed(() => `/${currentUuid.value}/dashboar`)
+const salesRoute = computed(() => `/${currentUuid.value}/sales`)
+const productsRoute = computed(() => `/${currentUuid.value}/products`)
+const steperRoute = computed(() => `/${currentUuid.value}/steper`)
+const clientsRoute = computed(() => `/${currentUuid.value}/clients`)
+const invoicesRoute = computed(() => `/${currentUuid.value}/invoices`)
+const categoriesRoute = computed(() => `/${currentUuid.value}/categories`)
+
+const activeEntreprise = computed(() => entrepriseStore.activeEntreprise)
 
 const logoutEntreprise = () => {
   entrepriseStore.clearActiveEntreprise()
   router.push('/ad/admin')
 }
 
-const activeEntreprise = computed(() => entrepriseStore.activeEntreprise)
 const showAddCategory = ref(false)
 const sidebarOpen = ref(false)
 const inventoryExpanded = ref(false)
@@ -387,6 +380,8 @@ const handleResize = () => {
 
 onMounted(() => {
   window.addEventListener('resize', handleResize)
+  console.log('Current UUID:', currentUuid.value)
+  console.log('Dashboard route:', dashboardRoute.value)
 })
 
 onUnmounted(() => {

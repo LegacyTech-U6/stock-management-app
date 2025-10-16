@@ -49,9 +49,25 @@ export async function deleteProduct(productId) {
 }
 
 export async function createProduct(productData) {
-  const { data } = await API.post('/products', productData)
+  const formData = new FormData()
+
+  // Ajouter tous les champs du produit (sauf l'image)
+  for (const key in productData) {
+    if (key !== 'Prod_image' && productData[key] !== null && productData[key] !== undefined) {
+      formData.append(key, productData[key])
+    }
+  }
+
+  // Ajouter l'image (si présente)
+  if (productData.Prod_image instanceof File) {
+    formData.append('Prod_image', productData.Prod_image)
+  }
+
+  // Appel API — ne pas forcer Content-Type (Axios gère la boundary)
+  const { data } = await API.post('/products', formData)
   return data
 }
+
 
 export async function OutOfStock() {
   const { data } = await API.get('/products/out-of-stock')
