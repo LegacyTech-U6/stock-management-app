@@ -3,7 +3,6 @@ const getActiveEntreprise = (req, res, next) => {
   // Lire le header X-Entreprise-Id
   const entrepriseId = req.headers['x-entreprise-id'];
 
-  console.log('🧩 Headers reçus :', req.headers);
   console.log('🏢 X-Entreprise-Id reçu :', entrepriseId);
 
   if (!entrepriseId) {

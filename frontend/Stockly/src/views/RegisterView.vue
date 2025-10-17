@@ -9,8 +9,8 @@
         <p class="text-lg text-gray-600">Manage your inventory and sales like never before</p>
       </div>
 
-      <div class="relative w-full max-w-sm">
-        <div class="rounded-2xl overflow-hidden shadow-lg">
+      <div class="relative w-full max-w-sm overflow-hidden">
+        <div class="rounded-2xl overflow-hidden shadow-lg" :class="imageSlideClass">
           <img
             src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&h=400&fit=crop"
             alt="Team collaboration"
@@ -151,7 +151,7 @@
             <div>
               <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2"
                 >Email</label
-              >
+                >
               <input
                 type="email"
                 v-model="user.email"
@@ -164,7 +164,7 @@
             <div>
               <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2"
                 >Company name</label
-              >
+                >
               <input
                 type="text"
                 v-model="user.company"
@@ -206,7 +206,7 @@
             <div>
               <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2"
                 >Password</label
-              >
+                >
               <div class="relative">
                 <input
                   :type="showPassword ? 'text' : 'password'"
@@ -263,7 +263,7 @@
             <div>
               <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2"
                 >Confirm password</label
-              >
+                >
               <div class="relative">
                 <input
                   :type="showConfirmPassword ? 'text' : 'password'"
@@ -340,7 +340,7 @@
               />
               <label class="text-xs lg:text-sm text-gray-600"
                 >Send me updates and marketing emails</label
-              >
+                >
             </div>
 
             <!-- Error Message -->
@@ -363,7 +363,7 @@
           <!-- Sign In Link -->
           <p class="text-center text-xs lg:text-sm text-gray-600 mt-3">
             Already have an account?
-            <router-link to="/login" class="font-semibold text-blue-600 hover:underline">
+            <router-link to="/login" class="font-semibold text-blue-600 hover:underline" @click="setNavigationDirection('to-login')">
               Sign in
             </router-link>
           </p>
@@ -374,7 +374,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
 import { useRouter } from 'vue-router'
 
@@ -384,10 +384,36 @@ const authStore = useAuthStore()
 const showPassword = ref(false)
 const showConfirmPassword = ref(false)
 const marketingOptIn = ref(false)
+const imageSlideClass = ref('')
+
+onMounted(() => {
+  // Set the animation direction based on navigation history
+  const navigationDirection = sessionStorage.getItem('navigation-direction')
+
+  if (navigationDirection === 'from-login') {
+    imageSlideClass.value = 'slide-in-from-right'
+  } else {
+    imageSlideClass.value = 'slide-in-from-left'
+  }
+
+  // Clear the navigation direction after use
+  sessionStorage.removeItem('navigation-direction')
+})
+
+onUnmounted(() => {
+  // Set navigation direction for the next page
+  if (router.currentRoute.value.path === '/login') {
+    sessionStorage.setItem('navigation-direction', 'from-register')
+  }
+})
+
+const setNavigationDirection = (direction) => {
+  sessionStorage.setItem('navigation-direction', direction)
+}
 
 const user = ref({
   username: '',
-  Last_name: '',
+  last_name: '',
   email: '',
   telephone: '',
   company: '',
@@ -415,7 +441,7 @@ const handleRegister = async () => {
   try {
     await authStore.register(
       user.value.username,
-      user.value.Last_name,
+      user.value.last_name,
       user.value.email,
       user.value.telephone,
       user.value.password,
@@ -436,3 +462,42 @@ const goBack = () => {
   router.back()
 }
 </script>
+
+<style scoped>
+/* Slide in from right animation */
+.slide-in-from-right {
+  animation: slideInFromRight 0.5s ease-in-out forwards;
+}
+
+/* Slide in from left animation */
+.slide-in-from-left {
+  animation: slideInFromLeft 0.5s ease-in-out forwards;
+}
+
+@keyframes slideInFromRight {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromLeft {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Initial state for the image container */
+.rounded-2xl {
+  opacity: 0;
+}
+</style>

@@ -20,7 +20,7 @@ router.use(getActiveEntreprise);
 // 🆕 Créer un produit (avec image optionnelle)
 router.post(
   "/",
-  upload.single("prod_image"),
+  upload.single("Prod_image"),
   validateProduct,
   ProductController.post
 );

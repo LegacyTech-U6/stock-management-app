@@ -1,4 +1,4 @@
-import { all } from 'axios'
+
 import API from '../api/axios'
 // const API_BASE_URL = "http://localhost:5000/api";
 export async function CreateClient(clientData) {
@@ -49,23 +49,44 @@ export async function deleteProduct(productId) {
 }
 
 export async function createProduct(productData) {
+  console.log('🚀 API: Creating product with data:', productData)
+
   const formData = new FormData()
 
-  // Ajouter tous les champs du produit (sauf l'image)
+  // Add all product fields (except image)
   for (const key in productData) {
     if (key !== 'Prod_image' && productData[key] !== null && productData[key] !== undefined) {
       formData.append(key, productData[key])
+      console.log(`📝 Added ${key}:`, productData[key])
     }
   }
 
-  // Ajouter l'image (si présente)
+  // Add image (if present)
   if (productData.Prod_image instanceof File) {
     formData.append('Prod_image', productData.Prod_image)
+    console.log('🖼️ Added image file:', productData.Prod_image.name)
+  } else if (productData.Prod_image) {
+    formData.append('Prod_image', productData.Prod_image)
+    console.log('🖼️ Added image URL/string:', productData.Prod_image)
   }
 
-  // Appel API — ne pas forcer Content-Type (Axios gère la boundary)
-  const { data } = await API.post('/products', formData)
-  return data
+  // Log FormData contents for debugging
+  for (let pair of formData.entries()) {
+    console.log(`📦 FormData: ${pair[0]} = ${pair[1]}`)
+  }
+
+  try {
+    const { data } = await API.post('/products', formData)
+    console.log('✅ API: Product created successfully:', data)
+    return data
+  } catch (error) {
+    console.error('❌ API: Error creating product:', error)
+    if (error.response) {
+      console.error('📋 API: Error response data:', error.response.data)
+      console.error('🔧 API: Error response status:', error.response.status)
+    }
+    throw error
+  }
 }
 
 

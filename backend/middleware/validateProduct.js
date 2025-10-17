@@ -34,9 +34,6 @@ const validateProduct = [
     .optional()
     .isISO8601().withMessage('La date d’arrivée doit être au format YYYY-MM-DD'),
 
-  body('supplier')
-    .optional()
-    .isInt({ min: 1 }).withMessage('L’ID fournisseur doit être un entier positif'),
 
   body('Prod_image')
     .optional()

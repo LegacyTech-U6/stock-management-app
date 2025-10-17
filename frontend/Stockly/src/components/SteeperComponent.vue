@@ -651,37 +651,47 @@ const submit = async () => {
   if (!validateStep(4)) return
 
   try {
-    // Prepare data for store
     const productData = {
       Prod_name: form.name,
-      quantity: form.quantity,
-      cost_price: form.costPrice,
-      selling_price: form.sellingPrice,
-      category_id: form.category,
+      quantity: parseInt(form.quantity) || 0,
+      cost_price: parseFloat(form.costPrice) || 0,
+      selling_price: parseFloat(form.sellingPrice) || 0,
+      category_id: parseInt(form.category),
       Prod_Description: form.description,
       code_bar: form.barcode,
       date_of_arrival: form.arrivalDate,
-      supplier: form.supplier,
-      Prod_image: form.image,
-      min_stock_level: form.minStock,
-      max_stock_level: form.maxStock,
+      supplier: form.supplier ? parseInt(form.supplier) : null,
+      min_stock_level: parseInt(form.minStock) || 10,
+      max_stock_level: parseInt(form.maxStock) || 100,
     }
 
-    // Call store action - this will automatically set loading state
+    if (form.image && form.image instanceof File) {
+      productData.Prod_image = form.image
+    } else if (form.image) {
+      productData.Prod_image = form.image
+    }
+
+    console.log('📦 Product data being sent:', productData)
+
     await productStore.addProduct(productData)
 
-    // Success - reset form and navigate
     resetForm()
-    alert('Product added successfully!')
-    // Optionally navigate away: $router.push('/products')
+    alert('✅ Product added successfully!')
   } catch (error) {
     submitError.value =
       error?.response?.data?.message ||
       error.message ||
       'An error occurred while adding the product.'
-    console.error('Error adding product:', error)
+    console.error('❌ Error adding product:', error)
+
+    if (error.response) {
+      console.error('📋 Response data:', error.response.data)
+      console.error('🔧 Response status:', error.response.status)
+      console.error('📝 Response headers:', error.response.headers)
+    }
   }
 }
+
 
 const resetForm = () => {
   Object.keys(form).forEach((key) => {

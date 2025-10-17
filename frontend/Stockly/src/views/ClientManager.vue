@@ -1,161 +1,238 @@
 <template>
-  <div class="main">
-
-
-  <div class="min-h-screen pt-10 bg-gray-50 py-6 px-4 sm:px-6 lg:px-8">
-    <div class="space-y-6">
+  <div class="client-manager">
+    <n-config-provider :theme-overrides="themeOverrides">
       <!-- Header Section -->
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 class="text-2xl font-bold text-gray-900">Client Management</h1>
-          <p class="text-sm text-gray-500 mt-1">Manage your customer database</p>
-        </div>
-        <div class="flex gap-3">
-          <button
-            @click="handleBackToSales"
-            class="px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 font-medium text-sm"
-          >
-            Back to Sales
-          </button>
-          <button
-            @click="handleAddClient"
-            class="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-all duration-200 font-medium text-sm flex items-center gap-2"
-          >
-            <span class="text-lg leading-none">+</span>
-            Add Client
-          </button>
-        </div>
-      </div>
+      <n-page-header class="page-header" @back="handleBackToSales">
+        <template #title>
+          <n-text class="header-title">Client Management</n-text>
+        </template>
+        <template #subtitle>
+          <n-text depth="3">Manage your customer database</n-text>
+        </template>
+        <template #extra>
+          <n-space>
+            <n-button
+              secondary
+              @click="handleBackToSales"
+              :focusable="false"
+            >
+              <template #icon>
+                <n-icon :component="ArrowLeft" />
+              </template>
+              Back to Sales
+            </n-button>
+            <n-button
+              type="primary"
+              @click="handleAddClient"
+              :focusable="false"
+            >
+              <template #icon>
+                <n-icon :component="Plus" />
+              </template>
+              Add Client
+            </n-button>
+          </n-space>
+        </template>
+      </n-page-header>
 
-      <!-- Summary Cards -->
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <!-- Total Clients -->
-        <div class="bg-white border border-gray-200 rounded-lg p-4">
-          <div class="flex items-center gap-2 mb-3">
-            <div class="w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center">
-              <UserGroupIcon />
-            </div>
-            <span class="text-xs font-medium text-gray-600">Total Clients</span>
-          </div>
-          <div class="text-2xl font-bold text-gray-900">{{ clientStore.clients.length }}</div>
-        </div>
+      <div class="content-wrapper">
+        <!-- Summary Cards -->
+        <n-grid :x-gap="16" :y-gap="16" :cols="2" class="stats-grid">
+          <n-gi>
+            <n-card
+              :bordered="false"
+              class="stat-card"
+              hoverable
+            >
+              <n-statistic label="Total Clients" :value="clientStore.clients.length">
+                <template #prefix>
+                  <n-icon size="24" :component="Users" color="#1890ff" />
+                </template>
+              </n-statistic>
+            </n-card>
+          </n-gi>
 
-        <!-- Active Clients -->
+          <n-gi>
+            <n-card
+              :bordered="false"
+              class="stat-card"
+              hoverable
+            >
+              <n-statistic
+                label="Active Clients"
+                :value="activeClients"
+              >
+                <template #prefix>
+                  <n-icon size="24" :component="CheckCircle" color="#52c41a" />
+                </template>
+              </n-statistic>
+            </n-card>
+          </n-gi>
+        </n-grid>
 
-
-        <!-- Total Revenue -->
-
-
-        <!-- Avg Order Value -->
-        
-      </div>
-
-      <!-- Search Bar -->
-      <div class="bg-white border border-gray-200 rounded-lg px-4 py-3 flex items-center gap-3">
-        <SearchIcon />
-        <input
-          type="text"
-          placeholder="Search clients by name, email, or company..."
-          class="w-full outline-none bg-transparent text-sm text-gray-700 placeholder-gray-400"
-          v-model="search"
-        />
-        <span v-if="search" class="text-xs text-gray-500">
-          {{ filteredClients.length }} result{{ filteredClients.length !== 1 ? 's' : '' }}
-        </span>
-      </div>
-   <div v-if="loadingClients">
-  <LazyLoader :loading="loadingClients" :skeleton-count="6">
-    <template #icon>
-      <n-spin size="40" />
-    </template>
-    <template #message>
-      <p class="text-lg font-semibold text-gray-800">Loading clients...</p>
-    </template>
-  </LazyLoader>
-</div>
-
-
-      <!-- Client Cards Grid -->
-      <div
-        v-else-if="filteredClients.length > 0"
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 pb-8"
-      >
-        <ClientCard
-          v-for="client in filteredClients"
-          :key="client.id"
-          :client="client"
-          @edit="handleEditClient"
-          @delete="handleDeleteClient"
-        />
-      </div>
-
-      <!-- Empty State -->
-      <div v-else class="bg-white border border-gray-200 rounded-lg p-12 text-center">
-        <div
-          class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4"
+        <!-- Search Section -->
+        <n-card
+          :bordered="false"
+          class="search-card"
         >
-          <EmptyStateIcon />
+          <n-input
+            v-model:value="search"
+            placeholder="Search clients by name, email, or company..."
+            size="large"
+            clearable
+            :input-props="{ autocomplete: 'off' }"
+          >
+            <template #prefix>
+              <n-icon :component="Search" />
+            </template>
+            <template #suffix v-if="search">
+              <n-tag size="small" :bordered="false">
+                {{ filteredClients.length }} result{{ filteredClients.length !== 1 ? 's' : '' }}
+              </n-tag>
+            </template>
+          </n-input>
+        </n-card>
+
+        <!-- Loading State -->
+        <div v-if="loadingClients" class="loading-container">
+          <n-space vertical align="center" :size="24">
+            <n-spin size="large" />
+            <n-text depth="3">Loading clients...</n-text>
+          </n-space>
         </div>
-        <h3 class="text-lg font-semibold text-gray-900 mb-2">
-          {{ search ? 'No clients found' : 'No clients yet' }}
-        </h3>
-        <p class="text-sm text-gray-500 mb-6">
-          {{
-            search ? 'Try adjusting your search terms' : 'Get started by adding your first client'
-          }}
-        </p>
-        <button
-          v-if="!search"
-          @click="handleAddClient"
-          class="px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-all duration-200 font-medium text-sm inline-flex items-center gap-2"
+
+        <!-- Client Cards Grid -->
+        <n-grid
+          v-else-if="filteredClients.length > 0"
+          :x-gap="16"
+          :y-gap="16"
+          :cols="responsiveCards"
+          class="clients-grid"
         >
-          <span class="text-lg leading-none">+</span>
-          Add Your First Client
-        </button>
-        <button
+          <n-gi v-for="client in filteredClients" :key="client.id">
+            <ClientCard
+              :client="client"
+              @edit="handleEditClient"
+              @delete="handleDeleteClient"
+            />
+          </n-gi>
+        </n-grid>
+
+        <!-- Empty State -->
+        <n-empty
           v-else
-          @click="search = ''"
-          class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all duration-200 font-medium text-sm"
+          class="empty-state"
+          :description="search ? 'No clients found' : 'No clients yet'"
+          size="large"
         >
-          Clear Search
-        </button>
+          <template #icon>
+            <n-icon size="64" :component="Inbox" />
+          </template>
+          <template #extra>
+            <n-space vertical :size="12" align="center">
+              <n-text depth="3">
+                {{ search ? 'Try adjusting your search terms' : 'Get started by adding your first client' }}
+              </n-text>
+              <n-button
+                v-if="!search"
+                type="primary"
+                @click="handleAddClient"
+                size="large"
+              >
+                <template #icon>
+                  <n-icon :component="Plus" />
+                </template>
+                Add Your First Client
+              </n-button>
+              <n-button
+                v-else
+                @click="search = ''"
+                size="large"
+              >
+                Clear Search
+              </n-button>
+            </n-space>
+          </template>
+        </n-empty>
       </div>
-    </div>
-     <FromModal
-      :open="showModal"
-      :isEdit="isEditMode"
-      :clientData="selectedClient"
-      :loading="loading"
-      :error="error"
-      @close="handleCloseModal"
-      @submit="handleSubmit"
-    />
 
+      <!-- Modals -->
+      <FromModal
+        :open="showModal"
+        :isEdit="isEditMode"
+        :clientData="selectedClient"
+        :loading="loading"
+        :error="error"
+        @close="handleCloseModal"
+        @submit="handleSubmit"
+      />
 
-  </div>
-  <ActionModal
-    v-model="showDeleteModal"
-    title="Delete Category"
-    :message="`Are you sure you want to delete ${selectedClient?.client_name}? This action cannot be undone.`"
-    confirm-text="Delete"
-    cancel-text="Cancel"
-    @confirm="confirmDelete"
-  />
+      <n-modal
+        v-model:show="showDeleteModal"
+        preset="dialog"
+        title="Delete Client"
+        :positive-text="'Delete'"
+        :negative-text="'Cancel'"
+        @positive-click="confirmDelete"
+      >
+        <n-space vertical :size="16">
+          <n-alert type="warning" :show-icon="true">
+            This action cannot be undone
+          </n-alert>
+          <n-text>
+            Are you sure you want to delete <n-text strong>{{ selectedClient?.client_name }}</n-text>?
+          </n-text>
+        </n-space>
+      </n-modal>
+    </n-config-provider>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import {
+  NConfigProvider, NPageHeader, NCard, NButton, NIcon, NSpace, NText,
+  NGrid, NGi, NStatistic, NInput, NSpin, NEmpty, NTag, NModal, NAlert
+} from 'naive-ui';
+// Import icons from lucide-vue-next (already available)
+import { Users, CheckCircle, Search, Plus, ArrowLeft, Inbox } from 'lucide-vue-next';
 import { useClientStore } from '@/stores/clientStore';
 import { useActionMessage } from '@/composable/useActionMessage';
 import ClientCard from '@/components/clients/ClientCard.vue';
 import FromModal from '../components/clients/FromModal.vue';
-import ActionModal from '@/components/ui/ActionModal.vue';
-import LazyLoader from '@/components/ui/LazyLoader.vue';
 
 const { showSuccess, showError } = useActionMessage();
 const clientStore = useClientStore();
 
+// Theme customization
+const themeOverrides = {
+  common: {
+    borderRadius: '12px',
+    borderRadiusSmall: '8px',
+  },
+  Card: {
+    borderRadius: '12px',
+  },
+  Button: {
+    borderRadiusMedium: '8px',
+  },
+  Input: {
+    borderRadius: '10px',
+  }
+};
+
+// Responsive columns
+const responsiveCards = computed(() => {
+  if (typeof window !== 'undefined') {
+    if (window.innerWidth < 768) return 1;
+    if (window.innerWidth < 1024) return 2;
+    if (window.innerWidth < 1536) return 3;
+    return 4;
+  }
+  return 4;
+});
+
+// State
 const search = ref('');
 const showModal = ref(false);
 const showDeleteModal = ref(false);
@@ -165,7 +242,7 @@ const loading = ref(false);
 const error = ref('');
 const loadingClients = ref(true);
 
-// Computed
+// Computed properties
 const filteredClients = computed(() =>
   clientStore.clients.filter(client =>
     client.client_name?.toLowerCase().includes(search.value.toLowerCase()) ||
@@ -173,7 +250,15 @@ const filteredClients = computed(() =>
   )
 );
 
+const activeClients = computed(() =>
+  clientStore.clients.filter(c => c.status === 'active').length
+);
+
 // Methods
+const handleBackToSales = () => {
+  // Navigation logic
+};
+
 const handleAddClient = () => {
   isEditMode.value = false;
   selectedClient.value = null;
@@ -232,15 +317,6 @@ const confirmDelete = async () => {
     selectedClient.value = null;
   }
 };
-// Format currency
-const formatCurrency = (amount) => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(amount)
-}
 
 // Lifecycle
 onMounted(async () => {
@@ -249,6 +325,108 @@ onMounted(async () => {
   loadingClients.value = false;
 });
 </script>
+
 <style scoped>
-/* Add any additional custom styles here if needed */
+.client-manager {
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+.page-header {
+  background: white;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.header-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #000;
+}
+
+.content-wrapper {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.stats-grid {
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03),
+              0 1px 6px -1px rgba(0, 0, 0, 0.02),
+              0 2px 4px rgba(0, 0, 0, 0.02);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stat-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08),
+              0 2px 6px rgba(0, 0, 0, 0.04);
+  transform: translateY(-2px);
+}
+
+.search-card {
+  margin-bottom: 24px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03),
+              0 1px 6px -1px rgba(0, 0, 0, 0.02);
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.clients-grid {
+  margin-bottom: 32px;
+}
+
+.empty-state {
+  background: white;
+  border-radius: 12px;
+  padding: 64px 24px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  .page-header {
+    padding: 16px;
+  }
+
+  .content-wrapper {
+    padding: 16px;
+  }
+
+  .header-title {
+    font-size: 20px;
+  }
+
+  .empty-state {
+    padding: 48px 16px;
+  }
+}
+
+/* Native-like transitions */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:deep(.n-button) {
+  font-weight: 500;
+}
+
+:deep(.n-card) {
+  overflow: hidden;
+}
+
+:deep(.n-statistic) {
+  user-select: none;
+}
 </style>

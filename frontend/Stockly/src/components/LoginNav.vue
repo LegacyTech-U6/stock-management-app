@@ -1,316 +1,349 @@
 <template>
-  <div class="fixed">
-    <!-- ... existing mobile menu and overlay code ... -->
+  <div class="h-full flex flex-col">
+    <!-- Unified Sidebar (Expands on Hover) -->
+    <aside
+      @mouseenter="handleSidebarEnter"
+      @mouseleave="handleSidebarLeave"
+      class="h-full bg-white flex flex-col transition-all duration-300 ease-in-out"
+      :class="[
+        sidebarExpanded ? 'w-80' : 'w-[72px]',
+        sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+      ]"
+    >
+      <!-- Header -->
+      <div class="relative px-5 py-5 border-b border-gray-200">
+        <!-- Logo -->
+        <div class="flex items-center gap-3 mb-4">
+          <div class="flex items-center justify-center min-w-[44px] w-11 h-11 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl shadow-lg">
+            <Package :size="22" class="text-white" />
+          </div>
+          <transition
+            enter-active-class="transition-opacity duration-200"
+            enter-from-class="opacity-0"
+            enter-to-class="opacity-100"
+            leave-active-class="transition-opacity duration-150"
+            leave-from-class="opacity-100"
+            leave-to-class="opacity-0"
+          >
+            <div v-show="sidebarExpanded" class="overflow-hidden">
+              <h1 class="text-lg font-bold text-gray-900 whitespace-nowrap">StockFlow</h1>
+            </div>
+          </transition>
+        </div>
 
-    <!-- Sidebar -->
-    <aside class="sidebar fixed" :class="{ 'sidebar-open': sidebarOpen }">
-      <!-- Logo Section -->
-      <div class="logo-section">
-        <div class="logo-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M20 7L12 3L4 7M20 7L12 11M20 7V17L12 21M12 11L4 7M12 11V21M4 7V17L12 21"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+        <!-- Quick Search (only when expanded) -->
+        <transition
+          enter-active-class="transition-all duration-200"
+          enter-from-class="opacity-0 scale-95"
+          enter-to-class="opacity-100 scale-100"
+          leave-active-class="transition-all duration-150"
+          leave-from-class="opacity-100 scale-100"
+          leave-to-class="opacity-0 scale-95"
+        >
+          <div v-show="sidebarExpanded" class="relative">
+            <Search :size="18" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Quick search"
+              class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
             />
-          </svg>
-        </div>
-        <div class="logo-text">
-          <h1 class="logo-title">StockFlow</h1>
-          <p class="logo-subtitle">Inventory System</p>
-        </div>
-        <!-- Enterprise Name -->
-        <div v-if="activeEntreprise" class="enterprise-name">
-          {{ activeEntreprise.name }}
-        </div>
-        <!-- Mobile Close Button -->
-        <button class="mobile-close-btn" @click="sidebarOpen = false" aria-label="Close menu">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M18 6L6 18M6 6L18 18"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-            />
-          </svg>
-        </button>
+          </div>
+        </transition>
       </div>
 
       <!-- Navigation -->
-      <nav class="nav">
-        <!-- Overview -->
-        <div class="nav-section">
-          <span class="nav-section-label">OVERVIEW</span>
+      <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar"
+        :class="sidebarExpanded ? 'px-4' : 'px-3'"
+      >
+        <!-- Enterprise Badge (only when expanded) -->
+        <transition
+          enter-active-class="transition-all duration-200"
+          enter-from-class="opacity-0 -translate-y-2"
+          enter-to-class="opacity-100 translate-y-0"
+          leave-active-class="transition-all duration-150"
+          leave-from-class="opacity-100 translate-y-0"
+          leave-to-class="opacity-0 -translate-y-2"
+        >
+          <div v-if="activeEntreprise && sidebarExpanded" class="mb-4 px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl border border-blue-200">
+            <div class="flex items-center gap-2 mb-1">
+              <Building2 :size="16" class="text-blue-600" />
+              <span class="text-xs font-semibold text-blue-600 uppercase tracking-wide">Active Enterprise</span>
+            </div>
+            <p class="text-sm font-bold text-gray-900 truncate">{{ activeEntreprise.name }}</p>
+          </div>
+        </transition>
+
+        <div class="mb-3" :class="sidebarExpanded ? 'px-3' : 'px-0'">
+          <transition
+            enter-active-class="transition-opacity duration-200"
+            enter-from-class="opacity-0"
+            enter-to-class="opacity-100"
+            leave-active-class="transition-opacity duration-150"
+            leave-from-class="opacity-100"
+            leave-to-class="opacity-0"
+          >
+            <span v-show="sidebarExpanded" class="text-xs font-bold text-gray-400 uppercase tracking-wider">Menu</span>
+          </transition>
+        </div>
+
+        <!-- Menu Items -->
+        <div class="space-y-1">
           <router-link
             :to="dashboardRoute"
-            class="nav-item"
-            active-class="nav-item-active"
+            class="flex items-center gap-3 rounded-xl text-sm font-medium transition-all relative group"
+            :class="[
+              sidebarExpanded ? 'px-4 py-3' : 'w-11 h-11 justify-center',
+              route.path === dashboardRoute ? 'bg-blue-50 text-blue-700 shadow-sm' : 'text-gray-700 hover:bg-gray-50'
+            ]"
             @click="closeMobileMenu"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M3 9L12 2L21 9V20C21 20.53 20.79 21.04 20.41 21.41C20.04 21.79 19.53 22 19 22H5C4.47 22 3.96 21.79 3.59 21.41C3.21 21.04 3 20.53 3 20V9Z"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-            <span>Dashboard</span>
+            <LayoutDashboard :size="20" />
+            <transition
+              enter-active-class="transition-opacity duration-200"
+              enter-from-class="opacity-0"
+              enter-to-class="opacity-100"
+              leave-active-class="transition-opacity duration-150"
+              leave-from-class="opacity-100"
+              leave-to-class="opacity-0"
+            >
+              <span v-show="sidebarExpanded">Dashboard</span>
+            </transition>
+            <div v-if="route.path === dashboardRoute && !sidebarExpanded" class="absolute left-0 w-1 h-6 bg-blue-600 rounded-r-full"></div>
           </router-link>
-        </div>
 
-        <!-- Inventory -->
-        <div class="nav-section">
-          <span class="nav-section-label">INVENTORY MANAGEMENT</span>
-
-          <!-- Product Inventory -->
-          <div class="nav-group">
-            <div
-              class="nav-item nav-toggle"
-              :class="{ 'nav-item-active': inventoryExpanded }"
-              @click="toggleInventory"
+          <router-link
+            :to="productsRoute"
+            class="flex items-center gap-3 rounded-xl text-sm font-medium transition-all relative group"
+            :class="[
+              sidebarExpanded ? 'px-4 py-3' : 'w-11 h-11 justify-center',
+              route.path === productsRoute ? 'bg-blue-50 text-blue-700 shadow-sm' : 'text-gray-700 hover:bg-gray-50'
+            ]"
+            @click="closeMobileMenu"
+          >
+            <Package :size="20" />
+            <transition
+              enter-active-class="transition-opacity duration-200"
+              enter-from-class="opacity-0"
+              enter-to-class="opacity-100"
+              leave-active-class="transition-opacity duration-150"
+              leave-from-class="opacity-100"
+              leave-to-class="opacity-0"
             >
-              <div class="nav-item-content">
-                <div class="nav-item-main">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M21 16V8C21 7.65 20.91 7.3 20.73 7.00C20.55 6.70 20.30 6.45 20 6.27L13 2.27C12.70 2.09 12.35 2 12 2C11.65 2 11.30 2.09 11 2.27L4 6.27C3.70 6.45 3.44 6.70 3.27 7.00C3.09 7.30 3 7.65 3 8V16C3 16.35 3.09 16.70 3.27 17.00C3.44 17.30 3.70 17.55 4 17.73L11 21.73C11.30 21.91 11.65 22 12 22C12.35 22 12.70 21.91 13 21.73L20 17.73C20.30 17.55 20.55 17.30 20.73 17.00C20.91 16.70 21 16.35 21 16Z"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                  <span>Product Inventory</span>
-                </div>
-                <div class="nav-item-end">
-                  <span class="badge">6</span>
-                  <svg
-                    class="arrow"
-                    :class="{ rotated: inventoryExpanded }"
-                    width="16"
-                    height="16"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M9 18L15 12L9 6"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            <transition name="submenu">
-              <div v-show="inventoryExpanded" class="submenu">
-                <router-link
-                  :to="productsRoute"
-                  class="submenu-item"
-                  active-class="submenu-item-active"
-                  @click="closeMobileMenu"
-                >
-                  <span>All Products</span>
-                  <span class="badge-sm">6</span>
-                </router-link>
-                <router-link
-                  :to="steperRoute"
-                  class="submenu-item"
-                  active-class="submenu-item-active"
-                  @click="closeMobileMenu"
-                >
-                  <div class="submenu-add">
-                    <span class="add-symbol">+</span>
-                    <span>Add New Product</span>
-                  </div>
-                </router-link>
-              </div>
+              <span v-show="sidebarExpanded">Products</span>
             </transition>
-          </div>
+            <div v-if="route.path === productsRoute && !sidebarExpanded" class="absolute left-0 w-1 h-6 bg-blue-600 rounded-r-full"></div>
+          </router-link>
 
-          <!-- Categories -->
-          <div class="nav-group">
-            <div
-              class="nav-item nav-toggle"
-              :class="{ 'nav-item-active': categoryExpanded }"
-              @click="toggleCategory"
+          <router-link
+            :to="categoriesRoute"
+            class="flex items-center gap-3 rounded-xl text-sm font-medium transition-all relative group"
+            :class="[
+              sidebarExpanded ? 'px-4 py-3' : 'w-11 h-11 justify-center',
+              route.path === categoriesRoute ? 'bg-blue-50 text-blue-700 shadow-sm' : 'text-gray-700 hover:bg-gray-50'
+            ]"
+            @click="closeMobileMenu"
+          >
+            <FolderTree :size="20" />
+            <transition
+              enter-active-class="transition-opacity duration-200"
+              enter-from-class="opacity-0"
+              enter-to-class="opacity-100"
+              leave-active-class="transition-opacity duration-150"
+              leave-from-class="opacity-100"
+              leave-to-class="opacity-0"
             >
-              <div class="nav-item-content">
-                <div class="nav-item-main">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M4 6H20M4 12H20M4 18H20"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                  <span>Categories</span>
-                </div>
-                <div class="nav-item-end">
-                  <span class="badge">{{ totalCategories }}</span>
-                  <svg
-                    class="arrow"
-                    :class="{ rotated: categoryExpanded }"
-                    width="16"
-                    height="16"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M9 18L15 12L9 6"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            <transition name="submenu">
-              <div v-show="categoryExpanded" class="submenu">
-                <router-link
-                  :to="categoriesRoute"
-                  class="submenu-item"
-                  active-class="submenu-item-active"
-                  @click="closeMobileMenu"
-                >
-                  <span>All Categories</span>
-                  <span class="badge-sm">{{ totalCategories }}</span>
-                </router-link>
-                <button class="submenu-item" @click="((showAddCategory = true), closeMobileMenu())">
-                  <div class="submenu-add">
-                    <span class="add-symbol">+</span>
-                    <span>Add New Category</span>
-                  </div>
-                </button>
-              </div>
+              <span v-show="sidebarExpanded">Categories</span>
             </transition>
-          </div>
-        </div>
+            <div v-if="route.path === categoriesRoute && !sidebarExpanded" class="absolute left-0 w-1 h-6 bg-blue-600 rounded-r-full"></div>
+          </router-link>
 
-        <!-- Sales & Orders -->
-        <div class="nav-section">
-          <span class="nav-section-label">SALES & ORDERS</span>
           <router-link
             :to="salesRoute"
-            class="nav-item"
-            active-class="nav-item-active"
+            class="flex items-center gap-3 rounded-xl text-sm font-medium transition-all relative group"
+            :class="[
+              sidebarExpanded ? 'px-4 py-3' : 'w-11 h-11 justify-center',
+              route.path === salesRoute ? 'bg-blue-50 text-blue-700 shadow-sm' : 'text-gray-700 hover:bg-gray-50'
+            ]"
             @click="closeMobileMenu"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M6 2L3 6V20C3 20.53 3.21 21.04 3.59 21.41C3.96 21.79 4.47 22 5 22H19C19.53 22 20.04 21.79 20.41 21.41C20.79 21.04 21 20.53 21 20V6L18 2H6Z"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-            <span>Sales Interface</span>
+            <ShoppingCart :size="20" />
+            <transition
+              enter-active-class="transition-opacity duration-200"
+              enter-from-class="opacity-0"
+              enter-to-class="opacity-100"
+              leave-active-class="transition-opacity duration-150"
+              leave-from-class="opacity-100"
+              leave-to-class="opacity-0"
+            >
+              <span v-show="sidebarExpanded">Sales</span>
+            </transition>
+            <div v-if="route.path === salesRoute && !sidebarExpanded" class="absolute left-0 w-1 h-6 bg-blue-600 rounded-r-full"></div>
+          </router-link>
+
+          <router-link
+            :to="invoicesRoute"
+            class="flex items-center gap-3 rounded-xl text-sm font-medium transition-all relative group"
+            :class="[
+              sidebarExpanded ? 'px-4 py-3' : 'w-11 h-11 justify-center',
+              route.path === invoicesRoute ? 'bg-blue-50 text-blue-700 shadow-sm' : 'text-gray-700 hover:bg-gray-50'
+            ]"
+            @click="closeMobileMenu"
+          >
+            <FileText :size="20" />
+            <transition
+              enter-active-class="transition-opacity duration-200"
+              enter-from-class="opacity-0"
+              enter-to-class="opacity-100"
+              leave-active-class="transition-opacity duration-150"
+              leave-from-class="opacity-100"
+              leave-to-class="opacity-0"
+            >
+              <span v-show="sidebarExpanded">Invoices</span>
+            </transition>
+            <div v-if="route.path === invoicesRoute && !sidebarExpanded" class="absolute left-0 w-1 h-6 bg-blue-600 rounded-r-full"></div>
           </router-link>
 
           <router-link
             :to="clientsRoute"
-            class="nav-item"
-            active-class="nav-item-active"
+            class="flex items-center gap-3 rounded-xl text-sm font-medium transition-all relative group"
+            :class="[
+              sidebarExpanded ? 'px-4 py-3' : 'w-11 h-11 justify-center',
+              route.path === clientsRoute ? 'bg-blue-50 text-blue-700 shadow-sm' : 'text-gray-700 hover:bg-gray-50'
+            ]"
             @click="closeMobileMenu"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <circle
-                cx="9"
-                cy="7"
-                r="4"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-            <span>Client Management</span>
-          </router-link>
-        </div>
-
-        <!-- Invoice Management -->
-        <div class="nav-section">
-          <span class="nav-section-label">INVOICE MANAGEMENT</span>
-          <router-link
-            :to="invoicesRoute"
-            class="nav-item"
-            active-class="nav-item-active"
-            @click="closeMobileMenu"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M14 2V8H20"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-            <span>Invoices</span>
+            <Users :size="20" />
+            <transition
+              enter-active-class="transition-opacity duration-200"
+              enter-from-class="opacity-0"
+              enter-to-class="opacity-100"
+              leave-active-class="transition-opacity duration-150"
+              leave-from-class="opacity-100"
+              leave-to-class="opacity-0"
+            >
+              <span v-show="sidebarExpanded">Clients</span>
+            </transition>
+            <div v-if="route.path === clientsRoute && !sidebarExpanded" class="absolute left-0 w-1 h-6 bg-blue-600 rounded-r-full"></div>
           </router-link>
         </div>
       </nav>
 
-      <!-- Footer Section -->
-      <div class="sidebar-footer">
-        <button
-          @click="logoutEntreprise"
-          class="logout-btn"
+      <!-- Bottom Settings -->
+      <div class="border-t border-gray-200 py-4 space-y-1"
+        :class="sidebarExpanded ? 'px-5' : 'px-3'"
+      >
+        <button class="flex items-center gap-3 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all w-full"
+          :class="sidebarExpanded ? 'px-4 py-3' : 'w-11 h-11 justify-center'"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-          Quitter l'entreprise
+          <Settings :size="20" />
+          <transition
+            enter-active-class="transition-opacity duration-200"
+            enter-from-class="opacity-0"
+            enter-to-class="opacity-100"
+            leave-active-class="transition-opacity duration-150"
+            leave-from-class="opacity-100"
+            leave-to-class="opacity-0"
+          >
+            <span v-show="sidebarExpanded">Settings</span>
+          </transition>
         </button>
 
-        <div class="user-profile">
-          <img src="https://i.pravatar.cc/40" alt="Demo User" class="avatar" />
-          <div class="user-info">
-            <h4>Demo User</h4>
-            <p>user@demo.com</p>
+        <button class="flex items-center gap-3 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all w-full"
+          :class="sidebarExpanded ? 'px-4 py-3' : 'w-11 h-11 justify-center'"
+        >
+          <Moon :size="20" />
+          <transition
+            enter-active-class="transition-opacity duration-200"
+            enter-from-class="opacity-0"
+            enter-to-class="opacity-100"
+            leave-active-class="transition-opacity duration-150"
+            leave-from-class="opacity-100"
+            leave-to-class="opacity-0"
+          >
+            <span v-show="sidebarExpanded">Dark mode</span>
+          </transition>
+        </button>
+
+        <button class="flex items-center gap-3 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all w-full"
+          :class="sidebarExpanded ? 'px-4 py-3' : 'w-11 h-11 justify-center'"
+        >
+          <HelpCircle :size="20" />
+          <transition
+            enter-active-class="transition-opacity duration-200"
+            enter-from-class="opacity-0"
+            enter-to-class="opacity-100"
+            leave-active-class="transition-opacity duration-150"
+            leave-from-class="opacity-100"
+            leave-to-class="opacity-0"
+          >
+            <span v-show="sidebarExpanded">Help</span>
+          </transition>
+        </button>
+      </div>
+
+      <!-- User Profile Footer -->
+      <div class="border-t border-gray-200 p-4"
+        :class="sidebarExpanded ? 'px-5' : 'px-3'"
+      >
+        <div v-if="!sidebarExpanded" class="flex flex-col items-center gap-3">
+          <div class="relative">
+            <img
+              src="https://i.pravatar.cc/40"
+              alt="User"
+              class="w-11 h-11 rounded-xl border-2 border-gray-200 object-cover cursor-pointer hover:border-blue-400 transition-colors"
+            />
+            <div class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></div>
           </div>
+          <button
+            @click="logoutEntreprise"
+            class="flex items-center justify-center w-11 h-11 bg-red-50 hover:bg-red-100 border border-red-200 rounded-xl text-red-700 transition-colors"
+          >
+            <LogOut :size="18" />
+          </button>
+        </div>
+
+        <div v-else class="space-y-3">
+          <div class="flex items-center gap-3 px-4 py-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer">
+            <img
+              src="https://i.pravatar.cc/40"
+              alt="Demo User"
+              class="w-10 h-10 rounded-xl border-2 border-gray-200 object-cover"
+            />
+            <div class="flex-1 min-w-0">
+              <h4 class="text-sm font-semibold text-gray-900">Demo User</h4>
+              <p class="text-xs text-gray-500">user@demo.com</p>
+            </div>
+          </div>
+
+          <button
+            @click="logoutEntreprise"
+            class="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-red-50 hover:bg-red-100 border border-red-200 rounded-xl text-red-700 font-medium text-sm transition-colors"
+          >
+            <LogOut :size="16" />
+            <span>Logout</span>
+          </button>
         </div>
       </div>
     </aside>
+
+    <!-- Mobile Menu Button -->
+    <button
+      @click="sidebarOpen = true"
+      class="fixed top-4 left-4 z-50 lg:hidden flex items-center justify-center w-12 h-12 bg-white rounded-xl shadow-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+      aria-label="Open menu"
+    >
+      <Menu :size="22" class="text-gray-700" />
+    </button>
+
+    <!-- Close button for mobile -->
+    <button
+      v-if="sidebarOpen"
+      @click="sidebarOpen = false"
+      class="fixed top-4 right-4 z-50 lg:hidden flex items-center justify-center w-12 h-12 bg-white rounded-xl shadow-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+      aria-label="Close menu"
+    >
+      <X :size="22" class="text-gray-700" />
+    </button>
   </div>
 </template>
 
@@ -318,49 +351,60 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useEntrepriseStore } from '@/stores/entrepriseStore'
 import { useRouter, useRoute } from 'vue-router'
+import {
+  LayoutDashboard,
+  Package,
+  ShoppingCart,
+  Users,
+  FileText,
+  LogOut,
+  Menu,
+  Building2,
+  Search,
+  Settings,
+  Moon,
+  HelpCircle,
+  FolderTree,
+  X
+} from 'lucide-vue-next'
 
 const router = useRouter()
 const route = useRoute()
 const entrepriseStore = useEntrepriseStore()
 
-// Get current UUID from route params
 const currentUuid = computed(() => route.params.uuid)
 
-// Computed properties for routes with UUID
-const dashboardRoute = computed(() => `/${currentUuid.value}/dashboar`)
+const dashboardRoute = computed(() => `/${currentUuid.value}/dashboard`)
 const salesRoute = computed(() => `/${currentUuid.value}/sales`)
 const productsRoute = computed(() => `/${currentUuid.value}/products`)
-const steperRoute = computed(() => `/${currentUuid.value}/steper`)
 const clientsRoute = computed(() => `/${currentUuid.value}/clients`)
 const invoicesRoute = computed(() => `/${currentUuid.value}/invoices`)
 const categoriesRoute = computed(() => `/${currentUuid.value}/categories`)
 
 const activeEntreprise = computed(() => entrepriseStore.activeEntreprise)
 
-const logoutEntreprise = () => {
-  entrepriseStore.clearActiveEntreprise()
-  router.push('/ad/admin')
-}
-
-const showAddCategory = ref(false)
 const sidebarOpen = ref(false)
-const inventoryExpanded = ref(false)
-const categoryExpanded = ref(false)
+const sidebarExpanded = ref(false)
 
-const categoriesData = ref([
-  { id: 1, name: 'Audio Equipment', productCount: 2 },
-  { id: 2, name: 'Mobile Devices', productCount: 3 },
-  { id: 3, name: 'Computers', productCount: 1 },
-  { id: 4, name: 'Peripherals', productCount: 2 },
-  { id: 5, name: 'Gaming', productCount: 0 },
-])
+// Emit sidebar state changes
+const emit = defineEmits(['sidebar-state-changed'])
 
-const toggleInventory = () => {
-  inventoryExpanded.value = !inventoryExpanded.value
+const handleSidebarEnter = () => {
+  sidebarExpanded.value = true
+  emit('sidebar-state-changed', true)
+  // Also dispatch custom event for parent component
+  window.dispatchEvent(new CustomEvent('sidebar-state-changed', {
+    detail: { expanded: true }
+  }))
 }
 
-const toggleCategory = () => {
-  categoryExpanded.value = !categoryExpanded.value
+const handleSidebarLeave = () => {
+  sidebarExpanded.value = false
+  emit('sidebar-state-changed', false)
+  // Also dispatch custom event for parent component
+  window.dispatchEvent(new CustomEvent('sidebar-state-changed', {
+    detail: { expanded: false }
+  }))
 }
 
 const closeMobileMenu = () => {
@@ -369,9 +413,11 @@ const closeMobileMenu = () => {
   }
 }
 
-const totalCategories = computed(() => categoriesData.value.length)
+const logoutEntreprise = () => {
+  entrepriseStore.clearActiveEntreprise()
+  router.push('/ad/admin')
+}
 
-// Handle window resize
 const handleResize = () => {
   if (window.innerWidth >= 1024) {
     sidebarOpen.value = false
@@ -380,8 +426,6 @@ const handleResize = () => {
 
 onMounted(() => {
   window.addEventListener('resize', handleResize)
-  console.log('Current UUID:', currentUuid.value)
-  console.log('Dashboard route:', dashboardRoute.value)
 })
 
 onUnmounted(() => {
@@ -390,470 +434,20 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-/* Mobile Menu Button */
-.mobile-menu-btn {
-  position: fixed;
-  top: 1rem;
-  left: 1rem;
-  z-index: 1001;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.75rem;
-  height: 2.75rem;
-  background: #1f2937;
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.mobile-menu-btn:hover {
-  background: #374151;
-}
-
-@media (min-width: 1024px) {
-  .mobile-menu-btn {
-    display: none;
-  }
-}
-
-/* Overlay */
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-  backdrop-filter: blur(2px);
-}
-
-@media (min-width: 1024px) {
-  .overlay {
-    display: none;
-  }
-}
-
-/* Sidebar */
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  width: 280px;
-  background: #ffffff;
-  border-right: 1px solid #e5e7eb;
-  z-index: 1000;
-  transform: translateX(-100%);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
-}
-
-.sidebar-open {
-  transform: translateX(0);
-}
-
-@media (min-width: 1024px) {
-  .sidebar {
-    position: relative;
-    transform: translateX(0);
-    box-shadow: none;
-  }
-}
-
-/* Logo Section */
-.logo-section {
-  position: relative;
-  padding: 1.5rem;
-
-  background: #ffffff;
-}
-
-.mobile-close-btn {
-  display: none;
-  position: absolute;
-  right: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  background: #f3f4f6;
-  border: none;
-  border-radius: 0.375rem;
-  padding: 0.5rem;
-  color: #374151;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.mobile-close-btn:hover {
-  background: #e5e7eb;
-}
-
-@media (max-width: 1023px) {
-  .mobile-close-btn {
-    display: flex;
-  }
-}
-
-.logo-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  background: #1f2937;
-  border-radius: 0.5rem;
-  margin-bottom: 0.75rem;
-}
-
-.logo-text {
-  margin-bottom: 0.5rem;
-}
-
-.logo-title {
-  font-weight: 700;
-  color: #111827;
-  font-size: 1.25rem;
-  margin: 0 0 0.25rem 0;
-  letter-spacing: -0.025em;
-}
-
-.logo-subtitle {
-  font-size: 0.875rem;
-  color: #6b7280;
-  margin: 0;
-  font-weight: 500;
-}
-
-.enterprise-name {
-  font-size: 0.875rem;
-  color: #374151;
-  font-weight: 600;
-  margin: 0;
-  padding: 0.5rem 0;
-  border-top: 1px solid #f3f4f6;
-}
-
-/* Navigation */
-.nav {
-  flex: 1;
-  overflow-y: auto;
-  padding: 1rem 0;
-}
-
-.nav-section {
-  margin-bottom: 1.5rem;
-}
-
-.nav-section-label {
-  display: block;
-  padding: 0 1.5rem;
-  margin-bottom: 0.75rem;
-  font-size: 0.75rem;
-  color: #6b7280;
-  text-transform: uppercase;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-}
-
-.nav-group {
-  margin-bottom: 0.25rem;
-}
-
-/* Navigation Items */
-.nav-item {
-  display: flex;
-  align-items: center;
-  padding: 0.75rem 1.5rem;
-  margin: 0.125rem 0;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #374151;
-  text-decoration: none;
-  border: none;
-  background: transparent;
-  width: 100%;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.nav-item:hover {
-  background: #f9fafb;
-  color: #111827;
-}
-
-.nav-item-active {
-  background: #f3f4f6;
-  color: #111827;
-  border-right: 3px solid #1f2937;
-}
-
-.nav-item-content {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-}
-
-.nav-item-main {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex: 1;
-}
-
-.nav-item-end {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-/* Submenu */
-.submenu {
-  margin-top: 0.125rem;
-  padding-left: 2.75rem;
-  overflow: hidden;
-}
-
-.submenu-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.625rem 1rem;
-  margin: 0.125rem 0;
-  font-size: 0.875rem;
-  color: #6b7280;
-  text-decoration: none;
-  transition: all 0.15s ease;
-  border: none;
-  background: transparent;
-  width: 100%;
-  cursor: pointer;
-}
-
-.submenu-item:hover {
-  color: #374151;
-}
-
-.submenu-item-active {
-  color: #111827;
-  font-weight: 600;
-}
-
-.submenu-add {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.add-symbol {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.25rem;
-  height: 1.25rem;
-  background: #1f2937;
-  color: white;
-  border-radius: 0.25rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-
-/* Transitions */
-.submenu-enter-active,
-.submenu-leave-active {
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.submenu-enter-from,
-.submenu-leave-to {
-  opacity: 0;
-  max-height: 0;
-  transform: translateY(-8px);
-}
-
-.submenu-enter-to,
-.submenu-leave-from {
-  opacity: 1;
-  max-height: 500px;
-  transform: translateY(0);
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
-/* Badges */
-.badge,
-.badge-sm {
-  font-size: 0.75rem;
-  font-weight: 600;
-  border-radius: 0.375rem;
-  padding: 0.25rem 0.5rem;
-  line-height: 1;
-  background: #f3f4f6;
-  color: #374151;
-}
-
-.badge-sm {
-  font-size: 0.6875rem;
-  padding: 0.125rem 0.375rem;
-}
-
-/* Status Grid */
-.status-grid {
-  padding: 0 1.5rem;
-}
-
-.status-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 0;
-  font-size: 0.875rem;
-  color: #374151;
-}
-
-.status-indicator {
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 9999px;
-}
-
-.status-indicator.in-stock {
-  background: #10b981;
-}
-
-.status-indicator.low-stock {
-  background: #f59e0b;
-}
-
-.status-indicator.out-of-stock {
-  background: #ef4444;
-}
-
-.status-label {
-  flex: 1;
-  font-weight: 500;
-}
-
-.status-count {
-  font-weight: 600;
-  color: #111827;
-}
-
-/* Arrow */
-.arrow {
-  transition: transform 0.2s ease;
-  color: #6b7280;
-}
-
-.rotated {
-  transform: rotate(90deg);
-}
-
-/* Sidebar Footer */
-.sidebar-footer {
-  border-top: 1px solid #f3f4f6;
-  padding: 1rem;
-}
-
-.logout-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  width: 100%;
-  padding: 0.75rem 1rem;
-  margin-bottom: 1rem;
-  background: #fef2f2;
-  color: #dc2626;
-  border: 1px solid #fecaca;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.logout-btn:hover {
-  background: #fee2e2;
-  border-color: #fca5a5;
-}
-
-/* User Profile */
-.user-profile {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.user-profile:hover {
-  background: #f9fafb;
-}
-
-.avatar {
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 0.5rem;
-  border: 1px solid #e5e7eb;
-  object-fit: cover;
-}
-
-.user-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.user-info h4 {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #111827;
-  margin: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.user-info p {
-  font-size: 0.75rem;
-  color: #6b7280;
-  margin: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Scrollbar */
-.nav::-webkit-scrollbar {
+.custom-scrollbar::-webkit-scrollbar {
   width: 4px;
 }
 
-.nav::-webkit-scrollbar-track {
+.custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.nav::-webkit-scrollbar-thumb {
+.custom-scrollbar::-webkit-scrollbar-thumb {
   background: #d1d5db;
   border-radius: 9999px;
 }
 
-.nav::-webkit-scrollbar-thumb:hover {
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #9ca3af;
 }
 </style>

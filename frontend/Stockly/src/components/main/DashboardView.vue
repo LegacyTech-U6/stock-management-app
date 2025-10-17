@@ -92,6 +92,7 @@
         </div>
       </div>
     </div>
+    <FloatingActionButton :actions="quickActions" @select="handleQuickAction" />
   </div>
 </template>
 
@@ -115,13 +116,26 @@ import {
   BarChart3,
   PieChart,
   Clock,
+  PlusCircle,
+  Tag,
 } from 'lucide-vue-next'
+
+const quickActions = [
+  { label: 'Add Product', icon: Package, value: 'product' },
+  { label: 'Add Category', icon: Tag, value: 'category' },
+  { label: 'Add Client', icon: Users, value: 'client' },
+]
+const handleQuickAction = (action) => {
+  console.log('Selected action:', action.value)
+  // Example: navigate or open modal
+}
 import AlertCard from '@/components/AlertCard.vue'
 import { useStatisticsStore } from '@/stores/statisticStore'
 import { useEntrepriseStore } from '@/stores/entrepriseStore'
 const entrepriseStore = useEntrepriseStore()
 import { LowStock, OutOfStock } from '@/service/api'
 import router from '@/router'
+import FloatingActionButton from '../ui/FloatingActionButton.vue'
 
 const productStore = useProductStore()
 const loading = ref(false)
@@ -237,8 +251,7 @@ const topStats = computed(() => [
     value: lowStockProducts.value.length,
     subtext: 'Under this enterprise',
     color: 'bg-blue-500',
-    containerClass:
-      'p-6 rounded-xl border-2 border-blue-400 bg-blue-100 to-white',
+    containerClass: 'p-6 rounded-xl border-2 border-blue-400 bg-blue-100 to-white',
   },
   {
     id: 2,
@@ -247,8 +260,7 @@ const topStats = computed(() => [
     value: totalProductsValue,
     subtext: 'In stock catalog',
     color: 'bg-purple-500',
-    containerClass:
-      'border-2 p-6 rounded-xl border-purple-400 bg-purple-100 to-white',
+    containerClass: 'border-2 p-6 rounded-xl border-purple-400 bg-purple-100 to-white',
   },
   {
     id: 3,
@@ -257,15 +269,12 @@ const topStats = computed(() => [
     value: avgRevenue.value,
     subtext: '+18.5% from last period',
     color: 'bg-green-500',
-    containerClass:
-      'border-2  p-6 rounded-xl border-green-400 bg-green-100 to-white',
+    containerClass: 'border-2  p-6 rounded-xl border-green-400 bg-green-100 to-white',
     trendPercent: revenueTrendPercent.value,
   },
-
 ])
 
 const alerts = computed(() => [
-
   {
     id: 1,
     title: 'Out of Stock',

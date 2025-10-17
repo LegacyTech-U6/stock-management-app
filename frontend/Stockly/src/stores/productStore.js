@@ -47,6 +47,7 @@ export const useProductStore = defineStore('product', {
         this.loading = false
       }
     },
+
     async fetchProductById(id) {
       this.loading = true
       try {
@@ -58,20 +59,51 @@ export const useProductStore = defineStore('product', {
         this.loading = false
       }
     },
+
     async addProduct(productData) {
       this.loading = true
       this.error = null
-      console.log('Data received in the store:', productData)
+
       try {
-        console.log('Data received in the store:', productData)
-        await createProduct(productData)
+        console.log('📦 Store: Product data received:', productData)
+
+        // Ensure numeric fields are properly formatted
+        const processedData = {
+          ...productData,
+          quantity: parseInt(productData.quantity) || 0,
+          cost_price: parseFloat(productData.cost_price) || 0,
+          selling_price: parseFloat(productData.selling_price) || 0,
+          category_id: parseInt(productData.category_id),
+          supplier:
+            productData.supplier && !isNaN(parseInt(productData.supplier))
+              ? parseInt(productData.supplier)
+              : null,
+          min_stock_level: parseInt(productData.min_stock_level) || 10,
+          max_stock_level: parseInt(productData.max_stock_level) || 100,
+        }
+
+        console.log('🔧 Store: Processed data:', processedData)
+
+        await createProduct(processedData)
+
+        // Refresh products list after successful addition
+        await this.fetchProducts()
       } catch (error) {
         this.error = error.message
-        console.error("Erreur lors de l'ajout du produit:", error)
+        console.error('❌ Store: Error adding product:', error)
+
+        // Log detailed error info
+        if (error.response) {
+          console.error('📋 Store: Response data:', error.response.data)
+          console.error('🔧 Store: Response status:', error.response.status)
+        }
+
+        throw error // Re-throw to handle in component
       } finally {
         this.loading = false
       }
     },
+
     async updateProduct(productId, productData) {
       this.loading = true
       this.error = null
@@ -84,6 +116,7 @@ export const useProductStore = defineStore('product', {
         this.loading = false
       }
     },
+
     async fetchFinishedProducts() {
       this.loading = true
       try {
@@ -96,26 +129,28 @@ export const useProductStore = defineStore('product', {
         this.loading = false
       }
     },
+
     async fetchLowStockProducts() {
       this.loading = true
       try {
         const data = await LowStock()
-        this.lowProducts = Array.isArray(data) ? data : [] // ✅ ensure always an array
+        this.lowProducts = Array.isArray(data) ? data : []
         this.error = null
         console.log('✅ Low products loaded:', this.lowProducts)
       } catch (err) {
         this.error = err
-        this.lowProducts = [] // ✅ keep it consistent
+        this.lowProducts = []
       } finally {
         this.loading = false
       }
     },
+
     async addStockLevel(productId, quantityAdd) {
       this.loading = true
       try {
-        console.log('====================================');
-        console.log(productId, ",",quantityAdd);
-        console.log('====================================');
+        console.log('====================================')
+        console.log(productId, ',', quantityAdd)
+        console.log('====================================')
         await addProductStock(productId, quantityAdd)
         this.error = null
       } catch (err) {

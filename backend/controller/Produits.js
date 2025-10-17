@@ -36,7 +36,8 @@ module.exports = {
       const entrepriseId = req.entrepriseId;
       const id = parseInt(req.params.id);
       const product = await getOneProduct(id, entrepriseId);
-      if (!product) return res.status(404).json({ message: "Product not found" });
+      if (!product)
+        return res.status(404).json({ message: "Product not found" });
       res.json(product);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -50,15 +51,21 @@ module.exports = {
       const { productId, quantityAdd } = req.body;
 
       if (!productId || !quantityAdd || quantityAdd <= 0)
-        return res.status(400).json({ message: "Invalid product ID or quantity" });
+        return res
+          .status(400)
+          .json({ message: "Invalid product ID or quantity" });
 
       const product = await getOneProduct(productId, entrepriseId);
-      if (!product) return res.status(404).json({ message: "Product not found" });
+      if (!product)
+        return res.status(404).json({ message: "Product not found" });
 
       const newQuantity = product.quantity + quantityAdd;
       await updateProductQuantity(productId, newQuantity, entrepriseId);
 
-      res.json({ message: "Quantity updated", product: { ...product, quantity: newQuantity } });
+      res.json({
+        message: "Quantity updated",
+        product: { ...product, quantity: newQuantity },
+      });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
@@ -71,10 +78,13 @@ module.exports = {
       const { productId, quantitySold } = req.body;
 
       if (!productId || !quantitySold || quantitySold <= 0)
-        return res.status(400).json({ message: "Invalid product ID or quantity" });
+        return res
+          .status(400)
+          .json({ message: "Invalid product ID or quantity" });
 
       const product = await getOneProduct(productId, entrepriseId);
-      if (!product) return res.status(404).json({ message: "Product not found" });
+      if (!product)
+        return res.status(404).json({ message: "Product not found" });
 
       if (product.quantity < quantitySold)
         return res.status(400).json({ message: "Not enough stock" });
@@ -99,8 +109,9 @@ module.exports = {
 
   // ✅ Créer un produit
   post: async (req, res) => {
-    console.log('req.body =', req.body)
-console.log('req.file =', req.file)
+    console.log("🔍 [DEBUG] Requête reçue pour ajout de produit");
+    console.log("req.file =", req.file);
+    console.log("req.body =", req.body);
 
     try {
       const entrepriseId = req.entrepriseId;
@@ -113,7 +124,7 @@ console.log('req.file =', req.file)
         Prod_Description,
         code_bar,
         date_of_arrival,
-        supplier,
+        supplier = null,
         min_stock_level,
         max_stock_level,
       } = req.body;
@@ -163,12 +174,16 @@ console.log('req.file =', req.file)
       } = req.body;
 
       const product = await getOneProduct(id, entrepriseId);
-      if (!product) return res.status(404).json({ message: "Product not found" });
+      if (!product)
+        return res.status(404).json({ message: "Product not found" });
 
       let prod_image = product.Prod_image;
       if (req.file) {
         // Supprime l’ancienne image
-        if (prod_image && fs.existsSync(path.join(__dirname, "..", prod_image))) {
+        if (
+          prod_image &&
+          fs.existsSync(path.join(__dirname, "..", prod_image))
+        ) {
           fs.unlinkSync(path.join(__dirname, "..", prod_image));
         }
         prod_image = `/uploads/${req.file.filename}`;
@@ -204,7 +219,8 @@ console.log('req.file =', req.file)
       const { id } = req.params;
 
       const deleted = await deleteProduct(id, entrepriseId);
-      if (!deleted) return res.status(404).json({ message: "Product not found" });
+      if (!deleted)
+        return res.status(404).json({ message: "Product not found" });
 
       res.json({ message: "Product deleted" });
     } catch (error) {
@@ -217,7 +233,8 @@ console.log('req.file =', req.file)
     try {
       const entrepriseId = req.entrepriseId;
       const categoryId = parseInt(req.params.categoryId);
-      if (isNaN(categoryId)) return res.status(400).json({ message: "Invalid category ID" });
+      if (isNaN(categoryId))
+        return res.status(400).json({ message: "Invalid category ID" });
 
       const products = await getProductsByCategoryId(categoryId, entrepriseId);
       res.json(products);
@@ -230,7 +247,9 @@ console.log('req.file =', req.file)
   checkLowStockGlobal: async (req, res) => {
     try {
       const entrepriseId = req.entrepriseId;
-      const { threshold, products } = await getLowStockProductsGlobal(entrepriseId);
+      const { threshold, products } = await getLowStockProductsGlobal(
+        entrepriseId
+      );
       res.json({ threshold, products });
     } catch (error) {
       res.status(500).json({ message: error.message });

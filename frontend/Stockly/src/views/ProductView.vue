@@ -1,47 +1,56 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <!-- Professional Header -->
-    <div class="bg-white border-b border-gray-200">
-      <div class="px-6 py-6">
-        <div class="flex items-center justify-between">
+  <div class="min-h-screen bg-white">
+    <!-- Clean Header -->
+    <div class="border-b border-gray-200 bg-white">
+      <div class="px-8 py-6">
+        <div class="flex items-center justify-between mb-6">
           <div>
             <h1 class="text-2xl font-semibold text-gray-900">Product Inventory</h1>
             <p class="text-sm text-gray-500 mt-1">
-              Manage your product database
+              Manage and track your product database
             </p>
           </div>
 
           <div class="flex items-center gap-3">
-            <button>
-              <router-link to="/OutOfStock" class="flex items-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18v18H3V3z" />
-                </svg>
-                Out of Stock
-              </router-link>
-              <router-link to="/lowStock" class="flex items-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18v18H3V3z" />
-                </svg>
-                Low Stock
-              </router-link>
+            <!-- Quick Links -->
+            <router-link
+              to="/OutOfStock"
+              class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-md transition-colors"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              Out of Stock
+            </router-link>
 
-            </button>
+            <router-link
+              to="/lowStock"
+              class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-amber-600 bg-amber-50 hover:bg-amber-100 rounded-md transition-colors"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Low Stock
+            </router-link>
+
             <!-- View Mode Toggle -->
-            <div class="flex items-center border border-gray-200 rounded-lg overflow-hidden">
+            <div class="flex items-center border border-gray-200 rounded-md">
               <button
-                :class="viewMode === 'grid' ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-50'"
+                :class="viewMode === 'grid' ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'"
                 class="p-2 transition-colors"
                 @click="viewMode = 'grid'"
+                title="Grid View"
               >
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M3 3h7v7H3V3zm0 11h7v7H3v-7zm11-11h7v7h-7V3zm0 11h7v7h-7v-7z"/>
                 </svg>
               </button>
+              <div class="w-px h-6 bg-gray-200"></div>
               <button
-                :class="viewMode === 'list' ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-50'"
-                class="p-2 transition-colors border-l border-gray-200"
+                :class="viewMode === 'list' ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'"
+                class="p-2 transition-colors"
                 @click="viewMode = 'list'"
+                title="List View"
               >
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M3 4h18v2H3V4zm0 7h18v2H3v-2zm0 7h18v2H3v-2z"/>
@@ -52,73 +61,75 @@
             <!-- Add Product Button -->
             <button
               @click="handleAddProduct"
-              class="px-4 py-2 bg-black text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2"
+              class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-md transition-colors flex items-center gap-2"
             >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
               </svg>
               Add Product
             </button>
           </div>
         </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-300 transition-colors">
+            <div class="flex items-center justify-between mb-3">
+              <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
+                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+              </div>
+              <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">Total</span>
+            </div>
+            <div class="text-2xl font-semibold text-gray-900">{{ filteredProducts.length }}</div>
+            <div class="text-sm text-gray-500 mt-1">Total Products</div>
+          </div>
+
+          <div class="bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-300 transition-colors">
+            <div class="flex items-center justify-between mb-3">
+              <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
+                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">Active</span>
+            </div>
+            <div class="text-2xl font-semibold text-gray-900">{{ inStockCount }}</div>
+            <div class="text-sm text-gray-500 mt-1">In Stock</div>
+          </div>
+
+          <div class="bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-300 transition-colors">
+            <div class="flex items-center justify-between mb-3">
+              <div class="w-10 h-10 bg-amber-50 rounded-lg flex items-center justify-center">
+                <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">Alert</span>
+            </div>
+            <div class="text-2xl font-semibold text-gray-900">{{ lowStockCount }}</div>
+            <div class="text-sm text-gray-500 mt-1">Low Stock</div>
+          </div>
+
+          <div class="bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-300 transition-colors">
+            <div class="flex items-center justify-between mb-3">
+              <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
+                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                </svg>
+              </div>
+              <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">Types</span>
+            </div>
+            <div class="text-2xl font-semibold text-gray-900">{{ categories.length }}</div>
+            <div class="text-sm text-gray-500 mt-1">Categories</div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Stats Cards -->
-    <div class="px-6 py-6">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div class="bg-white border border-gray-200 rounded-lg p-4">
-          <div class="flex items-center gap-3 mb-2">
-            <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
-              <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-              </svg>
-            </div>
-            <span class="text-sm text-gray-600">Total Products</span>
-          </div>
-          <div class="text-2xl font-semibold text-gray-900">{{ filteredProducts.length }}</div>
-        </div>
-
-        <div class="bg-white border border-gray-200 rounded-lg p-4">
-          <div class="flex items-center gap-3 mb-2">
-            <div class="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center">
-              <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <span class="text-sm text-gray-600">In Stock</span>
-          </div>
-          <div class="text-2xl font-semibold text-gray-900">{{ inStockCount }}</div>
-        </div>
-
-        <div class="bg-white border border-gray-200 rounded-lg p-4">
-          <div class="flex items-center gap-3 mb-2">
-            <div class="w-8 h-8 bg-yellow-50 rounded-lg flex items-center justify-center">
-              <svg class="w-4 h-4 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
-            </div>
-            <span class="text-sm text-gray-600">Low Stock</span>
-          </div>
-          <div class="text-2xl font-semibold text-gray-900">{{ lowStockCount }}</div>
-        </div>
-
-        <div class="bg-white border border-gray-200 rounded-lg p-4">
-          <div class="flex items-center gap-3 mb-2">
-            <div class="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center">
-              <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-              </svg>
-            </div>
-            <span class="text-sm text-gray-600">Categories</span>
-          </div>
-          <div class="text-2xl font-semibold text-gray-900">{{ categories.length }}</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Filters -->
-    <div class=" mx-auto px-6 pb-6">
+    <!-- Filters Section -->
+    <div class="px-8 py-6 bg-gray-50 border-b border-gray-200">
       <div class="flex flex-col sm:flex-row gap-3">
         <!-- Search -->
         <div class="flex-1 relative">
@@ -128,44 +139,56 @@
           <input
             v-model="searchQuery"
             type="text"
-            placeholder="Search products by name or SKU..."
-            class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+            placeholder="Search by product name or barcode..."
+            class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
           />
         </div>
 
         <!-- Category Filter -->
         <select
-          v-model="selectedCategory"
-          class="px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent min-w-[180px]"
-        >
-          <option value="">All Categories</option>
-          <option v-for="category in categories" :key="category" :value="category">
-            {{ category }}
-          </option>
-        </select>
+            v-model="selectedCategory"
+            class="px-4 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all min-w-[200px]"
+          >
+            <option value="">All Categories</option>
+            <option v-for="category in categories" :key="category" :value="category">
+              {{ category }}
+            </option>
+          </select>
 
         <!-- Stock Filter -->
         <select
-          v-model="selectedStock"
-          class="px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent min-w-[160px]"
-        >
-          <option value="">All Stock Levels</option>
-          <option value="in-stock">In Stock</option>
-          <option value="low-stock">Low Stock</option>
-          <option value="out-of-stock">Out of Stock</option>
-        </select>
+            v-model="selectedStock"
+            class="px-4 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all min-w-[180px]"
+          >
+            <option value="">All Stock Levels</option>
+            <option value="in-stock">In Stock</option>
+            <option value="low-stock">Low Stock</option>
+            <option value="out-of-stock">Out of Stock</option>
+          </select>
+
+        <!-- Clear Filters Button -->
+        <button
+            v-if="searchQuery || selectedCategory || selectedStock"
+            @click="clearFilters"
+            class="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-200 hover:bg-gray-100 rounded-md transition-colors"
+            title="Clear all filters"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
       </div>
     </div>
 
     <!-- Product List -->
-    <div class="mx-auto px-6 pb-8">
+    <div class="px-8 py-6">
       <!-- Loading State -->
-      <div v-if="loading" class="flex justify-center items-center py-20">
-        <div class="animate-spin rounded-full h-12 w-12 border-2 border-gray-300 border-t-gray-900"></div>
+      <div v-if="loading" class="flex justify-center items-center py-32">
+        <div class="animate-spin rounded-full h-12 w-12 border-3 border-gray-200 border-t-green-600"></div>
       </div>
 
       <!-- Empty State -->
-      <div v-else-if="filteredProducts.length === 0" class="bg-white border border-gray-200 rounded-lg py-16">
+      <div v-else-if="filteredProducts.length === 0" class="bg-white border border-gray-200 rounded-lg py-20">
         <div class="text-center">
           <div class="w-16 h-16 bg-gray-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
             <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -173,32 +196,50 @@
             </svg>
           </div>
           <h3 class="text-lg font-semibold text-gray-900 mb-2">No products found</h3>
-          <p class="text-sm text-gray-500 mb-6">Try adjusting your filters or search query</p>
+          <p class="text-gray-500 mb-6 max-w-md mx-auto">
+            We couldn't find any products matching your criteria. Try adjusting your filters or search query.
+          </p>
           <button
-            @click="searchQuery = ''; selectedCategory = ''; selectedStock = ''"
-            class="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors"
+            @click="clearFilters"
+            class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md transition-colors"
           >
-            Clear Filters
+            Clear All Filters
           </button>
         </div>
       </div>
 
       <!-- Grid View -->
-      <div v-else-if="viewMode === 'grid'" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div v-else-if="viewMode === 'grid'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         <ProductListItem
           v-for="product in filteredProducts"
           :key="product.id"
           :product="product"
+          :display-mode="viewMode"
           @view="handleViewProduct"
         />
       </div>
 
       <!-- List View -->
-      <div v-else class="space-y-3">
+      <div v-else class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+        <!-- List Header -->
+        <div class="bg-gray-50 px-6 py-3 border-b border-gray-200">
+          <div class="flex items-center gap-4 text-xs font-medium text-gray-600 uppercase tracking-wide">
+            <div class="flex-1">Product Name</div>
+            <div class="w-36 hidden lg:block">Category</div>
+            <div class="w-32 hidden md:block">Barcode</div>
+            <div class="w-24 text-center hidden sm:block">Stock</div>
+            <div class="w-28 text-right hidden xl:block">Cost Price</div>
+            <div class="w-32 text-right">Selling Price</div>
+            <div class="w-10"></div>
+          </div>
+        </div>
+
+        <!-- List Items -->
         <ProductListItem
           v-for="product in filteredProducts"
           :key="product.id"
           :product="product"
+          :display-mode="viewMode"
           @view="handleViewProduct"
         />
       </div>
@@ -267,6 +308,12 @@ const lowStockCount = computed(() => {
     return qty > 0 && qty <= 10
   }).length
 })
+
+const clearFilters = () => {
+  searchQuery.value = ''
+  selectedCategory.value = ''
+  selectedStock.value = ''
+}
 
 const handleAddProduct = () => {
   router.push('/steper')
