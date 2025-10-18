@@ -1,346 +1,160 @@
 <template>
-  <div class="min-h-screen bg-gray-100 p-6">
+  <div class="min-h-screen bg-gray-50 p-6">
     <!-- Header Section -->
-    <div class="flex items-center justify-between mb-8">
-      <div>
-        <h1 class="text-3xl font-bold text-gray-900">Invoices</h1>
-        <p class="text-sm text-gray-500 mt-1">Manage Billing Documents</p>
-      </div>
-      <button
-        @click="createInvoice"
-        class="bg-green-700 hover:bg-white hover:border-2 hover:border-green-700 hover:text-green-700 text-white px-5 py-2.5 rounded font-medium flex items-center gap-2 shadow-sm transition-colors"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-            clip-rule="evenodd"
-          />
-        </svg>
-        Create Invoice
-      </button>
+    <div class="mb-6">
+      <h1 class="text-2xl font-semibold text-gray-900">Invoices</h1>
+      <p class="text-sm text-gray-500 mt-1">Manage your stock invoices</p>
     </div>
 
-    <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-2">
-      <!-- Total Invoices -->
-      <div class="bg-white rounded p-6 inset-200 border border-gray-100">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-gray-600 font-medium">Total Invoices</p>
-            <p class="text-3xl font-bold text-gray-900 mt-3">{{ stats.total }}</p>
-            <p class="text-xs text-gray-400 mt-2">All time</p>
-          </div>
-          <div class="p-3 bg-blue-100 rounded-xl">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6 text-blue-600"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              />
-            </svg>
-          </div>
-        </div>
-      </div>
-
-      <!-- Paid Amount -->
-      <div class="bg-white rounded p-6 shadow-sm border border-green-100">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-gray-600 font-medium">Paid Amount</p>
-            <p class="text-3xl font-bold text-gray-900 mt-3">{{ formatPrice(stats.paidAmount) }}</p>
-            <p class="text-xs text-green-600 mt-2">{{ stats.paid }} invoices paid</p>
-          </div>
-          <div class="p-3 bg-green-100 rounded-xl">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6 text-green-600"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-            </svg>
-          </div>
-        </div>
-      </div>
-
-      <!-- Pending Amount -->
-      <div class="bg-white rounded p-6 shadow-sm border border-yellow-100">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-gray-600 font-medium">Pending Amount</p>
-            <p class="text-3xl font-bold text-gray-900 mt-3">
-              {{ formatPrice(stats.pendingAmount) }}
-            </p>
-            <p class="text-xs text-yellow-600 mt-2">{{ stats.pending }} invoices pending</p>
-          </div>
-          <div class="p-3 bg-yellow-100 rounded-xl">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6 text-yellow-600"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"
-              />
-            </svg>
-          </div>
-        </div>
-      </div>
-
-      <!-- Overdue Amount -->
-      <div class="bg-white rounded p-6 shadow-sm border border-red-100">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-gray-600 font-medium">Overdue Amount</p>
-            <p class="text-3xl font-bold text-gray-900 mt-3">
-              {{ formatPrice(stats.overdueAmount) }}
-            </p>
-            <p class="text-xs text-red-600 mt-2">{{ stats.overdue }} invoices overdue</p>
-          </div>
-          <div class="p-3 bg-red-100 rounded-xl">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6 text-red-600"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
-            </svg>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Main Content -->
-    <div class="bg-white rounded-md border border-gray-200">
+    <!-- Main Content Card -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
       <!-- Toolbar -->
-      <div class="flex items-center justify-between p-6 border-b border-gray-100">
-        <div class="flex-1 max-w-md">
-          <div class="relative">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-            <input
-              v-model="searchQuery"
-              type="text"
-              placeholder="Search invoices by number, client name, or email..."
-              class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all bg-gray-50"
-            />
-          </div>
+      <div class="flex items-center justify-between p-4 border-b border-gray-100">
+        <!-- Search -->
+        <div class="relative w-64">
+          <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <input v-model="searchQuery" type="text" placeholder="Search"
+            class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none" />
         </div>
 
+        <!-- Filters and Actions -->
+        <div class="flex items-center gap-3">
+          <!-- Customer Filter -->
+          <select v-model="selectedCustomer"
+            class="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none bg-white">
+            <option :value="null">Customer</option>
+            <option v-for="option in customerOptions" :key="option.value" :value="option.value">
+              {{ option.label }}
+            </option>
+          </select>
+
+          <!-- Status Filter -->
+          <select v-model="selectedStatus"
+            class="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none bg-white">
+            <option :value="null">Status</option>
+            <option v-for="option in statusOptions" :key="option.value" :value="option.value">
+              {{ option.label }}
+            </option>
+          </select>
+
+          <!-- Sort By -->
+          <select v-model="sortBy"
+            class="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none bg-white">
+            <option v-for="option in sortOptions" :key="option.value" :value="option.value">
+              {{ option.label }}
+            </option>
+          </select>
+
+          <!-- Action Buttons -->
+          <button
+            class="w-10 h-10 flex items-center justify-center rounded-full border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
+            title="Export PDF">
+            <FileText class="w-5 h-5" />
+          </button>
+
+          <button
+            class="w-10 h-10 flex items-center justify-center rounded-full border border-green-200 bg-green-50 text-green-600 hover:bg-green-100 transition-colors"
+            title="Export Excel">
+            <FileText class="w-5 h-5" />
+          </button>
+
+          <button
+            class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-200 hover:bg-gray-50 transition-colors"
+            title="Refresh" @click="refreshInvoices">
+            <RefreshCw class="w-5 h-5 text-gray-600" />
+          </button>
+
+          <button
+            class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-200 hover:bg-gray-50 transition-colors"
+            title="Collapse">
+            <ChevronUp class="w-5 h-5 text-gray-600" />
+          </button>
+        </div>
       </div>
-      <div v-if="loadingClients">
-        <LazyLoader :loading="loadingClients" :skeleton-count="6">
-          <template #icon>
-            <n-spin size="40" />
-          </template>
-          <template #message>
-            <p class="text-lg font-semibold text-gray-800">Loading clients...</p>
-          </template>
-        </LazyLoader>
+
+      <!-- Loading State -->
+      <div v-if="loadingClients" class="flex flex-col items-center justify-center py-16">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mb-4"></div>
+        <p class="text-lg font-semibold text-gray-800">Loading invoices...</p>
       </div>
 
       <!-- Table -->
       <div v-else-if="filteredInvoices.length" class="overflow-x-auto">
         <table class="w-full">
-          <thead class="bg-white border-b border-gray-100">
+          <thead class="bg-gray-50 border-b border-gray-200">
             <tr>
-              <th
-                class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider"
-              >
-                Invoice #
+              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                Invoice No
               </th>
-              <th
-                class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider"
-              >
-                Client
+              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                Customer
               </th>
-              <th
-                class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider"
-              >
-                Date
-              </th>
-              <th
-                class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider"
-              >
+              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Due Date
               </th>
-              <th
-                class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider"
-              >
+              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Amount
               </th>
-              <th
-                class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider"
-              >
+              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                Paid
+              </th>
+              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                Amount Due
+              </th>
+              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Status
               </th>
-              <th
-                class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider"
-              >
-                payment method
-              </th>
-              <th
-                class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider"
-              >
+              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-gray-100">
-            <tr
-              v-for="invoice in filteredInvoices"
-              :key="invoice.id"
-              class="hover:bg-gray-50 transition-colors"
-              @click="viewInvoice(invoice.id)"
-            >
-              <td class="px-6 whitespace-nowrap">
+          <tbody class="divide-y divide-gray-100 bg-white">
+            <tr v-for="invoice in paginatedInvoices" :key="invoice.id"
+              class="hover:bg-gray-50 transition-colors cursor-pointer" @click="viewInvoice(invoice.id)">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="font-medium text-gray-900">{{ invoice.id }}</span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center gap-3">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5 text-blue-600"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                    />
-                  </svg>
-                  <span class="font-medium text-gray-900">{{ invoice.id }}</span>
+                  <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-semibold"
+                    :style="{ backgroundColor: getAvatarColor(invoice.client_name) }">
+                    {{ getInitials(invoice.client_name) }}
+                  </div>
+                  <span class="font-medium text-gray-900">{{ invoice.client_name || 'N/A' }}</span>
                 </div>
               </td>
-              <td class="px-6 whitespace-nowrap">
-                <div>
-                  <p class="font-medium text-gray-900">{{ invoice.client_name || 'N/A' }}</p>
-                </div>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {{ formatDate(invoice.due_date) }}
               </td>
-              <td class="px-6 whitespace-nowrap">
-                <div class="flex items-center gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-4 w-4 text-gray-400"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"
-                    />
-                  </svg>
-                  <span class="text-sm text-gray-900">{{ formatDate(invoice.date) }}</span>
-                </div>
-              </td>
-              <td class="px-6 whitespace-nowrap">
-                <div class="flex items-center gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-4 w-4 text-gray-400"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"
-                    />
-                  </svg>
-                  <span class="text-sm text-gray-900">{{ formatDate(invoice.due_date) }}</span>
-                </div>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                 {{ formatPrice(invoice.total) }}
               </td>
-              <td class="px-6 whitespace-nowrap">
-                <span
-                  :class="[
-                    'inline-flex items-center px-3 py-1 rounded-full text-xs font-medium',
-                    invoice.status === 'payée'
-                      ? 'bg-green-100 text-green-800'
-                      : invoice.status === 'en_attente'
-                        ? 'bg-yellow-100 text-yellow-800'
-                        : 'bg-red-100 text-red-800',
-                  ]"
-                >
-                  <span
-                    :class="[
-                      'h-2 w-2 rounded-full mr-2',
-                      invoice.status === 'payée'
-                        ? 'bg-green-600'
-                        : invoice.status === 'en_attente'
-                          ? 'bg-yellow-600'
-                          : 'bg-red-600',
-                    ]"
-                  ></span>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {{ formatPrice(invoice.status === 'payée' ? invoice.total : 0) }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {{ formatPrice(invoice.status !== 'payée' ? invoice.total : 0) }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span :class="[
+                  'inline-flex items-center px-3 py-1 rounded-full text-xs font-medium',
+                  getStatusClass(invoice.status)
+                ]">
                   {{ formatStatus(invoice.status) }}
                 </span>
               </td>
-              <td class="px-6 whitespace-nowrap">
+              <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5 text-gray-400"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
-                    />
-                  </svg>
-                  <span class="text-sm text-gray-900">{{ invoice.mode_paiement || 'N/A' }}</span>
-                </div>
-              </td>
-              <td class="px-6 whitespace-nowrap">
-                <div class="flex items-center gap-1">
-                  <button
-                    @click="viewInvoice(invoice.id)"
-                    class="p-2 text-gray-400 hover:text-green-600  rounded transition-colors"
-                    title="View"
-                  > >
-                    <!-- <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="h-5 w-5"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
-                      />
-                    </svg> -->
+                  <button @click.stop="viewInvoice(invoice.id)"
+                    class="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                    title="View">
+                    <Eye class="w-5 h-5" />
                   </button>
-                  <button
-                    @click="handleDeleteInvoice"
+                  <button @click.stop="handleDeleteInvoice(invoice.id)"
                     class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                    title="Delete"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="h-5 w-5"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-9l-1 1H5v2h14V4z"
-                      />
-                    </svg>
+                    title="Delete">
+                    <Trash2 class="w-5 h-5" />
                   </button>
                 </div>
               </td>
@@ -350,72 +164,177 @@
       </div>
 
       <!-- Empty State -->
-      <div v-else class="text-center py-16">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-16 w-16 mx-auto text-gray-300 mb-4"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-          />
-        </svg>
+      <div v-else class="flex flex-col items-center justify-center py-16">
+        <FileText class="w-16 h-16 text-gray-300 mb-4" />
         <h3 class="text-lg font-semibold text-gray-900 mb-2">No invoices found</h3>
         <p class="text-gray-500">Try modifying your search or create a new invoice</p>
       </div>
-    </div>
-     <ActionModal
-    v-model="showDeleteModal"
-    title="Delete Invoice"
-    message="Are you sure you want to delete this invoice? This action cannot be undone."
-    confirm-text="Delete"
-    cancel-text="Cancel"
-    @confirm="confirmDelete"
-  />
-  <InvoiceDetailModal
-   v-if="showInvoiceModal"
-  :invoice="selectedInvoice"
-  :entreprise="entreprise"
-  @close="showInvoiceModal = false"
-   />
-  </div>
 
+      <!-- Footer with Pagination -->
+      <div class="flex items-center justify-between px-6 py-4 border-t border-gray-100">
+        <div class="flex items-center gap-2">
+          <span class="text-sm text-gray-600">Row Per Page</span>
+          <select v-model="pageSize"
+            class="px-2 py-1 border border-gray-200 rounded text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none">
+            <option :value="10">10</option>
+            <option :value="20">20</option>
+            <option :value="50">50</option>
+          </select>
+          <span class="text-sm text-gray-600 ml-4">Entries</span>
+        </div>
+
+        <div class="text-sm text-gray-500">
+          2014 - 2025 © DreamsPOS. All Right Reserved
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button @click="prevPage" :disabled="currentPage === 1"
+            class="w-8 h-8 flex items-center justify-center rounded border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+            <ChevronUp class="w-4 h-4 transform rotate-[-90deg]" />
+          </button>
+          <button v-for="page in visiblePages" :key="page" @click="currentPage = page" :class="[
+            'w-8 h-8 flex items-center justify-center rounded border text-sm font-medium transition-colors',
+            currentPage === page
+              ? 'bg-orange-500 text-white border-orange-500'
+              : 'border-gray-200 hover:bg-gray-50'
+          ]">
+            {{ page }}
+          </button>
+          <button @click="nextPage" :disabled="currentPage === totalPages"
+            class="w-8 h-8 flex items-center justify-center rounded border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+            <ChevronUp class="w-4 h-4 transform rotate-90" />
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <ActionModal v-model="showDeleteModal" title="Delete Invoice"
+      message="Are you sure you want to delete this invoice? This action cannot be undone." confirm-text="Delete"
+      cancel-text="Cancel" @confirm="confirmDelete" />
+
+    <!-- Invoice Detail Modal -->
+    <InvoiceDetailModal v-if="showInvoiceModal" :invoice="selectedInvoice" :entreprise="entreprise"
+      @close="showInvoiceModal = false" />
+
+    <!-- Floating Action Button -->
+    <button
+      class="fixed bottom-8 right-8 w-14 h-14 flex items-center justify-center rounded-full bg-orange-500 text-white shadow-lg hover:bg-orange-600 transition-colors"
+      title="Settings">
+      <Settings class="w-6 h-6" />
+    </button>
+  </div>
 </template>
+
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import {
+  Search,
+  FileText,
+  RefreshCw,
+  ChevronUp,
+  Settings,
+  Eye,
+  Trash2
+} from 'lucide-vue-next'
 import { useInvoiceStore } from '@/stores/FactureStore'
-import ActionModal from '@/components/ui/ActionModal.vue'
 import { useActionMessage } from '@/composable/useActionMessage'
-import LazyLoader from '@/components/ui/LazyLoader.vue'
+import ActionModal from '@/components/ui/ActionModal.vue'
 import InvoiceDetailModal from '@/components/invoices/InvoiceDetailModal.vue'
 
 const { showSuccess, showError } = useActionMessage()
-const invoiceStore = useInvoiceStore() // ✅ Renommer pour cohérence
+const invoiceStore = useInvoiceStore()
 const searchQuery = ref('')
+const selectedCustomer = ref(null)
+const selectedStatus = ref(null)
+const sortBy = ref('last7days')
 const showDeleteModal = ref(false)
 const invoiceToDelete = ref(null)
 const showInvoiceModal = ref(false)
 const selectedInvoice = ref(null)
 const loadingClients = ref(true)
+const pageSize = ref(10)
+const currentPage = ref(1)
 
-// ✅ Utiliser computed pour les invoices depuis le store
 const invoices = computed(() => invoiceStore.invoices.factures || [])
 const entreprise = computed(() => invoiceStore.invoices.entreprise || {})
 
-const stats = ref({
-  total: 0,
-  paid: 0,
-  pending: 0,
-  overdue: 0,
-  paidAmount: 0,
-  pendingAmount: 0,
-  overdueAmount: 0,
+const customerOptions = computed(() => [
+  ...Array.from(new Set(invoices.value.map(i => i.client_name)))
+    .filter(Boolean)
+    .map(name => ({ label: name, value: name }))
+])
+
+const statusOptions = [
+  { label: 'Paid', value: 'payée' },
+  { label: 'Unpaid', value: 'en_attente' },
+  { label: 'Overdue', value: 'overdue' }
+]
+
+const sortOptions = [
+  { label: 'Sort By : Last 7 Days', value: 'last7days' },
+  { label: 'Sort By : Last 30 Days', value: 'last30days' },
+  { label: 'Sort By : Last 90 Days', value: 'last90days' }
+]
+
+const filteredInvoices = computed(() => {
+  let result = invoices.value
+
+  if (searchQuery.value) {
+    result = result.filter(
+      (i) =>
+        i.id.toString().toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+        (i.client_name && i.client_name.toLowerCase().includes(searchQuery.value.toLowerCase())) ||
+        (i.client_email && i.client_email.toLowerCase().includes(searchQuery.value.toLowerCase()))
+    )
+  }
+
+  if (selectedCustomer.value) {
+    result = result.filter(i => i.client_name === selectedCustomer.value)
+  }
+
+  if (selectedStatus.value) {
+    result = result.filter(i => i.status === selectedStatus.value)
+  }
+
+  return result
 })
+
+const totalPages = computed(() => Math.ceil(filteredInvoices.value.length / pageSize.value))
+
+const paginatedInvoices = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value
+  const end = start + pageSize.value
+  return filteredInvoices.value.slice(start, end)
+})
+
+const visiblePages = computed(() => {
+  const pages = []
+  const maxVisible = 3
+  let start = Math.max(1, currentPage.value - 1)
+  let end = Math.min(totalPages.value, start + maxVisible - 1)
+
+  if (end - start < maxVisible - 1) {
+    start = Math.max(1, end - maxVisible + 1)
+  }
+
+  for (let i = start; i <= end; i++) {
+    pages.push(i)
+  }
+  return pages
+})
+
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--
+  }
+}
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++
+  }
+}
 
 const handleDeleteInvoice = (invoiceId) => {
   invoiceToDelete.value = invoiceId
@@ -424,7 +343,7 @@ const handleDeleteInvoice = (invoiceId) => {
 
 const confirmDelete = async () => {
   try {
-    await invoiceStore.deleteInvoice(invoiceToDelete.value) // ✅ Utiliser la méthode du store
+    await invoiceStore.deleteInvoice(invoiceToDelete.value)
     showSuccess('Invoice deleted successfully!')
   } catch (error) {
     console.error('Error deleting invoice:', error)
@@ -435,79 +354,49 @@ const confirmDelete = async () => {
   }
 }
 
+const refreshInvoices = async () => {
+  loadingClients.value = true
+  try {
+    await invoiceStore.fetchInvoices()
+    showSuccess('Invoices refreshed successfully!')
+  } catch (error) {
+    console.error('Error loading invoices:', error)
+    showError('Failed to load invoices')
+  } finally {
+    loadingClients.value = false
+  }
+}
+
 onMounted(async () => {
   loadingClients.value = true
   try {
-    // ✅ Appeler la méthode correcte du store
     await invoiceStore.fetchInvoices()
-
-    // ✅ Calculer les stats après le chargement
-    stats.value.total = invoices.value.length
-    stats.value.paid = invoices.value.filter((i) => i.status === 'payée').length
-    stats.value.pending = invoices.value.filter((i) => i.status === 'en_attente').length
-    stats.value.overdue = invoices.value.filter((i) => i.status === 'overdue').length
-
-    stats.value.paidAmount = invoices.value
-      .filter((i) => i.status === 'payée')
-      .reduce((acc, cur) => acc + (cur.total || 0), 0)
-
-    stats.value.pendingAmount = invoices.value
-      .filter((i) => i.status === 'en_attente')
-      .reduce((acc, cur) => acc + (cur.total || 0), 0)
-
-    stats.value.overdueAmount = invoices.value
-      .filter((i) => i.status === 'overdue')
-      .reduce((acc, cur) => acc + (cur.total || 0), 0)
-
-    console.log('📈 Stats calculated:', stats.value)
   } catch (error) {
-    console.error('❌ Error loading invoices:', error)
+    console.error('Error loading invoices:', error)
     showError('Failed to load invoices')
   } finally {
     loadingClients.value = false
   }
 })
 
-const filteredInvoices = computed(() => {
-  if (!searchQuery.value) return invoices.value
-
-  return invoices.value.filter(
-    (i) =>
-      i.id.toString().toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      (i.client_name && i.client_name.toLowerCase().includes(searchQuery.value.toLowerCase())) ||
-      (i.client_email && i.client_email.toLowerCase().includes(searchQuery.value.toLowerCase())) ||
-      (i.mode_paiement && i.mode_paiement.toLowerCase().includes(searchQuery.value.toLowerCase())),
-  )
-})
-
-function createInvoice() {
-
-  console.log('Create invoice')
-  // router.push('/invoices/create') // Décommentez si vous avez une route de création
-}
-
 function viewInvoice(id) {
-  console.log('====================================');
-  console.log(id);
-  console.log('====================================');
   selectedInvoice.value = invoices.value.find(inv => inv.id === id)
   showInvoiceModal.value = true
-  console.log('👀 Viewing invoice:', selectedInvoice.value)
 }
 
 const formatPrice = (amount) =>
-  new Intl.NumberFormat('fr-FR', {
+  new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'XAF',
+    currency: 'USD',
   }).format(amount || 0)
 
 const formatDate = (date) => {
   if (!date) return 'N/A'
   try {
     return new Date(date).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
       day: 'numeric',
+      month: 'short',
+      year: 'numeric',
     })
   } catch {
     return 'N/A'
@@ -517,9 +406,54 @@ const formatDate = (date) => {
 const formatStatus = (status) => {
   const statusMap = {
     payée: 'Paid',
-    en_attente: 'Pending',
+    en_attente: 'Unpaid',
     overdue: 'Overdue',
   }
   return statusMap[status] || status
 }
+
+const getStatusClass = (status) => {
+  const classMap = {
+    payée: 'bg-green-100 text-green-800',
+    en_attente: 'bg-red-100 text-red-800',
+    overdue: 'bg-yellow-100 text-yellow-800',
+  }
+  return classMap[status] || 'bg-gray-100 text-gray-800'
+}
+
+const getInitials = (name) => {
+  if (!name) return '?'
+  return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+}
+
+const getAvatarColor = (name) => {
+  const colors = [
+    '#18a058', '#2080f0', '#f0a020', '#d03050',
+    '#8a2be2', '#00ced1', '#ff6347', '#32cd32'
+  ]
+  if (!name) return colors[0]
+  const index = name.charCodeAt(0) % colors.length
+  return colors[index]
+}
 </script>
+
+<style scoped>
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+</style>

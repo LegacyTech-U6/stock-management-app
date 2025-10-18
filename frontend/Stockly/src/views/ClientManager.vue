@@ -1,35 +1,53 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="client-manager">
     <n-config-provider :theme-overrides="themeOverrides">
       <!-- Header Section -->
-      <div class=" border-gray-200 px-8  mx-auto py-5">
-        <div class="flex justify-between items-center max-w-8xl mx-auto flex-col md:flex-row gap-4 md:gap-0">
-          <div class="flex flex-col gap-1">
-            <n-text class="text-2xl font-semibold text-gray-900">Customers</n-text>
-            <n-text depth="3" class="text-sm text-gray-500">Manage your customers</n-text>
+      <div class="page-header">
+        <div class="header-content">
+          <div class="header-left">
+            <n-text class="header-title">Customers</n-text>
+            <n-text depth="3" class="header-subtitle">Manage your customers</n-text>
           </div>
-
-          <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
-            <n-button quaternary circle @click="exportPDF" :focusable="false" class="w-10 h-10">
+          <div class="header-actions">
+            <n-button
+              class="icon-button"
+              quaternary
+              circle
+              @click="exportPDF"
+              :focusable="false"
+            >
               <template #icon>
                 <n-icon :component="FileText" size="20" color="#ef4444" />
               </template>
             </n-button>
-
-            <n-button quaternary circle @click="exportExcel" :focusable="false" class="w-10 h-10">
+            <n-button
+              class="icon-button"
+              quaternary
+              circle
+              @click="exportExcel"
+              :focusable="false"
+            >
               <template #icon>
                 <n-icon :component="FileSpreadsheet" size="20" color="#10b981" />
               </template>
             </n-button>
-
-            <n-button quaternary circle @click="handleRefresh" :focusable="false" class="w-10 h-10">
+            <n-button
+              class="icon-button"
+              quaternary
+              circle
+              @click="handleRefresh"
+              :focusable="false"
+            >
               <template #icon>
                 <n-icon :component="RefreshCw" size="20" />
               </template>
             </n-button>
-
-            <n-button type="success" @click="handleAddClient" :focusable="false"
-              class="h-10 px-5 font-medium text-white bg-emerald-500 hover:bg-emerald-600 rounded-md">
+            <n-button
+              type="success"
+              @click="handleAddClient"
+              :focusable="false"
+              class="add-button"
+            >
               <template #icon>
                 <n-icon :component="Plus" />
               </template>
@@ -39,25 +57,34 @@
         </div>
       </div>
 
-      <div class="max-w-8xl mx-auto px-8 py-6">
+      <div class="content-wrapper">
         <!-- Search and Filter Bar -->
-        <n-card :bordered="false" class="border border-gray-100 shadow-sm">
-          <div class="flex flex-col md:flex-row gap-4 items-center">
-            <n-input v-model:value="search" placeholder="Search" class="flex-1 max-w-[300px] w-full" clearable
-              :input-props="{ autocomplete: 'off' }">
+        <n-card :bordered="false" class="toolbar-card">
+          <div class="toolbar-content">
+            <n-input
+              v-model:value="search"
+              placeholder="Search"
+              class="search-input"
+              clearable
+              :input-props="{ autocomplete: 'off' }"
+            >
               <template #prefix>
                 <n-icon :component="Search" />
               </template>
             </n-input>
 
-            <n-select v-model:value="statusFilter" :options="statusOptions" placeholder="Status"
-              class="w-full md:w-[200px]" clearable />
+            <n-select
+              v-model:value="statusFilter"
+              :options="statusOptions"
+              placeholder="Status"
+              class="status-select"
+              clearable
+            />
           </div>
         </n-card>
 
         <!-- Loading State -->
-        <div v-if="loadingClients"
-          class="flex justify-center items-center min-h-[400px] bg-white rounded-lg shadow-sm mt-6">
+        <div v-if="loadingClients" class="loading-container">
           <n-space vertical align="center" :size="24">
             <n-spin size="large" />
             <n-text depth="3">Loading customers...</n-text>
@@ -65,25 +92,43 @@
         </div>
 
         <!-- Client Table -->
-        <n-card v-else-if="filteredClients.length > 0" :bordered="false" class="shadow-sm mt-6">
-          <n-data-table :columns="columns" :data="paginatedClients" :bordered="false" :single-line="false"
-            class="text-sm" />
+        <n-card v-else-if="filteredClients.length > 0" :bordered="false" class="table-card">
+          <n-data-table
+            :columns="columns"
+            :data="paginatedClients"
+            :bordered="false"
+            :single-line="false"
+            class="clients-table"
+          />
 
           <!-- Pagination -->
-          <div class="flex flex-col md:flex-row justify-between items-center gap-4 mt-4 pt-4 border-t border-gray-100">
-            <div class="flex items-center gap-3">
+          <div class="pagination-container">
+            <div class="pagination-info">
               <n-text depth="3">Row Per Page</n-text>
-              <n-select v-model:value="pageSize" :options="pageSizeOptions" size="small" class="w-20" />
+              <n-select
+                v-model:value="pageSize"
+                :options="pageSizeOptions"
+                size="small"
+                class="page-size-select"
+              />
               <n-text depth="3">Entries</n-text>
             </div>
-
-            <n-pagination v-model:page="currentPage" :page-count="pageCount" :page-slot="5" />
+            <n-pagination
+              v-model:page="currentPage"
+              :page-count="pageCount"
+              :page-slot="5"
+              class="pagination"
+            />
           </div>
         </n-card>
 
         <!-- Empty State -->
-        <n-card v-else :bordered="false" class="shadow-sm mt-6">
-          <n-empty class="py-16 px-6" :description="search ? 'No customers found' : 'No customers yet'" size="large">
+        <n-card v-else :bordered="false" class="empty-card">
+          <n-empty
+            class="empty-state"
+            :description="search ? 'No customers found' : 'No customers yet'"
+            size="large"
+          >
             <template #icon>
               <n-icon size="64" :component="Inbox" />
             </template>
@@ -92,14 +137,22 @@
                 <n-text depth="3">
                   {{ search ? 'Try adjusting your search terms' : 'Get started by adding your first customer' }}
                 </n-text>
-                <n-button v-if="!search" type="success" @click="handleAddClient" size="large"
-                  class="bg-emerald-500 hover:bg-emerald-600 text-white">
+                <n-button
+                  v-if="!search"
+                  type="success"
+                  @click="handleAddClient"
+                  size="large"
+                >
                   <template #icon>
                     <n-icon :component="Plus" />
                   </template>
                   Add Your First Customer
                 </n-button>
-                <n-button v-else @click="search = ''" size="large" class="bg-gray-100 hover:bg-gray-200">
+                <n-button
+                  v-else
+                  @click="search = ''"
+                  size="large"
+                >
                   Clear Search
                 </n-button>
               </n-space>
@@ -109,25 +162,36 @@
       </div>
 
       <!-- Modals -->
-      <FromModal :open="showModal" :isEdit="isEditMode" :clientData="selectedClient" :loading="loading" :error="error"
-        @close="handleCloseModal" @submit="handleSubmit" />
+      <FromModal
+        :open="showModal"
+        :isEdit="isEditMode"
+        :clientData="selectedClient"
+        :loading="loading"
+        :error="error"
+        @close="handleCloseModal"
+        @submit="handleSubmit"
+      />
 
-      <n-modal v-model:show="showDeleteModal" preset="dialog" title="Delete Customer" :positive-text="'Delete'"
-        :negative-text="'Cancel'" @positive-click="confirmDelete">
+      <n-modal
+        v-model:show="showDeleteModal"
+        preset="dialog"
+        title="Delete Customer"
+        :positive-text="'Delete'"
+        :negative-text="'Cancel'"
+        @positive-click="confirmDelete"
+      >
         <n-space vertical :size="16">
           <n-alert type="warning" :show-icon="true">
             This action cannot be undone
           </n-alert>
           <n-text>
-            Are you sure you want to delete
-            <n-text strong>{{ selectedClient?.client_name }}</n-text>?
+            Are you sure you want to delete <n-text strong>{{ selectedClient?.client_name }}</n-text>?
           </n-text>
         </n-space>
       </n-modal>
     </n-config-provider>
   </div>
 </template>
-
 
 <script setup>
 import { ref, computed, onMounted, h } from 'vue';
@@ -427,4 +491,219 @@ onMounted(async () => {
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.client-manager {
+  min-height: 100vh;
+  background: #f9fafb;
+}
+
+.page-header {
+
+  border-bottom: 1px solid #f3f4f6;
+  padding: 20px 32px;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.header-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.header-subtitle {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.header-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.icon-button {
+  width: 40px;
+  height: 40px;
+}
+
+.add-button {
+  height: 40px;
+  padding: 0 20px;
+  font-weight: 500;
+}
+
+.content-wrapper {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 24px 32px;
+}
+
+.toolbar-card {
+  border: 1px solid #f3f4f6;
+
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.toolbar-content {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.search-input {
+  flex: 1;
+  max-width: 300px;
+}
+
+.status-select {
+  width: 200px;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.table-card {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.clients-table {
+  font-size: 14px;
+}
+
+:deep(.customer-cell) {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+:deep(.customer-name) {
+  font-weight: 500;
+  color: #111827;
+}
+
+:deep(.action-buttons) {
+  display: flex;
+  gap: 4px;
+  justify-content: flex-end;
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #f3f4f6;
+}
+
+.pagination-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.page-size-select {
+  width: 80px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.empty-card {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.empty-state {
+  padding: 64px 24px;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .page-header {
+    padding: 16px;
+  }
+
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .content-wrapper {
+    padding: 16px;
+  }
+
+  .toolbar-content {
+    flex-direction: column;
+  }
+
+  .search-input,
+  .status-select {
+    width: 100%;
+    max-width: none;
+  }
+
+  .pagination-container {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .pagination {
+    justify-content: center;
+  }
+}
+
+/* Smooth transitions */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:deep(.n-button) {
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+:deep(.n-card) {
+  overflow: hidden;
+}
+
+:deep(.n-data-table-td) {
+  padding: 16px 12px;
+}
+
+:deep(.n-data-table-th) {
+  padding: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+</style>
