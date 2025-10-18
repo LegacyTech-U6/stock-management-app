@@ -374,7 +374,7 @@ const entrepriseStore = useEntrepriseStore()
 
 const currentUuid = computed(() => route.params.uuid)
 
-const dashboardRoute = computed(() => `/${currentUuid.value}/dashboard`)
+const dashboardRoute = computed(() => `/${currentUuid.value}/dashboar`)
 const salesRoute = computed(() => `/${currentUuid.value}/sales`)
 const productsRoute = computed(() => `/${currentUuid.value}/products`)
 const clientsRoute = computed(() => `/${currentUuid.value}/clients`)

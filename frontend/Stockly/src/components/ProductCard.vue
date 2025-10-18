@@ -5,11 +5,11 @@
         <h3 class="font-semibold text-gray-900 text-sm leading-tight flex-1 pr-2">
           {{ product.Prod_name }}
         </h3>
-        <span 
+        <span
           :class="[
             'px-2 py-0.5 rounded text-xs font-medium',
-            product.quantity > 10 ? 'bg-green-100 text-green-700' : 
-            product.quantity > 0 ? 'bg-orange-100 text-orange-700' : 
+            product.quantity > 10 ? 'bg-green-100 text-green-700' :
+            product.quantity > 0 ? 'bg-orange-100 text-orange-700' :
             'bg-red-100 text-red-700'
           ]"
         >
