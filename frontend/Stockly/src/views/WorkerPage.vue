@@ -26,10 +26,8 @@
           <button class="p-2 hover:bg-gray-100 rounded-lg transition">
             <ChevronUp class="w-5 h-5 text-gray-600" />
           </button>
-          <button
-            @click="showModal = true"
-            class="bg-orange-500 text-white px-5 py-2.5 rounded-lg hover:bg-orange-600 transition flex items-center gap-2 text-sm font-medium shadow-sm"
-          >
+          <button @click="showModal = true"
+            class="bg-orange-500 text-white px-5 py-2.5 rounded-lg hover:bg-orange-600 transition flex items-center gap-2 text-sm font-medium shadow-sm">
             <Plus class="w-4 h-4" />
             Add Employee
           </button>
@@ -38,78 +36,39 @@
 
       <!-- Stats Cards -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-5 text-white shadow-sm">
-          <div class="flex items-center justify-between mb-3">
-            <span class="text-sm font-medium opacity-90">Total Employee</span>
-            <Users class="w-5 h-5 opacity-80" />
-          </div>
-          <div class="text-3xl font-bold">{{ stats.total }}</div>
-        </div>
-
-        <div class="bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl p-5 text-white shadow-sm">
-          <div class="flex items-center justify-between mb-3">
-            <span class="text-sm font-medium opacity-90">Active</span>
-            <UserCheck class="w-5 h-5 opacity-80" />
-          </div>
-          <div class="text-3xl font-bold">{{ stats.active }}</div>
-        </div>
-
-        <div class="bg-gradient-to-br from-slate-700 to-slate-800 rounded-xl p-5 text-white shadow-sm">
-          <div class="flex items-center justify-between mb-3">
-            <span class="text-sm font-medium opacity-90">Inactive</span>
-            <UserX class="w-5 h-5 opacity-80" />
-          </div>
-          <div class="text-3xl font-bold">{{ stats.inactive }}</div>
-        </div>
-
-        <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-5 text-white shadow-sm">
-          <div class="flex items-center justify-between mb-3">
-            <span class="text-sm font-medium opacity-90">New Joiners</span>
-            <UserPlus class="w-5 h-5 opacity-80" />
-          </div>
-          <div class="text-3xl font-bold">{{ stats.newJoiners }}</div>
-        </div>
+        <GridCard title="Total Employee" :value="stats.total" :icon="Users" gradientFrom="purple-500"
+          gradientTo="purple-600" />
+        <GridCard title="Active" :value="stats.active" :icon="UserCheck" gradientFrom="teal-500"
+          gradientTo="teal-600" />
+        <GridCard title="Inactive" :value="stats.inactive" :icon="UserX" gradientFrom="slate-700"
+          gradientTo="slate-800" />
+        <GridCard title="New Joiners" :value="stats.newJoiners" :icon="UserPlus" gradientFrom="blue-500"
+          gradientTo="blue-600" />
       </div>
 
       <!-- Search and Filters -->
       <div class="mb-6 flex gap-3">
         <div class="flex-1 relative">
           <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-          <input
-            type="text"
-            placeholder="Search"
-            v-model="searchTerm"
-            class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent bg-white text-sm"
-          />
+          <input type="text" placeholder="Search" v-model="searchTerm"
+            class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent bg-white text-sm" />
         </div>
-        <select
-          v-model="filterDepartment"
-          class="border border-gray-200 px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent bg-white text-sm text-gray-600"
-        >
+        <select v-model="filterDepartment"
+          class="border border-gray-200 px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent bg-white text-sm text-gray-600">
           <option value="">Select Employees</option>
           <option v-for="dept in departments" :key="dept" :value="dept">{{ dept }}</option>
         </select>
-        <select
-          v-model="filterDesignation"
-          class="border border-gray-200 px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent bg-white text-sm text-gray-600"
-        >
+        <select v-model="filterDesignation"
+          class="border border-gray-200 px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent bg-white text-sm text-gray-600">
           <option value="">Designation</option>
           <option v-for="pos in positions" :key="pos" :value="pos">{{ pos }}</option>
         </select>
       </div>
 
       <!-- Workers Grid -->
-      <div
-        v-if="filteredWorkers.length > 0"
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
-      >
-        <WorkersCard
-          v-for="worker in filteredWorkers"
-          :key="worker.worker_id"
-          :worker="worker"
-          @edit="handleEditWorker"
-          @delete="handleDeleteWorker"
-        />
+      <div v-if="filteredWorkers.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <WorkersCard v-for="worker in filteredWorkers" :key="worker.worker_id" :worker="worker" @edit="handleEditWorker"
+          @delete="handleDeleteWorker" />
       </div>
 
       <!-- Empty State -->
@@ -120,24 +79,13 @@
     </div>
 
     <!-- Create/Edit Worker Modal -->
-    <WorkerModals
-      v-if="showModal"
-      :show="showModal"
-      :worker="selectedWorker"
-      :is-editing="isEditing"
-      @close="closeModal"
-      @submit="handleSubmit"
-    />
+    <WorkerModals v-if="showModal" :show="showModal" :worker="selectedWorker" :is-editing="isEditing"
+      @close="closeModal" @submit="handleSubmit" />
 
     <!-- Delete Confirmation Modal -->
-    <ActionModal
-      v-model="showDeleteModal"
-      title="Delete Worker"
-      message="Are you sure you want to delete this worker? This action cannot be undone."
-      confirm-text="Delete"
-      cancel-text="Cancel"
-      @confirm="confirmDelete"
-    />
+    <ActionModal v-model="showDeleteModal" title="Delete Worker"
+      message="Are you sure you want to delete this worker? This action cannot be undone." confirm-text="Delete"
+      cancel-text="Cancel" @confirm="confirmDelete" />
   </div>
 </template>
 
@@ -155,7 +103,7 @@ import {
   FileText,
   FileSpreadsheet,
   RefreshCw,
-  ChevronUp
+  ChevronUp,
 } from 'lucide-vue-next'
 import { useWorkerStore } from '@/stores/workerStore'
 import { useEntrepriseStore } from '@/stores/entrepriseStore'
@@ -164,6 +112,7 @@ import { useActionMessage } from '@/composable/useActionMessage'
 import ActionModal from '@/components/ui/ActionModal.vue'
 import WorkersCard from '@/components/workers/WorkersCard.vue'
 import WorkerModals from '@/components/workers/WorkerModals.vue'
+import GridCard from '@/components/ui/card/GridCard.vue'
 
 const { showSuccess, showError } = useActionMessage()
 
@@ -218,7 +167,7 @@ const filteredWorkers = computed(() => {
       (worker) =>
         worker.name?.toLowerCase().includes(term) ||
         worker.email?.toLowerCase().includes(term) ||
-        worker.position?.toLowerCase().includes(term)
+        worker.position?.toLowerCase().includes(term),
     )
   }
 

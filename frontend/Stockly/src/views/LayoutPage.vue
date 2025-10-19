@@ -38,8 +38,18 @@ onUnmounted(() => {
     </div>
     <div class="flex-1">
       <SoftNavbar  />
-      
-      <RouterView />
+       <!-- Main Content Section -->
+    <div class="flex-1 min-w-0 transition-all duration-300 ease-in-out">
+      <router-view v-slot="{ Component }">
+        <transition
+          name="page"
+          mode="out-in"
+          appear
+        >
+          <component :is="Component" />
+        </transition>
+      </router-view>
+    </div>
 
     </div>
 

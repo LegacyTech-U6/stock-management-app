@@ -1,17 +1,28 @@
 <template>
   <div class="p-8 space-y-8">
     <!-- Stat Cards Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <StatsCards
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <GridCard
         v-for="stat in topStats"
         :key="stat.id"
-        :icon="stat.icon"
         :title="stat.label"
         :value="stat.value"
-        :subtext="stat.subtext"
-        :color="stat.color"
-        :containerClass="stat.containerClass"
-        :trend="stat.trendPercent || 0"
+        :icon="stat.icon"
+        :gradientFrom="stat.gradientFrom"
+        :gradientTo="stat.gradientTo"
+      />
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <MetricCard
+        v-for="stat in statsTable"
+        :key="stat.id"
+        :icon="stat.icon"
+        :value="stat.value"
+        :label="stat.label"
+        :trend="stat.trend"
+        :viewLink="stat.viewLink"
+        :icon-bg="stat.iconBg"
+        :icon-color="stat.iconColor"
       />
     </div>
 
@@ -27,6 +38,7 @@
         @action-click="handleAlertAction(alert.id)"
       />
     </div>
+
 
     <!-- Rest of your dashboard content -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -105,6 +117,7 @@ import NotificationsPanel from '@/components/main/NotificationsPanel.vue'
 import LowStockAlertsPanel from '@/components/main/LowStockAlertsPanel.vue'
 import SalesPerformanceChart from '@/components/statistics/SalesPerformanceChart.vue'
 import StatsCards from '@/components/StartsCards.vue'
+import SalesChart from '../ui/charts/SalesChart.vue'
 // Lucide Vue Next icons
 import { useActionMessage } from '@/composable/useActionMessage'
 import {
@@ -118,6 +131,10 @@ import {
   Clock,
   PlusCircle,
   Tag,
+  Grid,
+  Layers,
+  RotateCcw,
+  Wallet,
 } from 'lucide-vue-next'
 
 const quickActions = [
@@ -136,6 +153,8 @@ const entrepriseStore = useEntrepriseStore()
 import { LowStock, OutOfStock } from '@/service/api'
 import router from '@/router'
 import FloatingActionButton from '../ui/FloatingActionButton.vue'
+import GridCard from '../ui/cards/GridCard.vue'
+import MetricCard from '../ui/cards/MetricCard.vue'
 
 const productStore = useProductStore()
 const loading = ref(false)
@@ -165,7 +184,48 @@ const handleAlertAction = (alertId) => {
 }
 
 // Remove the old handleLowStock function since we're using handleAlertAction now
-
+const statsTable = [
+  {
+    id: 1,
+    label: 'Total profit',
+    value: '$8,458,798',
+    trend: 12,
+    icon: Layers,
+    iconBg: '#E6F4F0',
+    iconColor: '#16a34a',
+    viewLink: '/sales',
+  },
+  {
+    id: 2,
+    label: 'Total Returns',
+    value: '$156,000',
+    trend: -8,
+    icon: RotateCcw,
+    iconBg: '#FDEDEE',
+    iconColor: '#dc2626',
+    viewLink: '/returns',
+  },
+  {
+    id: 3,
+    label: 'Total Expenses',
+    value: '$2,780,000',
+    trend: -3,
+    icon: Wallet,
+    iconBg: '#FFF7E6',
+    iconColor: '#f59e0b',
+    viewLink: '/expenses',
+  },
+  {
+    id: 4,
+    label: 'Total Customers',
+    value: '4,820',
+    trend: 20,
+    icon: Users,
+    iconBg: '#E6F0FF',
+    iconColor: '#2563eb',
+    viewLink: '/customers',
+  },
+]
 onMounted(async () => {
   loading.value = true
   await productStore.fetchProducts()
@@ -250,26 +310,33 @@ const topStats = computed(() => [
     label: 'Total products',
     value: lowStockProducts.value.length,
     subtext: 'Under this enterprise',
-    color: 'bg-blue-500',
-    containerClass: 'p-6 rounded-xl border-2 border-blue-400 bg-blue-100 to-white',
+    gradientFrom: '#0E9384',
+    gradientTo: '#0E9384',
   },
   {
     id: 2,
     icon: Package,
     label: 'Total Products Value',
     value: totalProductsValue,
-    subtext: 'In stock catalog',
-    color: 'bg-purple-500',
-    containerClass: 'border-2 p-6 rounded-xl border-purple-400 bg-purple-100 to-white',
+    gradientFrom: '#FE9F43',
+    gradientTo: '#FE9F43',
   },
   {
     id: 3,
     icon: DollarSign,
     label: 'Total Sales',
     value: avgRevenue.value,
-    subtext: '+18.5% from last period',
-    color: 'bg-green-500',
-    containerClass: 'border-2  p-6 rounded-xl border-green-400 bg-green-100 to-white',
+    gradientFrom: '#092C4C',
+    gradientTo: '#092C4C',
+    trendPercent: revenueTrendPercent.value,
+  },
+  {
+    id: 4,
+    icon: DollarSign,
+    label: 'Total Purchase',
+    value: avgRevenue.value,
+    gradientFrom: '#155EEF',
+    gradientTo: '#155EEF',
     trendPercent: revenueTrendPercent.value,
   },
 ])

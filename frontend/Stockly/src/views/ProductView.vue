@@ -70,61 +70,19 @@
             </button>
           </div>
         </div>
+          <!-- Stats Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <GridCard title="Total Products" :value="filteredProducts.length " :icon="Users" gradientFrom="purple-500"
+          gradientTo="purple-600" />
+        <GridCard title="in Stock" :value="inStockCount " :icon="UserCheck" gradientFrom="teal-500"
+          gradientTo="teal-600" />
+        <GridCard title="Low Stock" :value="lowStockCount" :icon="UserX" gradientFrom="slate-700"
+          gradientTo="slate-800" />
+        <GridCard title="Nember of categories" :value="categories.length" :icon="UserPlus" gradientFrom="blue-500"
+          gradientTo="blue-600" />
+      </div>
 
-        <!-- Stats Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div class="bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-300 transition-colors">
-            <div class="flex items-center justify-between mb-3">
-              <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
-                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                </svg>
-              </div>
-              <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">Total</span>
-            </div>
-            <div class="text-2xl font-semibold text-gray-900">{{ filteredProducts.length }}</div>
-            <div class="text-sm text-gray-500 mt-1">Total Products</div>
-          </div>
 
-          <div class="bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-300 transition-colors">
-            <div class="flex items-center justify-between mb-3">
-              <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
-                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">Active</span>
-            </div>
-            <div class="text-2xl font-semibold text-gray-900">{{ inStockCount }}</div>
-            <div class="text-sm text-gray-500 mt-1">In Stock</div>
-          </div>
-
-          <div class="bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-300 transition-colors">
-            <div class="flex items-center justify-between mb-3">
-              <div class="w-10 h-10 bg-amber-50 rounded-lg flex items-center justify-center">
-                <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
-              </div>
-              <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">Alert</span>
-            </div>
-            <div class="text-2xl font-semibold text-gray-900">{{ lowStockCount }}</div>
-            <div class="text-sm text-gray-500 mt-1">Low Stock</div>
-          </div>
-
-          <div class="bg-white border border-gray-200 rounded-lg p-5 hover:border-gray-300 transition-colors">
-            <div class="flex items-center justify-between mb-3">
-              <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
-                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                </svg>
-              </div>
-              <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">Types</span>
-            </div>
-            <div class="text-2xl font-semibold text-gray-900">{{ categories.length }}</div>
-            <div class="text-sm text-gray-500 mt-1">Categories</div>
-          </div>
-        </div>
       </div>
     </div>
 
@@ -253,7 +211,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useProductStore } from '@/stores/productStore'
 import ProductListItem from '@/components/Products/ProductListItem.vue'
 import { useEntrepriseStore } from '@/stores/entrepriseStore'
-
+import GridCard from '@/components/ui/card/GridCard.vue'
 const productStore = useProductStore()
 const router = useRouter()
 const entrepriseStore = useEntrepriseStore()
