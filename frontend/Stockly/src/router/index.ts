@@ -94,7 +94,7 @@ const routes: RouteRecordRaw[] = [
         meta: { showNavbarAndFooter: false },
       },
       {
-        path: 'steper',
+        path: 'stepper',
         name: 'steper',
         component: () => import('../components/SteeperComponent.vue'),
         meta: { showNavbarAndFooter: false },

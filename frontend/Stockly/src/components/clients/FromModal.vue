@@ -3,29 +3,24 @@
     <Transition name="modal" appear>
       <div
         v-if="open"
-        class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 z-50"
+        class="fixed inset-0 bg-black/30 flex items-center justify-center p-4 z-50"
         @click="handleBackdropClick"
       >
         <div
-          class="bg-white w-full sm:w-auto sm:min-w-[400px] sm:max-w-md rounded-t-2xl sm:rounded-2xl shadow-2xl transform transition-all duration-300 ease-out max-h-[90vh] overflow-y-auto"
+          class="bg-white w-full max-w-xl rounded-lg shadow-xl transform transition-all duration-300 ease-out"
           @click.stop
         >
           <!-- Header -->
-          <div class="flex items-center justify-between p-6 border-b border-gray-100">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-                <UserIcon />
-              </div>
-              <h2 class="text-xl font-semibold text-gray-900">
-                {{ isEdit ? 'Modifier le client' : 'Nouveau client' }}
-              </h2>
-            </div>
+          <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">
+              {{ isEdit ? 'Modifier le client' : 'Add Customer' }}
+            </h2>
             <button
               @click="$emit('close')"
               :disabled="loading"
-              class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors disabled:opacity-50"
+              class="w-8 h-8 rounded-full flex items-center justify-center bg-red-500 hover:bg-red-600 transition-colors disabled:opacity-50"
             >
-              <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
               </svg>
             </button>
@@ -42,90 +37,202 @@
           </div>
 
           <!-- Form -->
-          <form @submit.prevent="handleSubmit" class="p-6 space-y-5">
-            <!-- Nom -->
-            <div class="space-y-2">
+          <form @submit.prevent="handleSubmit" class="p-6 space-y-4 max-h-[calc(90vh-140px)] overflow-y-auto">
+            <!-- Image Upload Section -->
+            <div class="flex items-center gap-4 pb-4 border-b border-gray-200">
+              <div class="flex flex-col items-center gap-2">
+                <div class="w-20 h-20 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50">
+                  <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                  </svg>
+                </div>
+                <span class="text-xs text-gray-600">Add Image</span>
+              </div>
+              <div class="flex flex-col gap-2">
+                <button
+                  type="button"
+                  class="px-6 py-2 bg-orange-400 hover:bg-orange-500 text-white rounded-md font-medium transition-colors text-sm"
+                  :disabled="loading"
+                >
+                  Upload Image
+                </button>
+                <span class="text-xs text-gray-500">JPEG, PNG up to 2 MB</span>
+              </div>
+            </div>
+
+            <!-- First Name and Last Name -->
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-1.5">
+                <label class="block text-sm font-medium text-gray-700">
+                  First Name <span class="text-red-500">*</span>
+                </label>
+                <input
+                  v-model="formData.first_name"
+                  type="text"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm"
+                  :disabled="loading"
+                  required
+                />
+              </div>
+              <div class="space-y-1.5">
+                <label class="block text-sm font-medium text-gray-700">
+                  Last Name <span class="text-red-500">*</span>
+                </label>
+                <input
+                  v-model="formData.last_name"
+                  type="text"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm"
+                  :disabled="loading"
+                  required
+                />
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div class="space-y-1.5">
               <label class="block text-sm font-medium text-gray-700">
-                Nom complet <span class="text-red-500">*</span>
+                Email <span class="text-red-500">*</span>
               </label>
               <input
-                v-model="formData.client_name"
-                type="text"
-                placeholder="Jean Dupont"
-                class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                v-model="formData.email"
+                type="email"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm"
                 :disabled="loading"
                 required
               />
             </div>
 
-            <!-- Email -->
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700">Email</label>
-              <input
-                v-model="formData.email"
-                type="email"
-                placeholder="jean.dupont@example.com"
-                class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                :disabled="loading"
-              />
-            </div>
-
-            <!-- Téléphone -->
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700">Téléphone</label>
+            <!-- Phone -->
+            <div class="space-y-1.5">
+              <label class="block text-sm font-medium text-gray-700">
+                Phone <span class="text-red-500">*</span>
+              </label>
               <input
                 v-model="formData.client_PhoneNumber"
                 type="tel"
-                placeholder="+33 6 12 34 56 78"
-                class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm"
                 :disabled="loading"
+                required
               />
             </div>
 
-            <!-- Adresse -->
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700">Adresse</label>
-              <textarea
+            <!-- Address -->
+            <div class="space-y-1.5">
+              <label class="block text-sm font-medium text-gray-700">
+                Address <span class="text-red-500">*</span>
+              </label>
+              <input
                 v-model="formData.location"
-                rows="3"
-                placeholder="123 Rue de la Paix, 75001 Paris"
-                class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none"
+                type="text"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm"
                 :disabled="loading"
+                required
               />
             </div>
 
-            <!-- Signature -->
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700">Signature</label>
-              <textarea
-                v-model="formData.client_Signature"
-                rows="3"
-                placeholder="Signature du client"
-                class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none"
-                :disabled="loading"
-              />
+            <!-- City and State -->
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-1.5">
+                <label class="block text-sm font-medium text-gray-700">
+                  City <span class="text-red-500">*</span>
+                </label>
+                <select
+                  v-model="formData.city"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm bg-white"
+                  :disabled="loading"
+                  required
+                >
+                  <option value="">Select</option>
+                  <option value="paris">Paris</option>
+                  <option value="lyon">Lyon</option>
+                  <option value="marseille">Marseille</option>
+                </select>
+              </div>
+              <div class="space-y-1.5">
+                <label class="block text-sm font-medium text-gray-700">
+                  State <span class="text-red-500">*</span>
+                </label>
+                <select
+                  v-model="formData.state"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm bg-white"
+                  :disabled="loading"
+                  required
+                >
+                  <option value="">Select</option>
+                  <option value="idf">Île-de-France</option>
+                  <option value="ara">Auvergne-Rhône-Alpes</option>
+                  <option value="paca">Provence-Alpes-Côte d'Azur</option>
+                </select>
+              </div>
             </div>
 
-            <!-- Actions -->
-            <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-100">
-              <button
-                type="button"
-                @click="$emit('close')"
-                :disabled="loading"
-                class="w-full sm:w-auto px-6 py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors disabled:opacity-50"
-              >
-                Annuler
-              </button>
-              <button
-                type="submit"
-                :disabled="loading"
-                class="w-full sm:w-auto px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
-              >
-                <div v-if="loading" class="loader-small"></div>
-                <span>{{ isEdit ? 'Modifier' : 'Ajouter' }}</span>
-              </button>
+            <!-- Country and Postal Code -->
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-1.5">
+                <label class="block text-sm font-medium text-gray-700">
+                  Country <span class="text-red-500">*</span>
+                </label>
+                <select
+                  v-model="formData.country"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm bg-white"
+                  :disabled="loading"
+                  required
+                >
+                  <option value="">Select</option>
+                  <option value="france">France</option>
+                  <option value="belgium">Belgium</option>
+                  <option value="switzerland">Switzerland</option>
+                </select>
+              </div>
+              <div class="space-y-1.5">
+                <label class="block text-sm font-medium text-gray-700">
+                  Postal Code <span class="text-red-500">*</span>
+                </label>
+                <input
+                  v-model="formData.postal_code"
+                  type="text"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm"
+                  :disabled="loading"
+                  required
+                />
+              </div>
+            </div>
+
+            <!-- Status -->
+            <div class="flex items-center justify-between py-2">
+              <label class="block text-sm font-medium text-gray-700">Status</label>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input
+                  v-model="formData.status"
+                  type="checkbox"
+                  class="sr-only peer"
+                  :disabled="loading"
+                />
+                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+              </label>
             </div>
           </form>
+
+          <!-- Actions -->
+          <div class="flex justify-end gap-3 px-6 py-4 border-t border-gray-200 bg-gray-50">
+            <button
+              type="button"
+              @click="$emit('close')"
+              :disabled="loading"
+              class="px-6 py-2 text-gray-700 bg-gray-800 hover:bg-gray-900 text-white rounded-md font-medium transition-colors disabled:opacity-50 text-sm"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              @click="handleSubmit"
+              :disabled="loading"
+              class="px-6 py-2 bg-orange-400 hover:bg-orange-500 text-white rounded-md font-medium transition-colors flex items-center justify-center gap-2 disabled:opacity-50 text-sm"
+            >
+              <div v-if="loading" class="loader-small"></div>
+              <span>{{ isEdit ? 'Update Customer' : 'Add Customer' }}</span>
+            </button>
+          </div>
         </div>
       </div>
     </Transition>
@@ -133,7 +240,6 @@
 </template>
 
 <script setup>
-import UserIcon from '@/assets/icon svg/UserIcon.vue';
 import { ref, watch } from 'vue';
 
 const props = defineProps({
@@ -147,10 +253,16 @@ const props = defineProps({
 const emit = defineEmits(['close', 'submit']);
 
 const formData = ref({
-  client_name: '',
+  first_name: '',
+  last_name: '',
   email: '',
   client_PhoneNumber: '',
   location: '',
+  city: '',
+  state: '',
+  country: '',
+  postal_code: '',
+  status: true,
   client_Signature: ''
 });
 
@@ -158,15 +270,31 @@ const formData = ref({
 watch(() => props.open, (isOpen) => {
   if (isOpen) {
     if (props.isEdit && props.clientData) {
-      // Mode édition
-      formData.value = { ...props.clientData };
+      // Mode édition - split client_name if it exists
+      const nameParts = props.clientData.client_name ? props.clientData.client_name.split(' ') : ['', ''];
+      formData.value = {
+        ...props.clientData,
+        first_name: nameParts[0] || '',
+        last_name: nameParts.slice(1).join(' ') || '',
+        city: props.clientData.city || '',
+        state: props.clientData.state || '',
+        country: props.clientData.country || '',
+        postal_code: props.clientData.postal_code || '',
+        status: props.clientData.status !== undefined ? props.clientData.status : true
+      };
     } else {
       // Mode création
       formData.value = {
-        client_name: '',
+        first_name: '',
+        last_name: '',
         email: '',
         client_PhoneNumber: '',
         location: '',
+        city: '',
+        state: '',
+        country: '',
+        postal_code: '',
+        status: true,
         client_Signature: ''
       };
     }
@@ -174,7 +302,12 @@ watch(() => props.open, (isOpen) => {
 });
 
 const handleSubmit = () => {
-  emit('submit', formData.value);
+  // Combine first and last name back into client_name for compatibility
+  const submitData = {
+    ...formData.value,
+    client_name: `${formData.value.first_name} ${formData.value.last_name}`.trim()
+  };
+  emit('submit', submitData);
 };
 
 const handleBackdropClick = () => {
@@ -189,12 +322,7 @@ const handleBackdropClick = () => {
   transition: all 0.3s ease;
 }
 
-.modal-enter-from {
-  opacity: 0;
-  transform: scale(0.95);
-}
-
-.modal-leave-to {
+.modal-enter-from, .modal-leave-to {
   opacity: 0;
   transform: scale(0.95);
 }
@@ -211,16 +339,5 @@ const handleBackdropClick = () => {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
-}
-
-@media (max-width: 640px) {
-  .modal-enter-from {
-    opacity: 0;
-    transform: translateY(100%);
-  }
-  .modal-leave-to {
-    opacity: 0;
-    transform: translateY(100%);
-  }
 }
 </style>
