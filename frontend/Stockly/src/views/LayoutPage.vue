@@ -38,6 +38,7 @@ onUnmounted(() => {
     </div>
     <div class="flex-1">
       <SoftNavbar  />
+      
       <RouterView />
 
     </div>

@@ -1,5 +1,5 @@
 <template>
-  <nav class="bg-white border-b border-gray-200 px-6 py-3 shadow-sm">
+  <nav class="bg-white border-b fixed w-full mb-20 border-gray-200 px-6 py-3 shadow-sm">
     <div class="flex items-center justify-between">
       <!-- Left Section - Search -->
       <div class="flex items-center flex-1 max-w-md">
