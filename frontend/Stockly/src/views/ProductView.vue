@@ -211,7 +211,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useProductStore } from '@/stores/productStore'
 import ProductListItem from '@/components/Products/ProductListItem.vue'
 import { useEntrepriseStore } from '@/stores/entrepriseStore'
-import GridCard from '@/components/ui/card/GridCard.vue'
+import GridCard from '@/components/ui/cards/GridCard.vue'
 const productStore = useProductStore()
 const router = useRouter()
 const entrepriseStore = useEntrepriseStore()

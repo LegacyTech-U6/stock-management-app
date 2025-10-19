@@ -6,7 +6,8 @@ import naive from 'naive-ui'
 import App from './App.vue'
 import router from './router'
 import { Toaster } from 'vue-sonner';
-
+import "@fontsource/nunito/400.css";
+import "@fontsource/nunito/700.css";
 
 const app = createApp(App)
 const pinia = createPinia()

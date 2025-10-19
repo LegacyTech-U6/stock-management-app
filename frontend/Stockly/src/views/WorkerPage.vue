@@ -112,7 +112,7 @@ import { useActionMessage } from '@/composable/useActionMessage'
 import ActionModal from '@/components/ui/ActionModal.vue'
 import WorkersCard from '@/components/workers/WorkersCard.vue'
 import WorkerModals from '@/components/workers/WorkerModals.vue'
-import GridCard from '@/components/ui/card/GridCard.vue'
+import GridCard from '@/components/ui/cards/GridCard.vue'
 
 const { showSuccess, showError } = useActionMessage()
 

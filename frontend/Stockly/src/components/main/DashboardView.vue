@@ -2,55 +2,31 @@
   <div class="p-8 space-y-8">
     <!-- Stat Cards Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <GridCard
-        v-for="stat in topStats"
-        :key="stat.id"
-        :title="stat.label"
-        :value="stat.value"
-        :icon="stat.icon"
-        :gradientFrom="stat.gradientFrom"
-        :gradientTo="stat.gradientTo"
-      />
+      <GridCard v-for="stat in topStats" :key="stat.id" :title="stat.label" :value="stat.value" :icon="stat.icon"
+        :gradientFrom="stat.gradientFrom" :gradientTo="stat.gradientTo" />
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <MetricCard
-        v-for="stat in statsTable"
-        :key="stat.id"
-        :icon="stat.icon"
-        :value="stat.value"
-        :label="stat.label"
-        :trend="stat.trend"
-        :viewLink="stat.viewLink"
-        :icon-bg="stat.iconBg"
-        :icon-color="stat.iconColor"
-      />
+      <MetricCard v-for="stat in statsTable" :key="stat.id" :icon="stat.icon" :value="stat.value" :label="stat.label"
+        :trend="stat.trend" :viewLink="stat.viewLink" :icon-bg="stat.iconBg" :icon-color="stat.iconColor" />
     </div>
 
-    <!-- Alert Cards Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-8">
-      <AlertCard
-        v-for="alert in alerts"
-        :key="alert.id"
-        :title="alert.title"
-        :count="alert.count"
-        :color="alert.color"
-        :action="alert.action"
-        @action-click="handleAlertAction(alert.id)"
-      />
-    </div>
+    
 
 
     <!-- Rest of your dashboard content -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <TopSellingProducts />
+      <LowStockAlertsPanel />
+      <RecentSales />
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <!-- Left Column: Charts (2/3 width) -->
       <div class="lg:col-span-2 space-y-8">
         <!-- Sales & Orders Overview -->
-        <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-          <div class="flex items-center gap-2 mb-6">
-            <BarChart3 class="w-5 h-5 text-gray-700" />
-            <h2 class="text-lg font-semibold text-gray-800">Sales & Orders Overview</h2>
-          </div>
-          <SalesPerformanceChart />
+        <div class="bg-white rounded-lg shadow-sm  border border-gray-200">
+
+          <!-- <SalesPerformanceChart /> -->
+           <SalesChart />
         </div>
 
         <!-- Stock Levels by Category -->
@@ -66,10 +42,8 @@
                 <p class="text-sm text-gray-600">{{ item.current }}/{{ item.total }}</p>
               </div>
               <div class="w-full bg-gray-200 rounded-full h-2">
-                <div
-                  class="bg-gray-800 h-2 rounded-full"
-                  :style="{ width: (item.current / item.total) * 100 + '%' }"
-                ></div>
+                <div class="bg-gray-800 h-2 rounded-full" :style="{ width: (item.current / item.total) * 100 + '%' }">
+                </div>
               </div>
             </div>
           </div>
@@ -114,7 +88,7 @@ import StatCard from '@/components/statistics/StatsCard.vue'
 import ProductDistribution from '@/components/statistics/ProductDistribution.vue'
 import { useProductStore } from '@/stores/productStore'
 import NotificationsPanel from '@/components/main/NotificationsPanel.vue'
-import LowStockAlertsPanel from '@/components/main/LowStockAlertsPanel.vue'
+import LowStockAlertsPanel from '@/components/statistics/LowStockAlertsPanel.vue'
 import SalesPerformanceChart from '@/components/statistics/SalesPerformanceChart.vue'
 import StatsCards from '@/components/StartsCards.vue'
 import SalesChart from '../ui/charts/SalesChart.vue'
@@ -155,6 +129,8 @@ import router from '@/router'
 import FloatingActionButton from '../ui/FloatingActionButton.vue'
 import GridCard from '../ui/cards/GridCard.vue'
 import MetricCard from '../ui/cards/MetricCard.vue'
+import TopSellingProducts from '../statistics/TopSellingProducts.vue'
+import RecentSales from '../statistics/RecentSales.vue'
 
 const productStore = useProductStore()
 const loading = ref(false)
