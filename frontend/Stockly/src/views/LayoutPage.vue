@@ -3,6 +3,7 @@ import LoginNav from '@/components/LoginNav.vue'
 import { RouterView } from 'vue-router'
 import { useRoute } from 'vue-router'
 import { ref, onMounted, onUnmounted } from 'vue'
+import SoftNavbar from '@/components/Navbar/SoftNavbar.vue'
 
 const route = useRoute()
 const sidebarExpanded = ref(false)
@@ -35,19 +36,12 @@ onUnmounted(() => {
     >
       <LoginNav @sidebar-state-changed="updateSidebarState" />
     </div>
+    <div class="flex-1">
+      <SoftNavbar  />
+      <RouterView />
 
-    <!-- Main Content Section -->
-    <div class="flex-1 min-w-0 transition-all duration-300 ease-in-out">
-      <router-view v-slot="{ Component }">
-        <transition
-          name="page"
-          mode="out-in"
-          appear
-        >
-          <component :is="Component" />
-        </transition>
-      </router-view>
     </div>
+
   </div>
 </template>
 

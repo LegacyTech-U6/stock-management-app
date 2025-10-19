@@ -1,96 +1,106 @@
 <!-- components/EnterpriseTable.vue -->
 <template>
-  <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-100/50 overflow-hidden">
+  <div class="bg-white rounded-b-xl shadow-sm border border-gray-200 overflow-hidden">
     <div class="overflow-x-auto">
       <table class="w-full">
-        <thead class="bg-gradient-to-r from-gray-50 to-gray-100/50">
+        <thead class="bg-gray-50 border-b border-gray-200">
           <tr>
-            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide">
+              <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-orange-500 focus:ring-orange-500" />
+            </th>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide">
               Company Name
             </th>
-            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide">
               Email
             </th>
-            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-              Location
+            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide">
+              Account URL
             </th>
-            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide">
               Plan
             </th>
-            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide">
               Created Date
             </th>
-            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide">
               Status
             </th>
-            <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
-              Actions
+            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide">
+
             </th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-100/50">
+        <tbody class="divide-y divide-gray-100">
           <tr
             v-for="enterprise in enterprises"
             :key="enterprise.id"
-            class="hover:bg-blue-50/30 transition-colors"
+            class="hover:bg-gray-50 transition-colors"
           >
+            <!-- Checkbox -->
+            <td class="px-4 py-3">
+              <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-orange-500 focus:ring-orange-500" />
+            </td>
+
             <!-- Company Name -->
-            <td class="px-6 py-4">
-              <div class="flex items-center gap-3">
-                <div :class="['w-11 h-11 rounded-xl bg-gradient-to-br flex items-center justify-center shadow-sm', getGradientColor(enterprise.id)]">
-                  <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <td class="px-4 py-3">
+              <div class="flex items-center gap-2.5">
+                <div :class="['w-8 h-8 rounded-lg bg-gradient-to-br flex items-center justify-center flex-shrink-0', getGradientColor(enterprise.id)]">
+                  <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                   </svg>
                 </div>
-                <div>
-                  <p class="font-semibold text-gray-900">{{ enterprise.name || 'Unnamed' }}</p>
-                  <p class="text-xs text-gray-500">{{ truncateText(enterprise.description, 40) }}</p>
+                <div class="min-w-0">
+                  <p class="font-medium text-gray-900 text-sm truncate">{{ enterprise.name || 'Unnamed' }}</p>
                 </div>
               </div>
             </td>
 
             <!-- Email -->
-            <td class="px-6 py-4 text-sm text-gray-600">
-              {{ enterprise.email_contact || 'No email' }}
+            <td class="px-4 py-3">
+              <span class="text-sm text-gray-600 truncate block max-w-[180px]">
+                {{ enterprise.email_contact || 'No email' }}
+              </span>
             </td>
 
-            <!-- Location -->
-            <td class="px-6 py-4">
-              <div class="flex items-center gap-2 text-sm text-gray-600">
-                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                {{ enterprise.ville || 'No location' }}
-              </div>
+            <!-- Account URL -->
+            <td class="px-4 py-3">
+              <span class="text-sm text-gray-600 truncate block max-w-[150px]">
+                {{ getAccountUrl(enterprise) }}
+              </span>
             </td>
 
             <!-- Plan -->
-            <td class="px-6 py-4">
-              <span class="px-3 py-1 bg-gradient-to-r from-purple-100 to-purple-200 text-purple-700 rounded-full text-xs font-medium shadow-sm">
+            <td class="px-4 py-3">
+              <span class="px-2.5 py-1 bg-purple-500 text-white rounded-md text-xs font-medium inline-block">
                 Upgrade
               </span>
             </td>
 
             <!-- Created Date -->
-            <td class="px-6 py-4 text-sm text-gray-600">
-              {{ formatDate(enterprise.created_at) }}
+            <td class="px-4 py-3">
+              <span class="text-sm text-gray-600">
+                {{ formatDate(enterprise.created_at) }}
+              </span>
             </td>
 
             <!-- Status -->
-            <td class="px-6 py-4">
-              <span class="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700 shadow-sm inline-flex items-center gap-1">
-                <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-                Active
+            <td class="px-4 py-3">
+              <span :class="[
+                'px-2.5 py-1 rounded-md text-xs font-medium inline-flex items-center gap-1',
+                enterprise.id === 8 ? 'bg-red-500 text-white' : 'bg-green-500 text-white'
+              ]">
+                <span class="w-1 h-1 rounded-full bg-white"></span>
+                {{ enterprise.id === 8 ? 'Inactive' : 'Active' }}
               </span>
             </td>
 
             <!-- Actions -->
-            <td class="px-6 py-4">
-              <div class="flex items-center justify-center gap-2">
+            <td class="px-4 py-3">
+              <div class="flex items-center gap-1">
                 <button
                   @click="$emit('view', enterprise)"
-                  class="p-2 hover:bg-blue-50 rounded-lg transition-all"
+                  class="p-1.5 hover:bg-gray-100 rounded-md transition-all"
                   title="View"
                 >
                   <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -100,7 +110,7 @@
                 </button>
                 <button
                   @click="$emit('edit', enterprise)"
-                  class="p-2 hover:bg-blue-50 rounded-lg transition-all"
+                  class="p-1.5 hover:bg-gray-100 rounded-md transition-all"
                   title="Edit"
                 >
                   <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -108,10 +118,10 @@
                   </svg>
                 </button>
                 <button
-                  class="p-2 hover:bg-red-50 rounded-lg transition-all"
+                  class="p-1.5 hover:bg-gray-100 rounded-md transition-all"
                   title="Delete"
                 >
-                  <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                   </svg>
                 </button>
@@ -123,23 +133,27 @@
     </div>
 
     <!-- Pagination -->
-    <div class="px-6 py-4 border-t border-gray-100/50 flex items-center justify-between bg-gradient-to-r from-gray-50/50 to-transparent">
-      <p class="text-sm text-gray-600">
-        Showing <span class="font-semibold text-gray-900">1</span> to
-        <span class="font-semibold text-gray-900">{{ enterprises.length }}</span> of
-        <span class="font-semibold text-gray-900">{{ enterprises.length }}</span> entries
+    <div class="px-4 py-3 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-3 bg-gray-50">
+      <p class="text-xs text-gray-600">
+        Row Per Page
+        <select class="ml-1 border border-gray-300 rounded px-2 py-0.5 text-xs">
+          <option>10</option>
+          <option>25</option>
+          <option>50</option>
+        </select>
+        <span class="ml-3">Entries</span>
       </p>
       <div class="flex items-center gap-2">
-        <button class="p-2 border border-gray-200 rounded-lg hover:bg-white hover:shadow-sm transition-all">
-          <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button class="p-1.5 border border-gray-300 rounded hover:bg-white transition-all">
+          <svg class="w-3.5 h-3.5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
           </svg>
         </button>
-        <button class="px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg shadow-sm font-medium">
+        <button class="w-7 h-7 bg-orange-500 text-white rounded text-xs font-medium">
           1
         </button>
-        <button class="p-2 border border-gray-200 rounded-lg hover:bg-white hover:shadow-sm transition-all">
-          <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button class="p-1.5 border border-gray-300 rounded hover:bg-white transition-all">
+          <svg class="w-3.5 h-3.5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
           </svg>
         </button>
@@ -158,9 +172,10 @@ defineProps({
 
 defineEmits(['view', 'edit'])
 
-function truncateText(text, maxLength) {
-  if (!text) return 'No description'
-  return text.length > maxLength ? text.substring(0, maxLength) + '...' : text
+function getAccountUrl(enterprise) {
+  if (!enterprise.name) return 'No URL'
+  const slug = enterprise.name.toLowerCase().replace(/\s+/g, '')
+  return `${slug.substring(0, 3)}.example.com`
 }
 
 function formatDate(date) {
