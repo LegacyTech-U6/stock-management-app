@@ -1,144 +1,113 @@
-// controller/WorkersController.js
-const { validationResult } = require("express-validator");
-const bcrypt = require("bcrypt");
-const WorkerModel = require("../models/WorkerModel");
+// backend/controllers/worker.controller.js
+const sequelizeQuery = require('sequelize-query');
+const db = require('../config/db'); // ton index.js où tous les modèles sont importés
+const Worker = db.Worker; // Sequelize model
+const Entreprise = db.Entreprise;
+const Role = db.Role;
+const { Op } = require('sequelize');
 
-const WorkersController = {
-  // ✅ Créer un nouveau worker
-  async createWorker(req, res) {
-    const user_id = req.user.id;
-    const {
-      email,
-      entreprise_id,
-      position = null,
-      date_hired = null,
-      status = "active",
-      role, // C'est le role_id
-      password,
-      name,
-    } = req.body;
+const queryParser = sequelizeQuery(db);
 
-    console.log("📝 Creating worker:", { name, email, entreprise_id, role });
+// ===============================
+// 🔹 Récupérer tous les employés pour un utilisateur
+// ===============================
+exports.getAllWorkers = async (req, res) => {
+  try {
+    const query = await queryParser.parse(req);
 
-    try {
-      // 1️⃣ Vérifier si l'email existe déjà
-      const existing = await WorkerModel.findByEmail(email);
-      if (existing) {
-        return res.status(400).json({ message: "Email déjà utilisé pour un worker" });
-      }
-
-      // 2️⃣ Hachage du mot de passe
-      const hashedPassword = await bcrypt.hash(password, 10);
-
-      // 3️⃣ Insertion
-      const workerId = await WorkerModel.createWorker({
-        name,
-        email,
-        entreprise_id,
-        user_id,
-        position,
-        date_hired,
-        status,
-        hashedPassword,
-        role, // role_id
-      });
-
-      res.status(201).json({ 
-        message: "Worker créé avec succès", 
-        workerId,
-        worker: {
-          id: workerId,
-          name,
-          email,
-          position,
-          status,
-          role_id: role
-        }
-      });
-    } catch (err) {
-      console.error("❌ Error creating worker:", err);
-      res.status(500).json({ message: "Erreur serveur" });
+    if (req.user && req.user.id) {
+      query.where = { ...query.where, user_id: req.user.id };
     }
-  },
 
-  // ✅ Récupérer tous les workers
-  async getAllWorkers(req, res) {
-    try {
-      const user_id = req.user.id;
-      console.log("👥 Fetching workers for user:", user_id);
-      
-      const workers = await WorkerModel.getAll(user_id);
-      
-      console.log(`📊 Found ${workers.length} workers`);
-      res.json({ workers });
-    } catch (err) {
-      console.error("❌ Error fetching workers:", err);
-      res.status(500).json({ error: "Database error" });
-    }
-  },
+    const data = await Worker.findAll({
+      ...query,
+      include: [
+        { model: Entreprise, attributes: ['id', 'name', 'description'] },
+        { model: Role, attributes: ['id', 'name'] },
+      ],
+    });
 
-  // ✅ Récupérer un worker par ID
-  async getWorkerById(req, res) {
-    const { id } = req.params;
-    try {
-      const worker = await WorkerModel.getById(id);
-      if (!worker) {
-        return res.status(404).json({ message: "Worker not found" });
-      }
-      res.json({ worker });
-    } catch (err) {
-      console.error("❌ Error fetching worker:", err);
-      res.status(500).json({ error: "Database error" });
-    }
-  },
+    const count = await Worker.count({ where: query.where });
 
-  // ✅ Mise à jour
-  async updateWorker(req, res) {
-    const { id } = req.params;
-    const { 
-      name, 
-      email, 
-      position, 
-      date_hired, 
-      status, 
-      role_id 
-    } = req.body;
-    
-    try {
-      const affected = await WorkerModel.update(id, {
-        name,
-        email,
-        position,
-        date_hired,
-        status,
-        role_id
-      });
-      
-      if (!affected) {
-        return res.status(404).json({ message: "Worker not found" });
-      }
-      
-      res.json({ message: "Worker updated successfully" });
-    } catch (err) {
-      console.error("❌ Error updating worker:", err);
-      res.status(500).json({ error: "Database error" });
-    }
-  },
-
-  // ✅ Suppression
-  async deleteWorker(req, res) {
-    const { id } = req.params;
-    try {
-      const affected = await WorkerModel.delete(id);
-      if (!affected) {
-        return res.status(404).json({ message: "Worker not found" });
-      }
-      res.json({ message: "Worker deleted successfully" });
-    } catch (err) {
-      console.error("❌ Error deleting worker:", err);
-      res.status(500).json({ error: "Database error" });
-    }
-  },
+    res.status(200).json({ count, data });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
 
-module.exports = WorkersController;
+// ===============================
+// 🔹 Récupérer un employé par ID
+// ===============================
+exports.getWorkerById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const worker = await Worker.findOne({
+      where: { id },
+      include: [
+        { model: Entreprise, attributes: ['id', 'name', 'description'] },
+        { model: Role, attributes: ['id', 'name'] },
+      ],
+    });
+
+    if (!worker) return res.status(404).json({ message: 'Employé non trouvé' });
+
+    res.status(200).json(worker);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// ===============================
+// 🔹 Créer un employé
+// ===============================
+exports.createWorker = async (req, res) => {
+  try {
+    const user_id = req.user.id;
+    const workerData = { ...req.body, user_id };
+
+    const worker = await Worker.create(workerData);
+
+    res.status(201).json(worker);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// ===============================
+// 🔹 Mettre à jour un employé
+// ===============================
+exports.updateWorker = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const [updated] = await Worker.update(req.body, {
+      where: { id },
+    });
+
+    if (!updated) return res.status(404).json({ message: 'Employé non trouvé' });
+
+    res.status(200).json({ message: 'Employé mis à jour avec succès' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// ===============================
+// 🔹 Supprimer un employé
+// ===============================
+exports.deleteWorker = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const deleted = await Worker.destroy({
+      where: { id },
+    });
+
+    if (!deleted) return res.status(404).json({ message: 'Employé non trouvé' });
+
+    res.status(200).json({ message: 'Employé supprimé avec succès' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

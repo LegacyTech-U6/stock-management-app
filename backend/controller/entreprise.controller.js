@@ -1,62 +1,108 @@
-const Entreprise = require('../models/Entreprise');
+// backend/controllers/entreprise.controller.js
+const sequelizeQuery = require('sequelize-query');
+const db = require('../config/db'); // ton index.js avec tous tes modèles
+const Entreprise = db.Entreprise; // Sequelize model si tu l'as défini, sinon tu peux adapter
 
-// Créer une entreprise
-exports.createEntreprise = async (req, res) => {
+const queryParser = sequelizeQuery(db);
+
+// ===============================
+// 🔹 Récupérer toutes les entreprises d’un utilisateur
+// ===============================
+exports.getAllEntreprises = async (req, res) => {
   try {
-    const user_id = req.user.id;
-    const data = req.body;
+    const query = await queryParser.parse(req);
 
-    if (!data.name) return res.status(400).json({ message: "Le nom est requis" });
+    if (req.user && req.user.id) {
+      query.where = { ...query.where, user_id: req.user.id };
+    }
 
-    const entreprise = await Entreprise.create({ user_id, ...data });
-    res.status(201).json({ message: "Entreprise créée", entreprise });
+    const data = await Entreprise.findAll({
+      ...query,
+      attributes: { exclude: [] },
+    });
+
+    const count = await Entreprise.count({
+      where: query.where,
+    });
+
+    res.status(200).json({ count, data });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Erreur serveur" });
+    res.status(500).json({ message: err.message });
   }
 };
 
-// Récupérer toutes les entreprises d’un utilisateur
-exports.getEntreprises = async (req, res) => {
-  try {
-    const entreprises = await Entreprise.getAllByUser(req.user.id);
-    res.json({ entreprises });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Erreur serveur" });
-  }
-};
-
-// Récupérer une entreprise par UUID
+// ===============================
+// 🔹 Récupérer une entreprise par UUID
+// ===============================
 exports.getEntrepriseByUuid = async (req, res) => {
   try {
-    const entreprise = await Entreprise.getByUuid(req.params.uuid);
-    if (!entreprise) return res.status(404).json({ message: "Entreprise non trouvée" });
-    res.json({ entreprise });
+    const { uuid } = req.params;
+
+    const entreprise = await Entreprise.findOne({
+      where: { uuid },
+    });
+
+    if (!entreprise)
+      return res.status(404).json({ message: 'Entreprise non trouvée' });
+
+    res.status(200).json(entreprise);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Erreur serveur" });
+    res.status(500).json({ message: err.message });
   }
 };
 
-// Mettre à jour par UUID
+// ===============================
+// 🔹 Créer une entreprise
+// ===============================
+exports.createEntreprise = async (req, res) => {
+  try {
+    const user_id = req.user.id; // l'utilisateur connecté
+    const entrepriseData = { ...req.body, user_id };
+
+    const entreprise = await Entreprise.create(entrepriseData);
+
+    res.status(201).json(entreprise);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// ===============================
+// 🔹 Mettre à jour une entreprise par UUID
+// ===============================
 exports.updateEntreprise = async (req, res) => {
   try {
-    await Entreprise.updateByUuid(req.params.uuid, req.body);
-    res.json({ message: "Entreprise mise à jour" });
+    const { uuid } = req.params;
+
+    const [updated] = await Entreprise.update(req.body, {
+      where: { uuid },
+    });
+
+    if (!updated)
+      return res.status(404).json({ message: 'Entreprise non trouvée' });
+
+    res.status(200).json({ message: 'Entreprise mise à jour avec succès' });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Erreur serveur" });
+    res.status(500).json({ message: err.message });
   }
 };
 
-// Supprimer par UUID
+// ===============================
+// 🔹 Supprimer une entreprise par UUID
+// ===============================
 exports.deleteEntreprise = async (req, res) => {
   try {
-    await Entreprise.deleteByUuid(req.params.uuid);
-    res.json({ message: "Entreprise supprimée" });
+    const { uuid } = req.params;
+
+    const deleted = await Entreprise.destroy({
+      where: { uuid },
+    });
+
+    if (!deleted)
+      return res.status(404).json({ message: 'Entreprise non trouvée' });
+
+    res.status(200).json({ message: 'Entreprise supprimée avec succès' });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Erreur serveur" });
+    res.status(500).json({ message: err.message });
   }
 };

@@ -1,81 +1,77 @@
-// controller/roles.controller.js
-const RoleModel = require("../models/RoleModel")
+// controllers/role.controller.js
+const sequelizeQuery = require('sequelize-query');
+const db = require('../config/db'); // ton index.js avec tous les modèles
+const Role = db.Role;
 
-const RolesController = {
-  // Create a new role
-  async createRole(req, res) {
-    const { name, description } = req.body
+const queryParser = sequelizeQuery(db);
 
-    if (!name) {
-      return res.status(400).json({ message: "Role name is required" })
-    }
+// ===============================
+// 🔹 Récupérer tous les rôles
+// ===============================
+exports.getAllRoles = async (req, res) => {
+  try {
+    const query = await queryParser.parse(req);
+    const data = await Role.findAll({ ...query });
+    const count = await Role.count({ where: query.where });
+    res.json({ count, data });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 
-    try {
-      const result = await RoleModel.createRole(name, description)
-      res.status(201).json({
-        message: "Role created successfully",
-        roleId: result.insertId,
-      })
-    } catch (error) {
-      console.error(error)
-      res.status(500).json({ message: "Database error" })
-    }
-  },
+// ===============================
+// 🔹 Récupérer un rôle par ID
+// ===============================
+exports.getRoleById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const role = await Role.findByPk(id);
+    if (!role) return res.status(404).json({ message: 'Rôle non trouvé' });
+    res.json(role);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 
-  // Get all roles
-  async getAllRoles(req, res) {
-    try {
-      const roles = await RoleModel.getAllRoles()
-      res.json(roles)
-    } catch (error) {
-      console.error(error)
-      res.status(500).json({ message: "Database error" })
-    }
-  },
+// ===============================
+// 🔹 Créer un rôle
+// ===============================
+exports.createRole = async (req, res) => {
+  try {
+    const { name, description } = req.body;
+    if (!name) return res.status(400).json({ message: 'Le nom du rôle est requis' });
 
-  // Get role by ID
-  async getRoleById(req, res) {
-    const { id } = req.params
-    try {
-      const role = await RoleModel.getRoleById(id)
-      if (!role) return res.status(404).json({ message: "Role not found" })
-      res.json(role)
-    } catch (error) {
-      console.error(error)
-      res.status(500).json({ message: "Database error" })
-    }
-  },
+    const role = await Role.create({ name, description });
+    res.status(201).json(role);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 
-  // Update role
-  async updateRole(req, res) {
-    const { id } = req.params
-    const { name, description } = req.body
+// ===============================
+// 🔹 Mettre à jour un rôle
+// ===============================
+exports.updateRole = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const [updated] = await Role.update(req.body, { where: { id } });
+    if (!updated) return res.status(404).json({ message: 'Rôle non trouvé' });
+    res.json({ message: 'Rôle mis à jour avec succès' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 
-    try {
-      const result = await RoleModel.updateRole(id, name, description)
-      if (result.affectedRows === 0)
-        return res.status(404).json({ message: "Role not found" })
-      res.json({ message: "Role updated successfully" })
-    } catch (error) {
-      console.error(error)
-      res.status(500).json({ message: "Database error" })
-    }
-  },
-
-  // Delete role
-  async deleteRole(req, res) {
-    const { id } = req.params
-
-    try {
-      const result = await RoleModel.deleteRole(id)
-      if (result.affectedRows === 0)
-        return res.status(404).json({ message: "Role not found" })
-      res.json({ message: "Role deleted successfully" })
-    } catch (error) {
-      console.error(error)
-      res.status(500).json({ message: "Database error" })
-    }
-  },
-}
-
-module.exports = RolesController
+// ===============================
+// 🔹 Supprimer un rôle
+// ===============================
+exports.deleteRole = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await Role.destroy({ where: { id } });
+    if (!deleted) return res.status(404).json({ message: 'Rôle non trouvé' });
+    res.json({ message: 'Rôle supprimé avec succès' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

@@ -9,9 +9,17 @@ const sequelize = new Sequelize(
   {
     host: process.env.MYSQL_HOST,
     dialect: 'mysql',
-    logging: false
+    logging: true
   }
 );
+
+sequelize.authenticate()
+  .then(() => {
+    console.log('✅ Connecté à la base de données MySQL avec Sequelize !');
+  })
+  .catch(err => {
+    console.error('❌ Impossible de se connecter à la base de données :', err);
+  });
 
 // Example model
 
