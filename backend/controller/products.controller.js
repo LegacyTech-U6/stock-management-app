@@ -156,6 +156,58 @@ exports.createSale = async (req, res) => {
 };
 
 // ===============================
+// 🔹 Ajouter de la quantité
+// ===============================
+exports.addQuantity = async (req, res) => {
+  try {
+    const { productId, quantityAdd } = req.body;
+    const entrepriseId = req.entrepriseId;
+
+    const product = await Product.findOne({ where: { id: productId, entreprise_id: entrepriseId } });
+    if (!product) return res.status(404).json({ success: false, message: 'Produit non trouvé' });
+
+    product.quantity += quantityAdd;
+    await product.save();
+
+    res.status(200).json({ success: true, message: 'Quantité ajoutée', product });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// ===============================
+// 🔹 Acheter un produit (vente)
+// ===============================
+exports.buyProduct = async (req, res) => {
+  try {
+    const { productId, quantitySold } = req.body;
+    const entrepriseId = req.entrepriseId;
+
+    const product = await Product.findOne({ where: { id: productId, entreprise_id: entrepriseId } });
+    if (!product) return res.status(404).json({ success: false, message: 'Produit non trouvé' });
+    if (product.quantity < quantitySold) return res.status(400).json({ success: false, message: 'Stock insuffisant' });
+
+    product.quantity -= quantitySold;
+    await product.save();
+
+    // ici tu peux créer une vente si tu as le modèle Sale
+    if (db.Sale) {
+      await db.Sale.create({
+        product_id: productId,
+        quantity_sold: quantitySold,
+        total_price: product.selling_price * quantitySold,
+        total_profit: (product.selling_price - product.cost_price) * quantitySold,
+        entreprise_id: entrepriseId,
+      });
+    }
+
+    res.status(200).json({ success: true, message: 'Vente enregistrée', product });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// ===============================
 // 🔹 Produits en stock faible
 // ===============================
 exports.getLowStockProducts = async (req, res) => {
@@ -199,5 +251,60 @@ exports.getOutOfStockProducts = async (req, res) => {
     res.json(products);
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+};
+
+
+// ===============================
+// 🔹 Produits par catégorie
+// ===============================
+exports.getProductsByCategory = async (req, res) => {
+  try {
+    const categoryId = parseInt(req.params.categoryId);
+    if (isNaN(categoryId)) return res.status(400).json({ success: false, message: 'ID de catégorie invalide' });
+
+    const products = await Product.findAll({
+      where: {
+        category_id: categoryId,
+        entreprise_id: req.entrepriseId,
+      },
+      include: [
+        { model: db.Category, attributes: ['name'] },
+        { model: db.Supplier, attributes: ['supplier_name', 'email', 'whatsapp_number'] },
+      ],
+      order: [['Prod_name', 'ASC']],
+    });
+
+    res.status(200).json({ success: true, count: products.length, products });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// ===============================
+// 🔹 Récupérer toutes les ventes
+// ===============================
+exports.getSales = async (req, res) => {
+  try {
+    const query = await queryParser.parse(req);
+
+    // Filtrer par entreprise
+    query.where = { ...query.where, entreprise_id: req.entrepriseId };
+
+    const sales = await Sale.findAll({
+      ...query,
+      include: [
+        { model: Product, attributes: ['Prod_name', 'selling_price'] },
+      ],
+      order: [['createdAt', 'DESC']],
+    });
+
+    const count = await Sale.count({
+      where: query.where,
+    });
+
+    res.status(200).json({ success: true, count, sales });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
   }
 };
