@@ -3,7 +3,7 @@ const router = express.Router();
 const {CategoryController, getAllCategories, getCategoryById, createCategory, updateCategory, deleteCategory} = require("../controller/category.controller");
 const getActiveEntreprise = require('../middleware/activeEntreprise');
 
-// router.use(getActiveEntreprise);
+router.use(getActiveEntreprise);
 router.get("/", getAllCategories);
 router.get("/:id", getCategoryById);
 router.post("/", createCategory);

@@ -10,7 +10,7 @@ const {
 } = require("../controller/client.controller");
 const authenticateUser = require("../middleware/AuthenticatedUser");
 const getActiveEntreprise = require('../middleware/activeEntreprise');
-// router.use(getActiveEntreprise)
+router.use(getActiveEntreprise)
 router.get("/", getAllClients);
 router.post("/", createClient);
 router.get("/:id", getClientById);

@@ -2,7 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const authenticateUser = require('../middleware/AuthenticatedUser')
-const { register, login,getAccount,logout,forgotPassword,resetPassword,getProfile,changePassword,updateProfile } = require("../controller/user.controller");
+const { register, login,getAccount,logout,forgotPassword,resetPassword,getProfile,changePassword,updateProfile, createUser } = require("../controller/user.controller");
 
 // Route POST /auth/register
 router.post("/register", register);
@@ -11,7 +11,7 @@ router.post("/register", register);
 
 router.post("/login", login);
 
-router.get('/account', authenticateUser, getAccount);
+router.get('/account', authenticateUser, getProfile);
 router.post('/logout', logout);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);

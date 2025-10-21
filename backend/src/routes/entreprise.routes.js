@@ -5,7 +5,7 @@ const entrepriseController = require('../controller/entreprise.controller');
 const authenticateUser = require('../middleware/AuthenticatedUser');
 
 // Toutes les routes sont protégées : l'utilisateur doit être connecté
-// router.use(authenticateUser);
+ router.use(authenticateUser);
 
 // CRUD entreprises
 router.post('/', entrepriseController.createEntreprise);       // créer

@@ -19,8 +19,8 @@ console.log("✅ Connecté à MySQL !");
 
 module.exports = { pool };
 // backend/models/index.js
-const { Sequelize, DataTypes } = require('sequelize');
-require('dotenv').config();
+const { Sequelize, DataTypes } = require("sequelize");
+require("dotenv").config();
 
 const sequelize = new Sequelize(
   process.env.MYSQL_DATABASE,
@@ -28,16 +28,16 @@ const sequelize = new Sequelize(
   process.env.MYSQL_PASSWORD,
   {
     host: process.env.MYSQL_HOST,
-    dialect: 'mysql',
-    logging: (msg) => console.log(`[Sequelize] ${msg}`)
-
+    dialect: "mysql",
+    logging: false,
   }
 );
 
 // Vérification de la connexion
-sequelize.authenticate()
-  .then(() => console.log('✅ Connecté à MySQL !'))
-  .catch(err => console.error('❌ Erreur de connexion à MySQL :', err));
+sequelize
+  .authenticate()
+  .then(() => console.log("✅ Connecté à MySQL !"))
+  .catch((err) => console.error("❌ Erreur de connexion à MySQL :", err));
 
 // Initialisation des modèles
 const db = {};
@@ -47,92 +47,277 @@ db.sequelize = sequelize;
 // ===============================
 // IMPORT MODELS
 // ===============================
-db.User = require('../models/user.model')(sequelize);
-db.Product = require('../models/product.model')(sequelize);
-db.Worker = require('../models/worker.model')(sequelize);
-db.Category = require('../models/category.model')(sequelize);
-db.Client = require('../models/client.model')(sequelize);
-db.Supplier = require('../models/supplier.model')(sequelize);
-db.Invoice = require('../models/invoice.model')(sequelize);
-db.InvoiceItem = require('../models/invoiceItem.model')(sequelize);
-db.Sales = require('../models/Sales.model')(sequelize);
-db.Order = require('../models/order.model')(sequelize);
-db.StockMovement = require('../models/StockMovement.model')(sequelize);
-db.Setting = require('../models/setting.model')(sequelize);
-db.Activity = require('../models/activity.model')(sequelize);
-db.Entreprise = require('../models/enterprise.model')(sequelize);
+db.User = require("../models/user.model")(sequelize, DataTypes);
+db.Product = require("../models/product.model")(sequelize, DataTypes);
+db.Worker = require("../models/worker.model")(sequelize, DataTypes);
+db.Category = require("../models/category.model")(sequelize, DataTypes);
+db.Client = require("../models/client.model")(sequelize, DataTypes);
+db.Supplier = require("../models/supplier.model")(sequelize, DataTypes);
+db.Invoice = require("../models/invoice.model")(sequelize, DataTypes);
+db.InvoiceItem = require("../models/invoiceItem.model")(sequelize, DataTypes);
+db.Sales = require("../models/Sales.model")(sequelize, DataTypes);
+db.Order = require("../models/order.model")(sequelize, DataTypes);
+db.StockMovement = require("../models/StockMovement.model")(
+  sequelize,
+  DataTypes
+);
+db.Setting = require("../models/setting.model")(sequelize, DataTypes);
+db.activities = require("../models/activity.model")(sequelize, DataTypes);
+db.Entreprise = require("../models/enterprise.model")(sequelize, DataTypes);
+db.entrepriseUsers = require("../models/entrepriseUser.model")(
+  sequelize,
+  DataTypes
+);
+db.roles = require("../models/role.model")(sequelize, DataTypes);
+db.rolePermissions = require("../models/rolePermission.model")(
+  sequelize,
+  DataTypes
+);
+db.permissions = require("../models/permission.model")(sequelize, DataTypes);
+// =============================================================
+// 🔗 RELATIONS ENTRE LES MODÈLES (Stockly)
+// =============================================================
 
-// ===============================
-// DEFINE RELATIONSHIPS
-// ===============================
+// =======================
+// 👤 USER RELATIONS
+// =======================
 
-// 🔹 Entreprise 1 - N Users
-db.Entreprise.hasMany(db.User, { foreignKey: 'entreprise_id' });
-db.User.belongsTo(db.Entreprise, { foreignKey: 'entreprise_id' });
+// Un utilisateur (admin SaaS) peut créer plusieurs Entreprise
+db.User.hasMany(db.Entreprise, { as: "Entreprise" });
+db.Entreprise.belongsTo(db.User, {
+  foreignKey: {
+    name: "user_id",
+    type: DataTypes.UUID, // 🔑 Important
+  },
+  as: "user",
+});
 
-// 🔹 Entreprise 1 - N Products
-db.Entreprise.hasMany(db.Product, { foreignKey: 'entreprise_id' });
-db.Product.belongsTo(db.Entreprise, { foreignKey: 'entreprise_id' });
+// Un utilisateur peut avoir plusieurs travailleurs (employés)
+db.User.hasMany(db.Worker, { as: "Worker" });
+db.Worker.belongsTo(db.User, {
+  foreignKey: {
+    name: "user_id",
+    type: DataTypes.UUID, // 🔑 Important
+  },
+  as: "user",
+});
 
-// 🔹 Category 1 - N Products
-db.Category.hasMany(db.Product, { foreignKey: 'category_id' });
-db.Product.belongsTo(db.Category, { foreignKey: 'category_id' });
+// Un utilisateur peut être lié à plusieurs Entreprise (via EntrepriseUsers)
+db.User.hasMany(db.entrepriseUsers, { as: "entrepriseUsers" });
+db.entrepriseUsers.belongsTo(db.User, {
+  foreignKey: {
+    name: "user_id",
+    type: DataTypes.UUID, // 🔑 Important
+  },
+  as: "user",
+});
 
-// 🔹 Entreprise 1 - N Clients
-db.Entreprise.hasMany(db.Client, { foreignKey: 'entreprise_id' });
-db.Client.belongsTo(db.Entreprise, { foreignKey: 'entreprise_id' });
+// Un utilisateur peut créer plusieurs Invoice
+db.User.hasMany(db.Invoice, { as: "Invoice" });
+db.Invoice.belongsTo(db.User, {
+  foreignKey: {
+    name: "user_id",
+    type: DataTypes.UUID, // 🔑 Important
+  },
+  as: "user",
+});
 
-// 🔹 Entreprise 1 - N Suppliers
-db.Entreprise.hasMany(db.Supplier, { foreignKey: 'entreprise_id' });
-db.Supplier.belongsTo(db.Entreprise, { foreignKey: 'entreprise_id' });
+// User → Activity
+db.User.hasMany(db.activities, { 
+  as: "activities",
+  foreignKey: { name: "user_id", type: DataTypes.UUID }
+});
+db.activities.belongsTo(db.User, {
+  foreignKey: { name: "user_id", type: DataTypes.UUID },
+  as: "user"
+});
+// =======================
+// 🏢 ENTREPRISE RELATIONS
+// =======================
 
-// 🔹 Client 1 - N Invoices
-db.Client.hasMany(db.Invoice, { foreignKey: 'client_id' });
-db.Invoice.belongsTo(db.Client, { foreignKey: 'client_id' });
+// Une entreprise appartient à un utilisateur (admin)
+db.Entreprise.belongsTo(db.User, { foreignKey: "user_id", as: "owner" });
 
-// 🔹 Invoice 1 - N InvoiceItems
-db.Invoice.hasMany(db.InvoiceItem, { foreignKey: 'invoice_id' });
-db.InvoiceItem.belongsTo(db.Invoice, { foreignKey: 'invoice_id' });
+// Une entreprise peut avoir plusieurs employés (Workers)
+db.Entreprise.hasMany(db.Worker, { as: "Worker" });
+db.Worker.belongsTo(db.Entreprise, {
+  foreignKey: "entreprise_id",
+  as: "entreprise",
+});
 
-// 🔹 Product 1 - N InvoiceItems
-db.Product.hasMany(db.InvoiceItem, { foreignKey: 'product_id' });
-db.InvoiceItem.belongsTo(db.Product, { foreignKey: 'product_id' });
+// Une entreprise peut avoir plusieurs utilisateurs internes (EntrepriseUsers)
+db.Entreprise.hasMany(db.entrepriseUsers, { as: "entrepriseUsers" });
+db.entrepriseUsers.belongsTo(db.Entreprise, {
+  foreignKey: "entreprise_id",
+  as: "entreprise",
+});
 
-// 🔹 Entreprise 1 - N Sales
-db.Entreprise.hasMany(db.Sales, { foreignKey: 'entreprise_id' });
-db.Sales.belongsTo(db.Entreprise, { foreignKey: 'entreprise_id' });
+// Une entreprise peut avoir plusieurs Client
+db.Entreprise.hasMany(db.Client, { as: "Client" });
+db.Client.belongsTo(db.Entreprise, {
+  foreignKey: "entreprise_id",
+  as: "entreprise",
+});
 
-// 🔹 Sale 1 - N Products (through a join table if needed)
-db.Sales.belongsToMany(db.Product, { through: 'SaleProducts', foreignKey: 'sale_id' });
-db.Product.belongsToMany(db.Sales, { through: 'SaleProducts', foreignKey: 'product_id' });
+// Une entreprise peut avoir plusieurs catégories
+db.Entreprise.hasMany(db.Category, { as: "Category" });
+db.Category.belongsTo(db.Entreprise, {
+  foreignKey: "entreprise_id",
+  as: "entreprise",
+});
 
-// 🔹 Entreprise 1 - N Orders
-db.Entreprise.hasMany(db.Order, { foreignKey: 'entreprise_id' });
-db.Order.belongsTo(db.Entreprise, { foreignKey: 'entreprise_id' });
+// Une entreprise peut avoir plusieurs fournisseurs
+db.Entreprise.hasMany(db.Supplier, { as: "Supplier" });
+db.Supplier.belongsTo(db.Entreprise, {
+  foreignKey: "entreprise_id",
+  as: "entreprise",
+});
 
-// 🔹 Supplier 1 - N Orders
-db.Supplier.hasMany(db.Order, { foreignKey: 'supplier_id' });
-db.Order.belongsTo(db.Supplier, { foreignKey: 'supplier_id' });
+// Une entreprise peut avoir plusieurs produits
+db.Entreprise.hasMany(db.Product, { as: "Product" });
+db.Product.belongsTo(db.Entreprise, {
+  foreignKey: "entreprise_id",
+  as: "entreprise",
+});
 
-// 🔹 Order 1 - N StockMovements
-db.Order.hasMany(db.StockMovement, { foreignKey: 'order_id' });
-db.StockMovement.belongsTo(db.Order, { foreignKey: 'order_id' });
+// Une entreprise peut avoir plusieurs Invoice
+db.Entreprise.hasMany(db.Invoice, { as: "Invoice" });
+db.Invoice.belongsTo(db.Entreprise, {
+  foreignKey: "entreprise_id",
+  as: "entreprise",
+});
 
-// 🔹 Product 1 - N StockMovements
-db.Product.hasMany(db.StockMovement, { foreignKey: 'product_id' });
-db.StockMovement.belongsTo(db.Product, { foreignKey: 'product_id' });
+// Une entreprise peut avoir plusieurs ventes
+db.Entreprise.hasMany(db.Sales, { as: "Sales" });
+db.Sales.belongsTo(db.Entreprise, {
+  foreignKey: "entreprise_id",
+  as: "entreprise",
+});
 
-// 🔹 Entreprise 1 - N Settings
-db.Entreprise.hasMany(db.Setting, { foreignKey: 'entreprise_id' });
-db.Setting.belongsTo(db.Entreprise, { foreignKey: 'entreprise_id' });
+// Une entreprise peut avoir plusieurs commandes
+db.Entreprise.hasMany(db.Order, { as: "Order" });
+db.Order.belongsTo(db.Entreprise, {
+  foreignKey: "entreprise_id",
+  as: "entreprise",
+});
 
-// 🔹 Entreprise 1 - N Activities
-db.Entreprise.hasMany(db.Activity, { foreignKey: 'entreprise_id' });
-db.Activity.belongsTo(db.Entreprise, { foreignKey: 'entreprise_id' });
+// Une entreprise peut avoir plusieurs mouvements de stock
+db.Entreprise.hasMany(db.StockMovement, { as: "mouvements_stock" });
+db.StockMovement.belongsTo(db.Entreprise, {
+  foreignKey: "entreprise_id",
+  as: "entreprise",
+});
 
-// 🔹 User 1 - N Activities (for tracking who did what)
-db.User.hasMany(db.Activity, { foreignKey: 'user_id' });
-db.Activity.belongsTo(db.User, { foreignKey: 'user_id' });
+// Une entreprise peut avoir plusieurs activités
+db.Entreprise.hasMany(db.activities, { as: "activities" });
+db.activities.belongsTo(db.Entreprise, {
+  foreignKey: "entreprise_id",
+  as: "entreprise",
+});
+
+// =======================
+// 👨‍💼 WORKER RELATIONS
+// =======================
+db.roles.hasMany(db.Worker, { as: "Worker" });
+db.Worker.belongsTo(db.roles, { foreignKey: "role_id", as: "role" });
+
+// =======================
+// 🧾 FACTURE RELATIONS
+// =======================
+
+// Une facture appartient à un client
+db.Client.hasMany(db.Invoice, { as: "Invoice" });
+db.Invoice.belongsTo(db.Client, { foreignKey: "client_id", as: "client" });
+
+// Une facture peut contenir plusieurs items
+db.Invoice.hasMany(db.InvoiceItem, { as: "items" });
+db.InvoiceItem.belongsTo(db.Invoice, {
+  foreignKey: "facture_id",
+  as: "facture",
+});
+
+// Chaque item correspond à un produit
+db.Product.hasMany(db.InvoiceItem, { as: "InvoiceItem" });
+db.InvoiceItem.belongsTo(db.Product, {
+  foreignKey: "product_id",
+  as: "product",
+});
+
+// =======================
+// 🛒 PRODUCT RELATIONS
+// =======================
+db.Category.hasMany(db.Product, { as: "Product" });
+db.Product.belongsTo(db.Category, {
+  foreignKey: "category_id",
+  as: "category",
+});
+
+db.Supplier.hasMany(db.Product, { as: "Product" });
+db.Product.belongsTo(db.Supplier, {
+  foreignKey: "supplier",
+  as: "supplierInfo",
+});
+
+// Produits et ventes
+db.Product.hasMany(db.Sales, { as: "Sales" });
+db.Sales.belongsTo(db.Product, { foreignKey: "product_id", as: "product" });
+
+// Produits et commandes
+db.Product.hasMany(db.Order, { as: "Order" });
+db.Order.belongsTo(db.Product, { foreignKey: "product_id", as: "product" });
+
+// Produits et mouvements de stock
+db.Product.hasMany(db.StockMovement, { as: "movements" });
+db.StockMovement.belongsTo(db.Product, {
+  foreignKey: "produit_id",
+  as: "product",
+});
+
+// =======================
+// 📦 ORDER RELATIONS
+// =======================
+db.Supplier.hasMany(db.Order, { as: "Order" });
+db.Order.belongsTo(db.Supplier, {
+  foreignKey: "supplier_id",
+  as: "supplier",
+});
+
+// =======================
+// 🔁 STOCK MOVEMENTS
+// =======================
+
+// Mouvements créés par un utilisateur interne à l’entreprise
+db.entrepriseUsers.hasMany(db.StockMovement, { as: "movements" });
+db.StockMovement.belongsTo(db.entrepriseUsers, {
+  foreignKey: "created_by",
+  as: "createdBy",
+});
+
+// =======================
+// ⚙️ SETTINGS RELATIONS
+// =======================
+db.Entreprise.hasOne(db.Setting, {
+  as: "Setting",
+  foreignKey: "entreprise_id",
+});
+db.Setting.belongsTo(db.Entreprise, {
+  foreignKey: "entreprise_id",
+  as: "entreprise",
+});
+
+// =======================
+// 🧱 ROLE / PERMISSION RELATIONS
+// =======================
+db.roles.belongsToMany(db.permissions, {
+  through: db.rolePermissions,
+  foreignKey: "role_id",
+  as: "permissions",
+});
+db.permissions.belongsToMany(db.roles, {
+  through: db.rolePermissions,
+  foreignKey: "permission_id",
+  as: "roles",
+});
 
 // ===============================
 // EXPORT
