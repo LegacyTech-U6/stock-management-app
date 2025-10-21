@@ -5,7 +5,7 @@ const WorkersController = require('../controller/workers.controller');
 const authenticateUser = require('../middleware/AuthenticatedUser');
 // Create
 
-router.use(authenticateUser)
+// router.use(authenticateUser)
 
 router.post('/', WorkersController.createWorker);
 

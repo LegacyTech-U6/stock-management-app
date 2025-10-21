@@ -1,10 +1,10 @@
 // backend/controllers/worker.controller.js
-const sequelizeQuery = require('sequelize-query');
-const db = require('../config/db'); // ton index.js où tous les modèles sont importés
+const sequelizeQuery = require("sequelize-query");
+const db = require("../config/db"); // ton index.js où tous les modèles sont importés
 const Worker = db.Worker; // Sequelize model
 const Entreprise = db.Entreprise;
 const Role = db.Role;
-const { Op } = require('sequelize');
+const { Op } = require("sequelize");
 
 const queryParser = sequelizeQuery(db);
 
@@ -22,8 +22,8 @@ exports.getAllWorkers = async (req, res) => {
     const data = await Worker.findAll({
       ...query,
       include: [
-        { model: Entreprise, attributes: ['id', 'name', 'description'] },
-        { model: Role, attributes: ['id', 'name'] },
+        { model: Entreprise, attributes: ["id", "name", "description"] },
+        { model: Role, attributes: ["id", "name"] },
       ],
     });
 
@@ -45,12 +45,12 @@ exports.getWorkerById = async (req, res) => {
     const worker = await Worker.findOne({
       where: { id },
       include: [
-        { model: Entreprise, attributes: ['id', 'name', 'description'] },
-        { model: Role, attributes: ['id', 'name'] },
+        { model: Entreprise, attributes: ["id", "name", "description"] },
+        { model: Role, attributes: ["id", "name"] },
       ],
     });
 
-    if (!worker) return res.status(404).json({ message: 'Employé non trouvé' });
+    if (!worker) return res.status(404).json({ message: "Employé non trouvé" });
 
     res.status(200).json(worker);
   } catch (err) {
@@ -85,9 +85,10 @@ exports.updateWorker = async (req, res) => {
       where: { id },
     });
 
-    if (!updated) return res.status(404).json({ message: 'Employé non trouvé' });
+    if (!updated)
+      return res.status(404).json({ message: "Employé non trouvé" });
 
-    res.status(200).json({ message: 'Employé mis à jour avec succès' });
+    res.status(200).json({ message: "Employé mis à jour avec succès" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -104,9 +105,10 @@ exports.deleteWorker = async (req, res) => {
       where: { id },
     });
 
-    if (!deleted) return res.status(404).json({ message: 'Employé non trouvé' });
+    if (!deleted)
+      return res.status(404).json({ message: "Employé non trouvé" });
 
-    res.status(200).json({ message: 'Employé supprimé avec succès' });
+    res.status(200).json({ message: "Employé supprimé avec succès" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

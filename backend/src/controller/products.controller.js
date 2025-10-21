@@ -163,13 +163,20 @@ exports.addQuantity = async (req, res) => {
     const { productId, quantityAdd } = req.body;
     const entrepriseId = req.entrepriseId;
 
-    const product = await Product.findOne({ where: { id: productId, entreprise_id: entrepriseId } });
-    if (!product) return res.status(404).json({ success: false, message: 'Produit non trouvé' });
+    const product = await Product.findOne({
+      where: { id: productId, entreprise_id: entrepriseId },
+    });
+    if (!product)
+      return res
+        .status(404)
+        .json({ success: false, message: "Produit non trouvé" });
 
     product.quantity += quantityAdd;
     await product.save();
 
-    res.status(200).json({ success: true, message: 'Quantité ajoutée', product });
+    res
+      .status(200)
+      .json({ success: true, message: "Quantité ajoutée", product });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -183,9 +190,17 @@ exports.buyProduct = async (req, res) => {
     const { productId, quantitySold } = req.body;
     const entrepriseId = req.entrepriseId;
 
-    const product = await Product.findOne({ where: { id: productId, entreprise_id: entrepriseId } });
-    if (!product) return res.status(404).json({ success: false, message: 'Produit non trouvé' });
-    if (product.quantity < quantitySold) return res.status(400).json({ success: false, message: 'Stock insuffisant' });
+    const product = await Product.findOne({
+      where: { id: productId, entreprise_id: entrepriseId },
+    });
+    if (!product)
+      return res
+        .status(404)
+        .json({ success: false, message: "Produit non trouvé" });
+    if (product.quantity < quantitySold)
+      return res
+        .status(400)
+        .json({ success: false, message: "Stock insuffisant" });
 
     product.quantity -= quantitySold;
     await product.save();
@@ -196,12 +211,15 @@ exports.buyProduct = async (req, res) => {
         product_id: productId,
         quantity_sold: quantitySold,
         total_price: product.selling_price * quantitySold,
-        total_profit: (product.selling_price - product.cost_price) * quantitySold,
+        total_profit:
+          (product.selling_price - product.cost_price) * quantitySold,
         entreprise_id: entrepriseId,
       });
     }
 
-    res.status(200).json({ success: true, message: 'Vente enregistrée', product });
+    res
+      .status(200)
+      .json({ success: true, message: "Vente enregistrée", product });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -254,14 +272,16 @@ exports.getOutOfStockProducts = async (req, res) => {
   }
 };
 
-
 // ===============================
 // 🔹 Produits par catégorie
 // ===============================
 exports.getProductsByCategory = async (req, res) => {
   try {
     const categoryId = parseInt(req.params.categoryId);
-    if (isNaN(categoryId)) return res.status(400).json({ success: false, message: 'ID de catégorie invalide' });
+    if (isNaN(categoryId))
+      return res
+        .status(400)
+        .json({ success: false, message: "ID de catégorie invalide" });
 
     const products = await Product.findAll({
       where: {
@@ -269,10 +289,13 @@ exports.getProductsByCategory = async (req, res) => {
         entreprise_id: req.entrepriseId,
       },
       include: [
-        { model: db.Category, attributes: ['name'] },
-        { model: db.Supplier, attributes: ['supplier_name', 'email', 'whatsapp_number'] },
+        { model: db.Category, attributes: ["name"] },
+        {
+          model: db.Supplier,
+          attributes: ["supplier_name", "email", "whatsapp_number"],
+        },
       ],
-      order: [['Prod_name', 'ASC']],
+      order: [["Prod_name", "ASC"]],
     });
 
     res.status(200).json({ success: true, count: products.length, products });
@@ -293,10 +316,8 @@ exports.getSales = async (req, res) => {
 
     const sales = await Sale.findAll({
       ...query,
-      include: [
-        { model: Product, attributes: ['Prod_name', 'selling_price'] },
-      ],
-      order: [['createdAt', 'DESC']],
+      include: [{ model: Product, attributes: ["Prod_name", "selling_price"] }],
+      order: [["createdAt", "DESC"]],
     });
 
     const count = await Sale.count({

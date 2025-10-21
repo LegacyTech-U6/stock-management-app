@@ -2,13 +2,13 @@ const express = require("express");
 const router = express.Router();
 
 // 🧩 Importation des contrôleurs et middlewares
-const ProductController = require("../controller/Produits");
+const ProductController = require("../controller/products.controller");
 const validateProduct = require("../middleware/validateProduct");
 const upload = require("../middleware/upload");
 const getActiveEntreprise = require("../middleware/activeEntreprise");
 
 // 🔐 Middleware global : ajoute l’entreprise active dans req.entreprise
-router.use(getActiveEntreprise);
+// router.use(getActiveEntreprise);
 
 /* ============================================================
    🧱 ROUTES PRODUITS
@@ -22,23 +22,23 @@ router.post(
   "/",
   upload.single("Prod_image"),
   validateProduct,
-  ProductController.post
+  ProductController.createProduct
 );
 
 // 🧾 Obtenir tous les produits de l’entreprise active
-router.get("/", ProductController.get);
+router.get("/", ProductController.getAllProducts);
 
 // ⚠️ Produits avec stock faible
-router.get("/low-stock", ProductController.checkLowStockGlobal);
+router.get("/low-stock", ProductController.getLowStockProducts);
 
 // ❌ Produits en rupture de stock
-router.get("/out-of-stock", ProductController.checkOutOfStockGlobal);
+router.get("/out-of-stock", ProductController.getOutOfStockProducts);
 
 // 💰 Statistiques de ventes par produit
-router.get("/sales", ProductController.getsales);
+router.get("/sales", ProductController.getSales);
 
 // 📦 Obtenir un produit par son ID
-router.get("/:id", ProductController.get2);
+router.get("/:id", ProductController.getProductById);
 
 // 📂 Obtenir les produits d’une catégorie donnée
 router.get("/category/:categoryId", ProductController.getProductsByCategory);
@@ -51,7 +51,7 @@ router.post(
   "/add",
   upload.single("prod_image"),
   validateProduct,
-  ProductController.addProduct
+  ProductController.addQuantity
 );
 
 // ✏️ Mettre à jour un produit (avec ou sans nouvelle image)
@@ -59,11 +59,11 @@ router.put(
   "/:id",
   upload.single("prod_image"),
   validateProduct,
-  ProductController.updated
+  ProductController.updateProduct
 );
 
 // 🗑️ Supprimer un produit
-router.delete("/:id", ProductController.delete);
+router.delete("/:id", ProductController.deleteProduct);
 
 /* ============================================================
    🏁 Export du routeur

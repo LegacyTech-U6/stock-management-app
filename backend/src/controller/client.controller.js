@@ -1,6 +1,6 @@
-const sequelizeQuery = require('sequelize-query');
-const db = require('../config/db'); // ton index.js avec tous tes modèles
-const { Op } = require('sequelize');
+const sequelizeQuery = require("sequelize-query");
+const db = require("../config/db"); // ton index.js avec tous tes modèles
+const { Op } = require("sequelize");
 
 const Client = db.Client;
 const queryParser = sequelizeQuery(db);
@@ -42,7 +42,7 @@ exports.getClientById = async (req, res) => {
       where: { id, entreprise_id: req.user.entrepriseId },
     });
 
-    if (!client) return res.status(404).json({ message: 'Client non trouvé' });
+    if (!client) return res.status(404).json({ message: "Client non trouvé" });
     res.status(200).json(client);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -75,8 +75,8 @@ exports.updateClient = async (req, res) => {
       where: { id, entreprise_id: entrepriseId },
     });
 
-    if (!updated) return res.status(404).json({ message: 'Client non trouvé' });
-    res.status(200).json({ message: 'Client mis à jour avec succès' });
+    if (!updated) return res.status(404).json({ message: "Client non trouvé" });
+    res.status(200).json({ message: "Client mis à jour avec succès" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -94,8 +94,8 @@ exports.deleteClient = async (req, res) => {
       where: { id, entreprise_id: entrepriseId },
     });
 
-    if (!deleted) return res.status(404).json({ message: 'Client non trouvé' });
-    res.status(200).json({ message: 'Client supprimé avec succès' });
+    if (!deleted) return res.status(404).json({ message: "Client non trouvé" });
+    res.status(200).json({ message: "Client supprimé avec succès" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

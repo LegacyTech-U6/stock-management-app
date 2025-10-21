@@ -1,6 +1,6 @@
 // controllers/role.controller.js
-const sequelizeQuery = require('sequelize-query');
-const db = require('../config/db'); // ton index.js avec tous les modèles
+const sequelizeQuery = require("sequelize-query");
+const db = require("../config/db"); // ton index.js avec tous les modèles
 const Role = db.Role;
 
 const queryParser = sequelizeQuery(db);
@@ -26,7 +26,7 @@ exports.getRoleById = async (req, res) => {
   try {
     const { id } = req.params;
     const role = await Role.findByPk(id);
-    if (!role) return res.status(404).json({ message: 'Rôle non trouvé' });
+    if (!role) return res.status(404).json({ message: "Rôle non trouvé" });
     res.json(role);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -39,7 +39,8 @@ exports.getRoleById = async (req, res) => {
 exports.createRole = async (req, res) => {
   try {
     const { name, description } = req.body;
-    if (!name) return res.status(400).json({ message: 'Le nom du rôle est requis' });
+    if (!name)
+      return res.status(400).json({ message: "Le nom du rôle est requis" });
 
     const role = await Role.create({ name, description });
     res.status(201).json(role);
@@ -55,8 +56,8 @@ exports.updateRole = async (req, res) => {
   try {
     const { id } = req.params;
     const [updated] = await Role.update(req.body, { where: { id } });
-    if (!updated) return res.status(404).json({ message: 'Rôle non trouvé' });
-    res.json({ message: 'Rôle mis à jour avec succès' });
+    if (!updated) return res.status(404).json({ message: "Rôle non trouvé" });
+    res.json({ message: "Rôle mis à jour avec succès" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -69,8 +70,8 @@ exports.deleteRole = async (req, res) => {
   try {
     const { id } = req.params;
     const deleted = await Role.destroy({ where: { id } });
-    if (!deleted) return res.status(404).json({ message: 'Rôle non trouvé' });
-    res.json({ message: 'Rôle supprimé avec succès' });
+    if (!deleted) return res.status(404).json({ message: "Rôle non trouvé" });
+    res.json({ message: "Rôle supprimé avec succès" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

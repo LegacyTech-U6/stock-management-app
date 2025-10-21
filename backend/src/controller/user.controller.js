@@ -1,22 +1,20 @@
 // controllers/user.controller.js
-const bcrypt = require('bcrypt');
-const {pool} = require('../config/db');
-const { body, validationResult } = require('express-validator');
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
-
+const bcrypt = require("bcrypt");
+const { pool } = require("../config/db");
+const { body, validationResult } = require("express-validator");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 // Secret JWT (idéalement mettre dans .env)
 const JWT_SECRET = process.env.JWT_SECRET;
 
-
-
-
 // Middleware de validation avant création
 const registerValidation = [
-  body('username').notEmpty().withMessage('Username obligatoire'),
-  body('email').isEmail().withMessage('Email invalide'),
-  body('password').isLength({ min: 1 }).withMessage('Mot de passe min 1 caractères'),
+  body("username").notEmpty().withMessage("Username obligatoire"),
+  body("email").isEmail().withMessage("Email invalide"),
+  body("password")
+    .isLength({ min: 1 })
+    .withMessage("Mot de passe min 1 caractères"),
 ];
 
 // Contrôleur d’inscription
@@ -28,13 +26,15 @@ const register = [
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { username,Last_name, email,telephone, password } = req.body;
+    const { username, Last_name, email, telephone, password } = req.body;
 
     try {
       // Vérifier si l'email existe déjà
-      const [rows] = await pool.query('SELECT id FROM users WHERE email = ?', [email]);
+      const [rows] = await pool.query("SELECT id FROM users WHERE email = ?", [
+        email,
+      ]);
       if (rows.length > 0) {
-        return res.status(400).json({ message: 'Email déjà utilisé' });
+        return res.status(400).json({ message: "Email déjà utilisé" });
       }
 
       // Hacher le mot de passe
@@ -42,22 +42,21 @@ const register = [
 
       // Insérer l'utilisateur
       await pool.query(
-        'INSERT INTO users (username,Last_name, email,telephone, password_hash) VALUES (?,?,?,?,?)',
-        [username,Last_name, email,telephone, hashedPassword]
+        "INSERT INTO users (username,Last_name, email,telephone, password_hash) VALUES (?,?,?,?,?)",
+        [username, Last_name, email, telephone, hashedPassword]
       );
 
-      res.status(201).json({ message: 'Utilisateur créé avec succès' });
+      res.status(201).json({ message: "Utilisateur créé avec succès" });
     } catch (err) {
       console.error(err);
-      res.status(500).json({ message: 'Erreur serveur' });
+      res.status(500).json({ message: "Erreur serveur" });
     }
   },
-  
 ];
 
 const loginValidation = [
-  body('email').isEmail().withMessage('Email invalide'),
-  body('password').notEmpty().withMessage('Mot de passe requis'),
+  body("email").isEmail().withMessage("Email invalide"),
+  body("password").notEmpty().withMessage("Mot de passe requis"),
 ];
 
 const login = [
@@ -72,9 +71,14 @@ const login = [
 
     try {
       // Chercher l’utilisateur par email
-      const [rows] = await pool.query('SELECT * FROM all_users WHERE email = ?', [email]);
+      const [rows] = await pool.query(
+        "SELECT * FROM all_users WHERE email = ?",
+        [email]
+      );
       if (rows.length === 0) {
-        return res.status(400).json({ message: 'Email ou mot de passe incorrect' });
+        return res
+          .status(400)
+          .json({ message: "Email ou mot de passe incorrect" });
       }
 
       const user = rows[0];
@@ -82,20 +86,20 @@ const login = [
       // Comparer le mot de passe fourni et le hash stocké
       const match = await bcrypt.compare(password, user.password_hash);
       if (!match) {
-        return res.status(400).json({ message: 'Email ou mot de passe incorrect' });
+        return res
+          .status(400)
+          .json({ message: "Email ou mot de passe incorrect" });
       }
 
       // Générer un JWT
-      const token = jwt.sign(
-        { id: user.id, email: user.email },
-        JWT_SECRET,
-        { expiresIn: '1h' }
-      );
+      const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, {
+        expiresIn: "1h",
+      });
 
-      res.json({ token, message: 'Connexion réussie' });
+      res.json({ token, message: "Connexion réussie" });
     } catch (err) {
       console.error(err);
-      res.status(500).json({ message: 'Erreur serveur' });
+      res.status(500).json({ message: "Erreur serveur" });
     }
   },
 ];
@@ -106,25 +110,24 @@ const getAccount = async (req, res) => {
     const userId = req.user.id;
 
     // Rechercher l'utilisateur en DB sans le mot de passe
-    const [rows] = await pool.query(
-      'SELECT * FROM users WHERE id = ?',
-      [userId]
-    );
+    const [rows] = await pool.query("SELECT * FROM users WHERE id = ?", [
+      userId,
+    ]);
 
     if (rows.length === 0) {
-      return res.status(404).json({ message: 'Utilisateur non trouvé' });
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
     }
 
     res.json(rows[0]); // renvoie les infos de l'utilisateur
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Erreur serveur' });
+    res.status(500).json({ message: "Erreur serveur" });
   }
 };
 // Déconnexion (invalide le token côté client)
 const logout = (req, res) => {
   // Ici pas besoin de toucher au token côté serveur
-  res.json({ message: 'Déconnexion réussie' });
+  res.json({ message: "Déconnexion réussie" });
 };
 // Mot de passe oublié
 const forgotPassword = async (req, res) => {
@@ -132,31 +135,30 @@ const forgotPassword = async (req, res) => {
 
   try {
     // Vérifier si l'email existe
-    const [rows] = await pool.query('SELECT id FROM users WHERE email = ?', [email]);
+    const [rows] = await pool.query("SELECT id FROM users WHERE email = ?", [
+      email,
+    ]);
     if (rows.length === 0) {
-      return res.status(400).json({ message: 'Email non trouvé' });
+      return res.status(400).json({ message: "Email non trouvé" });
     }
 
     const user = rows[0];
 
     // Générer un token temporaire de reset (expire dans 15 min)
-    const resetToken = jwt.sign(
-      { id: user.id },
-      JWT_SECRET,
-      { expiresIn: '15m' }
-    );
+    const resetToken = jwt.sign({ id: user.id }, JWT_SECRET, {
+      expiresIn: "15m",
+    });
 
     // 🚀 Normalement ici : envoyer par email avec un lien
     // Exemple de lien : http://localhost:3000/reset-password?token=xxxxx
     // Pour l’instant on renvoie juste le token dans la réponse
     res.json({
-      message: 'Lien de réinitialisation généré (à envoyer par email)',
-      resetToken
+      message: "Lien de réinitialisation généré (à envoyer par email)",
+      resetToken,
     });
-
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Erreur serveur' });
+    res.status(500).json({ message: "Erreur serveur" });
   }
 };
 // RESET PASSWORD
@@ -165,7 +167,9 @@ const resetPassword = async (req, res) => {
     const { token, newPassword } = req.body;
 
     if (!token || !newPassword) {
-      return res.status(400).json({ error: "Token et nouveau mot de passe requis" });
+      return res
+        .status(400)
+        .json({ error: "Token et nouveau mot de passe requis" });
     }
 
     // Vérifier le token de reset
@@ -177,7 +181,9 @@ const resetPassword = async (req, res) => {
     }
 
     // Récupérer l'utilisateur
-    const [rows] = await pool.query("SELECT * FROM users WHERE id = ?", [decoded.id]);
+    const [rows] = await pool.query("SELECT * FROM users WHERE id = ?", [
+      decoded.id,
+    ]);
     if (rows.length === 0) {
       return res.status(404).json({ error: "Utilisateur non trouvé" });
     }
@@ -186,7 +192,10 @@ const resetPassword = async (req, res) => {
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     // Mettre à jour le mot de passe
-    await pool.query("UPDATE users SET password_hash = ? WHERE id = ?", [hashedPassword, decoded.id]);
+    await pool.query("UPDATE users SET password_hash = ? WHERE id = ?", [
+      hashedPassword,
+      decoded.id,
+    ]);
 
     res.json({ message: "Mot de passe réinitialisé avec succès" });
   } catch (err) {
@@ -203,9 +212,10 @@ const changePassword = async (req, res) => {
   const userId = req.user.id;
 
   try {
-    const [rows] = await pool.query("SELECT password_hash FROM users WHERE id = ?", [
-      userId,
-    ]);
+    const [rows] = await pool.query(
+      "SELECT password_hash FROM users WHERE id = ?",
+      [userId]
+    );
 
     if (rows.length === 0) {
       return res.status(404).json({ message: "Utilisateur non trouvé" });
@@ -234,7 +244,7 @@ const changePassword = async (req, res) => {
 // ✅ Mettre à jour le profil
 const updateProfile = async (req, res) => {
   const { username, email } = req.body;
-  const userId = req.body.id ;
+  const userId = req.body.id;
 
   try {
     // Vérifier si un email ou username existe déjà (sauf le sien)
@@ -247,10 +257,11 @@ const updateProfile = async (req, res) => {
       return res.status(400).json({ message: "Nom ou email déjà utilisé" });
     }
 
-    await pool.query(
-      "UPDATE users SET username = ?, email = ? WHERE id = ?",
-      [username, email, userId]
-    );
+    await pool.query("UPDATE users SET username = ?, email = ? WHERE id = ?", [
+      username,
+      email,
+      userId,
+    ]);
 
     res.json({ message: "Profil mis à jour avec succès" });
   } catch (error) {
@@ -261,7 +272,7 @@ const updateProfile = async (req, res) => {
 // routes/auth.js
 
 // ✅ Récupérer le profil de l'utilisateur connecté
-const getProfile =   (req, res) => {
+const getProfile = (req, res) => {
   try {
     // req.user vient du middleware qui a décodé le token
     const user = req.user;
@@ -277,5 +288,14 @@ const getProfile =   (req, res) => {
   }
 };
 
-
-module.exports = { register, login, getAccount, logout, forgotPassword, resetPassword, changePassword, updateProfile, getProfile };
+module.exports = {
+  register,
+  login,
+  getAccount,
+  logout,
+  forgotPassword,
+  resetPassword,
+  changePassword,
+  updateProfile,
+  getProfile,
+};

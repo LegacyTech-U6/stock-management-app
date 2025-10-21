@@ -1,6 +1,6 @@
 // backend/controllers/entreprise.controller.js
-const sequelizeQuery = require('sequelize-query');
-const db = require('../config/db'); // ton index.js avec tous tes modèles
+const sequelizeQuery = require("sequelize-query");
+const db = require("../config/db"); // ton index.js avec tous tes modèles
 const Entreprise = db.Entreprise; // Sequelize model si tu l'as défini, sinon tu peux adapter
 
 const queryParser = sequelizeQuery(db);
@@ -43,7 +43,7 @@ exports.getEntrepriseByUuid = async (req, res) => {
     });
 
     if (!entreprise)
-      return res.status(404).json({ message: 'Entreprise non trouvée' });
+      return res.status(404).json({ message: "Entreprise non trouvée" });
 
     res.status(200).json(entreprise);
   } catch (err) {
@@ -79,9 +79,9 @@ exports.updateEntreprise = async (req, res) => {
     });
 
     if (!updated)
-      return res.status(404).json({ message: 'Entreprise non trouvée' });
+      return res.status(404).json({ message: "Entreprise non trouvée" });
 
-    res.status(200).json({ message: 'Entreprise mise à jour avec succès' });
+    res.status(200).json({ message: "Entreprise mise à jour avec succès" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -99,9 +99,9 @@ exports.deleteEntreprise = async (req, res) => {
     });
 
     if (!deleted)
-      return res.status(404).json({ message: 'Entreprise non trouvée' });
+      return res.status(404).json({ message: "Entreprise non trouvée" });
 
-    res.status(200).json({ message: 'Entreprise supprimée avec succès' });
+    res.status(200).json({ message: "Entreprise supprimée avec succès" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

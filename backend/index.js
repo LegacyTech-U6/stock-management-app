@@ -2,18 +2,21 @@ const express = require("express");
 const cors = require("cors");
 const  path= require ("path");
 const app = express();
+const db = require('./src/config/db')
+const ProductRoute = require("./src/routes/product.route");
+const ProductRouteStats = require("./src/routes/stats");
+const CategoryRoute = require("./src/routes/category.route");
+const SupplierRoute = require("./src/routes/supplier.route");
+const OrderRoute = require("./src/routes/order.route");
+const factureRoutes = require("./src/routes/facture.route");
+const clientRoute = require("./src/routes/client.route");
+const user = require("./src/routes/Auths.route");
+const entreprise = require("./src/routes/entreprise.routes");
+const workers = require("./src/routes/workers.routes")
+const rolesRoutes = require("./src/routes/roles.routes")
 
-const ProductRoute = require("./routes/product");
-const ProductRouteStats = require("./routes/stats");
-const CategoryRoute = require("./routes/category");
-const SupplierRoute = require("./routes/supplier");
-const OrderRoute = require("./routes/Order");
-const factureRoutes = require("./routes/facture");
-const clientRoute = require("./routes/client");
-const user = require("./routes/Auths.route");
-const entreprise = require("./routes/entreprise.routes");
-const workers = require("./routes/workers.routes")
-const rolesRoutes = require("./routes/roles.routes")
+// Database
+db.sequelize.sync();
 app.use(express.json());
 app.use((req, res, next) => {
   console.log(`Requête reçue : ${req.method} ${req.url}`);

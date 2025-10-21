@@ -23,19 +23,27 @@ const { Sequelize, DataTypes } = require('sequelize');
 require('dotenv').config();
 
 const sequelize = new Sequelize(
-  process.env.MYSQL_DATABASE2,
+  process.env.MYSQL_DATABASE,
   process.env.MYSQL_USER,
   process.env.MYSQL_PASSWORD,
   {
     host: process.env.MYSQL_HOST,
     dialect: 'mysql',
-    logging: true
+    logging: (msg) => console.log(`[Sequelize] ${msg}`)
+
   }
 );
 
-const db = {};
-db.sequelize = sequelize;
+// Vérification de la connexion
+sequelize.authenticate()
+  .then(() => console.log('✅ Connecté à MySQL !'))
+  .catch(err => console.error('❌ Erreur de connexion à MySQL :', err));
 
+// Initialisation des modèles
+const db = {};
+
+db.Sequelize = Sequelize;
+db.sequelize = sequelize;
 // ===============================
 // IMPORT MODELS
 // ===============================
@@ -50,7 +58,7 @@ db.InvoiceItem = require('../models/invoiceItem.model')(sequelize);
 db.Sales = require('../models/Sales.model')(sequelize);
 db.Order = require('../models/order.model')(sequelize);
 db.StockMovement = require('../models/StockMovement.model')(sequelize);
-db.Settings = require('../models/setting.model')(sequelize);
+db.Setting = require('../models/setting.model')(sequelize);
 db.Activity = require('../models/activity.model')(sequelize);
 db.Entreprise = require('../models/enterprise.model')(sequelize);
 
@@ -91,12 +99,12 @@ db.Product.hasMany(db.InvoiceItem, { foreignKey: 'product_id' });
 db.InvoiceItem.belongsTo(db.Product, { foreignKey: 'product_id' });
 
 // 🔹 Entreprise 1 - N Sales
-db.Entreprise.hasMany(db.Sale, { foreignKey: 'entreprise_id' });
-db.Sale.belongsTo(db.Entreprise, { foreignKey: 'entreprise_id' });
+db.Entreprise.hasMany(db.Sales, { foreignKey: 'entreprise_id' });
+db.Sales.belongsTo(db.Entreprise, { foreignKey: 'entreprise_id' });
 
 // 🔹 Sale 1 - N Products (through a join table if needed)
-db.Sale.belongsToMany(db.Product, { through: 'SaleProducts', foreignKey: 'sale_id' });
-db.Product.belongsToMany(db.Sale, { through: 'SaleProducts', foreignKey: 'product_id' });
+db.Sales.belongsToMany(db.Product, { through: 'SaleProducts', foreignKey: 'sale_id' });
+db.Product.belongsToMany(db.Sales, { through: 'SaleProducts', foreignKey: 'product_id' });
 
 // 🔹 Entreprise 1 - N Orders
 db.Entreprise.hasMany(db.Order, { foreignKey: 'entreprise_id' });

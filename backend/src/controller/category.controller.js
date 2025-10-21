@@ -1,13 +1,13 @@
 // controllers/category.controller.js
-const sequelizeQuery = require('sequelize-query');
-const db = require('../config/db'); // index.js où tous tes modèles sont importés
+const sequelizeQuery = require("sequelize-query");
+const db = require("../config/db"); // index.js où tous tes modèles sont importés
 const { Category, Product } = db;
 
 const queryParser = sequelizeQuery(db);
 
-const CategoryController = {
+
   // 🔹 Récupérer toutes les catégories
-  async getAllCategories(req, res) {
+ exports.getAllCategories = async (req, res) =>{
     try {
       const query = await queryParser.parse(req);
 
@@ -22,19 +22,19 @@ const CategoryController = {
           include: [
             // Compter le nombre de produits par catégorie
             [
-              db.sequelize.fn('COUNT', db.sequelize.col('Products.id')),
-              'productCount'
-            ]
-          ]
+              db.sequelize.fn("COUNT", db.sequelize.col("Products.id")),
+              "productCount",
+            ],
+          ],
         },
         include: [
-          { model: Product, attributes: [] } // juste pour le COUNT
+          { model: Product, attributes: [] }, // juste pour le COUNT
         ],
-        group: ['Category.id']
+        group: ["Category.id"],
       });
 
       const count = await Category.count({
-        where: query.where
+        where: query.where,
       });
 
       res.status(200).json({ count, data });
@@ -45,7 +45,7 @@ const CategoryController = {
   },
 
   // 🔹 Récupérer une catégorie par ID
-  async getCategoryById(req, res) {
+ exports.getCategoryById = async (req, res) => {
     try {
       const { id } = req.params;
 
@@ -54,16 +54,17 @@ const CategoryController = {
         attributes: {
           include: [
             [
-              db.sequelize.fn('COUNT', db.sequelize.col('Products.id')),
-              'productCount'
-            ]
-          ]
+              db.sequelize.fn("COUNT", db.sequelize.col("Products.id")),
+              "productCount",
+            ],
+          ],
         },
         include: [{ model: Product, attributes: [] }],
-        group: ['Category.id']
+        group: ["Category.id"],
       });
 
-      if (!category) return res.status(404).json({ message: 'Catégorie non trouvée' });
+      if (!category)
+        return res.status(404).json({ message: "Catégorie non trouvée" });
 
       res.status(200).json(category);
     } catch (err) {
@@ -73,14 +74,21 @@ const CategoryController = {
   },
 
   // 🔹 Créer une catégorie
-  async createCategory(req, res) {
+  exports.createCategory = async(req, res) =>{
     try {
       const entreprise_id = req.entrepriseId;
       const { name, description } = req.body;
 
-      if (!name) return res.status(400).json({ message: 'Le nom de la catégorie est requis' });
+      if (!name)
+        return res
+          .status(400)
+          .json({ message: "Le nom de la catégorie est requis" });
 
-      const category = await Category.create({ name, description, entreprise_id });
+      const category = await Category.create({
+        name,
+        description,
+        entreprise_id,
+      });
 
       res.status(201).json(category);
     } catch (err) {
@@ -90,22 +98,26 @@ const CategoryController = {
   },
 
   // 🔹 Mettre à jour une catégorie
-  async updateCategory(req, res) {
+ exports.updateCategory= async (req, res)=> {
     try {
       const { id } = req.params;
       const entreprise_id = req.entrepriseId;
       const { name, description } = req.body;
 
-      if (!name) return res.status(400).json({ message: 'Le nom de la catégorie est requis' });
+      if (!name)
+        return res
+          .status(400)
+          .json({ message: "Le nom de la catégorie est requis" });
 
       const [updated] = await Category.update(
         { name, description },
         { where: { id, entreprise_id } }
       );
 
-      if (!updated) return res.status(404).json({ message: 'Catégorie non trouvée' });
+      if (!updated)
+        return res.status(404).json({ message: "Catégorie non trouvée" });
 
-      res.status(200).json({ message: 'Catégorie mise à jour avec succès' });
+      res.status(200).json({ message: "Catégorie mise à jour avec succès" });
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: err.message });
@@ -113,21 +125,22 @@ const CategoryController = {
   },
 
   // 🔹 Supprimer une catégorie
-  async deleteCategory(req, res) {
+ exports.deleteCategory =async (req, res)=> {
     try {
       const { id } = req.params;
       const entreprise_id = req.entrepriseId;
 
       const deleted = await Category.destroy({ where: { id, entreprise_id } });
 
-      if (!deleted) return res.status(404).json({ message: 'Catégorie non trouvée' });
+      if (!deleted)
+        return res.status(404).json({ message: "Catégorie non trouvée" });
 
-      res.status(200).json({ message: 'Catégorie supprimée avec succès' });
+      res.status(200).json({ message: "Catégorie supprimée avec succès" });
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: err.message });
     }
   }
-};
 
-module.exports = CategoryController;
+
+
