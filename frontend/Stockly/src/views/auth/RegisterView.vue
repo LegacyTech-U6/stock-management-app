@@ -413,7 +413,7 @@ const setNavigationDirection = (direction) => {
 
 const user = ref({
   username: '',
-  last_name: '',
+  Last_name: '',
   email: '',
   telephone: '',
   company: '',
@@ -441,7 +441,7 @@ const handleRegister = async () => {
   try {
     await authStore.register(
       user.value.username,
-      user.value.last_name,
+      user.value.Last_name,
       user.value.email,
       user.value.telephone,
       user.value.password,

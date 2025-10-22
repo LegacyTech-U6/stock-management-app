@@ -1,14 +1,13 @@
 // src/stores/authStore.js
-import { defineStore } from "pinia";
-import axios from "axios";
+import { defineStore } from 'pinia'
+import axios from 'axios'
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL
 
-
-export const useAuthStore = defineStore("auth", {
+export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null,
-    token: localStorage.getItem("token") || null, // récupère le token stocké au reload
+    token: localStorage.getItem('token') || null, // récupère le token stocké au reload
     isLoading: false,
     error: null,
     successMessage: null,
@@ -18,9 +17,9 @@ export const useAuthStore = defineStore("auth", {
      * Inscription utilisateur
      */
     async register(username, Last_name, email, telephone, password) {
-      this.isLoading = true;
-      this.error = null;
-      this.successMessage = null;
+      this.isLoading = true
+      this.error = null
+      this.successMessage = null
 
       try {
         const res = await axios.post(`${API_URL}/auth/register`, {
@@ -28,15 +27,15 @@ export const useAuthStore = defineStore("auth", {
           Last_name,
           email,
           telephone,
-          password
-        });
+          password,
+        })
 
         // ⚠️ backend ne renvoie que { message }
-        this.successMessage = res.data.message || "Inscription réussie 🎉";
+        this.successMessage = res.data.message || 'Inscription réussie 🎉'
       } catch (err) {
-        this.error = err.response?.data?.message || "Erreur d'inscription ❌";
+        this.error = err.response?.data?.message || "Erreur d'inscription ❌"
       } finally {
-        this.isLoading = false;
+        this.isLoading = false
       }
     },
 
@@ -44,28 +43,27 @@ export const useAuthStore = defineStore("auth", {
      * Connexion utilisateur
      */
     async login(email, password) {
-      this.isLoading = true;
-      this.error = null;
+      this.isLoading = true
+      this.error = null
 
       try {
         const res = await axios.post(`${API_URL}/auth/login`, {
           email,
           password,
-        });
+        })
 
         // ✅ Ton backend renvoie { token, message }
-        this.token = res.data.token;
-        localStorage.setItem("token", this.token);
+        this.token = res.data.token
+        localStorage.setItem('token', this.token)
 
         // ⚠️ Pas de user dans la réponse → il faudra utiliser getAccount
-        await this.getAccount();
-
+        await this.getAccount()
       } catch (err) {
-        this.error = err.response?.data?.message || "Erreur de connexion ❌";
-        this.user = null;
-        this.token = null;
+        this.error = err.response?.data?.message || 'Erreur de connexion ❌'
+        this.user = null
+        this.token = null
       } finally {
-        this.isLoading = false;
+        this.isLoading = false
       }
     },
 
@@ -73,16 +71,16 @@ export const useAuthStore = defineStore("auth", {
      * Récupérer les infos utilisateur connecté
      */
     async getAccount() {
-      if (!this.token) return;
+      if (!this.token) return
 
       try {
-        const res = await axios.get(`${API_URL}/auth/account`, {
+        const res = await axios.get(`${API_URL}/auth/profile`, {
           headers: { Authorization: `Bearer ${this.token}` },
-        });
-        this.user = res.data;
+        })
+        this.user = res.data
       } catch (err) {
-        this.error = err.response?.data?.message|| "Impossible de récupérer le compte ❌";
-        this.user = null;
+        this.error = err.response?.data?.message || 'Impossible de récupérer le compte ❌'
+        this.user = null
       }
     },
 
@@ -90,26 +88,26 @@ export const useAuthStore = defineStore("auth", {
      * Déconnexion utilisateur
      */
     logout() {
-      this.user = null;
-      this.token = null;
-      localStorage.removeItem("token");
+      this.user = null
+      this.token = null
+      localStorage.removeItem('token')
     },
 
     /**
      * Mot de passe oublié
      */
     async forgotPassword(email) {
-      this.isLoading = true;
-      this.error = null;
-      this.successMessage = null;
+      this.isLoading = true
+      this.error = null
+      this.successMessage = null
 
       try {
-        const res = await axios.post(`${API_URL}/auth/forgot-password`, { email });
-        this.successMessage = res.data.message || "Lien envoyé 📩";
+        const res = await axios.post(`${API_URL}/auth/forgot-password`, { email })
+        this.successMessage = res.data.message || 'Lien envoyé 📩'
       } catch (err) {
-        this.error = err.response?.data?.message || "Erreur lors de la demande ❌";
+        this.error = err.response?.data?.message || 'Erreur lors de la demande ❌'
       } finally {
-        this.isLoading = false;
+        this.isLoading = false
       }
     },
 
@@ -117,19 +115,19 @@ export const useAuthStore = defineStore("auth", {
      * Réinitialiser le mot de passe
      */
     async resetPassword(token, newPassword) {
-      this.isLoading = true;
-      this.error = null;
+      this.isLoading = true
+      this.error = null
 
       try {
         const res = await axios.post(`${API_URL}/auth/reset-password`, {
           token,
           newPassword,
-        });
-        this.successMessage = res.data.message;
+        })
+        this.successMessage = res.data.message
       } catch (err) {
-        this.error = err.response?.data?.error || "Erreur réinitialisation ❌";
+        this.error = err.response?.data?.error || 'Erreur réinitialisation ❌'
       } finally {
-        this.isLoading = false;
+        this.isLoading = false
       }
     },
 
@@ -137,21 +135,38 @@ export const useAuthStore = defineStore("auth", {
      * Changer le mot de passe (utilisateur connecté)
      */
     async changePassword(oldPassword, newPassword) {
-      this.isLoading = true;
-      this.error = null;
+      this.isLoading = true
+      this.error = null
 
       try {
         const res = await axios.post(
           `${API_URL}/auth/change-password`,
           { oldPassword, newPassword },
-          { headers: { Authorization: `Bearer ${this.token}` } }
-        );
-        this.successMessage = res.data.message;
+          { headers: { Authorization: `Bearer ${this.token}` } },
+        )
+        this.successMessage = res.data.message
       } catch (err) {
-        this.error = err.response?.data?.message || "Erreur changement mot de passe ❌";
+        this.error = err.response?.data?.message || 'Erreur changement mot de passe ❌'
       } finally {
-        this.isLoading = false;
+        this.isLoading = false
+      }
+    },
+    /**
+     * Vérification du compte par email
+     */
+    async verifyEmail(token) {
+      this.isLoading = true
+      this.error = null
+      this.successMessage = null
+
+      try {
+        const res = await axios.get(`${API_URL}/auth/activate/${token}`)
+        this.successMessage = res.data.message || 'Compte activé avec succès 🎉'
+      } catch (err) {
+        this.error = err.response?.data?.message || 'Lien invalide ou expiré ❌'
+      } finally {
+        this.isLoading = false
       }
     },
   },
-});
+})

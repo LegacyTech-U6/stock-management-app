@@ -1,7 +1,7 @@
 <!-- MainPage.vue -->
 <template>
   <div class="min-h-screen bg-gray-50">
-    <div v-if="loadingClients" class="max-w-7xl mx-auto">
+    <div v-if="store.isLoading" class="max-w-7xl mx-auto">
       <LazyLoader :loading="loadingClients" :skeleton-count="6">
         <template #icon>
           <n-spin size="40" />
@@ -444,7 +444,6 @@ const closeModal = () => {
 
 onMounted(async () => {
   loadingClients.value = true
-  await new Promise((resolve) => setTimeout(resolve, 2000))
   await store.fetchEntreprises()
   loadingClients.value = false
 })

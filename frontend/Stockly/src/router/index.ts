@@ -17,15 +17,21 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/register',
     name: 'register',
-    component: () => import('../views/RegisterView.vue'),
+    component: () => import('../views/auth/RegisterView.vue'),
     meta: { showNavbarAndFooter: false },
   },
   {
     path: '/login',
     name: 'login',
-    component: () => import('../views/LoginView.vue'),
+    component: () => import('../views/auth/LoginView.vue'),
     meta: { showNavbarAndFooter: false },
   },
+  {
+  path: "/verify/:token",
+  name: "VerifyEmail",
+  component: () => import("@/views/auth/VerifyEmail.vue"),
+},
+
   {
     path: '/ad',
     component: () => import('@/views/AdminLayout.vue'),

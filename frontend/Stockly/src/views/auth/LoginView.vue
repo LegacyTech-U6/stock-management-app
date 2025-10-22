@@ -124,6 +124,7 @@
                   type="email"
                   v-model="loginData.email"
                   placeholder="john@example.com"
+                  required
                   class="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition"
                 />
               </div>
@@ -139,6 +140,7 @@
                     :type="showLoginPassword ? 'text' : 'password'"
                     v-model="loginData.password"
                     placeholder="Enter your password"
+                    required
                     class="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition"
                   />
                   <button
@@ -166,15 +168,17 @@
                 <label class="ml-2 text-sm text-gray-600">Remember me</label>
               </div>
 
-              <div v-if="authStore.error" class="p-4 bg-red-50 border border-red-200 rounded-lg">
-                <p class="text-sm text-red-700">{{ authStore.error }}</p>
+              <div v-if="loginError" class="p-4 bg-red-50 border border-red-200 rounded-lg">
+                <p class="text-sm text-red-700">{{ loginError }}</p>
               </div>
 
               <button
                 type="submit"
-                class="w-full py-2.5 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition transform hover:scale-105"
+                :disabled="isLoading"
+                class="w-full py-2.5 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Sign In
+                <span v-if="isLoading">Signing in...</span>
+                <span v-else>Sign In</span>
               </button>
 
               <div class="relative">
@@ -188,7 +192,9 @@
 
               <button
                 type="button"
-                class="w-full py-2.5 rounded-lg border-2 border-gray-300 text-gray-700 font-semibold hover:bg-gray-50 hover:border-gray-400 transition"
+                @click="useDemoAccount"
+                :disabled="isLoading"
+                class="w-full py-2.5 rounded-lg border-2 border-gray-300 text-gray-700 font-semibold hover:bg-gray-50 hover:border-gray-400 transition disabled:opacity-50"
               >
                 Try Demo Account
               </button>
@@ -264,6 +270,7 @@
                     type="text"
                     v-model="registerData.username"
                     placeholder="John"
+                    required
                     class="w-full px-3 lg:px-4 py-2 bg-white lg:bg-gray-50 border border-gray-300 lg:rounded-lg rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition text-sm"
                   />
                 </div>
@@ -273,6 +280,7 @@
                     type="text"
                     v-model="registerData.last_name"
                     placeholder="Doe"
+                    required
                     class="w-full px-3 lg:px-4 py-2 bg-white lg:bg-gray-50 border border-gray-300 lg:rounded-lg rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition text-sm"
                   />
                 </div>
@@ -284,6 +292,7 @@
                   type="email"
                   v-model="registerData.email"
                   placeholder="john@example.com"
+                  required
                   class="w-full px-3 lg:px-4 py-2 bg-white lg:bg-gray-50 border border-gray-300 lg:rounded-lg rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition text-sm"
                 />
               </div>
@@ -294,6 +303,7 @@
                   type="text"
                   v-model="registerData.company"
                   placeholder="Your company name"
+                  required
                   class="w-full px-3 lg:px-4 py-2 bg-white lg:bg-gray-50 border border-gray-300 lg:rounded-lg rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition text-sm"
                 />
               </div>
@@ -303,6 +313,7 @@
                   <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Business type</label>
                   <select
                     v-model="registerData.role"
+                    required
                     class="w-full px-3 lg:px-4 py-2 bg-white lg:bg-gray-50 border border-gray-300 lg:rounded-lg rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition appearance-none text-sm"
                   >
                     <option value="">Select role</option>
@@ -329,6 +340,8 @@
                     :type="showRegisterPassword ? 'text' : 'password'"
                     v-model="registerData.password"
                     placeholder="Create a password"
+                    required
+                    minlength="6"
                     class="w-full px-3 lg:px-4 py-2 bg-white lg:bg-gray-50 border border-gray-300 lg:rounded-lg rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition text-sm"
                   />
                   <button
@@ -368,6 +381,8 @@
                     :type="showConfirmPassword ? 'text' : 'password'"
                     v-model="confirmPassword"
                     placeholder="Confirm your password"
+                    required
+                    minlength="6"
                     class="w-full px-3 lg:px-4 py-2 bg-white lg:bg-gray-50 border border-gray-300 lg:rounded-lg rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition text-sm"
                   />
                   <button
@@ -404,6 +419,7 @@
                 <input
                   type="checkbox"
                   v-model="registerData.accept_terms"
+                  required
                   class="mt-1 w-4 h-4 text-blue-600 rounded border-gray-300"
                 />
                 <label class="text-xs lg:text-sm text-gray-600">
@@ -423,15 +439,17 @@
                 <label class="text-xs lg:text-sm text-gray-600">Send me updates and marketing emails</label>
               </div>
 
-              <div v-if="error" class="p-3 lg:p-4 bg-red-50 border border-red-200 lg:rounded-lg rounded mt-2">
-                <p class="text-xs lg:text-sm text-red-700">{{ error }}</p>
+              <div v-if="registerError" class="p-3 lg:p-4 bg-red-50 border border-red-200 lg:rounded-lg rounded mt-2">
+                <p class="text-xs lg:text-sm text-red-700">{{ registerError }}</p>
               </div>
 
               <button
                 type="submit"
-                class="w-full py-2.5 lg:py-3 rounded-lg lg:rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition transform hover:scale-105 text-sm lg:text-base mt-3"
+                :disabled="isLoading"
+                class="w-full py-2.5 lg:py-3 rounded-lg lg:rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition transform hover:scale-105 text-sm lg:text-base mt-3 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Create account →
+                <span v-if="isLoading">Creating account...</span>
+                <span v-else>Create account →</span>
               </button>
             </form>
 
@@ -450,7 +468,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
 import { useRouter } from 'vue-router'
 
@@ -463,7 +481,9 @@ const showLoginPassword = ref(false)
 const showRegisterPassword = ref(false)
 const showConfirmPassword = ref(false)
 const marketingOptIn = ref(false)
-const error = ref(null)
+const loginError = ref('')
+const registerError = ref('')
+const isLoading = ref(false)
 const confirmPassword = ref('')
 
 // Login data
@@ -485,61 +505,138 @@ const registerData = ref({
   accept_terms: false,
 })
 
+// Computed properties for form validation
+const isLoginFormValid = computed(() => {
+  return loginData.value.email && loginData.value.password
+})
+
+const isRegisterFormValid = computed(() => {
+  return registerData.value.username &&
+    registerData.value.last_name &&
+    registerData.value.email &&
+    registerData.value.company &&
+    registerData.value.role &&
+    registerData.value.password &&
+    confirmPassword.value &&
+    registerData.value.accept_terms
+})
+
+// Safe error clearing method
+const clearErrors = () => {
+  loginError.value = ''
+  registerError.value = ''
+  // If authStore has an error property, clear it safely
+  if (authStore && typeof authStore.error !== 'undefined') {
+    // Try to clear the error if the method exists, otherwise set it to empty string
+    if (typeof authStore.clearError === 'function') {
+      authStore.clearError()
+    } else if (typeof authStore.setError === 'function') {
+      authStore.setError('')
+    } else {
+      // If we can't clear it, at least set our local errors
+      authStore.error = ''
+    }
+  }
+}
+
 // Toggle between login and register
 const toggleForm = () => {
   isLogin.value = !isLogin.value
-  error.value = null
+  clearErrors()
 }
 
 // Handle login
 const handleLogin = async () => {
+  if (!isLoginFormValid.value) {
+    loginError.value = 'Please fill in all required fields'
+    return
+  }
+
+  isLoading.value = true
+  loginError.value = ''
+
   try {
     await authStore.login(loginData.value.email, loginData.value.password)
 
     if (authStore.token) {
-      console.log('✅ Connexion réussie :', authStore.user)
+      console.log('✅ Login successful:', authStore.user)
       router.push('/ad/admin')
     } else {
-      console.warn('❌ Connexion échouée :', authStore.error)
+      loginError.value = authStore.error || 'Login failed. Please check your credentials.'
     }
   } catch (err) {
-    console.error(err)
-    error.value = 'Login failed'
+    console.error('Login error:', err)
+    loginError.value = 'An unexpected error occurred. Please try again.'
+  } finally {
+    isLoading.value = false
   }
 }
 
 // Handle register
 const handleRegister = async () => {
-  error.value = null
+  // Reset errors
+  registerError.value = ''
+  clearErrors()
+
+  // Validation
+  if (!isRegisterFormValid.value) {
+    registerError.value = 'Please fill in all required fields'
+    return
+  }
 
   if (registerData.value.password !== confirmPassword.value) {
-    error.value = 'Passwords do not match'
+    registerError.value = 'Passwords do not match'
+    return
+  }
+
+  if (registerData.value.password.length < 6) {
+    registerError.value = 'Password must be at least 6 characters long'
     return
   }
 
   if (!registerData.value.accept_terms) {
-    error.value = 'You must accept the terms and conditions'
+    registerError.value = 'You must accept the terms and conditions'
     return
   }
 
+  isLoading.value = true
+
   try {
-    await authStore.register(
-      registerData.value.username,
-      registerData.value.last_name,
-      registerData.value.email,
-      registerData.value.telephone,
-      registerData.value.password,
-    )
+    // Prepare registration data
+    const registrationData = {
+      username: registerData.value.username,
+      last_name: registerData.value.last_name,
+      email: registerData.value.email,
+      telephone: registerData.value.telephone || '',
+      company: registerData.value.company,
+      role: registerData.value.role,
+      password: registerData.value.password,
+    }
+
+    console.log('Registration data:', registrationData)
+
+    await authStore.register(registrationData)
 
     if (authStore.error) {
-      error.value = authStore.error
+      registerError.value = authStore.error
     } else {
+      console.log('✅ Registration successful')
+      // Redirect to company setup or dashboard
       router.push('/company')
     }
   } catch (err) {
-    console.error(err)
-    error.value = 'Registration failed'
+    console.error('Registration error:', err)
+    registerError.value = 'Registration failed. Please try again.'
+  } finally {
+    isLoading.value = false
   }
+}
+
+// Demo account functionality
+const useDemoAccount = () => {
+  loginData.value.email = 'demo@stockly.com'
+  loginData.value.password = 'demopassword123'
+  handleLogin()
 }
 
 const goBack = () => {
@@ -552,6 +649,9 @@ onMounted(() => {
   if (route.path === '/register') {
     isLogin.value = false
   }
+
+  // Clear any existing errors
+  clearErrors()
 })
 </script>
 
