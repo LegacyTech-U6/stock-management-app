@@ -13,6 +13,7 @@ export const useProductStore = defineStore('product', {
   state: () => ({
     products: [],
     selectedProduct: null,
+    totalProducts: null,
     productForm: {
       Prod_name: '',
       quantity: '',
@@ -38,8 +39,10 @@ export const useProductStore = defineStore('product', {
     async fetchProducts() {
       this.loading = true
       try {
-        this.products = await getProduct()
+        const product = await getProduct()
         this.error = null
+        this.products = product.data
+        this.totalProducts = product.count || 0
         console.log(this.products)
       } catch (err) {
         this.error = err

@@ -8,7 +8,7 @@ const upload = require("../middleware/upload");
 const getActiveEntreprise = require("../middleware/activeEntreprise");
 
 // 🔐 Middleware global : ajoute l’entreprise active dans req.entreprise
-// router.use(getActiveEntreprise);
+router.use(getActiveEntreprise);
 
 /* ============================================================
    🧱 ROUTES PRODUITS

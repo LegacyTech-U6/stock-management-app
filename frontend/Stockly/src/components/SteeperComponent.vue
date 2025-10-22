@@ -378,7 +378,7 @@ const sections = reactive({
 
 const errors = reactive({})
 const submitError = ref('')
-const categories = ref([])
+const categories = ref(categoryStore.categories)
 
 const form = reactive({
   name: '',
@@ -396,7 +396,7 @@ const form = reactive({
 })
 
 onMounted(async () => {
-  categories.value = await categoryStore.fetchCategory()
+   await categoryStore.fetchCategory()
   supplierStore.fetchSuppliers()
 })
 
@@ -417,7 +417,7 @@ const validate = () => {
   if (!form.name.trim()) errors.name = 'Product name is required'
   if (!form.barcode.trim()) errors.barcode = 'Barcode is required'
   if (!form.category) errors.category = 'Category is required'
-  if (!form.supplier) errors.supplier = 'Supplier is required'
+  
   if (form.costPrice <= 0) errors.costPrice = 'Cost price must be greater than 0'
   if (form.sellingPrice <= 0) errors.sellingPrice = 'Selling price must be greater than 0'
   if (form.sellingPrice < form.costPrice) errors.sellingPrice = 'Selling price should be greater than cost price'

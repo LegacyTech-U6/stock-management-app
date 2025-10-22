@@ -16,7 +16,11 @@ const workers = require("./src/routes/workers.routes")
 const rolesRoutes = require("./src/routes/roles.routes")
 
 // Database
-db.sequelize.sync();
+// ⚠️ ATTENTION: supprime les données existantes en dev
+db.sequelize.sync().then(() => {
+  console.log("✅ Toutes les tables ont été créées !");
+});
+
 app.use(express.json());
 app.use((req, res, next) => {
   console.log(`Requête reçue : ${req.method} ${req.url}`);

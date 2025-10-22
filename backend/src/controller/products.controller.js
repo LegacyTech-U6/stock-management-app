@@ -13,28 +13,47 @@ const queryParser = sequelizeQuery(db);
 // 🔹 Récupérer tous les produits
 // ===============================
 exports.getAllProducts = async (req, res) => {
+  console.log('GET /api/products called'); // 🔍 pour vérifier que la route s’exécute
+
   try {
     // Parse automatiquement req.query (filter, sort, limit, offset)
     const query = await queryParser.parse(req);
-
+     console.log('====================================');
+    console.log(req.entrepriseId);
+    console.log('====================================');
     // Ici on peut ajouter un filtre supplémentaire pour l'entreprise si besoin
-    if (req.user && req.user.entrepriseId) {
+    if (req.user || req.entrepriseId) {
       query.where = { ...query.where, entreprise_id: req.entrepriseId };
     }
+     console.log('====================================');
+    console.log(req.entrepriseId);
+    console.log('====================================');
 
     // Récupérer les données
-    const data = await Product.findAll({
-      ...query,
-      include: [
-        { model: Category, attributes: ["id", "name"] },
-        { model: Supplier, attributes: ["id", "supplier_name"] },
-      ],
-    });
+  const data = await Product.findAll({
+  include: [
+    {
+      model: Category,
+      as: "category", // 👈 correspond exactement à l'alias défini dans la relation
+      attributes: ["id", "name"],
+    },
+    {
+      model: Supplier,
+      as: "supplierInfo", // 👈 idem ici
+      attributes: ["id", "supplier_name"],
+    },
+  ],
+});
+
+     console.log('====================================');
+    console.log(data);
+    console.log('====================================');
 
     // Récupérer le nombre total (pour pagination)
     const count = await Product.count({
       where: query.where,
     });
+   
 
     res.status(200).json({ count, data });
   } catch (err) {

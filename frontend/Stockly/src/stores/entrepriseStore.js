@@ -12,6 +12,7 @@ export const useEntrepriseStore = defineStore('entreprise', {
   state: () => ({
     entreprises: [],
     currentEntreprise: null,
+    totalEntreprise:null,
     activeEntreprise: null,
     isLoading: false,
     error: null,
@@ -49,7 +50,10 @@ export const useEntrepriseStore = defineStore('entreprise', {
 
       try {
         const data = await getEntreprises()
-        this.entreprises = data.entreprises // data.entreprises contient maintenant id = UUID
+        console.log(data);
+
+        this.entreprises = data.data // data.entreprises contient maintenant id = UUID
+        this.totalEntreprise = data.count
       } catch (err) {
         this.error = err.response?.data?.message || 'Impossible de récupérer les entreprises ❌'
       } finally {

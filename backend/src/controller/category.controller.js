@@ -12,25 +12,25 @@ const queryParser = sequelizeQuery(db);
       const query = await queryParser.parse(req);
 
       // Filtrer automatiquement sur l'entreprise
-      if (req.user && req.entrepriseId) {
+      if (req.user || req.entrepriseId) {
         query.where = { ...query.where, entreprise_id: req.entrepriseId };
       }
 
       const data = await Category.findAll({
         ...query,
         attributes: {
-          include: [
-            // Compter le nombre de produits par catégorie
-            [
-              db.sequelize.fn("COUNT", db.sequelize.col("Products.id")),
-              "productCount",
-            ],
-          ],
+           include: [
+         //  Compter le nombre de produits par catégorie
+           [
+             db.sequelize.fn("COUNT", db.sequelize.col("products.id")),
+               "productCount",
+              ],
+         ],
         },
-        include: [
-          { model: Product, attributes: [] }, // juste pour le COUNT
-        ],
-        group: ["Category.id"],
+         include: [
+          { model: Product, as: "products", attributes: [] }, // juste pour le COUNT
+         ], 
+         group: ["Category.id"],
       });
 
       const count = await Category.count({
@@ -54,12 +54,12 @@ const queryParser = sequelizeQuery(db);
         attributes: {
           include: [
             [
-              db.sequelize.fn("COUNT", db.sequelize.col("Products.id")),
+              db.sequelize.fn("COUNT", db.sequelize.col("products.id")),
               "productCount",
             ],
           ],
         },
-        include: [{ model: Product, attributes: [] }],
+        include: [{ model: Product, as: "products", attributes: [] }],
         group: ["Category.id"],
       });
 

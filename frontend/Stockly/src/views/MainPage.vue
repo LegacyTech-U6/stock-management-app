@@ -168,7 +168,7 @@
       />
 
       <!-- Empty State -->
-      <div v-if="filteredEntreprises.length === 0" class="text-center py-12 sm:py-16">
+      <div v-if="filteredEntreprises ||[].length === 0" class="text-center py-12 sm:py-16">
         <div class="w-16 h-16 bg-gray-100 rounded-xl flex items-center justify-center mx-auto mb-4">
           <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
@@ -194,7 +194,7 @@
       class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4"
       @click.self="closeModal"
     >
-      <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+      <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4 shadow-2xl max-h-[95vh] overflow-y-auto">
         <h2 class="text-xl font-bold text-gray-900 mb-6">
           {{ isEditing ? 'Edit Company' : 'Add New Company' }}
         </h2>
@@ -209,6 +209,11 @@
               class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all"
             />
           </div>
+          <ImageUploader
+            v-model="entrepriseData.logo_url"
+            label="Company Logo"
+            :preview-size="80"
+          />
 
           <div>
             <label class="block text-xs font-medium text-gray-700 mb-1.5">Description</label>
@@ -260,6 +265,34 @@
               class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all"
             />
           </div>
+           <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1.5">Numero fiscal</label>
+            <input
+              v-model="entrepriseData.numero_fiscal"
+              type="text"
+              placeholder="Phone number"
+              class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1.5">Information bancaire</label>
+            <input
+              v-model="entrepriseData.informations_bancaires"
+              type="text"
+              placeholder="optionel"
+              class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1.5">numero d'identifiant unique</label>
+            <input
+              v-model="entrepriseData.nui"
+              type="text"
+              placeholder="Phone number"
+              class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all"
+            />
+          </div>
+
 
           <div class="flex gap-3 mt-6">
             <button
@@ -292,6 +325,7 @@ import { useRouter } from 'vue-router'
 import { useActionMessage } from '@/composable/useActionMessage'
 import LazyLoader from '@/components/ui/LazyLoader.vue'
 import StatsGrid from '@/components/Enterprise/StatsGrid.vue'
+import ImageUploader from '@/components/main/ImageUploader.vue'
 const { showSuccess, showError } = useActionMessage()
 const store = useEntrepriseStore()
 const authStore = useAuthStore()
@@ -355,20 +389,20 @@ const filteredEntreprises = computed(() => {
 })
 
 const stats = computed(() => {
-  const totalRevenue = store.entreprises.reduce((sum, e) => sum + (Number(e.totalRevenue) || 0), 0)
-  const totalInventory = store.entreprises.reduce((sum, e) => sum + (Number(e.inventoryValue) || 0), 0)
-  const totalMembers = store.entreprises.reduce((sum, e) => sum + (Number(e.totalMembers) || 0), 0)
+  const totalRevenue = store.entreprises||[].reduce((sum, e) => sum + (Number(e.totalRevenue) || 0), 0)
+  const totalInventory = store.entreprises||[].reduce((sum, e) => sum + (Number(e.inventoryValue) || 0), 0)
+  const totalMembers = store.entreprises||[].reduce((sum, e) => sum + (Number(e.totalMembers) || 0), 0)
 
   return [
     {
       label: 'Total Companies',
-      value: store.entreprises.length.toString(),
+      value: store.totalEntreprise.toString(),
       color: 'from-orange-400 to-orange-500',
       icon: 'building'
     },
     {
       label: 'Active Companies',
-      value: (store.entreprises.length - 30).toString(),
+      value: (store.totalEntreprise).toString(),
       color: 'from-green-400 to-green-500',
       icon: 'check'
     },

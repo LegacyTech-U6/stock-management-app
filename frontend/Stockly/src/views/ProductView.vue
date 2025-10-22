@@ -72,7 +72,7 @@
         </div>
           <!-- Stats Cards -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <GridCard title="Total Products" :value="filteredProducts.length " :icon="Users" gradientFrom="purple-500"
+        <GridCard title="Total Products" :value="productStore.totalProducts||0" :icon="Users" gradientFrom="purple-500"
           gradientTo="purple-600" />
         <GridCard title="in Stock" :value="inStockCount " :icon="UserCheck" gradientFrom="teal-500"
           gradientTo="teal-600" />
@@ -207,6 +207,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
+import { Users, UserCheck, UserX, UserPlus } from 'lucide-vue-next'
 import { ref, computed, onMounted } from 'vue'
 import { useProductStore } from '@/stores/productStore'
 import ProductListItem from '@/components/Products/ProductListItem.vue'
