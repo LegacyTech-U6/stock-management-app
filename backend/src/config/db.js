@@ -47,6 +47,7 @@ db.sequelize = sequelize;
 // ===============================
 // IMPORT MODELS
 // ===============================
+db.salesReport = require("../models/SalesReport.model")(sequelize, DataTypes);
 db.User = require("../models/user.model")(sequelize, DataTypes);
 db.Product = require("../models/product.model")(sequelize, DataTypes);
 db.Worker = require("../models/worker.model")(sequelize, DataTypes);
@@ -301,7 +302,6 @@ db.StockMovement.belongsTo(db.Product, {
 db.activities.belongsTo(db.Product, {
   foreignKey: "entity_id",
   as: "product",
- 
 });
 
 // =======================

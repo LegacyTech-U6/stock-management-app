@@ -45,7 +45,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { useActivityStore } from '@/stores/activityStore'
 
 const activityStore = useActivityStore()
@@ -53,10 +53,14 @@ const loading = ref(true)
 
 onMounted(async () => {
   await activityStore.fetchActivities()
+
   loading.value = false
 })
 
-const activities = activityStore.activities
+const activities = computed(() => activityStore.activities)
+console.log('====================================');
+console.log(activities);
+console.log('====================================');
 </script>
 
 <style scoped>

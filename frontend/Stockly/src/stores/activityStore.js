@@ -7,7 +7,14 @@ export const useActivityStore = defineStore('Activity', {
   actions: {
     async fetchActivities() {
       try {
-        this.activities = await getAllActivities()
+        const data = await getAllActivities()
+        console.log('====================================');
+        console.log(data);
+        console.log('====================================');
+        this.activities = data.activities
+        console.log('====================================');
+        console.log(this.activities);
+        console.log('====================================');
       } catch (error) {
         console.error = error
       }

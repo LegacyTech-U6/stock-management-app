@@ -6,6 +6,7 @@ const Product = db.Product;
 const Category = db.Category;
 const Supplier = db.Supplier;
 const Settings = db.Settings;
+const Entreprise = db.Entreprise;
 const Sales = db.Sales;
 const fs = require("fs");
 const path = require("path");
@@ -117,6 +118,7 @@ exports.createProduct = async (req, res) => {
       amount: product.quantity,
       ip_address: req.ip,
       user_agent: req.headers["user-agent"],
+      entreprise_id: entrepriseId,
     });
     res.status(201).json(product);
   } catch (err) {
@@ -220,6 +222,7 @@ exports.createSale = async (req, res) => {
       amount: quantitySold * product.selling_price,
       ip_address: req.ip,
       user_agent: req.headers["user-agent"],
+      entreprise_id: entrepriseId,
     });
 
     // 🔹 Mettre à jour la quantité en stock
@@ -235,42 +238,73 @@ exports.createSale = async (req, res) => {
 // ===============================
 // 🔹 Ajouter de la quantité
 // ===============================
+
 exports.addQuantity = async (req, res) => {
   console.log("====================================");
   console.log("add product called");
   console.log("====================================");
+
+  const t = await db.sequelize.transaction(); // 🔸 Démarrer la transaction
   try {
     const { productId, quantityAdd } = req.body;
     const entrepriseId = req.entrepriseId;
+
     console.log("====================================");
     console.log(req.body);
     console.log("====================================");
-    const product = await Product.findOne({
+
+    // 🔹 1. Vérifier que le produit existe
+    const product = await db.Product.findOne({
       where: { id: productId, entreprise_id: entrepriseId },
+      transaction: t, // ✅ lier à la transaction
+      lock: true, // ✅ empêche les accès concurrents
     });
-    if (!product)
-      return res
-        .status(404)
-        .json({ success: false, message: "Produit non trouvé" });
 
+    if (!product) {
+      await t.rollback(); // rollback si produit non trouvé
+      return res.status(404).json({
+        success: false,
+        message: "Produit non trouvé",
+      });
+    }
+
+    // 🔹 2. Mettre à jour la quantité
     product.quantity += quantityAdd;
-    await product.save();
-    await logActivity({
-      user_id: req.user.id,
-      action: "Achat",
-      entity_type: "Product",
-      entity_id: product.id,
-      description: `Achat de ${quantityAdd} unités de "${product.Prod_name}"`,
-      quantity: quantityAdd,
-      amount: quantityAdd * product.cost_price,
-      ip_address: req.ip,
-      user_agent: req.headers["user-agent"],
-    });
+    await product.save({ transaction: t });
 
-    res
-      .status(200)
-      .json({ success: true, message: "Quantité ajoutée", product });
+    console.log("✅ Quantité mise à jour");
+        const entreprise = await Entreprise.findByPk(entrepriseId);
+        const user_id = entreprise?.user_id || null;
+    // 🔹 3. Enregistrer l’activité
+    await logActivity(
+      {
+        user_id: user_id,
+        action: "Achat",
+        entity_type: "Product",
+        entity_id: product.id,
+        description: `Achat de ${quantityAdd} unités de "${product.Prod_name}"`,
+        quantity: quantityAdd,
+        amount: quantityAdd * product.cost_price,
+        ip_address: req.ip,
+        user_agent: req.headers["user-agent"],
+        entreprise_id: entrepriseId,
+        transaction: t, // ✅ très important
+      },
+      { transaction: t }
+    );
+
+    // 🔹 4. Si tout est ok → valider la transaction
+    await t.commit();
+
+    res.status(200).json({
+      success: true,
+      message: "Quantité ajoutée avec succès",
+      product,
+    });
   } catch (err) {
+    // 🔹 Si erreur → annuler la transaction
+    await t.rollback();
+    console.error("🔥 Transaction échouée :", err);
     res.status(500).json({ success: false, message: err.message });
   }
 };
@@ -311,16 +345,17 @@ exports.buyProduct = async (req, res) => {
     }
     // Logger la vente
     await logActivity({
-  user_id: req.user.id,
-  action: "Vente",
-  entity_type: "Product",
-  entity_id: product.id,
-  description: `Vente de ${quantitySold} unités de "${product.Prod_name}"`,
-  quantity: quantitySold,
-  amount: quantitySold * product.selling_price,
-  ip_address: req.ip,
-  user_agent: req.headers["user-agent"],
-});
+      user_id: req.user.id,
+      action: "Vente",
+      entity_type: "Product",
+      entity_id: product.id,
+      description: `Vente de ${quantitySold} unités de "${product.Prod_name}"`,
+      quantity: quantitySold,
+      amount: quantitySold * product.selling_price,
+      ip_address: req.ip,
+      user_agent: req.headers["user-agent"],
+      entreprise_id: entrepriseId,
+    });
 
     res
       .status(200)

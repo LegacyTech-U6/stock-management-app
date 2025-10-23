@@ -16,19 +16,13 @@ export const useInvoiceStore = defineStore('invoice', {
         console.log('📄 API Response:', res) // ✅ Voir la structure exacte
 
         // ✅ Adapter selon la structure de l'API
-        if (Array.isArray(res)) {
-          this.invoices = res
-        } else if (res && Array.isArray(res.invoices)) {
-          this.invoices = res.invoices
-        } else if (res && Array.isArray(res.data)) {
+
           this.invoices = res.data
-        } else {
-          this.invoices = res
           console.warn('⚠️ Structure de données inattendue:', res.factures)
-        }
+
 
         this.error = null
-        console.log('📊 Invoices loaded:', this.invoices.length, 'invoices')
+        console.log('📊 Invoices loaded:', this.invoices, 'invoices')
         return this.invoices
       } catch (err) {
         this.error = err.message || 'Erreur lors du chargement des factures'

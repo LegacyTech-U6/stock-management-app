@@ -1,11 +1,13 @@
 const db = require("../config/db");
-const Activity = db.activities;
+
 
 exports.getAllActivities = async (req, res) => {
   try {
     const entreprise_id = req.entrepriseId;
-
-    const activities = await Activity.findAll({
+    console.log('====================================');
+    console.log("entreprise id", entreprise_id);
+    console.log('====================================');
+    const activities = await db.activities.findAll({
       where: { entreprise_id, entity_type: 'Product' },
       order: [["createdAt", "DESC"]],
       include: [
@@ -21,6 +23,9 @@ exports.getAllActivities = async (req, res) => {
         }
       ]
     });
+    console.log('====================================');
+    console.log("route activity called",activities );
+    console.log('====================================');
 
     res.status(200).json({ success: true, count: activities.length, activities });
   } catch (err) {

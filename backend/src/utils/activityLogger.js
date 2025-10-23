@@ -10,9 +10,10 @@ async function logActivity({
   amount = null,
   ip_address = null,
   user_agent = null,
+  entreprise_id = null
 }) {
   try {
-    await db.Activity.create({
+    await db.activities.create({
       user_id,
       action,
       entity_type,
@@ -22,6 +23,7 @@ async function logActivity({
       amount,
       ip_address,
       user_agent,
+      entreprise_id
     });
   } catch (err) {
     console.error('Erreur lors de l’activité:', err);

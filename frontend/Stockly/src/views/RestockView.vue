@@ -342,6 +342,7 @@ const newStockLevel = computed(() => {
   realqty = qty + quantity.value
   return realqty
 })
+const quantitytoBeAdded =computed(()=>Number(product.value.quantity || 0))
 
 const currentStatus = computed(() => {
   if (!product.value) return 'Loading...'
@@ -404,10 +405,10 @@ const Restock = async () => {
 
   submitError.value = ''
   try {
-    await productStore.addStockLevel(product.value.id, realqty)
+    await productStore.addStockLevel(product.value.id, quantity.value )
 
       showSuccess('Restock successful')
-    
+
 
   } catch (error) {
     submitError.value =

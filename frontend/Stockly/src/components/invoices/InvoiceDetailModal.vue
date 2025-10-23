@@ -98,7 +98,7 @@
                 </div>
                 <div class="mb-2">
                   <span class="font-semibold text-gray-700">Date:</span>
-                  <span class="ml-2 text-black">{{ formatDate(invoice.date_of_creation) }}</span>
+                  <span class="ml-2 text-black">{{ formatDate(invoice.createdAt) }}</span>
                 </div>
                 <div>
                   <span class="font-semibold text-gray-700">Due Date:</span>
@@ -112,15 +112,15 @@
           <div class="mb-6">
             <h3 class="font-bold text-black text-lg mb-3 border-b border-gray-300 pb-2">BILL TO</h3>
             <div class="text-sm">
-              <div class="font-semibold text-black">{{ invoice.client_name || 'Client Name' }}</div>
+              <div class="font-semibold text-black">{{ invoice.client.client_name || 'Client Name' }}</div>
               <div class="text-gray-600">
-                {{ invoice.client_adresse || 'Address not specified' }}
+                {{ invoice.client.client_adresse || 'Address not specified' }}
               </div>
-              <div class="text-gray-600" v-if="invoice.client_email">
-                Email: {{ invoice.client_email }}
+              <div class="text-gray-600" v-if="invoice.client.email">
+                Email: {{ invoice.client.email }}
               </div>
-              <div class="text-gray-600" v-if="invoice.client_telephone">
-                Phone: {{ invoice.client_telephone }}
+              <div class="text-gray-600" v-if="invoice.client.client_telephone">
+                Phone: {{ invoice.client.telephone }}
               </div>
             </div>
           </div>
@@ -141,7 +141,7 @@
                 <tr v-for="(item, index) in invoice.items" :key="item.id">
                   <td class="border border-gray-300 px-3 py-2 text-center">{{ index + 1 }}</td>
                   <td class="border border-gray-300 px-3 py-2">
-                    <div class="font-medium">{{ item.product_name }}</div>
+                    <div class="font-medium">{{ item.product.Prod_name }}</div>
                     <div class="text-xs text-gray-600" v-if="item.description">
                       {{ item.description }}
                     </div>

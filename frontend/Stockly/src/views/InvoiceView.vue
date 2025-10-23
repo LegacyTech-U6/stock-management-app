@@ -119,13 +119,13 @@
                 <div class="flex items-center gap-3">
                   <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-semibold"
                     :style="{ backgroundColor: getAvatarColor(invoice.client_name) }">
-                    {{ getInitials(invoice.client_name) }}
+                    {{ getInitials(invoice.client.client_name) }}
                   </div>
-                  <span class="font-medium text-gray-900">{{ invoice.client_name || 'N/A' }}</span>
+                  <span class="font-medium text-gray-900">{{ invoice.client.client_name || 'N/A' }}</span>
                 </div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ formatDate(invoice.due_date) }}
+                {{ formatDate(invoice.createdAt) }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                 {{ formatPrice(invoice.total) }}
@@ -241,7 +241,7 @@ import { useInvoiceStore } from '@/stores/FactureStore'
 import { useActionMessage } from '@/composable/useActionMessage'
 import ActionModal from '@/components/ui/ActionModal.vue'
 import InvoiceDetailModal from '@/components/invoices/InvoiceDetailModal.vue'
-
+import { useEntrepriseStore } from '@/stores/entrepriseStore'
 const { showSuccess, showError } = useActionMessage()
 const invoiceStore = useInvoiceStore()
 const searchQuery = ref('')
@@ -255,9 +255,10 @@ const selectedInvoice = ref(null)
 const loadingClients = ref(true)
 const pageSize = ref(10)
 const currentPage = ref(1)
+const entrepriseStore = useEntrepriseStore()
 
-const invoices = computed(() => invoiceStore.invoices.factures || [])
-const entreprise = computed(() => invoiceStore.invoices.entreprise || {})
+const invoices = computed(() => invoiceStore.invoices || [])
+const entreprise = computed(() => entrepriseStore.activeEntreprise || {})
 
 const customerOptions = computed(() => [
   ...Array.from(new Set(invoices.value.map(i => i.client_name)))

@@ -2,7 +2,7 @@
 const sequelizeQuery = require("sequelize-query");
 const db = require("../config/db");
 const { Invoice, InvoiceItem, Product, Client, Entreprise, Sales } = db;
-const logActivity = require('../utils/activityLogger')
+const logActivity = require("../utils/activityLogger");
 const queryParser = sequelizeQuery(db);
 
 const InvoiceController = {
@@ -28,7 +28,7 @@ const InvoiceController = {
       }
       const general_total =
         total_hors_reduction - Number(discount) + Number(tax);
-     const total = total_hors_reduction
+      const total = total_hors_reduction;
       const invoice = await Invoice.create({
         client_id,
         entreprise_id,
@@ -46,7 +46,7 @@ const InvoiceController = {
 
       for (const item of items) {
         await InvoiceItem.create({
-          invoice_id: invoice.id,
+          facture_id: invoice.id,
           product_id: item.id,
           quantity: item.quantity,
           unit_price: item.selling_price,
@@ -71,9 +71,11 @@ const InvoiceController = {
             (item.selling_price - product.cost_price) * item.quantity,
           entreprise_id,
         });
+        const entreprise = await Entreprise.findByPk(entreprise_id);
+        const user_id = entreprise?.user_id || null;
         // Logger la vente
         await logActivity({
-          user_id: req.user.id,
+          user_id: user_id,
           action: "Vente",
           entity_type: "Product",
           entity_id: product.id,
@@ -82,6 +84,7 @@ const InvoiceController = {
           amount: item.quantity * item.selling_price,
           ip_address: req.ip,
           user_agent: req.headers["user-agent"],
+          entreprise_id:entreprise_id
         });
       }
 
@@ -92,35 +95,47 @@ const InvoiceController = {
     }
   },
 
-  // 🔹 Récupérer toutes les factures
-  async getAllInvoices(req, res) {
-    try {
-      const entreprise_id = req.entrepriseId;
-      const query = await queryParser.parse(req);
+async getAllInvoices(req, res) {
+  try {
+    const entreprise_id = req.entrepriseId;
+    const query = await queryParser.parse(req);
 
-      query.where = { ...query.where, entreprise_id };
+    query.where = { ...query.where, entreprise_id };
 
-      const data = await Invoice.findAll({
-        ...query,
-        include: [
-          { model: Client, attributes: ["id", "client_name", "email"] },
-          {
-            model: InvoiceItem,
-            include: [{ model: Product, attributes: ["id", "Prod_name"] }],
-          },
-        ],
-        order: [["id", "DESC"]],
-      });
+    const data = await Invoice.findAll({
+      ...query,
+      include: [
+        {
+          model: Client,
+          as: "client",
+          attributes: ["id", "client_name", "email"],
+        },
+        {
+          model: InvoiceItem,
+          as: "items", // ✅ alias obligatoire ici
+          include: [
+            {
+              model: Product,
+              as: "product", // ✅ alias cohérent avec ton association
+              attributes: ["id", "Prod_name"],
+            },
+          ],
+        },
+      ],
+      order: [["id", "DESC"]],
+    });
 
-      const count = await Invoice.count({ where: query.where });
-
-      res.status(200).json({ count, data });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: err.message });
-    }
-  },
-
+    const count = await Invoice.count({ where: query.where });
+    console.log('====================================');
+    console.log(data.item);
+    console.log('====================================');
+    res.status(200).json({ count, data });
+  } catch (err) {
+    console.error("🔥 Erreur getAllInvoices:", err);
+    res.status(500).json({ message: err.message });
+  }
+}
+,
   // 🔹 Récupérer une facture par ID
   async getInvoiceById(req, res) {
     try {
