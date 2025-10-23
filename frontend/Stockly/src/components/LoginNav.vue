@@ -7,14 +7,16 @@
       class="h-full bg-white flex flex-col transition-all duration-300 ease-in-out"
       :class="[
         sidebarExpanded ? 'w-80' : 'w-[72px]',
-        sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+        sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
       ]"
     >
       <!-- Header -->
       <div class="relative px-5 py-5 border-b border-gray-200">
         <!-- Logo -->
         <div class="flex items-center gap-3 mb-4">
-          <div class="flex items-center justify-center min-w-[44px] w-11 h-11 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl shadow-lg">
+          <div
+            class="flex items-center justify-center min-w-[44px] w-11 h-11 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl shadow-lg"
+          >
             <Package :size="22" class="text-white" />
           </div>
           <transition
@@ -52,7 +54,8 @@
       </div>
 
       <!-- Navigation -->
-      <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar"
+      <nav
+        class="flex-1 overflow-y-auto py-4 custom-scrollbar"
         :class="sidebarExpanded ? 'px-4' : 'px-3'"
       >
         <!-- Enterprise Badge (only when expanded) -->
@@ -64,10 +67,15 @@
           leave-from-class="opacity-100 translate-y-0"
           leave-to-class="opacity-0 -translate-y-2"
         >
-          <div v-if="activeEntreprise && sidebarExpanded" class="mb-4 px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl border border-blue-200">
+          <div
+            v-if="activeEntreprise && sidebarExpanded"
+            class="mb-4 px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl border border-blue-200"
+          >
             <div class="flex items-center gap-2 mb-1">
               <Building2 :size="16" class="text-blue-600" />
-              <span class="text-xs font-semibold text-blue-600 uppercase tracking-wide">Active Enterprise</span>
+              <span class="text-xs font-semibold text-blue-600 uppercase tracking-wide"
+                >Active Enterprise</span
+              >
             </div>
             <p class="text-sm font-bold text-gray-900 truncate">{{ activeEntreprise.name }}</p>
           </div>
@@ -82,7 +90,11 @@
             leave-from-class="opacity-100"
             leave-to-class="opacity-0"
           >
-            <span v-show="sidebarExpanded" class="text-xs font-bold text-gray-400 uppercase tracking-wider">Menu</span>
+            <span
+              v-show="sidebarExpanded"
+              class="text-xs font-bold text-gray-400 uppercase tracking-wider"
+              >Menu</span
+            >
           </transition>
         </div>
 
@@ -93,7 +105,9 @@
             class="flex items-center gap-3 rounded-xl text-sm font-medium transition-all relative group"
             :class="[
               sidebarExpanded ? 'px-4 py-3' : 'w-11 h-11 justify-center',
-              route.path === dashboardRoute ? 'bg-blue-50 text-blue-700 shadow-sm' : 'text-gray-700 hover:bg-gray-50'
+              route.path === dashboardRoute
+                ? 'bg-blue-50 text-blue-700 shadow-sm'
+                : 'text-gray-700 hover:bg-gray-50',
             ]"
             @click="closeMobileMenu"
           >
@@ -108,7 +122,10 @@
             >
               <span v-show="sidebarExpanded">Dashboard</span>
             </transition>
-            <div v-if="route.path === dashboardRoute && !sidebarExpanded" class="absolute left-0 w-1 h-6 bg-blue-600 rounded-r-full"></div>
+            <div
+              v-if="route.path === dashboardRoute && !sidebarExpanded"
+              class="absolute left-0 w-1 h-6 bg-blue-600 rounded-r-full"
+            ></div>
           </router-link>
 
           <router-link
@@ -116,7 +133,9 @@
             class="flex items-center gap-3 rounded-xl text-sm font-medium transition-all relative group"
             :class="[
               sidebarExpanded ? 'px-4 py-3' : 'w-11 h-11 justify-center',
-              route.path === productsRoute ? 'bg-blue-50 text-blue-700 shadow-sm' : 'text-gray-700 hover:bg-gray-50'
+              route.path === productsRoute
+                ? 'bg-blue-50 text-blue-700 shadow-sm'
+                : 'text-gray-700 hover:bg-gray-50',
             ]"
             @click="closeMobileMenu"
           >
@@ -131,7 +150,10 @@
             >
               <span v-show="sidebarExpanded">Products</span>
             </transition>
-            <div v-if="route.path === productsRoute && !sidebarExpanded" class="absolute left-0 w-1 h-6 bg-blue-600 rounded-r-full"></div>
+            <div
+              v-if="route.path === productsRoute && !sidebarExpanded"
+              class="absolute left-0 w-1 h-6 bg-blue-600 rounded-r-full"
+            ></div>
           </router-link>
 
           <router-link
@@ -139,7 +161,9 @@
             class="flex items-center gap-3 rounded-xl text-sm font-medium transition-all relative group"
             :class="[
               sidebarExpanded ? 'px-4 py-3' : 'w-11 h-11 justify-center',
-              route.path === categoriesRoute ? 'bg-blue-50 text-blue-700 shadow-sm' : 'text-gray-700 hover:bg-gray-50'
+              route.path === categoriesRoute
+                ? 'bg-blue-50 text-blue-700 shadow-sm'
+                : 'text-gray-700 hover:bg-gray-50',
             ]"
             @click="closeMobileMenu"
           >
@@ -154,7 +178,10 @@
             >
               <span v-show="sidebarExpanded">Categories</span>
             </transition>
-            <div v-if="route.path === categoriesRoute && !sidebarExpanded" class="absolute left-0 w-1 h-6 bg-blue-600 rounded-r-full"></div>
+            <div
+              v-if="route.path === categoriesRoute && !sidebarExpanded"
+              class="absolute left-0 w-1 h-6 bg-blue-600 rounded-r-full"
+            ></div>
           </router-link>
 
           <router-link
@@ -162,7 +189,9 @@
             class="flex items-center gap-3 rounded-xl text-sm font-medium transition-all relative group"
             :class="[
               sidebarExpanded ? 'px-4 py-3' : 'w-11 h-11 justify-center',
-              route.path === salesRoute ? 'bg-blue-50 text-blue-700 shadow-sm' : 'text-gray-700 hover:bg-gray-50'
+              route.path === salesRoute
+                ? 'bg-blue-50 text-blue-700 shadow-sm'
+                : 'text-gray-700 hover:bg-gray-50',
             ]"
             @click="closeMobileMenu"
           >
@@ -177,7 +206,10 @@
             >
               <span v-show="sidebarExpanded">Sales</span>
             </transition>
-            <div v-if="route.path === salesRoute && !sidebarExpanded" class="absolute left-0 w-1 h-6 bg-blue-600 rounded-r-full"></div>
+            <div
+              v-if="route.path === salesRoute && !sidebarExpanded"
+              class="absolute left-0 w-1 h-6 bg-blue-600 rounded-r-full"
+            ></div>
           </router-link>
 
           <router-link
@@ -185,7 +217,9 @@
             class="flex items-center gap-3 rounded-xl text-sm font-medium transition-all relative group"
             :class="[
               sidebarExpanded ? 'px-4 py-3' : 'w-11 h-11 justify-center',
-              route.path === invoicesRoute ? 'bg-blue-50 text-blue-700 shadow-sm' : 'text-gray-700 hover:bg-gray-50'
+              route.path === invoicesRoute
+                ? 'bg-blue-50 text-blue-700 shadow-sm'
+                : 'text-gray-700 hover:bg-gray-50',
             ]"
             @click="closeMobileMenu"
           >
@@ -200,7 +234,10 @@
             >
               <span v-show="sidebarExpanded">Invoices</span>
             </transition>
-            <div v-if="route.path === invoicesRoute && !sidebarExpanded" class="absolute left-0 w-1 h-6 bg-blue-600 rounded-r-full"></div>
+            <div
+              v-if="route.path === invoicesRoute && !sidebarExpanded"
+              class="absolute left-0 w-1 h-6 bg-blue-600 rounded-r-full"
+            ></div>
           </router-link>
 
           <router-link
@@ -208,7 +245,9 @@
             class="flex items-center gap-3 rounded-xl text-sm font-medium transition-all relative group"
             :class="[
               sidebarExpanded ? 'px-4 py-3' : 'w-11 h-11 justify-center',
-              route.path === clientsRoute ? 'bg-blue-50 text-blue-700 shadow-sm' : 'text-gray-700 hover:bg-gray-50'
+              route.path === clientsRoute
+                ? 'bg-blue-50 text-blue-700 shadow-sm'
+                : 'text-gray-700 hover:bg-gray-50',
             ]"
             @click="closeMobileMenu"
           >
@@ -223,16 +262,45 @@
             >
               <span v-show="sidebarExpanded">Clients</span>
             </transition>
-            <div v-if="route.path === clientsRoute && !sidebarExpanded" class="absolute left-0 w-1 h-6 bg-blue-600 rounded-r-full"></div>
+            <div
+              v-if="route.path === clientsRoute && !sidebarExpanded"
+              class="absolute left-0 w-1 h-6 bg-blue-600 rounded-r-full"
+            ></div>
+          </router-link>
+          <router-link
+            :to="ActivityRoute"
+            class="flex items-center gap-3 rounded-xl text-sm font-medium transition-all relative group"
+            :class="[
+              sidebarExpanded ? 'px-4 py-3' : 'w-11 h-11 justify-center',
+              route.path === ActivityRoute
+                ? 'bg-blue-50 text-blue-700 shadow-sm'
+                : 'text-gray-700 hover:bg-gray-50',
+            ]"
+            @click="closeMobileMenu"
+          >
+            <Users :size="20" />
+            <transition
+              enter-active-class="transition-opacity duration-200"
+              enter-from-class="opacity-0"
+              enter-to-class="opacity-100"
+              leave-active-class="transition-opacity duration-150"
+              leave-from-class="opacity-100"
+              leave-to-class="opacity-0"
+            >
+              <span v-show="sidebarExpanded">Audit Trail</span>
+
+            </transition>
           </router-link>
         </div>
       </nav>
 
       <!-- Bottom Settings -->
-      <div class="border-t border-gray-200 py-4 space-y-1"
+      <div
+        class="border-t border-gray-200 py-4 space-y-1"
         :class="sidebarExpanded ? 'px-5' : 'px-3'"
       >
-        <button class="flex items-center gap-3 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all w-full"
+        <button
+          class="flex items-center gap-3 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all w-full"
           :class="sidebarExpanded ? 'px-4 py-3' : 'w-11 h-11 justify-center'"
         >
           <Settings :size="20" />
@@ -248,7 +316,8 @@
           </transition>
         </button>
 
-        <button class="flex items-center gap-3 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all w-full"
+        <button
+          class="flex items-center gap-3 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all w-full"
           :class="sidebarExpanded ? 'px-4 py-3' : 'w-11 h-11 justify-center'"
         >
           <Moon :size="20" />
@@ -264,7 +333,8 @@
           </transition>
         </button>
 
-        <button class="flex items-center gap-3 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all w-full"
+        <button
+          class="flex items-center gap-3 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all w-full"
           :class="sidebarExpanded ? 'px-4 py-3' : 'w-11 h-11 justify-center'"
         >
           <HelpCircle :size="20" />
@@ -282,9 +352,7 @@
       </div>
 
       <!-- User Profile Footer -->
-      <div class="border-t border-gray-200 p-4"
-        :class="sidebarExpanded ? 'px-5' : 'px-3'"
-      >
+      <div class="border-t border-gray-200 p-4" :class="sidebarExpanded ? 'px-5' : 'px-3'">
         <div v-if="!sidebarExpanded" class="flex flex-col items-center gap-3">
           <div class="relative">
             <img
@@ -292,7 +360,9 @@
               alt="User"
               class="w-11 h-11 rounded-xl border-2 border-gray-200 object-cover cursor-pointer hover:border-blue-400 transition-colors"
             />
-            <div class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></div>
+            <div
+              class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"
+            ></div>
           </div>
           <button
             @click="logoutEntreprise"
@@ -303,7 +373,9 @@
         </div>
 
         <div v-else class="space-y-3">
-          <div class="flex items-center gap-3 px-4 py-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer">
+          <div
+            class="flex items-center gap-3 px-4 py-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer"
+          >
             <img
               src="https://i.pravatar.cc/40"
               alt="Demo User"
@@ -365,7 +437,8 @@ import {
   Moon,
   HelpCircle,
   FolderTree,
-  X
+  X,
+  Activity,
 } from 'lucide-vue-next'
 
 const router = useRouter()
@@ -380,7 +453,7 @@ const productsRoute = computed(() => `/${currentUuid.value}/products`)
 const clientsRoute = computed(() => `/${currentUuid.value}/clients`)
 const invoicesRoute = computed(() => `/${currentUuid.value}/invoices`)
 const categoriesRoute = computed(() => `/${currentUuid.value}/categories`)
-
+const ActivityRoute = computed(() => `/${currentUuid.value}/AuditTrail`)
 const activeEntreprise = computed(() => entrepriseStore.activeEntreprise)
 
 const sidebarOpen = ref(false)
@@ -393,18 +466,22 @@ const handleSidebarEnter = () => {
   sidebarExpanded.value = true
   emit('sidebar-state-changed', true)
   // Also dispatch custom event for parent component
-  window.dispatchEvent(new CustomEvent('sidebar-state-changed', {
-    detail: { expanded: true }
-  }))
+  window.dispatchEvent(
+    new CustomEvent('sidebar-state-changed', {
+      detail: { expanded: true },
+    }),
+  )
 }
 
 const handleSidebarLeave = () => {
   sidebarExpanded.value = false
   emit('sidebar-state-changed', false)
   // Also dispatch custom event for parent component
-  window.dispatchEvent(new CustomEvent('sidebar-state-changed', {
-    detail: { expanded: false }
-  }))
+  window.dispatchEvent(
+    new CustomEvent('sidebar-state-changed', {
+      detail: { expanded: false },
+    }),
+  )
 }
 
 const closeMobileMenu = () => {

@@ -7,42 +7,42 @@ const queryParser = sequelizeQuery(db);
 
 
   // 🔹 Récupérer toutes les catégories
- exports.getAllCategories = async (req, res) =>{
-    try {
-      const query = await queryParser.parse(req);
+exports.getAllCategories = async (req, res) => {
+  try {
+    const query = await queryParser.parse(req);
 
-      // Filtrer automatiquement sur l'entreprise
-      if (req.user || req.entrepriseId) {
-        query.where = { ...query.where, entreprise_id: req.entrepriseId };
-      }
-
-      const data = await Category.findAll({
-        ...query,
-        attributes: {
-           include: [
-         //  Compter le nombre de produits par catégorie
-           [
-             db.sequelize.fn("COUNT", db.sequelize.col("products.id")),
-               "productCount",
-              ],
-         ],
-        },
-         include: [
-          { model: Product, as: "products", attributes: [] }, // juste pour le COUNT
-         ], 
-         group: ["Category.id"],
-      });
-
-      const count = await Category.count({
-        where: query.where,
-      });
-
-      res.status(200).json({ count, data });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: err.message });
+    // Filtrer automatiquement sur l'entreprise
+    if (req.user || req.entrepriseId) {
+      query.where = { ...query.where, entreprise_id: req.entrepriseId };
     }
+
+    const data = await Category.findAll({
+  attributes: {
+    include: [
+      [
+        db.sequelize.literal(`(
+          SELECT COUNT(*)
+          FROM Products AS p
+          WHERE p.category_id = Category.id
+        )`),
+        "productCount",
+      ],
+    ],
   },
+  ...query,
+});
+
+    const count = await Category.count({
+      where: query.where,
+    });
+
+    res.status(200).json({ count, data });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
 
   // 🔹 Récupérer une catégorie par ID
  exports.getCategoryById = async (req, res) => {

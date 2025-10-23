@@ -236,6 +236,7 @@ const route = useRoute()
 const product = ref<Product | null>(null)
 
 onMounted(async () => {
+  
   if (route.params.id) {
     try {
       const response = await fetchProductById(route.params.id)

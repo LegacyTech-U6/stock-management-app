@@ -378,8 +378,10 @@ const sections = reactive({
 
 const errors = reactive({})
 const submitError = ref('')
-const categories = ref(categoryStore.categories)
-
+const categories = computed(() => categoryStore.categories)
+console.log('====================================');
+console.log(categories.value);
+console.log('====================================');
 const form = reactive({
   name: '',
   barcode: '',
@@ -417,7 +419,7 @@ const validate = () => {
   if (!form.name.trim()) errors.name = 'Product name is required'
   if (!form.barcode.trim()) errors.barcode = 'Barcode is required'
   if (!form.category) errors.category = 'Category is required'
-  
+
   if (form.costPrice <= 0) errors.costPrice = 'Cost price must be greater than 0'
   if (form.sellingPrice <= 0) errors.sellingPrice = 'Selling price must be greater than 0'
   if (form.sellingPrice < form.costPrice) errors.sellingPrice = 'Selling price should be greater than cost price'

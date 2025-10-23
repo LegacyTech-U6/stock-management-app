@@ -1,7 +1,10 @@
 // middlewares/validateProduct.js
 const { body, validationResult } = require('express-validator');
-
+ console.log('===================================='),
+  console.log("validate product called"),
+  console.log('====================================');
 const validateProduct = [
+ 
   body('Prod_name')
     .notEmpty().withMessage('Le nom du produit est obligatoire')
     .isLength({ min: 3 }).withMessage('Le nom du produit doit avoir au moins 3 caractères'),

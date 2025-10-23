@@ -34,8 +34,11 @@ export const useCategoryStore = defineStore('Category', {
   this.error = null
   try {
     const category = await getCategory()
-    console.log("category loged from store", category)
+    console.log("category loged from store", category.data)
     this.categories = category.data
+    console.log('====================================');
+    console.log(this.categories);
+    console.log('====================================');
     this.totalCategory = category.count
 
     this.loading = false
@@ -93,7 +96,7 @@ export const useCategoryStore = defineStore('Category', {
       try {
         const response = await getProductsByCategory(CategoryId)
         console.log(response)
-        this.products = response
+        this.products = response.products
         console.log("products loged from store", this.products)
         this.error = null
       } catch (error) {

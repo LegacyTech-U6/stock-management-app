@@ -47,12 +47,7 @@ router.get("/category/:categoryId", ProductController.getProductsByCategory);
 router.post("/buy", ProductController.buyProduct);
 
 // ➕ Ajouter un produit (autre endpoint si besoin)
-router.post(
-  "/add",
-  upload.single("prod_image"),
-  validateProduct,
-  ProductController.addQuantity
-);
+router.post("/add",ProductController.addQuantity);
 
 // ✏️ Mettre à jour un produit (avec ou sans nouvelle image)
 router.put(

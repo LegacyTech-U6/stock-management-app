@@ -9,45 +9,22 @@
             <n-text depth="3" class="header-subtitle">Manage your customers</n-text>
           </div>
           <div class="header-actions">
-            <n-button
-              class="icon-button"
-              quaternary
-              circle
-              @click="exportPDF"
-              :focusable="false"
-            >
+            <n-button class="icon-button" quaternary circle @click="exportPDF" :focusable="false">
               <template #icon>
                 <n-icon :component="FileText" size="20" color="#ef4444" />
               </template>
             </n-button>
-            <n-button
-              class="icon-button"
-              quaternary
-              circle
-              @click="exportExcel"
-              :focusable="false"
-            >
+            <n-button class="icon-button" quaternary circle @click="exportExcel" :focusable="false">
               <template #icon>
                 <n-icon :component="FileSpreadsheet" size="20" color="#10b981" />
               </template>
             </n-button>
-            <n-button
-              class="icon-button"
-              quaternary
-              circle
-              @click="handleRefresh"
-              :focusable="false"
-            >
+            <n-button class="icon-button" quaternary circle @click="handleRefresh" :focusable="false">
               <template #icon>
                 <n-icon :component="RefreshCw" size="20" />
               </template>
             </n-button>
-            <n-button
-              type="success"
-              @click="handleAddClient"
-              :focusable="false"
-              class="add-button"
-            >
+            <n-button type="success" @click="handleAddClient" :focusable="false" class="add-button">
               <template #icon>
                 <n-icon :component="Plus" />
               </template>
@@ -61,25 +38,15 @@
         <!-- Search and Filter Bar -->
         <n-card :bordered="false" class="toolbar-card">
           <div class="toolbar-content">
-            <n-input
-              v-model:value="search"
-              placeholder="Search"
-              class="search-input"
-              clearable
-              :input-props="{ autocomplete: 'off' }"
-            >
+            <n-input v-model:value="search" placeholder="Search" class="search-input" clearable
+              :input-props="{ autocomplete: 'off' }">
               <template #prefix>
                 <n-icon :component="Search" />
               </template>
             </n-input>
 
-            <n-select
-              v-model:value="statusFilter"
-              :options="statusOptions"
-              placeholder="Status"
-              class="status-select"
-              clearable
-            />
+            <n-select v-model:value="statusFilter" :options="statusOptions" placeholder="Status" class="status-select"
+              clearable />
           </div>
         </n-card>
 
@@ -93,42 +60,23 @@
 
         <!-- Client Table -->
         <n-card v-else-if="filteredClients.length > 0" :bordered="false" class="table-card">
-          <n-data-table
-            :columns="columns"
-            :data="paginatedClients"
-            :bordered="false"
-            :single-line="false"
-            class="clients-table"
-          />
+          <n-data-table :columns="columns" :data="paginatedClients" :bordered="false" :single-line="false"
+            class="clients-table" />
 
           <!-- Pagination -->
           <div class="pagination-container">
             <div class="pagination-info">
               <n-text depth="3">Row Per Page</n-text>
-              <n-select
-                v-model:value="pageSize"
-                :options="pageSizeOptions"
-                size="small"
-                class="page-size-select"
-              />
+              <n-select v-model:value="pageSize" :options="pageSizeOptions" size="small" class="page-size-select" />
               <n-text depth="3">Entries</n-text>
             </div>
-            <n-pagination
-              v-model:page="currentPage"
-              :page-count="pageCount"
-              :page-slot="5"
-              class="pagination"
-            />
+            <n-pagination v-model:page="currentPage" :page-count="pageCount" :page-slot="5" class="pagination" />
           </div>
         </n-card>
 
         <!-- Empty State -->
         <n-card v-else :bordered="false" class="empty-card">
-          <n-empty
-            class="empty-state"
-            :description="search ? 'No customers found' : 'No customers yet'"
-            size="large"
-          >
+          <n-empty class="empty-state" :description="search ? 'No customers found' : 'No customers yet'" size="large">
             <template #icon>
               <n-icon size="64" :component="Inbox" />
             </template>
@@ -137,22 +85,13 @@
                 <n-text depth="3">
                   {{ search ? 'Try adjusting your search terms' : 'Get started by adding your first customer' }}
                 </n-text>
-                <n-button
-                  v-if="!search"
-                  type="success"
-                  @click="handleAddClient"
-                  size="large"
-                >
+                <n-button v-if="!search" type="success" @click="handleAddClient" size="large">
                   <template #icon>
                     <n-icon :component="Plus" />
                   </template>
                   Add Your First Customer
                 </n-button>
-                <n-button
-                  v-else
-                  @click="search = ''"
-                  size="large"
-                >
+                <n-button v-else @click="search = ''" size="large">
                   Clear Search
                 </n-button>
               </n-space>
@@ -162,24 +101,11 @@
       </div>
 
       <!-- Modals -->
-      <FromModal
-        :open="showModal"
-        :isEdit="isEditMode"
-        :clientData="selectedClient"
-        :loading="loading"
-        :error="error"
-        @close="handleCloseModal"
-        @submit="handleSubmit"
-      />
+      <FromModal :open="showModal" :isEdit="isEditMode" :clientData="selectedClient" :loading="loading" :error="error"
+        @close="handleCloseModal" @submit="handleSubmit" />
 
-      <n-modal
-        v-model:show="showDeleteModal"
-        preset="dialog"
-        title="Delete Customer"
-        :positive-text="'Delete'"
-        :negative-text="'Cancel'"
-        @positive-click="confirmDelete"
-      >
+      <n-modal v-model:show="showDeleteModal" preset="dialog" title="Delete Customer" :positive-text="'Delete'"
+        :negative-text="'Cancel'" @positive-click="confirmDelete">
         <n-space vertical :size="16">
           <n-alert type="warning" :show-icon="true">
             This action cannot be undone
@@ -437,6 +363,9 @@ const handleSubmit = async (formData) => {
       await clientStore.updateClient(selectedClient.value.id, formData);
       showSuccess('Customer updated successfully!');
     } else {
+      console.log('====================================');
+      console.log(formData);
+      console.log('====================================');
       await clientStore.addClient(formData);
       showSuccess('Customer created successfully!');
     }

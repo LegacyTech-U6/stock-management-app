@@ -14,7 +14,7 @@ const user = require("./src/routes/Auths.route");
 const entreprise = require("./src/routes/entreprise.routes");
 const workers = require("./src/routes/workers.routes")
 const rolesRoutes = require("./src/routes/roles.routes")
-
+const activityRoutes = require("./src/routes/activity.routes");
 // Database
 // ⚠️ ATTENTION: supprime les données existantes en dev
 db.sequelize.sync().then(() => {
@@ -33,6 +33,8 @@ app.use(
   })
 );
 
+
+app.use("/api/activities", activityRoutes);
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 app.use("/api/products", ProductRoute);

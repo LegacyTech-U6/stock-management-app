@@ -2,6 +2,9 @@
 import API from '../api/axios'
 // const API_BASE_URL = "http://localhost:5000/api";
 export async function CreateClient(clientData) {
+  console.log('====================================');
+  console.log(clientData);
+  console.log('====================================');
   const { data } = await API.post('/client', clientData)
   return data
 }
@@ -414,6 +417,16 @@ export async function getRevenueByCategory(period = "month") {
 
 export async function getProductDistributionByCategory() {
   const response = await API.get("/stats/products/distribution-by-category")
+  return response.data
+}
+
+
+//////////////////////////////////////////////////
+// Activity logger
+/////////////////////////////////////////////////
+
+export async function getAllActivities(){
+  const response  = await API.get("/activities")
   return response.data
 }
 

@@ -4,8 +4,8 @@
     <!-- Image Section -->
     <div class="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
       <img
-        v-if="product.image"
-        :src="product.image"
+        v-if="product.Prod_image"
+        :src="product.Prod_image"
         :alt="product.Prod_name"
         class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
       />
@@ -157,7 +157,7 @@ interface Product {
   code_bar: string
   date_of_arrival: string
   supplier: string
-  image?: string
+  Prod_image?: string
 }
 
 const props = defineProps<{

@@ -45,7 +45,7 @@
         </div>
       </div>
 
-    
+
 
       <div class="stat-card">
         <div class="stat-icon-wrapper purple">
@@ -136,7 +136,7 @@ import { toast } from 'vue-sonner'
 import { useRouter, useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import ProductListItem from '@/components/Products/ProductListItem.vue'
-
+const averageProducts = ref(0) 
 // Mock data - replace with actual API calls
 const categoryStore = useCategoryStore()
 const router = useRouter()

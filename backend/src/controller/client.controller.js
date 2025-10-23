@@ -1,6 +1,7 @@
 const sequelizeQuery = require("sequelize-query");
 const db = require("../config/db"); // ton index.js avec tous tes modèles
 const { Op } = require("sequelize");
+const { body } = require("express-validator");
 
 const Client = db.Client;
 const queryParser = sequelizeQuery(db);
@@ -39,7 +40,7 @@ exports.getClientById = async (req, res) => {
   try {
     const { id } = req.params;
     const client = await Client.findOne({
-      where: { id, entreprise_id: req.user.entrepriseId },
+      where: { id, entreprise_id: req.entrepriseId },
     });
 
     if (!client) return res.status(404).json({ message: "Client non trouvé" });
@@ -54,6 +55,9 @@ exports.getClientById = async (req, res) => {
 // ===============================
 exports.createClient = async (req, res) => {
   try {
+    console.log('====================================');
+    console.log(req.body , req.entrepriseId);
+    console.log('====================================');
     const entrepriseId = req.entrepriseId;
     const clientData = { ...req.body, entreprise_id: entrepriseId };
     const client = await Client.create(clientData);

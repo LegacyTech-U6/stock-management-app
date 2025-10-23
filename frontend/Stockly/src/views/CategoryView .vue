@@ -1,93 +1,76 @@
 <template>
-  <div class="category-view">
+  <div class="p-8 max-w-[1400px] mx-auto bg-gray-50 min-h-screen">
+
     <!-- Header Section -->
-    <div class="page-header">
-      <div class="header-content">
-        <h1 class="page-title">Category Management</h1>
-        <p class="page-subtitle">Manage your product categories</p>
+    <div class="flex flex-col md:flex-row justify-between items-start mb-8">
+      <div class="flex-1">
+        <h1 class="text-2xl font-bold text-gray-900 mb-1.5 tracking-tight">Category Management</h1>
+        <p class="text-sm text-gray-500 font-normal">Manage your product categories</p>
       </div>
-      <div class="header-actions">
-        <button class="btn-secondary" @click="$router.back()">Back to Products</button>
-        <button class="btn-primary" @click="showAddCategory = true">+ Add Category</button>
+      <div class="flex gap-3 mt-4 md:mt-0">
+        <button @click="$router.back()" class="bg-white text-gray-700 border border-gray-300 px-5 py-2.5 rounded-md text-sm font-medium hover:bg-gray-50 hover:border-gray-400 transition">
+          Back to Products
+        </button>
+        <button @click="showAddCategory = true" class="bg-black text-white px-5 py-2.5 rounded-md text-sm font-medium hover:bg-gray-800 transition">
+          + Add Category
+        </button>
       </div>
     </div>
 
     <!-- Stats Cards -->
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon-wrapper blue">
-          <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 6h16M4 10h16M4 14h16M4 18h16"
-            ></path>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
+      <!-- Total Categories -->
+      <div class="flex items-center gap-4 bg-white p-6 rounded-xl border border-gray-200 hover:shadow-md transition">
+        <div class="w-12 h-12 rounded-lg flex items-center justify-center bg-blue-100 text-blue-600">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
           </svg>
         </div>
-        <div class="stat-content">
-          <div class="stat-label">Total Categories</div>
-          <div class="stat-value">{{ totalCategories }}</div>
+        <div class="flex-1 min-w-0">
+          <div class="text-sm text-gray-500 font-medium mb-1">Total Categories</div>
+          <div class="text-3xl font-bold text-gray-900">{{ totalCategories }}</div>
         </div>
       </div>
 
-      <div class="stat-card">
-        <div class="stat-icon-wrapper purple">
-          <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-            ></path>
+      <!-- Total Products -->
+      <div class="flex items-center gap-4 bg-white p-6 rounded-xl border border-gray-200 hover:shadow-md transition">
+        <div class="w-12 h-12 rounded-lg flex items-center justify-center bg-purple-100 text-purple-700">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
           </svg>
         </div>
-        <div class="stat-content">
-          <div class="stat-label">Total Products</div>
-          <div class="stat-value">{{ totalProducts }}</div>
+        <div class="flex-1 min-w-0">
+          <div class="text-sm text-gray-500 font-medium mb-1">Total Products</div>
+          <div class="text-3xl font-bold text-gray-900">{{ totalProducts }}</div>
         </div>
       </div>
 
-      <div class="stat-card">
-        <div class="stat-icon-wrapper orange">
-          <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-            ></path>
+      <!-- Avg Products -->
+      <div class="flex items-center gap-4 bg-white p-6 rounded-xl border border-gray-200 hover:shadow-md transition">
+        <div class="w-12 h-12 rounded-lg flex items-center justify-center bg-orange-100 text-orange-600">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
           </svg>
         </div>
-        <div class="stat-content">
-          <div class="stat-label">Avg Products</div>
-          <div class="stat-value">{{ averageProducts }}</div>
+        <div class="flex-1 min-w-0">
+          <div class="text-sm text-gray-500 font-medium mb-1">Avg Products</div>
+          <div class="text-3xl font-bold text-gray-900">{{ averageProducts }}</div>
         </div>
       </div>
     </div>
 
     <!-- Search Section -->
-    <div class="search-section">
-      <div class="search-box">
-        <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-          ></path>
+    <div class="mb-6">
+      <div class="relative max-w-full">
+        <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
         </svg>
-        <input
-          v-model="searchQuery"
-          type="text"
-          placeholder="Search categories by name or description..."
-          class="search-input"
-        />
+        <input v-model="searchQuery" type="text" placeholder="Search categories by name or description..." class="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition">
       </div>
     </div>
 
     <!-- Categories Grid -->
-    <div class="categories-grid">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <CategoryCard
         v-for="category in filteredCategories"
         :key="category.id"
@@ -99,19 +82,14 @@
     </div>
 
     <!-- Empty State -->
-    <div v-if="filteredCategories.length === 0" class="empty-state">
-      <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-        ></path>
+    <div v-if="filteredCategories.length === 0" class="text-center p-16 bg-white border border-gray-200 rounded-xl text-gray-400">
+      <svg class="mx-auto mb-4 w-16 h-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
       </svg>
-      <p>No categories found matching your search.</p>
+      <p class="text-base">No categories found matching your search.</p>
     </div>
 
-    <!-- Add/Edit Category Modal -->
+    <!-- Modals -->
     <AddCategoryModal
       v-if="showAddCategory"
       :category="editingCategory"
@@ -128,6 +106,7 @@
     />
   </div>
 </template>
+
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
@@ -257,401 +236,5 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.category-view {
-  padding: 2rem;
-  max-width: 1400px;
-  margin: 0 auto;
-  background-color: #f9fafb;
-  min-height: 100vh;
-}
 
-/* Header Styles */
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 2rem;
-}
-
-.header-content {
-  flex: 1;
-}
-
-.page-title {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #111827;
-  margin: 0 0 0.25rem 0;
-  letter-spacing: -0.025em;
-}
-
-.page-subtitle {
-  color: #6b7280;
-  font-size: 0.9375rem;
-  margin: 0;
-  font-weight: 400;
-}
-
-.header-actions {
-  display: flex;
-  gap: 0.75rem;
-  flex-shrink: 0;
-}
-
-.btn-secondary {
-  background: white;
-  color: #374151;
-  border: 1px solid #d1d5db;
-  padding: 0.625rem 1.25rem;
-  border-radius: 6px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-secondary:hover {
-  background: #f9fafb;
-  border-color: #9ca3af;
-}
-
-.btn-primary {
-  background: #000000;
-  color: white;
-  border: none;
-  padding: 0.625rem 1.25rem;
-  border-radius: 6px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-primary:hover {
-  background: #1f2937;
-}
-
-/* Stats Grid */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.25rem;
-  margin-bottom: 2rem;
-}
-
-.stat-card {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  transition: all 0.2s ease;
-}
-
-.stat-card:hover {
-  box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
-}
-
-.stat-icon-wrapper {
-  width: 48px;
-  height: 48px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.stat-icon-wrapper.blue {
-  background: #dbeafe;
-  color: #2563eb;
-}
-
-.stat-icon-wrapper.green {
-  background: #d1fae5;
-  color: #059669;
-}
-
-.stat-icon-wrapper.purple {
-  background: #e9d5ff;
-  color: #9333ea;
-}
-
-.stat-icon-wrapper.orange {
-  background: #fed7aa;
-  color: #ea580c;
-}
-
-.stat-icon {
-  width: 24px;
-  height: 24px;
-}
-
-.stat-content {
-  flex: 1;
-  min-width: 0;
-}
-
-.stat-label {
-  font-size: 0.875rem;
-  color: #6b7280;
-  font-weight: 500;
-  margin-bottom: 0.25rem;
-}
-
-.stat-value {
-  font-size: 1.875rem;
-  font-weight: 700;
-  color: #111827;
-  letter-spacing: -0.025em;
-}
-
-/* Search Section */
-.search-section {
-  margin-bottom: 1.5rem;
-}
-
-.search-box {
-  position: relative;
-  max-width: 100%;
-}
-
-.search-icon {
-  position: absolute;
-  left: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 20px;
-  height: 20px;
-  color: #9ca3af;
-  pointer-events: none;
-}
-
-.search-input {
-  width: 100%;
-  padding: 0.75rem 1rem 0.75rem 3rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  font-size: 0.9375rem;
-  background: white;
-  transition: all 0.2s ease;
-  color: #111827;
-}
-
-.search-input::placeholder {
-  color: #9ca3af;
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: #000000;
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
-}
-
-/* Categories Grid */
-.categories-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
-  gap: 1.5rem;
-}
-
-.category-card {
-  background: white;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
-  padding: 1.5rem;
-  transition: all 0.2s ease;
-}
-
-.category-card:hover {
-  box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  transform: translateY(-2px);
-}
-
-.category-header {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.category-avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: #ef4444;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.25rem;
-  font-weight: 600;
-  flex-shrink: 0;
-}
-
-.category-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.category-name {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: #111827;
-  margin: 0 0 0.25rem 0;
-  letter-spacing: -0.01em;
-}
-
-.category-company {
-  font-size: 0.875rem;
-  color: #6b7280;
-  margin: 0;
-}
-
-.category-actions {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.action-btn {
-  width: 32px;
-  height: 32px;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  padding: 0;
-}
-
-.action-btn:hover {
-  background: #f3f4f6;
-}
-
-.action-btn svg {
-  width: 18px;
-  height: 18px;
-  color: #6b7280;
-}
-
-.action-btn:hover svg {
-  color: #111827;
-}
-
-.category-details {
-  margin-bottom: 1rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #f3f4f6;
-}
-
-.detail-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.625rem;
-  font-size: 0.875rem;
-  color: #4b5563;
-  line-height: 1.5;
-}
-
-.detail-icon {
-  width: 16px;
-  height: 16px;
-  color: #9ca3af;
-  flex-shrink: 0;
-  margin-top: 0.125rem;
-}
-
-.category-footer {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 0.75rem;
-}
-
-.footer-stat {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.footer-label {
-  font-size: 0.75rem;
-  color: #9ca3af;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.footer-value {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: #111827;
-}
-
-.category-meta {
-  font-size: 0.8125rem;
-  color: #9ca3af;
-  padding-top: 0.75rem;
-  border-top: 1px solid #f3f4f6;
-}
-
-/* Empty State */
-.empty-state {
-  text-align: center;
-  padding: 4rem 2rem;
-  color: #9ca3af;
-  background: white;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
-}
-
-.empty-icon {
-  width: 64px;
-  height: 64px;
-  margin: 0 auto 1rem;
-  color: #d1d5db;
-}
-
-.empty-state p {
-  margin: 0;
-  font-size: 1rem;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .category-view {
-    padding: 1rem;
-  }
-
-  .page-header {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .header-actions {
-    width: 100%;
-  }
-
-  .btn-secondary,
-  .btn-primary {
-    flex: 1;
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-  }
-
-  .categories-grid {
-    grid-template-columns: 1fr;
-  }
-}
 </style>

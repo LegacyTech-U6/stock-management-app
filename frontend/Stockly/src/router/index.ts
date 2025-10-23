@@ -66,7 +66,7 @@ const routes: RouteRecordRaw[] = [
         name: 'company',
         component: () => import('@/views/CreateEntreprise.vue'),
         meta: { showNavbarAndFooter: false },
-      },
+      }
     ],
   },
   {
@@ -80,6 +80,11 @@ const routes: RouteRecordRaw[] = [
         path: 'dashboar',
         name: 'EDashboard',
         component: () => import('@/views/Enterprise.vue'),
+      },
+      {
+        path:'AuditTrail',
+        name:'Audit Trail',
+        component:()=>import('@/views/ActivityLogPage.vue')
       },
       {
         path: 'sales',

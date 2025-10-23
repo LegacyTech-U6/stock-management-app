@@ -1,8 +1,8 @@
 // controllers/invoice.controller.js
 const sequelizeQuery = require("sequelize-query");
 const db = require("../config/db");
-const { Invoice, InvoiceItem, Product, Client, Entreprise, Sale } = db;
-
+const { Invoice, InvoiceItem, Product, Client, Entreprise, Sales } = db;
+const logActivity = require('../utils/activityLogger')
 const queryParser = sequelizeQuery(db);
 
 const InvoiceController = {
@@ -28,17 +28,18 @@ const InvoiceController = {
       }
       const general_total =
         total_hors_reduction - Number(discount) + Number(tax);
-
+     const total = total_hors_reduction
       const invoice = await Invoice.create({
         client_id,
         entreprise_id,
-        total_hors_reduction,
+        total,
         discount,
         reduction_type,
-        tva,
+        tax,
         general_total,
         notes,
         status: "en_attente",
+        general_total,
         mode_paiement,
         date_echeance,
       });
@@ -62,13 +63,25 @@ const InvoiceController = {
         product.quantity -= item.quantity;
         await product.save();
 
-        await Sale.create({
+        await Sales.create({
           product_id: item.id,
           quantity_sold: item.quantity,
           total_price: item.selling_price * item.quantity,
           total_profit:
             (item.selling_price - product.cost_price) * item.quantity,
           entreprise_id,
+        });
+        // Logger la vente
+        await logActivity({
+          user_id: req.user.id,
+          action: "Vente",
+          entity_type: "Product",
+          entity_id: product.id,
+          description: `Vente de ${item.quantity} unités de "${product.Prod_name}"`,
+          quantity: item.quantity,
+          amount: item.quantity * item.selling_price,
+          ip_address: req.ip,
+          user_agent: req.headers["user-agent"],
         });
       }
 

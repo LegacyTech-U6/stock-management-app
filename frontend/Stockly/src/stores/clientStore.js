@@ -25,7 +25,8 @@ export const useClientStore = defineStore('client', {
       this.loading = true
       this.error = null
       try {
-        this.clients = await getClient()
+        const data = await getClient()
+        this.clients = data.data
         console.log(this.clients)
       } catch (err) {
         this.error = err.response?.data?.message || err.message || 'Failed to fetch clients'
@@ -53,12 +54,16 @@ export const useClientStore = defineStore('client', {
       }
     },
 
-    async addClient() {
+    async addClient(formData) {
       this.submitLoading = true
       this.submitError = null
       try {
-        const clientData = { ...this.clientForm }
-        await CreateClient(clientData)
+
+        console.log('====================================');
+        console.log(formData);
+        console.log('====================================');
+
+        await CreateClient(formData)
         await this.fetchClients() // Refresh the list
         this.fermerFormulaire() // Close form on success
         return { success: true }

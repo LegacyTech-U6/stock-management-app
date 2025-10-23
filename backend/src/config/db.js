@@ -98,7 +98,10 @@ db.Worker.belongsTo(db.User, {
 });
 
 // Un utilisateur peut être lié à plusieurs entreprises (via EntrepriseUsers)
-db.User.hasMany(db.entrepriseUsers, { as: "entrepriseUsers", foreignKey: "user_id" });
+db.User.hasMany(db.entrepriseUsers, {
+  as: "entrepriseUsers",
+  foreignKey: "user_id",
+});
 db.entrepriseUsers.belongsTo(db.User, {
   foreignKey: "user_id",
   as: "user",
@@ -126,49 +129,70 @@ db.activities.belongsTo(db.User, {
 db.Entreprise.belongsTo(db.User, { foreignKey: "user_id", as: "owner" });
 
 // Une entreprise peut avoir plusieurs employés (Workers)
-db.Entreprise.hasMany(db.Worker, { as: "workers", foreignKey: "entreprise_id" });
+db.Entreprise.hasMany(db.Worker, {
+  as: "workers",
+  foreignKey: "entreprise_id",
+});
 db.Worker.belongsTo(db.Entreprise, {
   foreignKey: "entreprise_id",
   as: "entreprise",
 });
 
 // Une entreprise peut avoir plusieurs utilisateurs internes
-db.Entreprise.hasMany(db.entrepriseUsers, { as: "entrepriseUsers", foreignKey: "entreprise_id" });
+db.Entreprise.hasMany(db.entrepriseUsers, {
+  as: "entrepriseUsers",
+  foreignKey: "entreprise_id",
+});
 db.entrepriseUsers.belongsTo(db.Entreprise, {
   foreignKey: "entreprise_id",
   as: "entreprise",
 });
 
 // Une entreprise peut avoir plusieurs clients
-db.Entreprise.hasMany(db.Client, { as: "clients", foreignKey: "entreprise_id" });
+db.Entreprise.hasMany(db.Client, {
+  as: "clients",
+  foreignKey: "entreprise_id",
+});
 db.Client.belongsTo(db.Entreprise, {
   foreignKey: "entreprise_id",
   as: "entreprise",
 });
 
 // Une entreprise peut avoir plusieurs catégories
-db.Entreprise.hasMany(db.Category, { as: "categories", foreignKey: "entreprise_id" });
+db.Entreprise.hasMany(db.Category, {
+  as: "categories",
+  foreignKey: "entreprise_id",
+});
 db.Category.belongsTo(db.Entreprise, {
   foreignKey: "entreprise_id",
   as: "entreprise",
 });
 
 // Une entreprise peut avoir plusieurs fournisseurs
-db.Entreprise.hasMany(db.Supplier, { as: "suppliers", foreignKey: "entreprise_id" });
+db.Entreprise.hasMany(db.Supplier, {
+  as: "suppliers",
+  foreignKey: "entreprise_id",
+});
 db.Supplier.belongsTo(db.Entreprise, {
   foreignKey: "entreprise_id",
   as: "entreprise",
 });
 
 // Une entreprise peut avoir plusieurs produits
-db.Entreprise.hasMany(db.Product, { as: "products", foreignKey: "entreprise_id" });
+db.Entreprise.hasMany(db.Product, {
+  as: "products",
+  foreignKey: "entreprise_id",
+});
 db.Product.belongsTo(db.Entreprise, {
   foreignKey: "entreprise_id",
   as: "entreprise",
 });
 
 // Une entreprise peut avoir plusieurs factures
-db.Entreprise.hasMany(db.Invoice, { as: "invoices", foreignKey: "entreprise_id" });
+db.Entreprise.hasMany(db.Invoice, {
+  as: "invoices",
+  foreignKey: "entreprise_id",
+});
 db.Invoice.belongsTo(db.Entreprise, {
   foreignKey: "entreprise_id",
   as: "entreprise",
@@ -189,14 +213,20 @@ db.Order.belongsTo(db.Entreprise, {
 });
 
 // Une entreprise peut avoir plusieurs mouvements de stock
-db.Entreprise.hasMany(db.StockMovement, { as: "stockMovements", foreignKey: "entreprise_id" });
+db.Entreprise.hasMany(db.StockMovement, {
+  as: "stockMovements",
+  foreignKey: "entreprise_id",
+});
 db.StockMovement.belongsTo(db.Entreprise, {
   foreignKey: "entreprise_id",
   as: "entreprise",
 });
 
 // Une entreprise peut avoir plusieurs activités
-db.Entreprise.hasMany(db.activities, { as: "activities", foreignKey: "entreprise_id" });
+db.Entreprise.hasMany(db.activities, {
+  as: "activities",
+  foreignKey: "entreprise_id",
+});
 db.activities.belongsTo(db.Entreprise, {
   foreignKey: "entreprise_id",
   as: "entreprise",
@@ -224,7 +254,10 @@ db.InvoiceItem.belongsTo(db.Invoice, {
 });
 
 // Chaque item correspond à un produit
-db.Product.hasMany(db.InvoiceItem, { as: "invoiceItems", foreignKey: "product_id" });
+db.Product.hasMany(db.InvoiceItem, {
+  as: "invoiceItems",
+  foreignKey: "product_id",
+});
 db.InvoiceItem.belongsTo(db.Product, {
   foreignKey: "product_id",
   as: "product",
@@ -257,10 +290,18 @@ db.Product.hasMany(db.Order, { as: "orders", foreignKey: "product_id" });
 db.Order.belongsTo(db.Product, { foreignKey: "product_id", as: "product" });
 
 // Produit peut avoir plusieurs mouvements de stock
-db.Product.hasMany(db.StockMovement, { as: "movements", foreignKey: "produit_id" });
+db.Product.hasMany(db.StockMovement, {
+  as: "movements",
+  foreignKey: "produit_id",
+});
 db.StockMovement.belongsTo(db.Product, {
   foreignKey: "produit_id",
   as: "product",
+});
+db.activities.belongsTo(db.Product, {
+  foreignKey: "entity_id",
+  as: "product",
+ 
 });
 
 // =======================
@@ -275,7 +316,10 @@ db.Order.belongsTo(db.Supplier, {
 // =======================
 // 🔁 STOCK MOVEMENTS
 // =======================
-db.entrepriseUsers.hasMany(db.StockMovement, { as: "movements", foreignKey: "created_by" });
+db.entrepriseUsers.hasMany(db.StockMovement, {
+  as: "movements",
+  foreignKey: "created_by",
+});
 db.StockMovement.belongsTo(db.entrepriseUsers, {
   foreignKey: "created_by",
   as: "createdBy",
@@ -284,7 +328,10 @@ db.StockMovement.belongsTo(db.entrepriseUsers, {
 // =======================
 // ⚙️ SETTINGS RELATIONS
 // =======================
-db.Entreprise.hasOne(db.Setting, { as: "setting", foreignKey: "entreprise_id" });
+db.Entreprise.hasOne(db.Setting, {
+  as: "setting",
+  foreignKey: "entreprise_id",
+});
 db.Setting.belongsTo(db.Entreprise, {
   foreignKey: "entreprise_id",
   as: "entreprise",
@@ -303,7 +350,6 @@ db.permissions.belongsToMany(db.roles, {
   foreignKey: "permission_id",
   as: "roles",
 });
-
 
 // ===============================
 // EXPORT
