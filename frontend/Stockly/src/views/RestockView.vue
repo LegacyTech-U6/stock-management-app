@@ -10,7 +10,7 @@
             <p class="text-sm text-gray-500 mt-1">Manage product inventory and stock levels</p>
           </div>
           <div class="flex gap-3">
-            <button class="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium">
+            <button @click="router.back()" class="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium">
               Cancel
             </button>
             <button @click="Restock" class="px-4 py-2 text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors font-medium">
@@ -84,14 +84,14 @@
 
             <div class="flex gap-4 mb-6">
               <img
-                :src="product?.image || 'https://via.placeholder.com/80'"
+                :src="product?.Prod_image || 'https://via.placeholder.com/80'"
                 :alt="product?.Prod_name"
                 class="w-20 h-20 rounded-lg object-cover bg-gray-100"
               />
               <div class="flex-1">
                 <h4 class="font-semibold text-gray-900 mb-1">{{ product?.Prod_name || 'Unknown Product' }}</h4>
-                <p class="text-sm text-gray-500 mb-1">SKU: {{ product?.Barcode || 'N/A' }}</p>
-                <p class="text-sm text-gray-500">{{ product?.category_name || 'Unknown Category' }}</p>
+                <p class="text-sm text-gray-500 mb-1">SKU: {{ product?.code_bar || 'N/A' }}</p>
+                <p class="text-sm text-gray-500">{{ product?.category.name || 'Unknown Category' }}</p>
               </div>
             </div>
 
@@ -284,7 +284,7 @@
               <button @click="Restock" class="w-full bg-gray-900 text-white py-2 rounded-lg font-medium hover:bg-gray-800 transition-colors">
                 Confirm Restock
               </button>
-              <button class="w-full bg-white text-gray-700 py-2 rounded-lg font-medium border border-gray-300 hover:bg-gray-50 transition-colors">
+              <button @click="router.back()" class="w-full bg-white text-gray-700 py-2 rounded-lg font-medium border border-gray-300 hover:bg-gray-50 transition-colors">
                 Cancel
               </button>
             </div>
@@ -297,11 +297,11 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import {  useRoute } from 'vue-router'
+import {  useRoute,useRouter } from 'vue-router'
 import { getOneProduct as fetchProductById } from '@/service/api'
 import { useProductStore } from '@/stores/productStore'
 import { useActionMessage } from '@/composable/useActionMessage'
-import router from '@/router'
+
 const { showSuccess, showError } = useActionMessage()
 const quantity = ref(1)
 const unitCost = ref(0)
@@ -310,7 +310,7 @@ const notes = ref('')
 const restockReason = ref('Out of Stock')
 const submitError = ref('')
 
-
+const router = useRouter()
 const route = useRoute()
 const productStore = useProductStore()
 const product = ref(null)
@@ -409,7 +409,7 @@ const Restock = async () => {
 
       showSuccess('Restock successful')
 
-
+    router.back()
   } catch (error) {
     submitError.value =
       error?.response?.data?.message ||

@@ -113,7 +113,7 @@ exports.getDailySalesReport = async (req, res) => {
       sales_by_category: salesByCategory,
       details,
     };
-    await db.SalesReport.upsert({
+    await db.salesReport.upsert({
   date: new Date().toISOString().split("T")[0],
   total_sales: totalSales,
   total_items_sold: totalItemsSold,

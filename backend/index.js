@@ -3,6 +3,9 @@ const cors = require("cors");
 const  path= require ("path");
 const app = express();
 const db = require('./src/config/db')
+// 🕐 Charger le cron des rapports journaliers
+require('./src/crons/dailyReports')
+const purchaseRoutes = require('./src/routes/purchase.route')
 const ProductRoute = require("./src/routes/product.route");
 const ProductRouteStats = require("./src/routes/stats");
 const CategoryRoute = require("./src/routes/category.route");
@@ -36,7 +39,7 @@ app.use(
 
 app.use("/api/activities", activityRoutes);
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
-
+app.use("/purchase" ,purchaseRoutes);
 app.use("/api/products", ProductRoute);
 app.use("/api/category", CategoryRoute);
 app.use("/api/stats", ProductRouteStats);

@@ -47,6 +47,9 @@ db.sequelize = sequelize;
 // ===============================
 // IMPORT MODELS
 // ===============================
+db.DailyPurchaseReport = require("../models/DailyPurchaseReport.model")(sequelize, DataTypes);
+db.Purchase = require("../models/Purchase.model")(sequelize, DataTypes);
+db.PurchaseItem = require("../models/PurchaseItem.model")(sequelize, DataTypes);
 db.salesReport = require("../models/SalesReport.model")(sequelize, DataTypes);
 db.User = require("../models/user.model")(sequelize, DataTypes);
 db.Product = require("../models/product.model")(sequelize, DataTypes);
@@ -280,6 +283,24 @@ db.Supplier.hasMany(db.Product, { as: "products", foreignKey: "supplier_id" });
 db.Product.belongsTo(db.Supplier, {
   foreignKey: "supplier_id",
   as: "supplierInfo",
+});
+db.Purchase.hasMany(db.PurchaseItem, {
+  as: "items",
+  foreignKey: "purchase_id",
+  onDelete: "CASCADE",
+});
+db.PurchaseItem.belongsTo(db.Purchase, {
+  foreignKey: "purchase_id",
+  as: "purchase",
+});
+
+db.PurchaseItem.belongsTo(db.Product, {
+  foreignKey: "product_id",
+  as: "product",
+});
+db.Product.hasMany(db.PurchaseItem, {
+  as: "purchaseItems",
+  foreignKey: "product_id",
 });
 
 // Produit peut apparaître dans plusieurs ventes
