@@ -35,7 +35,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/ad',
     component: () => import('@/views/AdminLayout.vue'),
-    meta: { showNavbarAndFooter: false },
+    meta: { showNavbarAndFooter: false ,requiresAuth: true},
     children: [
       {
         path: 'admin',
@@ -73,7 +73,7 @@ const routes: RouteRecordRaw[] = [
     path: '/:uuid',
     name: 'real',
     component: () => import('../views/LayoutPage.vue'),
-    meta: { showNavbarAndFooter: false },
+    meta: { showNavbarAndFooter: false,requiresAuth: true },
     redirect: '/real/sales', // Optional: redirect to a default page
     children: [
       {
@@ -169,19 +169,23 @@ const router = createRouter({
   history: createWebHistory(),
   routes,
 })
-// router.beforeEach(async (to, from, next) => {
-//   const auth = useAuthStore();
+router.beforeEach(async (to, from, next) => {
+  const auth = useAuthStore()
 
-//   if (auth.user === null) {
-//     await auth.initialize();
-//   }
+  // On récupère le user depuis le localStorage si page reload
+  if (!auth.user && auth.token) {
+    await auth.getAccount()
+  }
 
-//   if (to.meta.requiresAuth && !auth.isAuthenticated) {
-//     return next('/login');
-//   }
+  if (to.meta.requiresAuth && !auth.user) {
+    next('/login')
+  } else if (to.path === '/login' && auth.user) {
+    next('/dashboard')
+  } else {
+    next()
+  }
+})
 
-//   next();
-// });
 
 
 router.afterEach((to, from) => {

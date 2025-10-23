@@ -1,11 +1,11 @@
 const { Op } = require("sequelize");
 const db = require("../config/db");
 
-exports.generateDailyPurchaseReport = async (req,res) => {
+exports.generateDailyPurchaseReport = async (req, res) => {
   const today = new Date();
   const startOfDay = new Date(today.setHours(0, 0, 0, 0));
   const endOfDay = new Date(today.setHours(23, 59, 59, 999));
-      const entrepriseId = req.entrepriseId;
+  const entrepriseId = req.entrepriseId;
   const purchases = await db.Purchase.findAll({
     where: {
       entreprise_id: entrepriseId,
