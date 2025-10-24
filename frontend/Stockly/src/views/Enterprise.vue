@@ -11,7 +11,7 @@
 
 
 
-    
+
     </div>
     <!-- Tabs -->
 
@@ -30,7 +30,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useEntrepriseStore } from '@/stores/entrepriseStore'
 import DashboardOverview from '@/components/main/DashboardView.vue'
-import EnterpriseAnalytics from '@/components/main/EnterpriseAnalytics.vue'
+
 const activeTab = ref('overview')
 const isEntrepriseReady = ref(false)
 const entrepriseStore = useEntrepriseStore()

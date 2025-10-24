@@ -26,7 +26,7 @@
         <span :class="trend >= 0 ? 'text-green-500' : 'text-red-600'" class=" text-sm  font-semibold">
           {{ trend >= 0 ? '+' : '' }}{{ trend }}%
         </span>
-        <span class="text-gray-400 text-sm">vs Last Month</span>
+        <span class="text-gray-400 text-sm">vs Last {{ period }}</span>
         <a
           v-if="viewLink"
           :href="viewLink"
@@ -48,5 +48,7 @@ const props = defineProps({
   viewLink: String,
   iconBg: String,
   iconColor: String,
+  period: String,
+
 })
 </script>

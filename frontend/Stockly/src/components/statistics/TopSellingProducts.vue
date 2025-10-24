@@ -38,23 +38,18 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'TopSellingProducts',
-  data() {
-    return {
-      selectedPeriod: 'Today',
-      products: [
-        { name: 'Charger Cable - Lighting', price: 187, sales: '247+ Sales', trend: 25, image: '📱', color: 'bg-orange-100' },
-        { name: 'Yves Saint Eau De Parfum', price: 145, sales: '289+ Sales', trend: 25, image: '💄', color: 'bg-red-100' },
-        { name: 'Apple Airpods 2', price: 458, sales: '300+ Sales', trend: 25, image: '🎧', color: 'bg-green-900' },
-        { name: 'Vacuum Cleaner', price: 139, sales: '225+ Sales', trend: -21, image: '🔌', color: 'bg-blue-900' },
-        { name: 'Samsung Galaxy S21 Fe 5g', price: 898, sales: '365+ Sales', trend: 25, image: '📱', color: 'bg-purple-900' }
-      ]
-    }
-  }
-}
+<script setup>
+import { ref,onMounted, computed } from 'vue'
+import { useStatisticsStore } from '@/stores/statisticStore'
+const statisticStore = useStatisticsStore()
+const selectedPeriod = ref('This Month')
+onMounted(()=>{
+  statisticStore.fetchBestSellingProduct()
+})
+const products = computed(()=>statisticStore.bestSellingProduct)
 </script>
+
+
 
 <style scoped>
 /* Add Tailwind CSS or custom styles */

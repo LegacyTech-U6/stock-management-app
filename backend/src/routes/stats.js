@@ -15,18 +15,8 @@ router.use(getActiveEntreprise);
 // STATISTICS ROUTES
 // ----------------------------
 const statsController = require("../controller/statistics/productStats");
-router.get("/product-sales", statsController.productSales);
-router.get("/sales-report", statsController.getSalesReport);
-router.get("/best-category", statsController.getBestCategory);
-router.get("/best-by-category/:id", statsController.getBestByCategory);
-router.get("/best-selling", statsController.getBestSellingProduct);
-router.get("/revenue", statsController.getRevenue);
-router.get("/profit", statsController.getProfit);
-router.get("/compare-sales", statsController.compareSales);
-router.get("/quarterly-sales", statsController.getQuarterlySales);
-router.get("/sales-trend", statsController.getSalesTrend);
-router.get("/revenue-by-category", statsController.getRevenueByCategory);
-router.get(
-  "/products/distribution-by-category", statsController.getProductDistributionByCategory
-);
+router.get("/sales", statsController.sales);
+router.get("/profit", statsController.profit);
+router.get("/clients", statsController.clients);
+router.get("/products", statsController.topProducts);
 module.exports = router;

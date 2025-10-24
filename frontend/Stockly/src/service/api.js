@@ -342,7 +342,7 @@ export async function deleteRole(id) {
 
 // ✅ Récupérer le total des ventes par produit (global) with period
 export async function getProductSales(period) {
-  const { data } = await API.get("/stats/product-sales", {
+  const { data } = await API.get("/stats/sales", {
     params: { period }  // send period as query parameter
   });
   return data;
@@ -351,14 +351,14 @@ export async function getProductSales(period) {
 
 // ✅ Récupérer le rapport des ventes pour une période donnée
 // period = "day" | "week" | "month"
-export async function getSalesReport(period = "month") {
+export async function getSalesReport(period ) {
   const { data } = await API.get("/stats/sales-report", { params: { period } });
   return data;
 }
 
 // ✅ Récupérer le meilleur produit vendu pour une période
 export async function getBestSellingProduct(period = "month") {
-  const { data } = await API.get("/stats/best-selling", { params: { period } });
+  const { data } = await API.get("/stats/products", { params: { period } });
   return data;
 }
 
