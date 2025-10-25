@@ -1,62 +1,75 @@
-[file name]: DashBoard.vue
-[file content begin]
+[file name]: DashBoard.vue [file content begin]
 <template>
   <div class="px-30">
-     <div v-if="loadingClients">
-  <LazyLoader :loading="loadingClients" :skeleton-count="6">
-    <template #icon>
-      <n-spin size="40" />
-    </template>
-    <template #message>
-      <p class="text-lg font-semibold text-gray-800">Loading clients...</p>
-    </template>
-  </LazyLoader>
-</div>
-<div v-else >
-<div class="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-      <!-- 🔹 Loop through stats array -->
-      <StatsCards
-        v-for="(stat, index) in stats"
-        :key="index"
-        :icon="stat.icon"
-        :title="stat.title"
-        :value="Number(stat.value)"
-        :color="stat.color"
-        :subtitle="stat.subtitle || ''"
-        :containerClass="stat.containerClass"
-        :trend="stat.trendPercent || 0"
-      />
+    <div v-if="loadingClients">
+      <LazyLoader :loading="loadingClients" :skeleton-count="6">
+        <template #icon>
+          <n-spin size="40" />
+        </template>
+        <template #message>
+          <p class="text-lg font-semibold text-gray-800">Loading clients...</p>
+        </template>
+      </LazyLoader>
     </div>
-
-    <div>
-      <div class="grid grid-cols-4 gap-4 p-4">
-        <div class="col-span-3 bg-white rounded-xl border-2 border-gray-300 p-10">
-          <SalesPerformanceChart />
-        </div>
-        <div class="p-5 bg-white rounded-xl border-2 border-gray-300">
-          <RevenueCatgeory />
-        </div>
+    <div v-else>
+      <div class="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- 🔹 Loop through stats array -->
+        <GridCard
+          v-for="stat in topStats"
+          :key="stat.id"
+          :title="stat.label"
+          :value="stat.value"
+          :icon="stat.icon"
+          :gradientFrom="stat.gradientFrom"
+          :gradientTo="stat.gradientTo"
+          :trend="stat.trend"
+        />
       </div>
-      <!-- Sales Chart -->
 
-      <TopSellingProducts />
-      <ChartRevenue />
+      <div>
+        <div class="grid grid-cols-4 gap-4 p-4">
+          <div class="col-span-3 bg-white rounded-xl border-2 border-gray-300 p-10">
+            <!-- <SalesPerformanceChart /> -->
+            <SalesChart />
+          </div>
+          <div class="p-5 bg-white rounded-xl border-2 border-gray-300">
+            <RevenueCatgeory />
+          </div>
+        </div>
+        <!-- Sales Chart -->
+
+        <TopSellingProducts />
+        <ChartRevenue />
+      </div>
     </div>
-</div>
-
   </div>
 </template>
 
 <script setup lang="ts">
 import LazyLoader from '@/components/ui/LazyLoader.vue'
 import { ref, computed, onMounted } from 'vue'
-import { Users, DollarSign, TrendingUp, Percent, ArrowUp, ArrowDown } from 'lucide-vue-next'
+
 import StatsCards from '@/components/StartsCards.vue'
 import { useStatisticsStore } from '@/stores/statisticStore'
 import SalesPerformanceChart from '@/components/statistics/SalesPerformanceChart.vue'
 import RevenueCatgeory from '@/components/statistics/RevenueCatgeory.vue'
 import TopSellingProducts from '@/components/statistics/TopSellingProducts.vue'
 import ChartRevenue from '@/components/statistics/ChartRevenue.vue'
+import SalesChart from '@/components/ui/charts/SalesChart.vue'
+import GridCard from '@/components/ui/cards/GridCard.vue'
+import { useProductStore } from '@/stores/productStore'
+import {
+  Package,
+  DollarSign,
+  Users,
+  PieChart,
+  Clock,
+  Tag,
+  Layers,
+  RotateCcw,
+  Wallet,
+} from 'lucide-vue-next'
+const productStore = useProductStore()
 
 // 🔹 Store
 const statsStore = useStatisticsStore()
@@ -74,78 +87,56 @@ const salesTrendPercent = ref(0)
 
 // 🔹 Fetch stats from backend
 onMounted(async () => {
-    loadingClients.value = true
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+  loadingClients.value = true
+  await statsStore.fetchProductSales('day')
+  await new Promise((resolve) => setTimeout(resolve, 2000))
   await statsStore.fetchSalesReport('month')
   await statsStore.fetchRevenue('day')
   await statsStore.fetchProfit('day')
   loadingClients.value = false
-  // Total Sales
-  totalSales.value = statsStore.salesReport?.reduce(
-    (sum, p) => sum + (p.total_sold || 0),
-    0
-  ) || 0
 
-  // Revenue
-  avgRevenue.value = statsStore.revenue?.total || 0
-  revenueTrendPercent.value = statsStore.revenue?.history[statsStore.revenue.history.length - 1].growth_percent || 0
-
-  // Profit
-  profit.value = statsStore.profit?.total || 0
-  profitTrendPercent.value = statsStore.profit.history[statsStore.profit.history.length - 1].growth_percent
-
-  // Margin %
-  margin.value =
-    statsStore.profit?.total && statsStore.revenue?.total
-      ? Number(((statsStore.profit.total / statsStore.revenue.total) * 100).toFixed(2))
-      : 0
-
-  // Calculate sales trend percentage (you might need to add this to your backend)
-  // For now, using a placeholder calculation
-  if (statsStore.salesReport && statsStore.salesReport.length > 1) {
-    const currentPeriod = statsStore.salesReport[statsStore.salesReport.length - 1]?.total_sold || 0
-    const previousPeriod = statsStore.salesReport[statsStore.salesReport.length - 2]?.total_sold || 0
-    salesTrendPercent.value = previousPeriod > 0
-      ? ((currentPeriod - previousPeriod) / previousPeriod) * 100
-      : currentPeriod > 0 ? 100 : 0
-  }
 })
-
-// 🔹 Stats array with trend percentages
-const stats = computed(() => [
+const totalProductsValue = computed(() =>
+  productStore.products.reduce((sum, product) => {
+    const productTotal = product.selling_price * (product.quantity ?? 1)
+    return sum + productTotal
+  }, 0),
+)
+const topStats = computed(() => [
   {
-    title: 'Total Sales',
-    value: totalSales.value,
-    color: 'bg-blue-600',
-    containerClass: 'p-6 rounded-xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-white',
+    id: 1,
     icon: Users,
-    trendPercent: salesTrendPercent.value
+    label: 'Total products',
+    value: productStore.totalProducts,
+    subtext: 'Under this enterprise',
+    gradientFrom: '#0E9384',
+    gradientTo: '#0E9384',
   },
   {
-    title: 'Revenue',
-    value: avgRevenue.value,
-    color: 'bg-green-600',
-    containerClass: 'p-6 rounded-xl border-2 border-green-200 bg-gradient-to-br from-green-50 to-white',
+    id: 2,
+    icon: Package,
+    label: 'Total Products Value',
+    value: totalProductsValue,
+    gradientFrom: '#FE9F43',
+    gradientTo: '#FE9F43',
+  },
+  {
+    id: 3,
     icon: DollarSign,
-    trendPercent: revenueTrendPercent.value
+    label: 'Total Sales',
+    value: computed(() => statsStore.topProducts.sales?.total),
+    gradientFrom: '#092C4C',
+    gradientTo: '#092C4C',
+    trend: statsStore.topProducts.sales?.history.at(-1)?.growth_percent,
   },
   {
-    title: 'Profit',
-    value: profit.value,
-    color: 'bg-purple-600',
-    containerClass: 'p-6 rounded-xl border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-white',
-    icon: TrendingUp,
-    trendPercent: profitTrendPercent.value
-  },
-  {
-    title: 'Margin %',
-    value: margin.value,
-    color: 'bg-red-600',
-    subtitle: 'Profit / Revenue',
-    containerClass: 'p-6 rounded-xl border-2 border-orange-200 bg-gradient-to-br from-orange-50 to-white',
-    icon: Percent,
-    trendPercent: 0 // Margin trend would need separate calculation
+    id: 4,
+    icon: DollarSign,
+    label: 'Total Purchase',
+    value: avgRevenue.value,
+    gradientFrom: '#155EEF',
+    gradientTo: '#155EEF',
+    trendPercentage: revenueTrendPercent.value,
   },
 ])
 </script>
-

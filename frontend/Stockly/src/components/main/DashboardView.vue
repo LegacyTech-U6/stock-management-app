@@ -2,22 +2,32 @@
   <div class="p-8 space-y-8">
     <!-- Stat Cards Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <GridCard v-for="stat in topStats" :key="stat.id" :title="stat.label" :value="stat.value" :icon="stat.icon"
-        :gradientFrom="stat.gradientFrom" :gradientTo="stat.gradientTo" :trend="stat.trend" />
+      <GridCard
+        v-for="stat in topStats"
+        :key="stat.id"
+        :title="stat.label"
+        :value="stat.value"
+        :icon="stat.icon"
+        :gradientFrom="stat.gradientFrom"
+        :gradientTo="stat.gradientTo"
+        :trend="stat.trend"
+      />
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <MetricCard v-for="stat in statsTable" :key="stat.id" :icon="stat.icon" :value="stat.value" :label="stat.label"
-        :trend="stat.trend" :viewLink="stat.viewLink" :icon-bg="stat.iconBg" :icon-color="stat.iconColor" :period="stat.period" />
+      <MetricCard
+        v-for="stat in statsTable"
+        :key="stat.id"
+        :icon="stat.icon"
+        :value="stat.value"
+        :label="stat.label"
+        :trend="stat.trend"
+        :viewLink="stat.viewLink"
+        :icon-bg="stat.iconBg"
+        :icon-color="stat.iconColor"
+        :period="stat.period"
+      />
     </div>
-
-    <!-- Rest of your dashboard content -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <TopSellingProducts />
-      <LowStockAlertsPanel />
-      <RecentSales />
-    </div>
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <!-- Left Column: Charts (2/3 width) -->
       <div class="lg:col-span-2 space-y-8">
         <!-- Sales & Orders Overview -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200">
@@ -38,21 +48,34 @@
                 <p class="text-sm text-gray-600">{{ item.current }}/{{ item.total }}</p>
               </div>
               <div class="w-full bg-gray-200 rounded-full h-2">
-                <div class="bg-gray-800 h-2 rounded-full" :style="{ width: (item.current / item.total) * 100 + '%' }">
-                </div>
+                <div
+                  class="bg-gray-800 h-2 rounded-full"
+                  :style="{ width: (item.current / item.total) * 100 + '%' }"
+                ></div>
               </div>
             </div>
           </div>
         </div>
-
-        <!-- Product Distribution -->
-        <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-          <div class="flex items-center gap-2 mb-6">
-            <PieChart class="w-5 h-5 text-gray-700" />
-            <h2 class="text-lg font-semibold text-gray-800">Product Distribution</h2>
-          </div>
-        </div>
       </div>
+      <!-- Product Distribution -->
+      <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+        <div class="flex items-center gap-2 mb-6">
+          <PieChart class="w-5 h-5 text-gray-700" />
+          <h2 class="text-lg font-semibold text-gray-800">Product Distribution</h2>
+        </div>
+
+      </div>
+      
+    </div>
+
+    <!-- Rest of your dashboard content -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <TopSellingProducts />
+      <LowStockAlertsPanel />
+
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Left Column: Charts (2/3 width) -->
 
       <!-- Right Column: Side Panels (1/3 width) -->
       <div class="space-y-8">
@@ -60,7 +83,7 @@
         <NotificationsPanel :notifications="notifications" />
 
         <!-- Low Stock Alerts -->
-        <LowStockAlertsPanel :lowStockItems="lowStockItems" />
+
 
         <!-- Recent Activity -->
         <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
@@ -127,7 +150,7 @@ const finishedProducts = ref([])
 const message = ref('')
 const { showSuccess, showError } = useActionMessage()
 // Remove the old handleLowStock function since we're using handleAlertAction now
-const statsTable =computed(() => [
+const statsTable = computed(() => [
   {
     id: 1,
     label: 'Total profit',
@@ -241,11 +264,10 @@ const topStats = computed(() => [
     id: 3,
     icon: DollarSign,
     label: 'Total Sales',
-    value: computed(()=> statisticStore.topProducts.sales?.total) ,
+    value: computed(() => statisticStore.topProducts.sales?.total),
     gradientFrom: '#092C4C',
     gradientTo: '#092C4C',
-    trend: statisticStore.topProducts.sales?.history.at(-1)?.growth_percent
-
+    trend: statisticStore.topProducts.sales?.history.at(-1)?.growth_percent,
   },
   {
     id: 4,
@@ -306,8 +328,6 @@ const stockLevels = ref([
   { name: 'Peripherals', current: 234, total: 300 },
   { name: 'Accessories', current: 156, total: 200 },
 ])
-
-
 </script>
 
 <style scoped>

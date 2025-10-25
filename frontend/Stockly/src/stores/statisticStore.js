@@ -43,11 +43,11 @@ export const useStatisticsStore = defineStore('statistics', {
 
   actions: {
     // 🔹 Fetch total product sales
-    async fetchProductSales(period ) {
+    async fetchProductSales(period = 'month') {
       this.loading = true
       try {
         // Pass the selected period to your backend API
-        const data = await getProductSales({ period })
+        const data = await getProductSales( period )
 
         // Store the returned stats
         this.topProducts = data || []

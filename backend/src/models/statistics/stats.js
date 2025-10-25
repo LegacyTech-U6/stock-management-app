@@ -6,6 +6,7 @@ function formatDate(date) {
   // Convertit une date JS en "YYYY-MM-DD HH:MM:SS"
   return date.toISOString().slice(0, 19).replace('T', ' ');
 }
+const BASE_URL = process.env.BASE_URL;
 // 🔹 Récupère les IDs d'entreprise d'un utilisateur
 async function getEnterpriseIds(userId) {
   if (!userId) return [];
@@ -49,7 +50,7 @@ function computeGrowth(history) {
 }
 
 // 🔹 Stats ventes
-async function getSales({ userId, enterpriseId, period = "month" }) {
+async function getSales({ userId, enterpriseId, period  }) {
   const filter = await getFilter({ userId, enterpriseId });
   if (filter === null) return { total: 0, history: [] };
 
@@ -193,7 +194,7 @@ async function getTopProducts({
     return products.map(p => ({
       id: p.id,
       name: p.Prod_name,
-      image: p.Prod_image,
+      image: `${BASE_URL}${p.Prod_image}`,
       cost_price: Number(p.cost_price),
       selling_price: Number(p.selling_price),
       quantity: Number(p.quantity),

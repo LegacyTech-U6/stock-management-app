@@ -14,8 +14,8 @@ exports.getAllClients = async (req, res) => {
     const query = await queryParser.parse(req);
 
     // Filtrer par entreprise
-    if (req.user && req.entrepriseId) {
-      query.where = { ...query.where, entreprise_id: req.user.entrepriseId };
+    if (req.user || req.entrepriseId) {
+      query.where = { ...query.where, entreprise_id: req.entrepriseId };
     }
 
     const data = await Client.findAll({

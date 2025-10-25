@@ -351,7 +351,7 @@ export async function getProductSales(period) {
 
 // ✅ Récupérer le rapport des ventes pour une période donnée
 // period = "day" | "week" | "month"
-export async function getSalesReport(period ) {
+export async function getSalesReport(period="month") {
   const { data } = await API.get("/stats/sales-report", { params: { period } });
   return data;
 }
