@@ -35,27 +35,7 @@
           <SalesChart />
         </div>
 
-        <!-- Stock Levels by Category -->
-        <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-          <div class="flex items-center gap-2 mb-6">
-            <Package class="w-5 h-5 text-gray-700" />
-            <h2 class="text-lg font-semibold text-gray-800">Stock Levels by Category</h2>
-          </div>
-          <div class="space-y-6">
-            <div v-for="item in stockLevels" :key="item.name" class="space-y-2">
-              <div class="flex justify-between items-center">
-                <p class="font-medium text-gray-900 text-sm">{{ item.name }}</p>
-                <p class="text-sm text-gray-600">{{ item.current }}/{{ item.total }}</p>
-              </div>
-              <div class="w-full bg-gray-200 rounded-full h-2">
-                <div
-                  class="bg-gray-800 h-2 rounded-full"
-                  :style="{ width: (item.current / item.total) * 100 + '%' }"
-                ></div>
-              </div>
-            </div>
-          </div>
-        </div>
+      
       </div>
       <!-- Product Distribution -->
       <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
@@ -65,7 +45,7 @@
         </div>
 
       </div>
-      
+
     </div>
 
     <!-- Rest of your dashboard content -->

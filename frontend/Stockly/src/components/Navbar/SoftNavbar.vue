@@ -41,22 +41,10 @@
             <div
               class="w-5 h-5 bg-green-600 rounded flex items-center justify-center"
             >
-              <span class="text-white text-xs font-bold">F</span>
+              <span class="text-white text-xs font-bold">{{getInitials(activeEntreprise.name)}}</span>
             </div>
-            <span>Freshmart</span>
-            <svg
-              class="w-4 h-4 text-gray-500"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
+            <span>{{ activeEntreprise.name }}</span>
+          
           </button>
         </div>
 
@@ -207,10 +195,22 @@
   </nav>
 </template>
 
-<script setup>
-import { ref } from 'vue';
-
+<script setup lang="ts">
+import { ref ,computed} from 'vue';
+import { useEntrepriseStore } from '@/stores/entrepriseStore'
+const entrepriseStore = useEntrepriseStore()
+const activeEntreprise = computed(() => entrepriseStore.activeEntreprise)
 const isDropdownOpen = ref(false);
+// Generate initials from name
+const getInitials = (name: string): string => {
+  if (!name) return '?'
+  const parts = name.trim().split(' ')
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+  }
+  return name.substring(0, 2).toUpperCase()
+}
+
 </script>
 
 <style scoped>

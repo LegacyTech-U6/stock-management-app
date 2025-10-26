@@ -87,6 +87,9 @@
           </div>
           <ChevronDown class="w-4 h-4 text-gray-400 flex-shrink-0" />
         </div>
+        <div class="p-1">
+          <button class="p-2 w-1/2 bg-red-300 font-semibold border border-red-700">logout</button>
+        </div>
       </div>
     </aside>
 
@@ -99,7 +102,7 @@
             Welcome back, {{ userFirstName }}!
           </h2>
           <div class="flex items-center gap-3 ml-auto">
-            <button 
+            <button
               @click="notificationOpen = !notificationOpen"
               class="relative p-2 hover:bg-gray-100 rounded-lg transition-colors hidden sm:block"
             >

@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const upload = require("../middleware/upload");
 const {
  
   deleteClient,
@@ -12,9 +13,9 @@ const authenticateUser = require("../middleware/AuthenticatedUser");
 const getActiveEntreprise = require('../middleware/activeEntreprise');
 router.use(getActiveEntreprise)
 router.get("/", getAllClients);
-router.post("/", createClient);
+router.post("/", upload.single("image"), createClient);
 router.get("/:id", getClientById);
-router.put("/:id", updateClient);
+router.put("/:id",upload.single("image"), updateClient);
 router.delete("/:id", deleteClient);
 
 module.exports = router;

@@ -5,6 +5,8 @@ const Role = db.Role;
 
 const queryParser = sequelizeQuery(db);
 
+
+
 // ===============================
 // 🔹 Récupérer tous les rôles
 // ===============================
@@ -33,15 +35,11 @@ exports.getRoleById = async (req, res) => {
   }
 };
 
-// ===============================
-// 🔹 Créer un rôle
-// ===============================
+// 🔹 Créer, mettre à jour, supprimer restent inchangés
 exports.createRole = async (req, res) => {
   try {
     const { name, description } = req.body;
-    if (!name)
-      return res.status(400).json({ message: "Le nom du rôle est requis" });
-
+    if (!name) return res.status(400).json({ message: "Le nom du rôle est requis" });
     const role = await Role.create({ name, description });
     res.status(201).json(role);
   } catch (err) {
@@ -49,9 +47,6 @@ exports.createRole = async (req, res) => {
   }
 };
 
-// ===============================
-// 🔹 Mettre à jour un rôle
-// ===============================
 exports.updateRole = async (req, res) => {
   try {
     const { id } = req.params;
@@ -63,9 +58,6 @@ exports.updateRole = async (req, res) => {
   }
 };
 
-// ===============================
-// 🔹 Supprimer un rôle
-// ===============================
 exports.deleteRole = async (req, res) => {
   try {
     const { id } = req.params;

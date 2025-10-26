@@ -20,6 +20,9 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       validate: { isEmail: true },
     },
+    image:{
+      type:DataTypes.STRING
+    }
   });
 
 

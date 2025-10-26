@@ -20,17 +20,12 @@
       <button
         class="flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-lg text-sm text-gray-600 hover:bg-gray-100 transition-colors"
       >
-        <span>{{ selectedPeriod }}</span>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-4 h-4"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <polyline points="6 9 12 15 18 9"></polyline>
-        </svg>
+         <select v-model="selectedPeriod" class="border rounded px-2 py-1">
+          <option value="day">Today</option>
+          <option value="week">This Week</option>
+          <option value="month">This Month</option>
+        </select>
+
       </button>
     </div>
 
@@ -72,9 +67,9 @@
 import { ref, onMounted, computed } from 'vue'
 import { useStatisticsStore } from '@/stores/statisticStore'
 const statisticStore = useStatisticsStore()
-const selectedPeriod = ref('This Month')
+const selectedPeriod = ref('month')
 onMounted(() => {
-  statisticStore.fetchBestSellingProduct()
+  statisticStore.fetchBestSellingProduct(selectedPeriod)
 })
 const products = computed(() => statisticStore.bestSellingProduct?.products)
 </script>

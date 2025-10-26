@@ -5,8 +5,7 @@ const { Category, Product } = db;
 
 const queryParser = sequelizeQuery(db);
 
-
-  // 🔹 Récupérer toutes les catégories
+// 🔹 Récupérer toutes les catégories
 exports.getAllCategories = async (req, res) => {
   try {
     const query = await queryParser.parse(req);
@@ -17,20 +16,22 @@ exports.getAllCategories = async (req, res) => {
     }
 
     const data = await Category.findAll({
-  attributes: {
-    include: [
-      [
-        db.sequelize.literal(`(
+      attributes: {
+        include: [
+          [
+            db.sequelize.literal(`(
           SELECT COUNT(*)
           FROM Products AS p
           WHERE p.category_id = Category.id
         )`),
-        "productCount",
-      ],
-    ],
-  },
-  ...query,
-});
+            "productCount",
+          ],
+        ],
+      },
+      ...query,
+    });
+
+    
 
     const count = await Category.count({
       where: query.where,
@@ -43,38 +44,36 @@ exports.getAllCategories = async (req, res) => {
   }
 };
 
+// 🔹 Récupérer une catégorie par ID
+(exports.getCategoryById = async (req, res) => {
+  try {
+    const { id } = req.params;
 
-  // 🔹 Récupérer une catégorie par ID
- exports.getCategoryById = async (req, res) => {
-    try {
-      const { id } = req.params;
-
-      const category = await Category.findOne({
-        where: { id, entreprise_id: req.entrepriseId },
-        attributes: {
-          include: [
-            [
-              db.sequelize.fn("COUNT", db.sequelize.col("products.id")),
-              "productCount",
-            ],
+    const category = await Category.findOne({
+      where: { id, entreprise_id: req.entrepriseId },
+      attributes: {
+        include: [
+          [
+            db.sequelize.fn("COUNT", db.sequelize.col("products.id")),
+            "productCount",
           ],
-        },
-        include: [{ model: Product, as: "products", attributes: [] }],
-        group: ["Category.id"],
-      });
+        ],
+      },
+      include: [{ model: Product, as: "products", attributes: [] }],
+      group: ["Category.id"],
+    });
 
-      if (!category)
-        return res.status(404).json({ message: "Catégorie non trouvée" });
+    if (!category)
+      return res.status(404).json({ message: "Catégorie non trouvée" });
 
-      res.status(200).json(category);
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: err.message });
-    }
-  },
-
+    res.status(200).json(category);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
+  }
+}),
   // 🔹 Créer une catégorie
-  exports.createCategory = async(req, res) =>{
+  (exports.createCategory = async (req, res) => {
     try {
       const entreprise_id = req.entrepriseId;
       const { name, description } = req.body;
@@ -95,10 +94,9 @@ exports.getAllCategories = async (req, res) => {
       console.error(err);
       res.status(500).json({ message: err.message });
     }
-  },
-
+  }),
   // 🔹 Mettre à jour une catégorie
- exports.updateCategory= async (req, res)=> {
+  (exports.updateCategory = async (req, res) => {
     try {
       const { id } = req.params;
       const entreprise_id = req.entrepriseId;
@@ -122,10 +120,9 @@ exports.getAllCategories = async (req, res) => {
       console.error(err);
       res.status(500).json({ message: err.message });
     }
-  },
-
+  }),
   // 🔹 Supprimer une catégorie
- exports.deleteCategory =async (req, res)=> {
+  (exports.deleteCategory = async (req, res) => {
     try {
       const { id } = req.params;
       const entreprise_id = req.entrepriseId;
@@ -140,7 +137,4 @@ exports.getAllCategories = async (req, res) => {
       console.error(err);
       res.status(500).json({ message: err.message });
     }
-  }
-
-
-
+  });

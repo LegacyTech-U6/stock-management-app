@@ -4,7 +4,7 @@
 html, body {
    font-family: 'Nunito', sans-serif;
   color: #1f2937; /* Optional: neutral gray for better readability */
-  background-color: #f9fafb; /* Optional clean background */
+  background-color:white; /* Optional clean background */
 }
 
 @custom-variant dark (&:is(.dark *));

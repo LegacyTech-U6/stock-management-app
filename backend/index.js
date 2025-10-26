@@ -19,11 +19,35 @@ const workers = require("./src/routes/workers.routes")
 const rolesRoutes = require("./src/routes/roles.routes")
 const activityRoutes = require("./src/routes/activity.routes");
 // Database
-// ⚠️ ATTENTION: supprime les données existantes en dev
-db.sequelize.sync().then(() => {
-  console.log("✅ Toutes les tables ont été créées !");
-});
+ // ton index.js Sequelize
+const Role = db.Role;
 
+// 🔹 Rôles prédéfinis
+const predefinedRoles = [
+  { name: 'Admin', description: 'Full access to all system features and settings' },
+  { name: 'StockManager', description: 'Manages stock, products, and inventory' },
+  { name: 'SalesPoint', description: 'Handles sales at points of sale' },
+];
+
+async function seedPredefinedRoles() {
+  const countRoles = await Role.count();
+  if (countRoles === 0) {
+    for (const role of predefinedRoles) {
+      await Role.create(role);
+      console.log(`Role "${role.name}" created ✅`);
+    }
+  }
+}
+// ⚠️ ATTENTION: supprime les données existantes en dev
+db.sequelize.sync({force: true }).then(async () => {
+  console.log("✅ Toutes les tables ont été créées !");
+
+  try {
+    await seedPredefinedRoles();
+  } catch (err) {
+    console.error("Error seeding predefined roles:", err);
+  }
+});
 app.use(express.json());
 app.use((req, res, next) => {
   console.log(`Requête reçue : ${req.method} ${req.url}`);

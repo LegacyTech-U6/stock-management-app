@@ -168,5 +168,24 @@ export const useAuthStore = defineStore('auth', {
         this.isLoading = false
       }
     },
+    // src/stores/authStore.js
+    async updateProfile(updatedData) {
+      this.isLoading = true
+      this.error = null
+      this.successMessage = null
+
+      try {
+        const res = await axios.put(`${API_URL}/auth/update-profile`, updatedData, {
+          headers: { Authorization: `Bearer ${this.token}` },
+        })
+
+        this.user = res.data.user || res.data // selon ta réponse backend
+        this.successMessage = res.data.message || 'Profil mis à jour ✅'
+      } catch (err) {
+        this.error = err.response?.data?.message || 'Erreur de mise à jour ❌'
+      } finally {
+        this.isLoading = false
+      }
+    },
   },
 })

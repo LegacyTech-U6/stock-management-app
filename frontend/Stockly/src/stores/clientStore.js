@@ -11,6 +11,7 @@ export const useClientStore = defineStore('client', {
       client_PhoneNumber: '',
       email: '',
       location: '',
+      image:'',
     },
     loading: false,
     error: null,
@@ -125,6 +126,7 @@ export const useClientStore = defineStore('client', {
         client_PhoneNumber: '',
         email: '',
         location: '',
+        image:''
       }
     },
 

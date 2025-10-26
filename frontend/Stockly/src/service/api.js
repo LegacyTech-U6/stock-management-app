@@ -2,11 +2,45 @@
 import API from '../api/axios'
 // const API_BASE_URL = "http://localhost:5000/api";
 export async function CreateClient(clientData) {
-  console.log('====================================');
-  console.log(clientData);
-  console.log('====================================');
-  const { data } = await API.post('/client', clientData)
-  return data
+  console.log('🚀 API: Creating client with data:', clientData)
+
+  const formData = new FormData()
+
+  // Add all product fields (except image)
+  for (const key in clientData) {
+    if (key !== 'image' && clientData[key] !== null && clientData[key] !== undefined) {
+      formData.append(key, clientData[key])
+      console.log(`📝 Added ${key}:`, clientData[key])
+    }
+  }
+
+  // Add image (if present)
+  if (clientData.image instanceof File) {
+    formData.append('image', clientData.image)
+
+  } else if (clientData.image) {
+    formData.append('image', clientData.image)
+
+  }
+
+  // Log FormData contents for debugging
+  for (let pair of formData.entries()) {
+    console.log(`📦 FormData: ${pair[0]} = ${pair[1]}`)
+  }
+
+  try {
+    const { data } = await API.post('/client', formData)
+    console.log('✅ API: Product created successfully:', data)
+    return data
+  } catch (error) {
+    console.error('❌ API: Error creating product:', error)
+    if (error.response) {
+      console.error('📋 API: Error response data:', error.response.data)
+      console.error('🔧 API: Error response status:', error.response.status)
+    }
+    throw error
+  }
+
 }
 export async function getClient() {
   const { data } = await API.get('/client')
@@ -238,8 +272,45 @@ export async function deleteSupplier(supplierId) {
 
 // ✅ Créer une entreprise
 export async function createEntreprise(entrepriseData) {
-  const { data } = await API.post('/entreprises', entrepriseData)
-  return data
+  console.log('🚀 API: Creating client with data:',entrepriseData)
+
+  const formData = new FormData()
+
+  // Add all product fields (except image)
+  for (const key in entrepriseData) {
+    if (key !== 'logo_url' && entrepriseData[key] !== null && entrepriseData[key] !== undefined) {
+      formData.append(key, entrepriseData[key])
+
+    }
+  }
+
+  // Add image (if present)
+  if (entrepriseData .logo_url instanceof File) {
+    formData.append('logo_url', entrepriseData.logo_url)
+
+  } else if (entrepriseData.logo_url) {
+    formData.append('logo_url', entrepriseData.logo_ur)
+
+  }
+
+  // Log FormData contents for debugging
+  for (let pair of formData.entries()) {
+    console.log(`📦 FormData: ${pair[0]} = ${pair[1]}`)
+  }
+
+  try {
+    const { data } = await API.post('/entreprises', formData)
+    console.log('✅ API: Product created successfully:', data)
+    return data
+  } catch (error) {
+    console.error('❌ API: Error creating product:', error)
+    if (error.response) {
+      console.error('📋 API: Error response data:', error.response.data)
+      console.error('🔧 API: Error response status:', error.response.status)
+    }
+    throw error
+  }
+
 }
 
 // ✅ Récupérer toutes les entreprises de l'utilisateur connecté
@@ -429,4 +500,18 @@ export async function getAllActivities(){
   const response  = await API.get("/activities")
   return response.data
 }
+////////////////////////////////////////////////////
+// Reports: Sales and Purchase
+////////////////////////////////////////////////////
 
+// ✅ Générer le rapport des ventes journalières
+export async function getDailySalesReport() {
+  const { data } = await API.get("/activities/reports/daily-sales");
+  return data;
+}
+
+// ✅ Générer le rapport des achats journaliers
+export async function getDailyPurchaseReport() {
+  const { data } = await API.get("/activities/reports/daily-purchases");
+  return data;
+}

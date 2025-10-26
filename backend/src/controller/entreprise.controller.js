@@ -1,10 +1,12 @@
 // backend/controllers/entreprise.controller.js
+require("dotenv").config();
 const sequelizeQuery = require("sequelize-query");
 const db = require("../config/db"); // ton index.js avec tous tes modèles
 const Entreprise = db.Entreprise; // Sequelize model si tu l'as défini, sinon tu peux adapter
-
+const fs = require("fs");
+const path = require("path");
 const queryParser = sequelizeQuery(db);
-
+const BASE_URL = process.env.BASE_URL;
 // ===============================
 // 🔹 Récupérer toutes les entreprises d’un utilisateur
 // ===============================
@@ -16,9 +18,16 @@ exports.getAllEntreprises = async (req, res) => {
       query.where = { ...query.where, user_id: req.user.id };
     }
 
-    const data = await Entreprise.findAll({
+    const entreprise = await Entreprise.findAll({
       ...query,
       attributes: { exclude: [] },
+    });
+    const data = entreprise.map((p) => {
+      const EntJSON = p.toJSON();
+      if (EntJSON.logo_url) {
+        EntJSON.logo_url = `${BASE_URL}${EntJSON.logo_url}`;
+      }
+      return EntJSON;
     });
 
     const count = await Entreprise.count({
@@ -57,9 +66,18 @@ exports.getEntrepriseByUuid = async (req, res) => {
 exports.createEntreprise = async (req, res) => {
   try {
     const user_id = req.user.id; // l'utilisateur connecté
-    const entrepriseData = { ...req.body, user_id };
-
-    const entreprise = await Entreprise.create(entrepriseData);
+  
+    // ✅ Si une image a été uploadée, on génère son URL publique
+    let imagePath = null;
+    if (req.file) {
+      imagePath = `/uploads/${req.file.filename}`;
+    }
+    const data = {
+      ...req.body,
+      user_id,
+      logo_url: imagePath,
+    };
+    const entreprise = await Entreprise.create(data);
 
     res.status(201).json(entreprise);
   } catch (err) {

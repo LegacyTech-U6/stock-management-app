@@ -54,7 +54,12 @@
                   class="px-6 py-2 bg-orange-400 hover:bg-orange-500 text-white rounded-md font-medium transition-colors text-sm"
                   :disabled="loading"
                 >
-                  Upload Image
+                 <ImageUploader
+              v-model="formData.image"
+              :maxSize="5"
+              accept="image/png, image/jpeg"
+              :preview="true"
+            />
                 </button>
                 <span class="text-xs text-gray-500">JPEG, PNG up to 2 MB</span>
               </div>
@@ -241,7 +246,7 @@
 
 <script setup>
 import { ref, watch } from 'vue';
-
+import ImageUploader from '../main/ImageUploader.vue'
 const props = defineProps({
   open: Boolean,
   isEdit: Boolean,
@@ -295,7 +300,8 @@ watch(() => props.open, (isOpen) => {
         country: '',
         postal_code: '',
         status: true,
-        client_Signature: ''
+        client_Signature: '',
+        image:''
       };
     }
   }

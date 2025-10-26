@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { getAllActivities } from '@/service/api'
+import { getAllActivities,getDailyPurchaseReport,getDailySalesReport } from '@/service/api'
 export const useActivityStore = defineStore('Activity', {
   state: () => ({
     activities: [],
@@ -15,6 +15,25 @@ export const useActivityStore = defineStore('Activity', {
         console.log('====================================');
         console.log(this.activities);
         console.log('====================================');
+      } catch (error) {
+        console.error = error
+      }
+    },
+    async fetchDailySalesReport() {
+      try {
+        const data = await getDailySalesReport()
+        console.log('====================================');
+        console.log("report :",data);
+        console.log('====================================');
+        return data
+      } catch (error) {
+        console.error = error
+      }
+    },
+    async fetchDailyPurchaseReport(date) {
+      try {
+        const data = await getDailyPurchaseReport(date)
+        return data
       } catch (error) {
         console.error = error
       }

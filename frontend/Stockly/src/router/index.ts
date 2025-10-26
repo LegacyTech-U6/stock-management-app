@@ -31,6 +31,11 @@ const routes: RouteRecordRaw[] = [
   name: "VerifyEmail",
   component: () => import("@/views/auth/VerifyEmail.vue"),
 },
+{
+  path:"/activation",
+  name:"activation",
+  component:()=>import("@/views/auth/ActivationSent.vue")
+},
 
   {
     path: '/ad',
@@ -66,6 +71,10 @@ const routes: RouteRecordRaw[] = [
         name: 'company',
         component: () => import('@/views/CreateEntreprise.vue'),
         meta: { showNavbarAndFooter: false },
+      },{
+        path:'settings',
+        name:'settings',
+        component:()=>import('@/views/settings/AdminSetting.vue')
       }
     ],
   },
@@ -146,7 +155,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/views/OutofStock.vue'),
       },
       {
-        path: '/lowStock',
+        path: 'lowStock',
         name: 'lowStock',
         component: () => import('@/views/LowStock.vue'),
       },
@@ -160,7 +169,12 @@ const routes: RouteRecordRaw[] = [
         path: 'invoices/:id',
         name: 'InvoiceDetail',
         component: () => import('@/components/invoices/InvoiceDetail.vue'),
-      },
+      },{
+        path:'reports',
+        name:'reports',
+        component:()=>import('@/views/SalesReport.vue')
+
+      }
     ],
   },
 ]

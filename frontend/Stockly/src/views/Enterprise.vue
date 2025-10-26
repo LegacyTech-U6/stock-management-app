@@ -1,11 +1,15 @@
 <template>
   <div class="p-6">
     <div class="flex justify-between items-center mb-8">
-      <div>
-        <h1 class="text-3xl font-bold text-gray-900">
+      <div class="flex">
+        <img :src=activeEntreprise?.logo_url :alt=activeEntreprise?.name>
+        <div class="p-1">
+            <h1 class="text-3xl font-bold text-gray-900">
           {{ activeEntreprise?.name || 'No enterprise selected' }} Management Dashboard
         </h1>
         <p class="text-gray-600 text-sm">Monitor your inventory and business performance</p>
+        </div>
+
       </div>
 
 
