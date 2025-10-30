@@ -504,7 +504,7 @@ export async function getAllActivities(){
 // Reports: Sales and Purchase
 ////////////////////////////////////////////////////
 
-// ✅ Générer le rapport des ventes journalières
+// ✅ voir le rapport des ventes journalières
 export async function getDailySalesReport() {
   const { data } = await API.get("/activities/reports/daily-sales");
   return data;
@@ -513,5 +513,12 @@ export async function getDailySalesReport() {
 // ✅ Générer le rapport des achats journaliers
 export async function getDailyPurchaseReport() {
   const { data } = await API.get("/activities/reports/daily-purchases");
+  return data;
+}
+
+// ✅ generer le raport des ventejounalier
+
+export async function getSellingReport() {
+  const {data} = await API.get("/activities/reports/sales-report");
   return data;
 }

@@ -42,13 +42,7 @@
               </div>
             </div>
             <div class="flex items-center gap-2">
-              <button
-                class="px-3 py-2 text-sm bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-all flex items-center gap-2">
-                <span class="hidden sm:inline">Select Plan</span>
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
+
               <button
                 class="px-3 py-2 text-sm bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-all flex items-center gap-2">
                 <span class="hidden sm:inline">Select Status</span>
@@ -56,13 +50,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
-              <button
-                class="px-3 py-2 text-sm bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-all flex items-center gap-2">
-                <span class="hidden sm:inline">Sort By : Last 7 Days</span>
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
+
               <button class="p-2 sm:hidden bg-white border border-gray-200 rounded-lg hover:bg-gray-50">
                 <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -217,7 +205,6 @@ import { useAuthStore } from '@/stores/authStore'
 import { useRouter } from 'vue-router'
 import { useActionMessage } from '@/composable/useActionMessage'
 import LazyLoader from '@/components/ui/LazyLoader.vue'
-import StatsGrid from '@/components/Enterprise/StatsGrid.vue'
 import ImageUploader from '@/components/main/ImageUploader.vue'
 import GridCard from '@/components/ui/cards/GridCard.vue'
 import { Users, CheckCircle, XCircle, MapPin } from 'lucide-vue-next'
@@ -288,14 +275,14 @@ const stats = computed(() => {
   return [
     {
       title: 'Total Companies',
-      value: store.totalEntreprise.toString(),
+      value: store?.totalEntreprise?.toString(),
       icon: Users, // ✅ Lucide Icon
       gradientFrom: 'orange-500',
       gradientTo: 'orange-600',
     },
     {
       title: 'Active Companies',
-      value: store.totalEntreprise.toString(),
+      value: store?.totalEntreprise?.toString(),
       icon: CheckCircle, // ✅ Lucide Icon
       gradientFrom: 'green-500',
       gradientTo: 'green-600',
@@ -326,7 +313,7 @@ const handleEditEnterprise = (enterprise) => {
 
 const handleOpenEnterprise = (enterprise) => {
   store.setActiveEntreprise(enterprise)
-  router.push(`/${store.activeEntreprise.uuid}/dashboar`)
+  router.push(`/${store.activeEntreprise.uuid}/dashboard`)
 }
 
 const createEntreprise = async () => {

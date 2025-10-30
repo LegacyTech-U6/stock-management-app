@@ -1,7 +1,7 @@
 // controllers/role.controller.js
 const sequelizeQuery = require("sequelize-query");
 const db = require("../config/db"); // ton index.js avec tous les modèles
-const Role = db.Role;
+const Role = db.roles;
 
 const queryParser = sequelizeQuery(db);
 
@@ -12,9 +12,11 @@ const queryParser = sequelizeQuery(db);
 // ===============================
 exports.getAllRoles = async (req, res) => {
   try {
+   
     const query = await queryParser.parse(req);
     const data = await Role.findAll({ ...query });
     const count = await Role.count({ where: query.where });
+    
     res.json({ count, data });
   } catch (err) {
     res.status(500).json({ message: err.message });

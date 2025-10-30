@@ -117,14 +117,15 @@
         <p class="text-gray-500">All products are adequately stocked. Excellent inventory management!</p>
       </div>
     </div>
-  </div>
-  <RestockModal
+     <RestockModal
       :isOpen="isModalOpen"
       :product="selectedProduct"
       :suppliers="suppliers"
       @close="isModalOpen = false"
       @restock="handleRestock"
     />
+  </div>
+
 </template>
 <script setup>
 import { ref, computed, onMounted } from "vue";

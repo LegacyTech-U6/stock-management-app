@@ -10,5 +10,6 @@ router.use(getActiveEntreprise);
 // 📜 Récupérer toutes les activités
 router.get("/", activityController.getAllActivities);
 router.get("/reports/daily-sales", reportSales.getDailySalesReport);
+router.get("/reports/sales-report" , reportSales.getReport)
 router.get("/reports/daily-purchases", purchaseReport.generateDailyPurchaseReport);
 module.exports = router;

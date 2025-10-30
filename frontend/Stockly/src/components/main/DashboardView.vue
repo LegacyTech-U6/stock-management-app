@@ -35,7 +35,7 @@
           <SalesChart />
         </div>
 
-      
+
       </div>
       <!-- Product Distribution -->
       <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
@@ -60,9 +60,6 @@
       <!-- Right Column: Side Panels (1/3 width) -->
       <div class="space-y-8">
         <!-- Notifications -->
-        <NotificationsPanel :notifications="notifications" />
-
-        <!-- Low Stock Alerts -->
 
 
         <!-- Recent Activity -->
@@ -77,7 +74,7 @@
         </div>
       </div>
     </div>
-    <FloatingActionButton :actions="quickActions" @select="handleQuickAction" />
+
   </div>
 </template>
 
@@ -90,8 +87,6 @@ import SalesChart from '../ui/charts/SalesChart.vue'
 import { useStatisticsStore } from '@/stores/statisticStore'
 import { useEntrepriseStore } from '@/stores/entrepriseStore'
 import { LowStock, OutOfStock } from '@/service/api'
-
-import FloatingActionButton from '../ui/FloatingActionButton.vue'
 import GridCard from '../ui/cards/GridCard.vue'
 import MetricCard from '../ui/cards/MetricCard.vue'
 import TopSellingProducts from '../statistics/TopSellingProducts.vue'
@@ -110,11 +105,7 @@ import {
   Wallet,
 } from 'lucide-vue-next'
 
-const quickActions = [
-  { label: 'Add Product', icon: Package, value: 'product' },
-  { label: 'Add Category', icon: Tag, value: 'category' },
-  { label: 'Add Client', icon: Users, value: 'client' },
-]
+
 const handleQuickAction = (action) => {
   console.log('Selected action:', action.value)
   // Example: navigate or open modal

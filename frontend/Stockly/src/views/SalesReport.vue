@@ -62,7 +62,7 @@ const formatCurrency = (value) => {
 
 onMounted(async () => {
   try {
-    const data = await activityStore.fetchDailySalesReport()
+    const data = await activityStore.fetchSalesReports()
     reports.value = Array.isArray(data) ? data : [data]
     filteredReports.value = reports.value
   } catch (err) {

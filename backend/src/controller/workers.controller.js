@@ -3,7 +3,7 @@ const sequelizeQuery = require("sequelize-query");
 const db = require("../config/db"); // ton index.js où tous les modèles sont importés
 const Worker = db.Worker; // Sequelize model
 const Entreprise = db.Entreprise;
-const Role = db.Role;
+const Role = db.roles;
 const { Op } = require("sequelize");
 
 const queryParser = sequelizeQuery(db);
@@ -15,17 +15,26 @@ exports.getAllWorkers = async (req, res) => {
   try {
     const query = await queryParser.parse(req);
 
-    if (req.user && req.user.id) {
+    if (req.user.id) {
       query.where = { ...query.where, user_id: req.user.id };
     }
-
+    console.log("====================================");
+    console.log(req.user.id);
+    console.log("====================================");
     const data = await Worker.findAll({
       ...query,
       include: [
-        { model: Entreprise, attributes: ["id", "name", "description"] },
-        { model: Role, attributes: ["id", "name"] },
+        // {
+        //   model: Entreprise,
+        //   as: "entreprise",
+        //   attributes: ["id", "name", "description"],
+        // },
+        // { model: Role, as: "role", attributes: ["id", "name"] },
       ],
     });
+    console.log("====================================");
+    console.log(data);
+    console.log("====================================");
 
     const count = await Worker.count({ where: query.where });
 
@@ -62,12 +71,18 @@ exports.getWorkerById = async (req, res) => {
 // 🔹 Créer un employé
 // ===============================
 exports.createWorker = async (req, res) => {
+  console.log("Worker payload:", req.body);
+
   try {
     const user_id = req.user.id;
     const workerData = { ...req.body, user_id };
-
+    console.log("====================================");
+    console.log(workerData);
+    console.log("====================================");
     const worker = await Worker.create(workerData);
-
+    console.log("====================================");
+    console.log(worker);
+    console.log("====================================");
     res.status(201).json(worker);
   } catch (err) {
     res.status(500).json({ message: err.message });

@@ -1,20 +1,29 @@
 <template>
-  <div class="flex h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 overflow-hidden">
-    <!-- Left Section - Dynamic Content -->
+  <div class="flex h-screen bg-gradient-to-br from-indigo-50 via-white to-orange-50 overflow-hidden">
+    <!-- Left Section - Dynamic Content (Login/Register) -->
     <div
-      class="hidden lg:flex lg:flex-1 flex-col items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10 p-12 space-y-8 transition-all duration-500 ease-in-out"
-      :class="isLogin ? 'slide-in-left' : 'slide-out-left'"
+      ref="leftSection"
+      :style="{ backgroundImage: `url('/src/assets/image/branding.png')`, }"
+      class="hidden lg:flex lg:flex-1 flex-col items-center justify-center bg-gradient-to-br from-indigo-100 to-orange-100 p-12 space-y-8 transition-all duration-500 ease-in-out"
     >
-      <div class="text-center space-y-4">
-        <h1 class="text-4xl font-bold text-gray-900">{{ isLogin ? 'Stockly' : 'Join Stockly' }}</h1>
+      <!-- Login Content -->
+      <div v-if="isLogin" class="text-center space-y-4">
+        <h1 class="text-4xl font-bold text-gray-900">Welcome Back to Stockly</h1>
         <p class="text-lg text-gray-600">
-          {{ isLogin ? 'Your Inventory Management Solution' : 'Manage your inventory and sales like never before' }}
+          Your Inventory Management Solution
         </p>
+      </div>
+
+      <!-- Register Content -->
+      <div v-else class="text-center space-y-4">
+        <h1 class="text-4xl font-bold text-gray-900">Join Stockly</h1>
+        <p class="text-lg text-gray-600">Manage your inventory and sales like never before</p>
       </div>
 
       <div class="relative w-full max-w-sm">
         <div class="rounded-2xl overflow-hidden shadow-lg">
           <img
+            ref="heroImage"
             src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&h=400&fit=crop"
             alt="Team collaboration"
             class="w-full h-80 object-cover"
@@ -23,7 +32,7 @@
       </div>
 
       <div class="space-y-2 text-center max-w-sm">
-        <h2 class="text-2xl font-bold text-blue-600">
+        <h2 class="text-2xl font-bold text-indigo-600">
           {{ isLogin ? 'Manage with Confidence' : 'Professional Stock Management' }}
         </h2>
         <p class="text-gray-600">
@@ -36,10 +45,10 @@
       </div>
     </div>
 
-    <!-- Right Section - Dynamic Form -->
+    <!-- Right Section - Dynamic Form (Login/Register) -->
     <div
+      ref="rightSection"
       class="flex-1 flex w-full lg:h-screen items-center justify-center lg:p-28 pt-20 pb-8 px-4 lg:px-0 lg:bg-background bg-transparent transition-all duration-500 ease-in-out"
-      :class="isLogin ? 'slide-in-right' : 'slide-out-right'"
     >
       <div class="w-full lg:max-w-md max-w-sm space-y-3">
         <!-- Back Button -->
@@ -61,59 +70,23 @@
 
         <!-- Dynamic Branding -->
         <div class="hidden lg:block text-center space-y-2">
-          <h1 class="text-3xl font-bold text-primary">Stockly</h1>
+          <h1 class="text-3xl font-bold text-indigo-600">Stockly</h1>
           <h1 class="text-3xl font-bold text-gray-900">{{ isLogin ? 'Welcome Back' : 'Create Account' }}</h1>
           <p class="text-gray-600 text-sm">{{ isLogin ? 'Sign in to your account' : 'Start your free trial today' }}</p>
         </div>
 
         <!-- Mobile Branding -->
         <div class="lg:hidden space-y-1 mb-4">
-          <h1 class="text-2xl font-bold text-primary">Stockly</h1>
+          <h1 class="text-2xl font-bold text-indigo-600">Stockly</h1>
           <h1 class="text-2xl font-bold text-gray-900">{{ isLogin ? 'Welcome Back' : 'Create Account' }}</h1>
           <p class="text-gray-600 text-xs">{{ isLogin ? 'Sign in to your account' : 'Start your free trial today' }}</p>
         </div>
 
         <!-- Form Card -->
-        <div class="lg:bg-white lg:rounded-2xl lg:shadow-md lg:p-8 p-0 space-y-2">
+        <div ref="formCard" class="lg:bg-white lg:rounded-2xl lg:shadow-md lg:p-8 p-0 space-y-2">
           <!-- Login Form -->
           <div v-if="isLogin" class="space-y-4">
-            <div>
-              <h2 class="text-lg font-semibold text-gray-800">Welcome back</h2>
-              <p class="text-sm text-gray-600 mt-1">Enter your credentials to continue</p>
-            </div>
 
-            <!-- Social Login -->
-            <div class="space-y-3">
-              <div class="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  class="flex items-center justify-center py-2.5 px-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition font-medium text-sm"
-                >
-                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                  </svg>
-                </button>
-                <button
-                  type="button"
-                  class="flex items-center justify-center py-2.5 px-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition font-medium text-sm"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                  </svg>
-                </button>
-              </div>
-              <div class="relative">
-                <div class="absolute inset-0 flex items-center">
-                  <div class="w-full border-t border-gray-300"></div>
-                </div>
-                <div class="relative flex justify-center text-sm">
-                  <span class="px-2 bg-white text-gray-500">OR CONTINUE WITH EMAIL</span>
-                </div>
-              </div>
-            </div>
 
             <!-- Login Form -->
             <form @submit.prevent="handleLogin" class="space-y-3">
@@ -125,14 +98,14 @@
                   v-model="loginData.email"
                   placeholder="john@example.com"
                   required
-                  class="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition"
+                  class="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
                 />
               </div>
 
               <div>
                 <div class="flex items-center justify-between mb-2">
                   <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                  <a href="#" class="text-sm text-blue-600 hover:underline">Forgot password?</a>
+                  <a href="#" class="text-sm text-indigo-600 hover:underline">Forgot password?</a>
                 </div>
                 <div class="relative">
                   <input
@@ -141,7 +114,7 @@
                     v-model="loginData.password"
                     placeholder="Enter your password"
                     required
-                    class="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition"
+                    class="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
                   />
                   <button
                     type="button"
@@ -163,7 +136,7 @@
                 <input
                   type="checkbox"
                   v-model="loginData.rememberMe"
-                  class="w-4 h-4 text-blue-600 rounded border-gray-300"
+                  class="w-4 h-4 text-indigo-600 rounded border-gray-300"
                 />
                 <label class="ml-2 text-sm text-gray-600">Remember me</label>
               </div>
@@ -175,7 +148,7 @@
               <button
                 type="submit"
                 :disabled="isLoading"
-                class="w-full py-2.5 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                class="w-full py-2.5 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span v-if="isLoading">Signing in...</span>
                 <span v-else>Sign In</span>
@@ -204,7 +177,7 @@
             <div class="text-center">
               <p class="text-sm text-gray-600">
                 Don't have an account?
-                <button @click="toggleForm" class="font-semibold text-blue-600 hover:underline ml-1">
+                <button @click="switchToRegister" class="font-semibold text-indigo-600 hover:underline ml-1">
                   Sign up
                 </button>
               </p>
@@ -218,49 +191,6 @@
               <p class="text-sm text-gray-600">Enter your information to create your account</p>
             </div>
 
-            <!-- Social Login -->
-            <div class="space-y-2 lg:mb-4">
-              <div class="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  class="flex items-center justify-center py-2 px-4 lg:border lg:border-gray-300 lg:rounded-lg lg:hover:bg-gray-50 transition border-0"
-                >
-                  <svg class="w-5 h-5 text-gray-700" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                    />
-                    <path
-                      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                    />
-                    <path
-                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                    />
-                    <path
-                      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                    />
-                  </svg>
-                </button>
-                <button
-                  type="button"
-                  class="flex items-center justify-center py-2 px-4 lg:border lg:border-gray-300 lg:rounded-lg lg:hover:bg-gray-50 transition border-0"
-                >
-                  <svg class="w-5 h-5 text-gray-700" fill="currentColor" viewBox="0 0 24 24">
-                    <path
-                      d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
-                    />
-                  </svg>
-                </button>
-              </div>
-              <div class="relative lg:block hidden">
-                <div class="absolute inset-0 flex items-center">
-                  <div class="w-full border-t border-gray-300"></div>
-                </div>
-                <div class="relative flex justify-center text-sm">
-                  <span class="px-2 bg-white text-gray-500">OR CONTINUE WITH EMAIL</span>
-                </div>
-              </div>
-            </div>
-
             <!-- Register Form -->
             <form @submit.prevent="handleRegister" class="space-y-2.5">
               <div class="grid grid-cols-2 gap-2 lg:gap-4">
@@ -271,7 +201,7 @@
                     v-model="registerData.username"
                     placeholder="John"
                     required
-                    class="w-full px-3 lg:px-4 py-2 bg-white lg:bg-gray-50 border border-gray-300 lg:rounded-lg rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition text-sm"
+                    class="w-full px-3 lg:px-4 py-2 bg-white lg:bg-gray-50 border border-gray-300 lg:rounded-lg rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition text-sm"
                   />
                 </div>
                 <div>
@@ -281,7 +211,7 @@
                     v-model="registerData.last_name"
                     placeholder="Doe"
                     required
-                    class="w-full px-3 lg:px-4 py-2 bg-white lg:bg-gray-50 border border-gray-300 lg:rounded-lg rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition text-sm"
+                    class="w-full px-3 lg:px-4 py-2 bg-white lg:bg-gray-50 border border-gray-300 lg:rounded-lg rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition text-sm"
                   />
                 </div>
               </div>
@@ -293,7 +223,7 @@
                   v-model="registerData.email"
                   placeholder="john@example.com"
                   required
-                  class="w-full px-3 lg:px-4 py-2 bg-white lg:bg-gray-50 border border-gray-300 lg:rounded-lg rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition text-sm"
+                  class="w-full px-3 lg:px-4 py-2 bg-white lg:bg-gray-50 border border-gray-300 lg:rounded-lg rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition text-sm"
                 />
               </div>
 
@@ -304,33 +234,18 @@
                   v-model="registerData.company"
                   placeholder="Your company name"
                   required
-                  class="w-full px-3 lg:px-4 py-2 bg-white lg:bg-gray-50 border border-gray-300 lg:rounded-lg rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition text-sm"
+                  class="w-full px-3 lg:px-4 py-2 bg-white lg:bg-gray-50 border border-gray-300 lg:rounded-lg rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition text-sm"
                 />
               </div>
 
-              <div class="grid grid-cols-2 gap-2 lg:gap-4">
-                <div>
-                  <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Business type</label>
-                  <select
-                    v-model="registerData.role"
-                    required
-                    class="w-full px-3 lg:px-4 py-2 bg-white lg:bg-gray-50 border border-gray-300 lg:rounded-lg rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition appearance-none text-sm"
-                  >
-                    <option value="">Select role</option>
-                    <option value="owner">Owner</option>
-                    <option value="manager">Manager</option>
-                    <option value="invoice_head">Invoice Head</option>
-                  </select>
-                </div>
-                <div>
-                  <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Phone (Optional)</label>
-                  <input
-                    type="tel"
-                    v-model="registerData.telephone"
-                    placeholder="+237 675 453 456"
-                    class="w-full px-3 lg:px-4 py-2 bg-white lg:bg-gray-50 border border-gray-300 lg:rounded-lg rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition text-sm"
-                  />
-                </div>
+              <div>
+                <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Phone (Optional)</label>
+                <input
+                  type="tel"
+                  v-model="registerData.telephone"
+                  placeholder="+237 675 453 456"
+                  class="w-full px-3 lg:px-4 py-2 bg-white lg:bg-gray-50 border border-gray-300 lg:rounded-lg rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition text-sm"
+                />
               </div>
 
               <div>
@@ -342,7 +257,7 @@
                     placeholder="Create a password"
                     required
                     minlength="6"
-                    class="w-full px-3 lg:px-4 py-2 bg-white lg:bg-gray-50 border border-gray-300 lg:rounded-lg rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition text-sm"
+                    class="w-full px-3 lg:px-4 py-2 bg-white lg:bg-gray-50 border border-gray-300 lg:rounded-lg rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition text-sm"
                   />
                   <button
                     type="button"
@@ -383,7 +298,7 @@
                     placeholder="Confirm your password"
                     required
                     minlength="6"
-                    class="w-full px-3 lg:px-4 py-2 bg-white lg:bg-gray-50 border border-gray-300 lg:rounded-lg rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition text-sm"
+                    class="w-full px-3 lg:px-4 py-2 bg-white lg:bg-gray-50 border border-gray-300 lg:rounded-lg rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition text-sm"
                   />
                   <button
                     type="button"
@@ -420,13 +335,13 @@
                   type="checkbox"
                   v-model="registerData.accept_terms"
                   required
-                  class="mt-1 w-4 h-4 text-blue-600 rounded border-gray-300"
+                  class="mt-1 w-4 h-4 text-indigo-600 rounded border-gray-300"
                 />
                 <label class="text-xs lg:text-sm text-gray-600">
                   I agree to the
-                  <span class="text-blue-600 hover:underline cursor-pointer">Terms of Service</span>
+                  <span class="text-indigo-600 hover:underline cursor-pointer">Terms of Service</span>
                   and
-                  <span class="text-blue-600 hover:underline cursor-pointer">Privacy Policy</span>
+                  <span class="text-indigo-600 hover:underline cursor-pointer">Privacy Policy</span>
                 </label>
               </div>
 
@@ -434,7 +349,7 @@
                 <input
                   type="checkbox"
                   v-model="marketingOptIn"
-                  class="mt-1 w-4 h-4 text-blue-600 rounded border-gray-300"
+                  class="mt-1 w-4 h-4 text-indigo-600 rounded border-gray-300"
                 />
                 <label class="text-xs lg:text-sm text-gray-600">Send me updates and marketing emails</label>
               </div>
@@ -446,7 +361,7 @@
               <button
                 type="submit"
                 :disabled="isLoading"
-                class="w-full py-2.5 lg:py-3 rounded-lg lg:rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition transform hover:scale-105 text-sm lg:text-base mt-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                class="w-full py-2.5 lg:py-3 rounded-lg lg:rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition transform hover:scale-105 text-sm lg:text-base mt-3 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span v-if="isLoading">Creating account...</span>
                 <span v-else>Create account →</span>
@@ -456,7 +371,7 @@
             <!-- Sign In Link -->
             <p class="text-center text-xs lg:text-sm text-gray-600 mt-3">
               Already have an account?
-              <button @click="toggleForm" class="font-semibold text-blue-600 hover:underline ml-1">
+              <button @click="switchToLogin" class="font-semibold text-indigo-600 hover:underline ml-1">
                 Sign in
               </button>
             </p>
@@ -468,12 +383,19 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, nextTick } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
 import { useRouter } from 'vue-router'
+import { gsap } from 'gsap'
 
 const router = useRouter()
 const authStore = useAuthStore()
+
+// Refs for GSAP animations
+const leftSection = ref(null)
+const rightSection = ref(null)
+const formCard = ref(null)
+const heroImage = ref(null)
 
 // State management
 const isLogin = ref(true)
@@ -492,7 +414,6 @@ const loginData = ref({
   password: '',
   rememberMe: false
 })
-
 // Register data
 const registerData = ref({
   username: '',
@@ -500,7 +421,6 @@ const registerData = ref({
   email: '',
   telephone: '',
   company: '',
-  role: '',
   password: '',
   accept_terms: false,
 })
@@ -515,7 +435,6 @@ const isRegisterFormValid = computed(() => {
     registerData.value.last_name &&
     registerData.value.email &&
     registerData.value.company &&
-    registerData.value.role &&
     registerData.value.password &&
     confirmPassword.value &&
     registerData.value.accept_terms
@@ -525,24 +444,165 @@ const isRegisterFormValid = computed(() => {
 const clearErrors = () => {
   loginError.value = ''
   registerError.value = ''
-  // If authStore has an error property, clear it safely
   if (authStore && typeof authStore.error !== 'undefined') {
-    // Try to clear the error if the method exists, otherwise set it to empty string
     if (typeof authStore.clearError === 'function') {
       authStore.clearError()
-    } else if (typeof authStore.setError === 'function') {
-      authStore.setError('')
     } else {
-      // If we can't clear it, at least set our local errors
       authStore.error = ''
     }
   }
 }
 
-// Toggle between login and register
-const toggleForm = () => {
-  isLogin.value = !isLogin.value
+// Switch to Register with slide animation
+const switchToRegister = async () => {
+  // Animate sections sliding to the left
+  await animateSectionsToLeft()
+
+  // Wait for animation to complete
+  await new Promise(resolve => setTimeout(resolve, 500))
+
+  // Switch to register
+  isLogin.value = false
+
+  // Wait for DOM update
+  await nextTick()
+
+  // Animate sections in from the right
+  animateSectionsFromRight()
+
   clearErrors()
+}
+
+// Switch to Login with slide animation
+const switchToLogin = async () => {
+  // Animate sections sliding to the right
+  await animateSectionsToRight()
+
+  // Wait for animation to complete
+  await new Promise(resolve => setTimeout(resolve, 500))
+
+  // Switch to login
+  isLogin.value = true
+
+  // Wait for DOM update
+  await nextTick()
+
+  // Animate sections in from the left
+  animateSectionsFromLeft()
+
+  clearErrors()
+}
+
+// GSAP Animation: Slide sections to the left (Login → Register)
+const animateSectionsToLeft = () => {
+  const tl = gsap.timeline()
+
+  tl.to([leftSection.value, rightSection.value], {
+    duration: 0.5,
+    x: '-100%',
+    opacity: 0,
+    ease: "power2.inOut"
+  })
+
+  return tl
+}
+
+// GSAP Animation: Slide sections from the right (Register appears)
+const animateSectionsFromRight = () => {
+  const tl = gsap.timeline()
+
+  // Set initial position off-screen to the right
+  gsap.set([leftSection.value, rightSection.value], {
+    x: '100%',
+    opacity: 0
+  })
+
+  // Animate in from right
+  tl.to([leftSection.value, rightSection.value], {
+    duration: 0.5,
+    x: '0%',
+    opacity: 1,
+    ease: "power2.out"
+  })
+
+  return tl
+}
+
+// GSAP Animation: Slide sections to the right (Register → Login)
+const animateSectionsToRight = () => {
+  const tl = gsap.timeline()
+
+  tl.to([leftSection.value, rightSection.value], {
+    duration: 0.5,
+    x: '100%',
+    opacity: 0,
+    ease: "power2.inOut"
+  })
+
+  return tl
+}
+
+// GSAP Animation: Slide sections from the left (Login appears)
+const animateSectionsFromLeft = () => {
+  const tl = gsap.timeline()
+
+  // Set initial position off-screen to the left
+  gsap.set([leftSection.value, rightSection.value], {
+    x: '-100%',
+    opacity: 0
+  })
+
+  // Animate in from left
+  tl.to([leftSection.value, rightSection.value], {
+    duration: 0.5,
+    x: '0%',
+    opacity: 1,
+    ease: "power2.out"
+  })
+
+  return tl
+}
+
+// Initial page load animation
+const animatePageIn = () => {
+  const tl = gsap.timeline()
+
+  // Animate left section in
+  if (leftSection.value) {
+    tl.fromTo(leftSection.value, {
+      x: -50,
+      opacity: 0
+    }, {
+      duration: 0.8,
+      x: 0,
+      opacity: 1,
+      ease: "power2.out"
+    })
+  }
+
+  // Animate right section in
+  tl.fromTo(rightSection.value, {
+    x: 50,
+    opacity: 0
+  }, {
+    duration: 0.8,
+    x: 0,
+    opacity: 1,
+    ease: "power2.out"
+  }, 0.2)
+
+  // Animate form card in
+  tl.fromTo(formCard.value, {
+    y: 30,
+    opacity: 0
+  }, {
+    duration: 0.6,
+    y: 0,
+    opacity: 1,
+    ease: "power2.out"
+  }, 0.5)
+
+  return tl
 }
 
 // Handle login
@@ -556,17 +616,16 @@ const handleLogin = async () => {
   loginError.value = ''
 
   try {
-    await authStore.login(loginData.value.email, loginData.value.password)
+    // Simulate API call
 
-    if (authStore.token) {
-      console.log('✅ Login successful:', authStore.user)
-      router.push('/ad/admin')
-    } else {
-      loginError.value = authStore.error || 'Login failed. Please check your credentials.'
+
+    // If using auth store, call login method
+    if (authStore && typeof authStore.login === 'function') {
+        await authStore.login(loginData.value.email, loginData.value.password)
     }
-  } catch (err) {
-    console.error('Login error:', err)
-    loginError.value = 'An unexpected error occurred. Please try again.'
+
+  } catch (error) {
+    loginError.value = error.message || 'Login failed. Please try again.'
   } finally {
     isLoading.value = false
   }
@@ -574,11 +633,6 @@ const handleLogin = async () => {
 
 // Handle register
 const handleRegister = async () => {
-  // Reset errors
-  registerError.value = ''
-  clearErrors()
-
-  // Validation
   if (!isRegisterFormValid.value) {
     registerError.value = 'Please fill in all required fields'
     return
@@ -590,130 +644,86 @@ const handleRegister = async () => {
   }
 
   if (registerData.value.password.length < 6) {
-    registerError.value = 'Password must be at least 6 characters long'
-    return
-  }
-
-  if (!registerData.value.accept_terms) {
-    registerError.value = 'You must accept the terms and conditions'
+    registerError.value = 'Password must be at least 6 characters'
     return
   }
 
   isLoading.value = true
+  registerError.value = ''
 
   try {
-    // Prepare registration data
-    const registrationData = {
-      username: registerData.value.username,
-      last_name: registerData.value.last_name,
-      email: registerData.value.email,
-      telephone: registerData.value.telephone || '',
-      company: registerData.value.company,
-      role: registerData.value.role,
-      password: registerData.value.password,
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 2000))
+
+    // If using auth store, call register method
+    if (authStore && typeof authStore.register === 'function') {
+      await authStore.register(registerData.value)
     }
 
-    console.log('Registration data:', registrationData)
-
-    await authStore.register(registrationData)
-
-    if (authStore.error) {
-      registerError.value = authStore.error
-    } else {
-      console.log('✅ Registration successful')
-      // Redirect to company setup or dashboard
-      router.push('/company')
-    }
-  } catch (err) {
-    console.error('Registration error:', err)
-    registerError.value = 'Registration failed. Please try again.'
+    // Navigate to activation
+    router.push('/activation')
+  } catch (error) {
+    registerError.value = error.message || 'Registration failed. Please try again.'
   } finally {
     isLoading.value = false
   }
 }
 
-// Demo account functionality
+// Demo account login
 const useDemoAccount = () => {
   loginData.value.email = 'demo@stockly.com'
-  loginData.value.password = 'demopassword123'
+  loginData.value.password = 'demo123'
   handleLogin()
 }
 
+// Go back to home
 const goBack = () => {
-  router.back()
+  router.push('/')
 }
 
-// Initialize based on route
+// Initialize animations when component mounts
 onMounted(() => {
-  const route = router.currentRoute.value
-  if (route.path === '/register') {
-    isLogin.value = false
-  }
-
-  // Clear any existing errors
-  clearErrors()
+  animatePageIn()
 })
 </script>
 
 <style scoped>
-/* Animation classes */
-.slide-in-left {
-  animation: slideInLeft 0.5s ease-in-out forwards;
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
 }
 
-.slide-out-left {
-  animation: slideOutLeft 0.5s ease-in-out forwards;
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
 }
 
-.slide-in-right {
-  animation: slideInRight 0.5s ease-in-out forwards;
+::-webkit-scrollbar-thumb {
+  background: #c5c5c5;
+  border-radius: 10px;
 }
 
-.slide-out-right {
-  animation: slideOutRight 0.5s ease-in-out forwards;
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
 }
 
-@keyframes slideInLeft {
-  0% {
-    transform: translateX(-100%);
-    opacity: 0;
-  }
-  100% {
-    transform: translateX(0);
-    opacity: 1;
-  }
+/* Custom focus styles */
+input:focus, select:focus {
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
-@keyframes slideOutLeft {
-  0% {
-    transform: translateX(0);
-    opacity: 1;
-  }
-  100% {
-    transform: translateX(-100%);
-    opacity: 0;
-  }
+/* Orange accent for some interactive elements */
+button:hover .text-indigo-600 {
+  color: #f97316; /* Orange-500 */
 }
 
-@keyframes slideInRight {
-  0% {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  100% {
-    transform: translateX(0);
-    opacity: 1;
-  }
+/* Animation for form errors */
+.error-shake {
+  animation: shake 0.5s ease-in-out;
 }
 
-@keyframes slideOutRight {
-  0% {
-    transform: translateX(0);
-    opacity: 1;
-  }
-  100% {
-    transform: translateX(100%);
-    opacity: 0;
-  }
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
 }
 </style>

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Inventory Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        body {
+            background: #f8fafc;
+            color: #1a202c;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .hero-section {
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .content {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            z-index: 20;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 300;
+            color: #1a202c;
+            line-height: 1.1;
+            margin-bottom: 24px;
+        }
+        
+        h1 span {
+            font-weight: 500;
+            display: block;
+            margin-top: 12px;
+        }
+        
+        .subtitle {
+            font-size: 1.25rem;
+            color: #4a5568;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            font-weight: 300;
+        }
+        
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+        
+        .btn {
+            padding: 16px 32px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #1a202c;
+            color: white;
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background: #2d3748;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: #1a202c;
+            border: 1px solid #cbd5e0;
+        }
+        
+        .btn-secondary:hover {
+            border-color: #1a202c;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        }
+        
+        .benefits {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .benefit {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+        
+        .check-icon {
+            color: #10b981;
+        }
+        
+        #threejs-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .btn {
+                padding: 14px 28px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 280px;
+            }
+            
+            .benefits {
+                flex-direction: column;
+                gap: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <section class="hero-section">
+            <div id="threejs-background"></div>
+            
+            <div class="content">
+                <h1>
+                    Gestion d'inventaire
+                    <span>moderne et intelligente</span>
+                </h1>
+                
+                <p class="subtitle">
+                    Automatisez votre gestion de stock, ventes et clients avec une plateforme tout-en-un.
+                    Données en temps réel, multi-entreprises.
+                </p>
+                
+                <div class="buttons">
+                    <button class="btn btn-primary">Commencer gratuitement</button>
+                    <button class="btn btn-secondary">Voir la démo</button>
+                </div>
+                
+                <div class="benefits">
+                    <div class="benefit">
+                        <i class="fas fa-check check-icon"></i>
+                        <span>Essai gratuit 14 jours</span>
+                    </div>
+                    <div class="benefit">
+                        <i class="fas fa-check check-icon"></i>
+                        <span>Sans carte bancaire</span>
+                    </div>
+                    <div class="benefit">
+                        <i class="fas fa-check check-icon"></i>
+                        <span>Annulez quand vous voulez</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Three.js setup
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            
+            const container = document.getElementById('threejs-background');
+            const containerRect = container.getBoundingClientRect();
+            
+            renderer.setSize(containerRect.width, containerRect.height);
+            renderer.setClearColor(0x000000, 0);
+            container.appendChild(renderer.domElement);
+            
+            camera.position.z = 15;
+            
+            // Particle system
+            const particleCount = 5000;
+            const particles = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+            const colors = new Float32Array(particleCount * 3);
+            const sizes = new Float32Array(particleCount);
+            
+            // Color palettes for each pattern
+            const colorPalettes = [
+                [new THREE.Color(0x6366f1), new THREE.Color(0x8b5cf6), new THREE.Color(0xa855f7)], // Purple theme
+                [new THREE.Color(0x10b981), new THREE.Color(0x06b6d4), new THREE.Color(0x14b8a6)], // Teal theme
+                [new THREE.Color(0xf59e0b), new THREE.Color(0xec4899), new THREE.Color(0xf97316)]  // Orange theme
+            ];
+            
+            // Initialize particles with random positions
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                positions[i3] = (Math.random() - 0.5) * 40;
+                positions[i3 + 1] = (Math.random() - 0.5) * 40;
+                positions[i3 + 2] = (Math.random() - 0.5) * 40;
+                
+                sizes[i] = Math.random() * 0.8 + 0.2;
+            }
+            
+            particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            particles.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            particles.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+            
+            const particleMaterial = new THREE.PointsMaterial({
+                size: 0.1,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.8,
+                sizeAttenuation: true
+            });
+            
+            const particleSystem = new THREE.Points(particles, particleMaterial);
+            scene.add(particleSystem);
+            
+            // Target positions for morphing
+            const targetPositions = new Float32Array(particleCount * 3);
+            const currentPositions = new Float32Array(particleCount * 3);
+            positions.forEach((pos, index) => currentPositions[index] = pos);
+            
+            // Pattern definitions
+            const patterns = [
+                // Pattern 1: Spiral Galaxy
+                (index) => {
+                    const i3 = index * 3;
+                    const angle = (index / particleCount) * Math.PI * 10;
+                    const radius = 2 + (index % 10) * 0.5;
+                    const spiral = radius * 0.8;
+                    
+                    targetPositions[i3] = Math.cos(angle) * spiral;
+                    targetPositions[i3 + 1] = Math.sin(angle) * spiral * 0.3;
+                    targetPositions[i3 + 2] = (index % 20) - 10;
+                    
+                    // Set colors
+                    const palette = colorPalettes[0];
+                    const color = palette[index % palette.length];
+                    colors[i3] = color.r;
+                    colors[i3 + 1] = color.g;
+                    colors[i3 + 2] = color.b;
+                },
+                
+                // Pattern 2: Geometric Grid
+                (index) => {
+                    const i3 = index * 3;
+                    const gridSize = 25;
+                    const x = (index % gridSize) - gridSize / 2;
+                    const y = Math.floor(index / gridSize) % gridSize - gridSize / 2;
+                    const z = Math.floor(index / (gridSize * gridSize)) * 2 - 5;
+                    
+                    targetPositions[i3] = x * 0.8;
+                    targetPositions[i3 + 1] = y * 0.8;
+                    targetPositions[i3 + 2] = z;
+                    
+                    // Set colors
+                    const palette = colorPalettes[1];
+                    const color = palette[Math.abs(x + y) % palette.length];
+                    colors[i3] = color.r;
+                    colors[i3 + 1] = color.g;
+                    colors[i3 + 2] = color.b;
+                },
+                
+                // Pattern 3: Flowing Waves
+                (index) => {
+                    const i3 = index * 3;
+                    const waveCount = 8;
+                    const waveIndex = index % waveCount;
+                    const progress = (index % 100) / 100;
+                    
+                    const x = (progress - 0.5) * 30;
+                    const y = Math.sin(progress * Math.PI * 4 + waveIndex) * 3;
+                    const z = (waveIndex - waveCount / 2) * 1.5;
+                    
+                    targetPositions[i3] = x;
+                    targetPositions[i3 + 1] = y;
+                    targetPositions[i3 + 2] = z;
+                    
+                    // Set colors
+                    const palette = colorPalettes[2];
+                    const color = palette[waveIndex % palette.length];
+                    colors[i3] = color.r;
+                    colors[i3 + 1] = color.g;
+                    colors[i3 + 2] = color.b;
+                }
+            ];
+            
+            let currentPattern = 0;
+            let morphProgress = 0;
+            let isMorphing = false;
+            
+            // Start with first pattern
+            patterns[0]();
+            particles.attributes.color.needsUpdate = true;
+            
+            // Animation loop
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                // Rotate slowly for dynamic effect
+                particleSystem.rotation.y += 0.001;
+                particleSystem.rotation.x += 0.0005;
+                
+                // Handle morphing between patterns
+                if (isMorphing) {
+                    morphProgress += 0.02;
+                    
+                    if (morphProgress >= 1) {
+                        morphProgress = 1;
+                        isMorphing = false;
+                        
+                        // Schedule next pattern change
+                        setTimeout(() => {
+                            isMorphing = true;
+                            morphProgress = 0;
+                            currentPattern = (currentPattern + 1) % patterns.length;
+                            patterns[currentPattern]();
+                            particles.attributes.color.needsUpdate = true;
+                        }, 3000);
+                    }
+                    
+                    // Interpolate positions
+                    for (let i = 0; i < particleCount * 3; i++) {
+                        currentPositions[i] = currentPositions[i] + (targetPositions[i] - currentPositions[i]) * 0.05;
+                    }
+                    
+                    particles.attributes.position.array = currentPositions;
+                    particles.attributes.position.needsUpdate = true;
+                }
+                
+                renderer.render(scene, camera);
+            }
+            
+            // Handle window resize
+            function handleResize() {
+                const containerRect = container.getBoundingClientRect();
+                camera.aspect = containerRect.width / containerRect.height;
+                camera.updateProjectionMatrix();
+                renderer.setSize(containerRect.width, containerRect.height);
+            }
+            
+            window.addEventListener('resize', handleResize);
+            
+            // Start animation and initial morph
+            animate();
+            setTimeout(() => {
+                isMorphing = true;
+                currentPattern = 1;
+                patterns[currentPattern]();
+                particles.attributes.color.needsUpdate = true;
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

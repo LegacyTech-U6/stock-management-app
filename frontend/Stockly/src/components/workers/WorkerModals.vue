@@ -161,7 +161,7 @@
         <div v-if="!isEditing" class="mb-8">
           <button
             type="button"
-            @click="sections.password = !sections.password"
+            @click="sections.password_hash = !sections.password_hash"
             class="w-full flex items-center justify-between mb-5 pb-3 border-b border-gray-100"
           >
             <div class="flex items-center gap-3">
@@ -171,19 +171,19 @@
               <h3 class="text-lg font-semibold text-gray-800">Password</h3>
             </div>
             <ChevronDown
-              :class="['w-5 h-5 text-gray-400 transition-transform', { 'rotate-180': sections.password }]"
+              :class="['w-5 h-5 text-gray-400 transition-transform', { 'rotate-180': sections.password_hash }]"
             />
           </button>
 
-          <div v-show="sections.password" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div v-show="sections.password_hash" class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
               <label class="block text-gray-700 font-medium mb-2 text-sm">
                 Password <span class="text-red-500">*</span>
               </label>
               <input
-                v-model="formWorker.password"
-                type="password"
-                placeholder="Enter password"
+                v-model="formWorker.password_hash"
+                type="password_hash"
+                placeholder="Enter password_hash"
                 class="w-full border border-gray-200 px-4 py-2.5 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent focus:outline-none text-sm"
                 :required="!isEditing"
               />
@@ -194,8 +194,8 @@
               </label>
               <input
                 v-model="confirmPassword"
-                type="password"
-                placeholder="Confirm password"
+                type="password_hash"
+                placeholder="Confirm password_hash"
                 class="w-full border border-gray-200 px-4 py-2.5 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent focus:outline-none text-sm"
                 :required="!isEditing"
               />
@@ -226,7 +226,7 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed,onMounted } from 'vue'
 import { X, User, Lock, ChevronDown, UserCircle } from 'lucide-vue-next'
 import { useRoleStore } from '@/stores/roleStore'
 import { useEntrepriseStore } from '@/stores/entrepriseStore'
@@ -253,13 +253,15 @@ const enterpriseStore = useEntrepriseStore()
 
 const roles = computed(() => roleStore.roles)
 const entreprises = computed(() => enterpriseStore.entreprises)
-
+console.log('====================================');
+console.log(roles);
+console.log('====================================');
 const isSubmitting = ref(false)
 const confirmPassword = ref('')
 
 const sections = ref({
   employee: true,
-  password: true,
+  password_hash: true,
 })
 
 const formWorker = ref({
@@ -269,7 +271,7 @@ const formWorker = ref({
   date_hired: '',
   status: 'active',
   entreprise_id: '',
-  password: '',
+  password_hash: '',
   role_id: '',
 })
 
@@ -282,13 +284,13 @@ const resetForm = () => {
     date_hired: '',
     status: 'active',
     entreprise_id: '',
-    password: '',
+    password_hash: '',
     role_id: '',
   }
   confirmPassword.value = ''
   sections.value = {
     employee: true,
-    password: true,
+    password_hash: true,
   }
 }
 
@@ -304,9 +306,12 @@ watch(
   },
   { immediate: true }
 )
+onMounted(()=>{
+  roleStore.fetchRoles()
+})
 
 const handleSubmit = async () => {
-  if (!props.isEditing && formWorker.value.password !== confirmPassword.value) {
+  if (!props.isEditing && formWorker.value.password_hash !== confirmPassword.value) {
     alert('Passwords do not match!')
     return
   }

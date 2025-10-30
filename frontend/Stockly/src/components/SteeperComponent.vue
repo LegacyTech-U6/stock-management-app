@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-gray-50">
     <!-- Header -->
-    <div class="  top-0 z-10">
+    <div class="top-0 z-10">
       <div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div class="flex items-center justify-between">
           <div>
@@ -79,6 +79,7 @@
                   class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   :class="{ 'border-red-500': errors.name }"
                   placeholder="Lenovo 3rd Generation"
+                  :disabled="isEditMode"
                 />
                 <p v-if="errors.name" class="text-red-600 text-xs mt-1">{{ errors.name }}</p>
               </div>
@@ -92,6 +93,7 @@
                   v-model="form.category"
                   class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   :class="{ 'border-red-500': errors.category }"
+                  :disabled="isEditMode"
                 >
                   <option value="">Select category</option>
                   <option v-for="c in categories" :key="c.id" :value="c.id">{{ c.name }}</option>
@@ -110,10 +112,12 @@
                     class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                     :class="{ 'border-red-500': errors.barcode }"
                     placeholder="LNV-123456-789"
+                    :disabled="isEditMode"
                   />
                   <button
                     @click="generateBarcode"
                     class="px-4 py-2 text-sm font-medium bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
+                    :disabled="isEditMode"
                   >
                     Generate
                   </button>
@@ -130,6 +134,7 @@
                   v-model="form.supplier"
                   class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   :class="{ 'border-red-500': errors.supplier }"
+                  :disabled="isEditMode"
                 >
                   <option value="">Select supplier</option>
                   <option v-for="s in supplierStore.suppliers" :key="s.id" :value="s.id">
@@ -157,6 +162,7 @@
                   rows="4"
                   class="w-full px-3 py-2 text-sm focus:ring-0 focus:outline-none border-0"
                   placeholder="Enter product description..."
+                  :disabled="isEditMode"
                 ></textarea>
               </div>
               <p class="text-xs text-gray-500 mt-1">Maximum 60 Words</p>
@@ -201,6 +207,7 @@
                   type="number"
                   class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   placeholder="20"
+                  :disabled="isEditMode"
                 />
               </div>
 
@@ -215,7 +222,6 @@
                   step="0.01"
                   class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   :class="{ 'border-red-500': errors.costPrice }"
-                  placeholder="0.00"
                 />
                 <p v-if="errors.costPrice" class="text-red-600 text-xs mt-1">{{ errors.costPrice }}</p>
               </div>
@@ -231,30 +237,25 @@
                   step="0.01"
                   class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   :class="{ 'border-red-500': errors.sellingPrice }"
-                  placeholder="650"
                 />
                 <p v-if="errors.sellingPrice" class="text-red-600 text-xs mt-1">{{ errors.sellingPrice }}</p>
               </div>
 
-              <!-- Min Stock Level -->
+              <!-- Min & Max Stock Level -->
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Min Stock Level</label>
                 <input
                   v-model.number="form.minStock"
                   type="number"
                   class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                  placeholder="15"
                 />
               </div>
-
-              <!-- Max Stock Level -->
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Max Stock Level</label>
                 <input
                   v-model.number="form.maxStock"
                   type="number"
                   class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                  placeholder="100"
                 />
               </div>
 
@@ -320,6 +321,7 @@
               :maxSize="5"
               accept="image/png, image/jpeg"
               :preview="true"
+              :disabled="isEditMode"
             />
           </div>
         </div>
@@ -355,6 +357,7 @@
     </div>
   </div>
 </template>
+
 
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue'

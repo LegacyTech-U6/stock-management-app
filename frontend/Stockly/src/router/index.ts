@@ -86,8 +86,8 @@ const routes: RouteRecordRaw[] = [
     redirect: '/real/sales', // Optional: redirect to a default page
     children: [
       {
-        path: 'dashboar',
-        name: 'EDashboard',
+        path: 'dashboard',
+        name: 'EDashboardd',
         component: () => import('@/views/Enterprise.vue'),
       },
       {

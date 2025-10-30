@@ -3,70 +3,20 @@
     <!-- Header -->
     <div class="bg-white border-b border-gray-200">
       <div class="p-4 lg:p-6">
-        <div class="flex justify-between items-start mb-4">
-          <div>
-            <h1 class="text-2xl font-semibold text-gray-900">New Sale</h1>
-            <p class="text-sm text-gray-500 mt-1">Create and manage sales transactions</p>
-          </div>
+        <div class="flex justify-between items-start">
           <div class="flex gap-2">
             <button
               @click="showCartModal = true"
               class="lg:hidden relative bg-gray-900 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-gray-800 transition-colors"
             >
               <span>Cart</span>
-              <span v-if="saleItems.length > 0" class="absolute -top-2 -right-2 bg-blue-600 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center font-medium">
+              <span
+                v-if="saleItems.length > 0"
+                class="absolute -top-2 -right-2 bg-blue-600 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center font-medium"
+              >
                 {{ saleItems.length }}
               </span>
             </button>
-          </div>
-        </div>
-
-        <!-- Stats Cards -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
-          <div class="bg-white border border-gray-200 rounded-lg p-4">
-            <div class="flex items-center gap-3 mb-2">
-              <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
-              </div>
-              <span class="text-sm text-gray-600">Items in Cart</span>
-            </div>
-            <div class="text-2xl font-semibold text-gray-900">{{ saleItems.length }}</div>
-          </div>
-
-          <div class="bg-white border border-gray-200 rounded-lg p-4">
-            <div class="flex items-center gap-3 mb-2">
-              <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                <span class="text-purple-600 font-bold text-lg">$</span>
-              </div>
-              <span class="text-sm text-gray-600">Subtotal</span>
-            </div>
-            <div class="text-2xl font-semibold text-gray-900">${{ subtotal.toFixed(2) }}</div>
-          </div>
-
-          <div class="bg-white border border-gray-200 rounded-lg p-4">
-            <div class="flex items-center gap-3 mb-2">
-              <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <span class="text-sm text-gray-600">Discount</span>
-            </div>
-            <div class="text-2xl font-semibold text-gray-900">{{ discount }}%</div>
-          </div>
-
-          <div class="bg-white border border-gray-200 rounded-lg p-4">
-            <div class="flex items-center gap-3 mb-2">
-              <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-                <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                </svg>
-              </div>
-              <span class="text-sm text-gray-600">Total</span>
-            </div>
-            <div class="text-2xl font-semibold text-gray-900">${{ total.toFixed(2) }}</div>
           </div>
         </div>
       </div>
@@ -77,7 +27,6 @@
         <!-- Left Section: Client & Products -->
         <div class="lg:col-span-8 space-y-4">
           <!-- Client Selector -->
-          <ClientSelector @select-client="handleClientSelect" />
 
           <!-- Products Section -->
           <div class="bg-white border border-gray-200 rounded-lg p-4 lg:p-5">
@@ -105,6 +54,7 @@
 
         <!-- Right Section: Cart & Summary (Desktop only) -->
         <div class="hidden lg:block lg:col-span-4 space-y-4">
+          <ClientSelector @select-client="handleClientSelect" />
           <!-- Cart -->
           <div class="bg-white border border-gray-200 rounded-lg p-4 lg:p-5">
             <div class="flex justify-between items-center mb-4">
@@ -114,14 +64,27 @@
               </span>
             </div>
 
-            <div v-if="saleItems.length <= 0" class="flex flex-col justify-center items-center py-12 text-gray-400">
+            <div
+              v-if="saleItems.length <= 0"
+              class="flex flex-col justify-center items-center py-12 text-gray-400"
+            >
               <svg class="w-16 h-16 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                />
               </svg>
               <p class="text-sm">No items added yet</p>
             </div>
 
             <div v-else class="space-y-3 max-h-96 overflow-y-auto">
+              <div class="flex justify-between items-center pb-3 border-b border-gray-200 mb-2">
+                <span class="text-sm font-medium text-gray-500">Item</span>
+                <span class="text-sm font-medium text-gray-500">QTY</span>
+                <span class="text-sm font-medium text-gray-500">Cost</span>
+              </div>
               <CartItem
                 v-for="item in saleItems"
                 :key="item.id"
@@ -134,11 +97,25 @@
 
           <!-- Summary -->
           <div class="bg-white border border-gray-200 rounded-lg p-4 lg:p-5">
-            <h3 class="font-semibold text-gray-900 mb-4">Summary</h3>
+            <h3 class="font-semibold text-gray-900 mb-4">payent Summary</h3>
+            <!-- Discount Banner -->
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+              <div class="flex items-start gap-2">
+                <div
+                  class="bg-blue-100 text-blue-700 rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5"
+                >
+                  <span class="text-xs font-bold">%</span>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-blue-900 text-sm">Discount {{ discount }}%</h4>
+                  <p class="text-blue-700 text-xs mt-1">For $20 Minimum Purchase, all Items</p>
+                </div>
+              </div>
+            </div>
 
             <div class="space-y-3">
               <div class="flex justify-between items-center text-gray-700">
-                <span class="text-sm">Subtotal</span>
+                <span class="text-sm">Shipping</span>
                 <span class="font-semibold">${{ subtotal.toFixed(2) }}</span>
               </div>
 
@@ -183,13 +160,17 @@
 
     <!-- Mobile: Product Modal -->
     <Transition name="modal">
-      <div
-        v-if="showProductModal"
-        class="lg:hidden fixed inset-0 bg-white z-50 overflow-y-auto"
-      >
-        <div class="sticky top-0 bg-white border-b border-gray-200 p-4 flex justify-between items-center">
+      <div v-if="showProductModal" class="lg:hidden fixed inset-0 bg-white z-50 overflow-y-auto">
+        <div
+          class="sticky top-0 bg-white border-b border-gray-200 p-4 flex justify-between items-center"
+        >
           <h2 class="text-lg font-semibold text-gray-900">Select Products</h2>
-          <button @click="showProductModal = false" class="text-gray-600 text-2xl hover:text-gray-900">&times;</button>
+          <button
+            @click="showProductModal = false"
+            class="text-gray-600 text-2xl hover:text-gray-900"
+          >
+            &times;
+          </button>
         </div>
         <div class="p-4">
           <ProductSelector :products="products" @add-to-sale="addToSale" />
@@ -199,22 +180,31 @@
 
     <!-- Mobile: Cart Modal -->
     <Transition name="modal">
-      <div
-        v-if="showCartModal"
-        class="lg:hidden fixed inset-0 bg-white z-50 overflow-y-auto"
-      >
-        <div class="sticky top-0 bg-white border-b border-gray-200 p-4 flex justify-between items-center">
+      <div v-if="showCartModal" class="lg:hidden fixed inset-0 bg-white z-50 overflow-y-auto">
+        <div
+          class="sticky top-0 bg-white border-b border-gray-200 p-4 flex justify-between items-center"
+        >
           <h2 class="text-lg font-semibold text-gray-900">Shopping Cart</h2>
-          <button @click="showCartModal = false" class="text-gray-600 text-2xl hover:text-gray-900">&times;</button>
+          <button @click="showCartModal = false" class="text-gray-600 text-2xl hover:text-gray-900">
+            &times;
+          </button>
         </div>
         <div class="p-4 space-y-4">
           <!-- Cart Items -->
           <div class="bg-white border border-gray-200 rounded-lg p-4">
             <h3 class="font-semibold text-gray-900 mb-3">Cart Items ({{ saleItems.length }})</h3>
 
-            <div v-if="saleItems.length <= 0" class="flex flex-col justify-center items-center py-12 text-gray-400">
+            <div
+              v-if="saleItems.length <= 0"
+              class="flex flex-col justify-center items-center py-12 text-gray-400"
+            >
               <svg class="w-16 h-16 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                />
               </svg>
               <p class="text-sm">No items added yet</p>
             </div>
@@ -231,58 +221,204 @@
           </div>
 
           <!-- Summary -->
-          <div class="bg-white border border-gray-200 rounded-lg p-4">
-            <h3 class="font-semibold text-gray-900 mb-4">Summary</h3>
-
-            <div class="space-y-3">
-              <div class="flex justify-between items-center text-gray-700">
-                <span class="text-sm">Subtotal</span>
-                <span class="font-semibold">${{ subtotal.toFixed(2) }}</span>
-              </div>
-
-              <div class="flex justify-between items-center text-gray-700">
-                <span class="text-sm">Discount</span>
-                <div class="flex items-center gap-2">
-                  <input
-                    type="number"
-                    v-model.number="discount"
-                    min="0"
-                    max="100"
-                    class="w-16 border border-gray-300 rounded-lg px-2 py-1.5 text-sm text-center focus:outline-none focus:ring-2 focus:ring-gray-900"
-                  />
-                  <span class="text-sm">%</span>
+          <div class="bg-white border border-gray-200 rounded-lg p-5">
+            <!-- Discount Banner -->
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+              <div class="flex items-start gap-2">
+                <div
+                  class="bg-blue-100 text-blue-700 rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5"
+                >
+                  <span class="text-xs font-bold">%</span>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-blue-900 text-sm">Discount {{ discount }}%</h4>
+                  <p class="text-blue-700 text-xs mt-1">For $20 Minimum Purchase, all Items</p>
                 </div>
               </div>
+            </div>
 
-              <div class="flex justify-between items-center text-gray-700">
-                <span class="text-sm">Tax ({{ taxRate }}%)</span>
-                <span class="font-semibold">${{ taxAmount.toFixed(2) }}</span>
-              </div>
+            <!-- Payment Summary Header -->
 
-              <div class="border-t border-gray-200 pt-3 mt-3">
-                <div class="flex justify-between items-center text-gray-900">
-                  <span class="text-base font-semibold">Total</span>
-                  <span class="text-2xl font-semibold">${{ total.toFixed(2) }}</span>
+            <!-- Summary -->
+            <div class="bg-white border border-gray-200 rounded-lg p-4 lg:p-5">
+              <h3 class="font-semibold text-gray-900 mb-4">payent Summary</h3>
+
+              <div class="space-y-3">
+                <div class="flex justify-between items-center text-gray-700">
+                  <span class="text-sm">Shipping</span>
+                  <span class="font-semibold">${{ subtotal.toFixed(2) }}</span>
                 </div>
-              </div>
 
-              <button
-                @click="createInvoice"
-                :disabled="saleItems.length === 0 || !selectedClient"
-                class="w-full bg-gray-900 hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-medium py-3 rounded-lg mt-4 transition-colors"
-              >
-                Create Invoice
-              </button>
+                <div class="flex justify-between items-center text-gray-700">
+                  <span class="text-sm">Discount</span>
+                  <div class="flex items-center gap-2">
+                    <input
+                      type="number"
+                      v-model.number="discount"
+                      min="0"
+                      max="100"
+                      class="w-16 border border-gray-300 rounded-lg px-2 py-1.5 text-sm text-center focus:outline-none focus:ring-2 focus:ring-gray-900"
+                    />
+                    <span class="text-sm">%</span>
+                  </div>
+                </div>
+
+                <div class="flex justify-between items-center text-gray-700">
+                  <span class="text-sm">Tax ({{ taxRate }}%)</span>
+                  <input type="text" v-model="taxRate" />
+                  <span class="font-semibold">${{ taxAmount.toFixed(2) }}</span>
+                </div>
+
+                <div class="border-t border-gray-200 pt-3 mt-3">
+                  <div class="flex justify-between items-center text-gray-900">
+                    <span class="text-base font-semibold">Total</span>
+                    <span class="text-2xl font-semibold">${{ total.toFixed(2) }}</span>
+                  </div>
+                </div>
+
+                <button
+                  @click="createInvoice"
+                  :disabled="saleItems.length === 0 || !selectedClient"
+                  class="w-full bg-gray-900 hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-medium py-3 rounded-lg mt-4 transition-colors"
+                >
+                  Create Invoice
+                </button>
+              </div>
             </div>
           </div>
+        </div>
+      </div>
+    </Transition>
+    <!-- Create Client Modal -->
+    <Transition name="fade">
+      <div
+        v-if="showCreateClientModal"
+        class="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50 p-4"
+        @click.self="closeCreateClientModal"
+      >
+        <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <!-- Modal Header -->
+          <div class="flex justify-between items-center p-6 border-b border-gray-200">
+            <h2 class="text-2xl font-bold text-gray-900">Create</h2>
+            <button
+              @click="closeCreateClientModal"
+              class="text-white bg-red-500 hover:bg-red-600 rounded-full w-8 h-8 flex items-center justify-center transition-colors"
+            >
+              &times;
+            </button>
+          </div>
+
+          <!-- Modal Body -->
+          <form @submit.prevent="submitCreateClient" class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Customer Name -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  Customer Name <span class="text-red-500">*</span>
+                </label>
+                <input
+                  v-model="newClientForm.client_name"
+                  type="text"
+                  required
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter customer name"
+                />
+              </div>
+
+              <!-- Phone -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  Phone <span class="text-red-500">*</span>
+                </label>
+                <input
+                  v-model="newClientForm.client_PhoneNumber"
+                  type="tel"
+                  required
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter phone number"
+                />
+              </div>
+
+              <!-- Email -->
+              <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-1"> Email </label>
+                <input
+                  v-model="newClientForm.email"
+                  type="email"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter email address"
+                />
+              </div>
+
+              <!-- Address -->
+              <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-1"> Address </label>
+                <input
+                  v-model="newClientForm.location"
+                  type="text"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter address"
+                />
+              </div>
+
+              <!-- City -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"> City </label>
+                <input
+                  v-model="newClientForm.city"
+                  type="text"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter city"
+                />
+              </div>
+
+              <!-- Country -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"> Country </label>
+                <input
+                  v-model="newClientForm.country"
+                  type="text"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter country"
+                />
+              </div>
+            </div>
+
+            <!-- Error Message -->
+            <!-- Error Message -->
+            <div
+              v-if="clientStore.submitError"
+              class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg"
+            >
+              <p class="text-sm text-red-700">{{ clientStore.submitError }}</p>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="flex justify-end gap-3 mt-6">
+              <button
+                type="button"
+                @click="closeCreateClientModal"
+                class="px-6 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                :disabled="clientLoading"
+                class="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:bg-orange-300 disabled:cursor-not-allowed transition-colors font-medium"
+              >
+                {{ clientLoading ? 'Creating...' : 'Submit' }}
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </Transition>
 
     <CreateInvoiceForm
       v-if="showInvoiceModal"
-    :invoice="modalInvoice"
-    @close="showInvoiceModal = false"
+      :invoice="modalInvoice"
+      @close="showInvoiceModal = false"
     />
   </div>
 </template>
@@ -296,7 +432,8 @@ import { useProductStore } from '@/stores/productStore'
 import { useInvoiceStore } from '@/stores/FactureStore'
 import CreateInvoiceForm from '@/components/invoices/CreateInvoiceForm.vue'
 import { useRouter } from 'vue-router'
-
+import { useClientStore } from '@/stores/clientStore'
+const clientStore = useClientStore()
 const router = useRouter()
 const productStore = useProductStore()
 const invoiceStore = useInvoiceStore()
@@ -314,19 +451,40 @@ const discount = ref(0)
 const taxRate = ref(10)
 const showInvoiceForm = ref(false)
 const invoice = ref(null)
-
+const showCreateClientModal = ref(false)
 // Mobile modals
 const showProductModal = ref(false)
 const showCartModal = ref(false)
-
+// New Client Form
+const newClientForm = ref({
+  client_name: '',
+  client_PhoneNumber: '',
+  email: '',
+  location: '',
+  city: '',
+  country: '',
+  client_Signature: '',
+  image: '',
+})
+const clientLoading = ref(false)
+const clientError = ref(null)
 // Computed values
 const subtotal = computed(() =>
   saleItems.value.reduce((sum, item) => sum + item.selling_price * item.quantity, 0),
 )
+async function submitCreateClient() {
+  try {
+    await clientStore.addClient(newClientForm.value)
+    // Close modal after successful creation
+    showCreateClientModal.value = false
+    // Optional: reset selected client if you want
+    selectedClient.value = clientStore.clients.at(-1) // select newly added client
+  } catch (error) {
+    console.error('Error creating client:', error)
+  }
+}
 
-const taxAmount = computed(() =>
-  parseFloat(((subtotal.value * taxRate.value) / 100).toFixed(2))
-)
+const taxAmount = computed(() => parseFloat(((subtotal.value * taxRate.value) / 100).toFixed(2)))
 
 const total = computed(() =>
   parseFloat(
@@ -335,7 +493,26 @@ const total = computed(() =>
 )
 
 function handleClientSelect(client) {
-  selectedClient.value = client
+  if (client && client.action === 'add-new-client') {
+    showCreateClientModal.value = true
+  } else {
+    selectedClient.value = client
+  }
+}
+function closeCreateClientModal() {
+  showCreateClientModal.value = false
+  // Reset form and errors
+  newClientForm.value = {
+    client_name: '',
+    client_PhoneNumber: '',
+    email: '',
+    location: '',
+    city: '',
+    country: '',
+    client_Signature: '',
+    image: '',
+  }
+  clientError.value = null
 }
 
 function addToSale(product) {
@@ -348,27 +525,23 @@ function addToSale(product) {
 }
 
 function updateItem(updatedItem) {
-  const index = saleItems.value.findIndex(i => i.id === updatedItem.id)
+  const index = saleItems.value.findIndex((i) => i.id === updatedItem.id)
   if (index !== -1) {
     saleItems.value[index] = updatedItem
   }
 }
 
 function removeItem(id) {
-  saleItems.value = saleItems.value.filter(i => i.id !== id)
+  saleItems.value = saleItems.value.filter((i) => i.id !== id)
 }
 
 async function createInvoice() {
-
-
-
   const data = {
     client_id: selectedClient.value.id,
     items: saleItems.value,
     reduction: discount.value,
     tva: taxRate.value,
   }
-
 
   invoice.value = data
 
@@ -386,7 +559,8 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.modal-enter-active, .modal-leave-active {
+.modal-enter-active,
+.modal-leave-active {
   transition: transform 0.3s ease;
 }
 .modal-enter-from {

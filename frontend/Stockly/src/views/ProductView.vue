@@ -71,7 +71,7 @@
           </div>
         </div>
           <!-- Stats Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <GridCard title="Total Products" :value="productStore.totalProducts||0" :icon="Users" gradientFrom="purple-500"
           gradientTo="purple-600" />
         <GridCard title="in Stock" :value="inStockCount " :icon="UserCheck" gradientFrom="teal-500"
@@ -167,7 +167,7 @@
       </div>
 
       <!-- Grid View -->
-      <div v-else-if="viewMode === 'grid'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <div v-else-if="viewMode === 'grid'" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-1">
         <ProductListItem
           v-for="product in filteredProducts"
           :key="product.id"

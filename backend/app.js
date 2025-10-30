@@ -1,4 +1,5 @@
 // index.js
+require('dotenv').config();
 const app = require('./index');
 const http = require('http');
 const PORT = process.env.PORT ;

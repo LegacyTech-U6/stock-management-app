@@ -1,12 +1,10 @@
-[file name]: NavbarAdmin.vue
-[file content begin]
 <template>
-  <div class="flex h-screen bg-gray-50">
+  <div class="flex h-screen bg-gray-50/50">
     <!-- Mobile Menu Button -->
     <div class="fixed top-4 left-4 z-50 lg:hidden">
       <button
         @click="sidebarOpen = !sidebarOpen"
-        class="p-2 bg-white rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+        class="p-2 bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200/60 hover:bg-white transition-all duration-300 shadow-sm hover:shadow-md"
       >
         <Menu v-if="!sidebarOpen" class="w-5 h-5 text-gray-600" />
         <X v-else class="w-5 h-5 text-gray-600" />
@@ -17,32 +15,32 @@
     <div
       v-if="sidebarOpen"
       @click="sidebarOpen = false"
-      class="fixed inset-0 bg-black/50 z-30 lg:hidden"
+      class="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 lg:hidden transition-opacity duration-300"
     ></div>
 
     <!-- Sidebar -->
     <aside
       :class="[
-        'fixed lg:static top-0 left-0 h-screen bg-white border-r border-gray-200 transition-all duration-300 z-40',
-        'w-64 lg:w-64',
-        sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
+        'fixed lg:static top-0 left-0 h-screen bg-white/95 backdrop-blur-md border-r border-gray-200/60 transition-all duration-500 z-40 flex flex-col',
+        'w-72 lg:w-72',
+        sidebarOpen ? 'translate-x-0 shadow-xl' : '-translate-x-full lg:translate-x-0 lg:shadow-sm',
       ]"
     >
       <!-- Logo -->
-      <div class="px-6 py-6 border-b border-gray-200">
+      <div class="px-6 py-6 border-b border-gray-200/50">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-            <Building2 class="w-6 h-6 text-white" />
+          <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-sm">
+            <Building2 class="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 class="font-semibold text-gray-900">StockFlow</h1>
-            <p class="text-xs text-gray-500">Enterprise Manager</p>
+            <h1 class="font-semibold text-gray-900 text-lg">StockFlow</h1>
+            <p class="text-xs text-gray-500 font-medium">Enterprise Manager</p>
           </div>
         </div>
       </div>
 
       <!-- Navigation Menu -->
-      <nav class="px-4 py-6 space-y-2 flex-1 overflow-y-auto">
+      <nav class="px-3 py-6 space-y-1 flex-1 overflow-y-auto">
         <NavLink
           to="/ad/dashboard"
           :icon="LayoutDashboard"
@@ -58,7 +56,7 @@
         <NavLink
           to="/ad/admin"
           :icon="Package"
-          label="Inventory"
+          label="Companies"
           @click="closeSidebarOnMobile"
         />
         <NavLink
@@ -75,76 +73,68 @@
         />
       </nav>
 
-      <!-- User Profile Section -->
-      <div class="px-4 py-4 border-t border-gray-200">
-        <div class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
-          <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold flex-shrink-0">
-            {{ userInitials }}
+      <!-- User Profile Section - Moved to bottom -->
+      <div class="mt-auto border-t border-gray-200/50">
+        <div class="px-4 py-4">
+          <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50/80 transition-all duration-300 cursor-pointer group">
+            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-medium flex-shrink-0 shadow-sm">
+              {{ userInitials }}
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold text-gray-900 truncate">{{ userName }}</p>
+              <p class="text-xs text-gray-500 truncate">{{ userEmail }}</p>
+            </div>
+            <ChevronDown class="w-4 h-4 text-gray-400 flex-shrink-0 transition-transform group-hover:rotate-180 duration-300" />
           </div>
-          <div class="flex-1 min-w-0">
-            <p class="text-sm font-semibold text-gray-900 truncate">{{ userName }}</p>
-            <p class="text-xs text-gray-500 truncate">{{ userEmail }}</p>
+          <div class="p-2 mt-2">
+            <button class="w-full py-2.5 px-4 bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-medium rounded-xl transition-all duration-300 shadow-sm hover:shadow-md text-sm">
+              Sign Out
+            </button>
           </div>
-          <ChevronDown class="w-4 h-4 text-gray-400 flex-shrink-0" />
-        </div>
-        <div class="p-1">
-          <button class="p-2 w-1/2 bg-red-300 font-semibold border border-red-700">logout</button>
         </div>
       </div>
     </aside>
 
     <!-- Main Content -->
     <div class="flex-1 flex flex-col overflow-hidden">
-      <!-- Top Bar -->
-      <header class="bg-white border-b border-gray-200 px-4 sm:px-6 py-4">
-        <div class="flex items-center justify-between gap-4">
+      <!-- Top Bar - Aligned with sidebar border -->
+      <header class="bg-white/80 backdrop-blur-md border-b border-gray-200/60 px-6 py-4 h-[88px] flex items-center">
+        <div class="flex items-center justify-between gap-4 w-full">
           <h2 class="text-lg font-semibold text-gray-900 hidden sm:block">
-            Welcome back, {{ userFirstName }}!
+            Welcome back, <span class="text-blue-600">{{ userFirstName }}!</span>
           </h2>
           <div class="flex items-center gap-3 ml-auto">
             <button
               @click="notificationOpen = !notificationOpen"
-              class="relative p-2 hover:bg-gray-100 rounded-lg transition-colors hidden sm:block"
+              class="relative p-2.5 hover:bg-gray-100/80 rounded-xl transition-all duration-300 hidden sm:block group"
             >
-              <Bell class="w-5 h-5 text-gray-600" />
-              <span v-if="unreadCount > 0" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+              <Bell class="w-5 h-5 text-gray-600 group-hover:text-gray-700 transition-colors" />
+              <span v-if="unreadCount > 0" class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full ring-2 ring-white"></span>
             </button>
-            <button class="p-2 hover:bg-gray-100 rounded-lg transition-colors hidden sm:block">
-              <Search class="w-5 h-5 text-gray-600" />
-            </button>
-            <div class="flex items-center gap-2 pl-4 border-l border-gray-200">
-              <div class="text-right hidden sm:block">
-                <p class="text-sm font-semibold text-gray-900">{{ userName }}</p>
-                <p class="text-xs text-gray-500">{{ userEmail }}</p>
-              </div>
-              <div class="w-9 h-9 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
-                {{ userInitials }}
-              </div>
-            </div>
           </div>
         </div>
       </header>
 
       <!-- Page Content -->
-      <main class="flex-1 overflow-y-auto p-4 sm:p-6">
+      <main class="flex-1 overflow-y-auto p-6">
         <slot></slot>
       </main>
     </div>
 
     <!-- Notification Panel - Right Sidebar -->
-    <Transition name="slide">
-      <div v-if="notificationOpen" class="fixed top-0 right-0 h-screen w-96 bg-white z-50 flex flex-col shadow-lg">
+    <Transition name="slide-fade">
+      <div v-if="notificationOpen" class="fixed top-0 right-0 h-screen w-96 bg-white/95 backdrop-blur-md z-50 flex flex-col shadow-2xl border-l border-gray-200/60">
         <!-- Panel Header -->
-        <div class="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+        <div class="bg-gray-50/80 px-6 py-5 border-b border-gray-200/60 flex justify-between items-center">
           <div>
             <h2 class="text-xl font-semibold text-gray-900">Notifications</h2>
-            <p class="text-sm text-gray-600">You have {{ unreadCount }} unread notification{{ unreadCount !== 1 ? 's' : '' }}</p>
+            <p class="text-sm text-gray-600 mt-1">You have {{ unreadCount }} unread notification{{ unreadCount !== 1 ? 's' : '' }}</p>
           </div>
           <button
             @click="notificationOpen = false"
-            class="text-gray-400 hover:text-gray-600 transition-colors"
+            class="p-1.5 hover:bg-gray-200/50 rounded-lg transition-all duration-300"
           >
-            <X class="w-6 h-6" />
+            <X class="w-5 h-5 text-gray-500" />
           </button>
         </div>
 
@@ -155,22 +145,22 @@
               v-for="notification in notifications"
               :key="notification.id"
               @click="markAsRead(notification.id)"
-              :class="['px-6 py-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors', notification.read ? 'bg-white' : 'bg-blue-50']"
+              :class="['px-6 py-4 border-b border-gray-100 hover:bg-gray-50/80 cursor-pointer transition-all duration-300', notification.read ? 'bg-white' : 'bg-blue-50/50']"
             >
               <div class="flex items-start gap-4">
-                <div class="mt-1" v-html="getNotificationIcon(notification.icon)"></div>
+                <div class="mt-1 flex-shrink-0" v-html="getNotificationIcon(notification.icon)"></div>
                 <div class="flex-1 min-w-0">
                   <div class="flex justify-between items-start gap-2">
-                    <h3 class="font-semibold text-gray-900">
+                    <h3 class="font-semibold text-gray-900 text-sm">
                       {{ notification.title }}
                     </h3>
-                    <div v-if="!notification.read" class="w-2.5 h-2.5 bg-blue-500 rounded-full mt-1 flex-shrink-0"></div>
+                    <div v-if="!notification.read" class="w-2.5 h-2.5 bg-blue-500 rounded-full mt-1 flex-shrink-0 ring-2 ring-blue-100"></div>
                   </div>
-                  <p class="text-gray-600 text-sm mt-2">
+                  <p class="text-gray-600 text-sm mt-2 leading-relaxed">
                     {{ notification.message }}
                   </p>
                   <div class="flex items-center justify-between mt-3">
-                    <p class="text-xs text-gray-500">{{ notification.company }}</p>
+                    <p class="text-xs text-gray-500 font-medium">{{ notification.company }}</p>
                     <p class="text-xs text-gray-400">{{ notification.time }}</p>
                   </div>
                 </div>
@@ -179,17 +169,18 @@
           </div>
           <div v-else class="flex items-center justify-center h-full">
             <div class="text-center">
-              <Bell class="w-12 h-12 text-gray-300 mx-auto mb-4" />
-              <p class="text-gray-500 text-lg">No notifications</p>
+              <Bell class="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <p class="text-gray-500 text-lg font-medium">No notifications</p>
+              <p class="text-gray-400 text-sm mt-2">You're all caught up!</p>
             </div>
           </div>
         </div>
 
         <!-- Footer -->
-        <div v-if="notifications.length > 0" class="bg-gray-50 px-6 py-4 border-t border-gray-200">
+        <div v-if="notifications.length > 0" class="bg-gray-50/80 px-6 py-4 border-t border-gray-200/60">
           <button
             @click="markAllAsRead"
-            class="w-full text-center text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors py-2"
+            class="w-full text-center text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors duration-300 py-2.5 rounded-lg hover:bg-blue-50/50"
           >
             Mark all as read
           </button>
@@ -346,17 +337,21 @@ if (typeof window !== 'undefined') {
 </script>
 
 <style scoped>
-.slide-enter-active,
-.slide-leave-active {
-  transition: transform 0.3s ease;
+.slide-fade-enter-active {
+  transition: all 0.3s ease-out;
 }
 
-.slide-enter-from {
-  transform: translateX(100%);
+.slide-fade-leave-active {
+  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
 }
 
-.slide-leave-to {
+.slide-fade-enter-from {
   transform: translateX(100%);
+  opacity: 0;
+}
+
+.slide-fade-leave-to {
+  transform: translateX(100%);
+  opacity: 0;
 }
 </style>
-[file content end]

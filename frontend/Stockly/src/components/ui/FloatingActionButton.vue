@@ -1,47 +1,63 @@
 <template>
-  <div class="fixed bottom-6 right-6 z-50">
-    <!-- Floating Action Button -->
-    <button
-      @click="toggleMenu"
-      class="w-14 h-14 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-lg hover:bg-blue-700 transition-all"
-    >
-      <span
-        class="text-3xl transform transition-transform duration-300"
-        :class="{ 'rotate-45': isOpen }"
+  <teleport to="body">
+    <div class="fixed bottom-6 right-6 z-[9999]">
+      <!-- Floating Action Button -->
+      <button
+        @click="toggleMenu"
+        class="w-14 h-14 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-lg hover:bg-blue-700 transition-all animate-pulse"
       >
-        +
-      </span>
-    </button>
+        <span
+          class="text-3xl transform transition-transform duration-300"
+          :class="{ 'rotate-45': isOpen }"
+        >
+          +
+        </span>
+      </button>
 
-    <!-- Quick Action Menu -->
-    <transition name="fade">
-      <div
-        v-if="isOpen"
-        class="absolute bottom-16 right-0 mb-2 bg-white shadow-xl rounded-xl p-2 w-48"
-      >
-        <ul class="flex flex-col space-y-2">
-          <li
-            v-for="(item, index) in actions"
-            :key="index"
-            @click="handleAction(item)"
-            class="px-3 py-2 rounded-lg hover:bg-gray-100 cursor-pointer flex items-center gap-2"
-          >
-            <component :is="item.icon" class="w-4 h-4 text-gray-600" />
-            <span>{{ item.label }}</span>
-          </li>
-        </ul>
-      </div>
-    </transition>
-  </div>
+      <!-- Quick Action Menu -->
+      <transition name="slide-up">
+        <div
+          v-if="isOpen"
+          class="absolute bottom-16 right-0 mb-2 bg-white shadow-xl rounded-xl p-2 w-48 animate-fade-in"
+        >
+          <ul class="flex flex-col space-y-2">
+            <li
+              v-for="(item, index) in actions"
+              :key="index"
+              @click="handleAction(item)"
+              class="px-3 py-2 rounded-lg hover:bg-gray-100 cursor-pointer flex items-center gap-2"
+            >
+              <component :is="item.icon" class="w-4 h-4 text-gray-600" />
+              <span>{{ item.label }}</span>
+            </li>
+          </ul>
+        </div>
+      </transition>
+    </div>
+  </teleport>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-
+import {
+  Package,
+  DollarSign,
+  Users,
+  PieChart,
+  Clock,
+  Tag,
+  Layers,
+  RotateCcw,
+  Wallet,
+} from 'lucide-vue-next'
 const props = defineProps({
   actions: {
     type: Array,
-    default: () => [],
+    default: () => [
+      { label: 'Add Product', icon: Package, value: 'product' },
+  { label: 'Add Category', icon: Tag, value: 'category' },
+  { label: 'Add Client', icon: Users, value: 'client' },
+    ],
   },
 })
 
@@ -56,12 +72,30 @@ const handleAction = (item) => {
 </script>
 
 <style scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s ease;
+.slide-up-enter-active,
+.slide-up-leave-active {
+  transition: all 0.3s ease;
 }
-.fade-enter-from,
-.fade-leave-to {
+.slide-up-enter-from {
   opacity: 0;
+  transform: translateY(20px);
+}
+.slide-up-leave-to {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-in {
+  animation: fade-in 0.3s ease forwards;
 }
 </style>

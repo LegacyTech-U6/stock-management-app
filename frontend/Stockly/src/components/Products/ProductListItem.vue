@@ -1,19 +1,24 @@
 <template>
   <!-- Grid View Card -->
-  <div v-if="displayMode === 'grid'" class="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-gray-200">
-    <!-- Image Section -->
-    <div class="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
-      <img
-        v-if="product.Prod_image"
-        :src="product.Prod_image"
-        :alt="product.Prod_name"
-        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-      />
-      <div v-else class="w-full h-full flex items-center justify-center">
-        <svg class="w-20 h-20 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-        </svg>
-      </div>
+ <div
+  v-if="displayMode === 'grid'"
+  class="group sm:text-sm bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-gray-200 w-full mx-auto transform scale-95"
+>
+  <!-- Image Section -->
+  <div class="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+    <img
+      v-if="product.Prod_image"
+      :src="product.Prod_image"
+      :alt="product.Prod_name"
+      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+    />
+    <div v-else class="w-full h-full flex items-center justify-center">
+      <svg class="w-20 h-20 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+      </svg>
+    </div>
+
+
 
       <!-- Overlay on Hover -->
       <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
@@ -67,8 +72,8 @@
       <!-- Pricing -->
       <div class="flex items-center justify-between pt-4 border-t border-gray-100">
         <div>
-          <div class="text-xs text-gray-500 mb-1">Selling Price</div>
-          <div class="text-2xl font-bold text-gray-900">
+          <div class="lg:text-xs text-sm text-gray-500 mb-1">Selling Price</div>
+          <div class="lg:text-2xl text-sm font-bold text-gray-900">
             ${{ parseFloat(String(product.selling_price)).toFixed(2) }}
           </div>
         </div>

@@ -132,3 +132,33 @@ exports.getDailySalesReport = async (req, res) => {
     res.status(500).json({ error: "Erreur lors de la génération du rapport." });
   }
 };
+ exports.getReport = async (req,res) => {
+  try {
+        console.log('====================================');
+    console.log("id",req.entrepriseId);
+    console.log('====================================');
+    const query =  await queryParser.parse(req);
+   const entreprise_id= req.entrepriseId 
+      query.where = { ...query.where , entreprise_id};
+      
+    
+    console.log('====================================');
+    console.log("id",entreprise_id);
+    console.log('====================================');
+    const data = await db.salesReport.findAll({
+      ...query,
+      attributes:{exclude:[]}
+    })
+    const count  = await db.salesReport.count({
+      where :query.where,
+    })
+    console.log(data);
+    
+
+    res.status(200).json({count , data})
+    
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+  
+ }

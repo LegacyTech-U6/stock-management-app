@@ -68,45 +68,76 @@ exports.register = async (req, res) => {
   }
 };
 
-// ===============================
-// 🔹 Connexion (login)
-// ===============================
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log(req.body);
-    
+    console.log("Payload login:", req.body);
 
-    const user = await User.findOne({ where: { email } });
-    if (!user)
-      return res
-        .status(400)
-        .json({ message: "cette email nas pas de compte Stockly" });
-  console.log(user.password_hash);
-  
-    const match = await bcrypt.compare(password, user.password_hash);
-    if (!match)
-      return res
-        .status(400)
-        .json({ message: "mot de passe incorrect" });
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email et mot de passe requis" });
+    }
 
-    // Générer le token
-    const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    // 1️⃣ Chercher l'utilisateur dans la vue all_users
+    const [results] = await db.sequelize.query(
+      `
+      SELECT * FROM all_users
+      WHERE email = :email
+      LIMIT 1
+      `,
+      { replacements: { email } }
+    );
+
+    if (!results || results.length === 0) {
+      return res.status(400).json({ message: "Cet email n'a pas de compte Stockly" });
+    }
+
+    const userRecord = results[0];
+
+    // 2️⃣ Vérifier le mot de passe
+    const match = await bcrypt.compare(password, userRecord.password_hash);
+    if (!match) {
+      return res.status(400).json({ message: "Mot de passe incorrect" });
+    }
+
+    // 3️⃣ Récupérer les détails selon le type d'utilisateur
+    let userDetails;
+    if (userRecord.type === "admin") {
+      userDetails = await db.User.findByPk(userRecord.id, {
+        attributes: ["id", "username", "email"],
+      });
+    } else if (userRecord.type === "worker") {
+      userDetails = await db.Worker.findByPk(userRecord.id, {
+        attributes: [
+          "id",
+          "name",
+          "email",
+          "position",
+          "status",
+          "entreprise_id",
+          "role_id",
+        ],
+        include: [
+          { model: db.roles, as: "role", attributes: ["id", "name"] },
+          { model: db.Entreprise, as: "entreprise", attributes: ["id", "name"] },
+        ],
+      });
+    }
+
+    // 4️⃣ Générer le token
+    const token = jwt.sign(
+      { id: userRecord.id, email: userRecord.email, type: userRecord.type },
+      JWT_SECRET,
+      { expiresIn: "1h" }
+    );
 
     res.status(200).json({
       message: "Connexion réussie",
       token,
-      user: {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-      },
+      user: userDetails,
     });
   } catch (err) {
     console.error("Erreur login:", err);
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: "Erreur serveur lors de la connexion" });
   }
 };
 
@@ -247,25 +278,57 @@ exports.updateProfile = async (req, res) => {
 // ===============================
 exports.getProfile = async (req, res) => {
   try {
-    const user = await User.findByPk(req.user.id, {
-      attributes: [
-        "id",
-        "username",
-        "email",
-        "Last_name",
-        "telephone",
-        "created_at",
-      ],
-    });
+    const { id, type } = req.user; // type vient du token (admin ou worker)
+    let profile;
 
-    if (!user)
-      return res.status(404).json({ message: "Utilisateur non trouvé" });
-    res.status(200).json(user);
+    if (type === "admin") {
+      profile = await db.User.findByPk(id, {
+        attributes: ["id", "username", "email", "Last_name", "telephone", "created_at"],
+      });
+
+      if (profile) {
+        profile = {
+          ...profile.toJSON(),
+          type: "admin", // 🔹 on ajoute le type ici
+        };
+      }
+    }
+
+    else if (type === "worker") {
+      profile = await db.Worker.findByPk(id, {
+        attributes: [
+          "id",
+          "name",
+          "email",
+          "position",
+          "status",
+          "date_hired",
+          "entreprise_id",
+          "role_id",
+        ],
+        include: [
+          { model: db.roles, as: "role", attributes: ["id", "name"] },
+          { model: db.Entreprise, as: "entreprise", attributes: ["id", "name","uuid"] },
+        ],
+      });
+
+      if (profile) {
+        profile = {
+          ...profile.toJSON(),
+          type: "worker", // 🔹 on ajoute aussi ici
+        };
+      }
+    }
+
+    if (!profile) return res.status(404).json({ message: "Utilisateur non trouvé" });
+
+    res.status(200).json(profile);
   } catch (err) {
     console.error("Erreur getProfile:", err);
     res.status(500).json({ message: err.message });
   }
 };
+
 
 // =================================
 // activation link message

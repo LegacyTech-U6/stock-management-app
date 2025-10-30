@@ -21,7 +21,11 @@ export const useRoleStore = defineStore("roleStore", {
       this.loading = true
       this.error = null
       try {
-        this.roles = await getAllRoles()
+        const data =await getAllRoles()
+        console.log('====================================');
+        console.log(data);
+        console.log('====================================');
+        this.roles = data.data
       } catch (err) {
         this.error = err.response?.data?.message || "Failed to fetch roles"
       } finally {

@@ -5,7 +5,7 @@ require("dotenv").config();
 const Product = db.Product;
 const Category = db.Category;
 const Supplier = db.Supplier;
-const Settings = db.Settings;
+const Settings = db.Setting;
 const Entreprise = db.Entreprise;
 const Sales = db.Sales;
 const fs = require("fs");
@@ -372,20 +372,23 @@ exports.buyProduct = async (req, res) => {
 exports.getLowStockProducts = async (req, res) => {
   try {
     const entrepriseId = req.entrepriseId;
-
+    console.log(entrepriseId);
+    
     const settings = await Settings.findOne({
       where: { entreprise_id: entrepriseId },
     });
     const threshold = settings?.stock_alert_threshold || 5;
-
+  
     const products = await Product.findAll({
       where: { entreprise_id: entrepriseId, quantity: { [Op.lte]: threshold } },
       include: [
-        { model: Category, attributes: ["id", "name"] },
-        { model: Supplier, attributes: ["id", "supplier_name"] },
+        { model: Category,as: "category" ,attributes: ["id", "name"] },
+        { model: Supplier,as: "supplierInfo", attributes: ["id", "supplier_name"] },
       ],
     });
-
+  console.log('====================================');
+    console.log(Product);
+    console.log('====================================');
     res.json({ threshold, products });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -430,7 +433,7 @@ exports.getProductsByCategory = async (req, res) => {
     console.log("this is the category id received", categoryId);
     console.log("====================================");
 
-    const products = await Product.findAll({
+    const data = await Product.findAll({
       where: {
         category_id: categoryId,
         entreprise_id: req.entrepriseId,
@@ -450,6 +453,14 @@ exports.getProductsByCategory = async (req, res) => {
         category_id: categoryId,
         entreprise_id: req.entrepriseId,
       },
+    });
+     // Transformer le chemin des images pour renvoyer l'URL complète
+    const products = data.map((p) => {
+      const prodJSON = p.toJSON();
+      if (prodJSON.Prod_image) {
+        prodJSON.Prod_image = `${BASE_URL}${prodJSON.Prod_image}`;
+      }
+      return prodJSON;
     });
     console.log("====================================");
     console.log(count);

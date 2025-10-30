@@ -8,8 +8,9 @@ import router from './router'
 import { Toaster } from 'vue-sonner';
 import "@fontsource/nunito/400.css";
 import "@fontsource/nunito/700.css";
-
+import FloatingButton from '@/components/ui/FloatingActionButton.vue'
 const app = createApp(App)
+app.component('FloatingButton', FloatingButton)
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
 app.use(pinia)

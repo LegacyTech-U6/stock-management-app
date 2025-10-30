@@ -1,6 +1,6 @@
 [file name]: DashBoard.vue [file content begin]
 <template>
-  <div class="px-30">
+  <div class="px-10">
     <div v-if="loadingClients">
       <LazyLoader :loading="loadingClients" :skeleton-count="6">
         <template #icon>

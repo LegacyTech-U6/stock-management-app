@@ -23,9 +23,11 @@ export const useEntrepriseStore = defineStore('entreprise', {
       this.activeEntreprise = entreprise
     },
 
-    clearActiveEntreprise() {
-      this.activeEntreprise = null
-    },
+   clearActiveEntreprise() {
+  this.activeEntreprise = null
+  localStorage.removeItem('stockly_entreprise') // clé exacte du persist
+}
+,
 
     async createEntreprise(entrepriseData) {
       this.isLoading = true

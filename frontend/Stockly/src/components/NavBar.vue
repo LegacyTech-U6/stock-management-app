@@ -1,88 +1,105 @@
-<template>
- <header
-  :class="[
-    'fixed top-0 transition-all duration-300 z-50',
-    isScrolled
-      ? 'max-w-5xl left-1/2 -translate-x-1/2 mx-auto mt-3 rounded-xl shadow-lg bg-white'
-      : 'w-full left-0 justify-center bg-white shadow-sm'
-  ]"
->
-    <div class="px-6 py-3 flex items-center justify-between">
-      <!-- Logo -->
-      <div class="flex items-center space-x-2">
-        <div class="bg-black text-white p-2 rounded-lg">📊</div>
-        <span class="font-bold text-lg">StockFlow</span>
-      </div>
-
-      <!-- Desktop navigation -->
-      <nav class="hidden md:flex space-x-8 text-gray-600 font-medium">
-        <router-link to="" class="hover:text-black transition">Features</router-link>
-        <router-link to="" class="hover:text-black transition">Benefits</router-link>
-        <router-link to="" class="hover:text-black transition">Reviews</router-link>
-        <router-link to="" class="hover:text-black transition">Pricing</router-link>
-      </nav>
-
-      <!-- CTA buttons (desktop only) -->
-      <div class="hidden md:flex items-center space-x-5">
-        <router-link to="/login" class="text-gray-600 hover:text-black transition">
-          Sign In
-        </router-link>
-        <router-link
-          to="/register"
-          class="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition flex items-center space-x-2"
-        >
-          <span>Get Started</span>
-          <span>→</span>
-        </router-link>
-      </div>
-
-      <!-- Mobile hamburger button -->
-      <button
-        class="md:hidden flex flex-col space-y-1 focus:outline-none"
-        @click="isOpen = !isOpen"
-      >
-        <span class="w-6 h-0.5 bg-black"></span>
-        <span class="w-6 h-0.5 bg-black"></span>
-        <span class="w-6 h-0.5 bg-black"></span>
-      </button>
-    </div>
-
-    <!-- Mobile dropdown menu -->
-    <div
-      v-if="isOpen"
-      class="md:hidden px-6 py-4 bg-white border-t space-y-4 text-gray-600 font-medium"
-    >
-      <router-link to="" class="block hover:text-black transition">Features</router-link>
-      <router-link to="" class="block hover:text-black transition">Benefits</router-link>
-      <router-link to="" class="block hover:text-black transition">Reviews</router-link>
-      <router-link to="" class="block hover:text-black transition">Pricing</router-link>
-      <hr />
-      <router-link to="/login" class="block hover:text-black transition">Sign In</router-link>
-      <router-link
-        to="/register"
-        class="block bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition"
-      >
-        Get Started →
-      </router-link>
-    </div>
-  </header>
-</template>
-
-<script setup>
-import { ref, onMounted, onUnmounted } from "vue"
+<script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue'
+import { Menu, X } from 'lucide-vue-next'
+import type { isCarouselItem } from 'naive-ui/es/carousel/src/CarouselItem'
 
 const isScrolled = ref(false)
 const isOpen = ref(false)
 
 const handleScroll = () => {
-  isScrolled.value = window.scrollY > 50
+   isScrolled.value =  window.scrollY > 50
 }
 
 onMounted(() => {
-  window.addEventListener("scroll", handleScroll)
+  window.addEventListener('scroll', handleScroll)
 })
 
 onUnmounted(() => {
-  window.removeEventListener("scroll", handleScroll)
+  window.removeEventListener('scroll', handleScroll)
 })
+
+const navItems = ['Feutures', 'Tarifs', 'Documentation']
 </script>
+
+<template>
+  <header
+  :style="{  backgroundImage: `url('/src/assets/image/branding.png')`, }"
+    :class="[
+      'fixed top-0 transition-all ease-in duration-300 z-50',
+      isScrolled
+        ? ' backdrop-blur bg-indigo-500 text-white w-full justify-center'
+        : 'w-full justify-center items-center bg-gray-50 backdrop-blur  border-gray-200'
+    ]"
+  >
+    <div class="px-6  w-5xl space-x-2 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 bg-gray-900 flex items-center justify-center text-white text-sm font-medium">
+          S
+        </div>
+        <span class="text-lg font-light tracking-tight">Stockly</span>
+      </div>
+
+      <nav :class="['hidden md:flex items-center gap-8',isScrolled ? 'text-white': 'text-black']">
+        <a
+          v-for="item in navItems"
+          :key="item"
+          href="#"
+          class="text-sm  hover:text-gray-900 transition-colors font-light"
+        >
+          {{ item }}
+        </a>
+      </nav>
+
+      <div class="hidden md:flex items-center gap-4">
+        <router-link
+          to="/login"
+          class="text-sm text-gray-600 hover:text-gray-900 transition-colors font-light"
+        >
+          Connexion
+        </router-link>
+        <router-link
+          to="/register"
+          class="px-6 py-2 bg-gray-900 text-white text-sm hover:bg-gray-800 transition-colors font-light"
+        >
+          Commencer
+        </router-link>
+      </div>
+
+      <button
+        class="md:hidden"
+        @click="isOpen = !isOpen"
+      >
+        <Menu v-if="!isOpen" :size="24" :stroke-width="1.5" />
+        <X v-else :size="24" :stroke-width="1.5" />
+      </button>
+    </div>
+
+    <div
+      v-if="isOpen"
+      class="md:hidden px-6 py-6 border-t border-gray-200 space-y-6 bg-white"
+    >
+      <a
+        v-for="item in navItems"
+        :key="item"
+        href="#"
+        class="block text-sm text-gray-600 hover:text-gray-900 transition-colors font-light"
+      >
+        {{ item }}
+      </a>
+      <div class="pt-4 border-t border-gray-200 space-y-4">
+        <router-link
+          to="/login"
+          class="block text-sm text-gray-600 hover:text-gray-900 transition-colors font-light"
+        >
+          Connexion
+        </router-link>
+        <router-link
+          to="/register"
+          class="block px-6 py-3 bg-gray-900 text-white text-sm text-center hover:bg-gray-800 transition-colors font-light"
+        >
+          Commencer
+        </router-link>
+      </div>
+    </div>
+  </header>
+</template>

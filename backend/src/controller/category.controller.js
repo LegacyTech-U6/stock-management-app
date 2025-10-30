@@ -30,6 +30,7 @@ exports.getAllCategories = async (req, res) => {
       },
       ...query,
     });
+    
 
     
 
