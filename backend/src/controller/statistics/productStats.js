@@ -2,7 +2,8 @@ const {
   getSales,
   getProfit,
   getClients,
-  getTopProducts
+  getTopProducts,
+  getRevenueByCategory
 } = require("../../models/statistics/stats");
 
 module.exports = {
@@ -93,6 +94,28 @@ module.exports = {
       console.error("Erreur topProducts:", error);
       res.status(500).json({ error: error.message });
     }
-  }
+  },
+
+  /**
+   * 🔹 Revenu par catégorie
+   * GET /api/stats/revenue-by-category?period=month&enterpriseId=1
+   */
+  revenueByCategory: async (req, res) => {
+    try {
+      const period = req.query.period || "month";
+      const enterpriseId = req.query.enterpriseId || req?.entrepriseId;
+
+      const result = await getRevenueByCategory({
+        period,
+        enterpriseId,
+        userId: req.user?.id
+      });
+
+      res.json({ period, revenue: result });
+    } catch (error) {
+      console.error("Erreur revenueByCategory:", error);
+      res.status(500).json({ error: error.message });
+    }
+  },
 
 };

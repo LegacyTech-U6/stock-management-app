@@ -186,11 +186,11 @@ export const useStatisticsStore = defineStore('statistics', {
         this.loading = false
       }
     },
-    async fetchRevenueByCategory() {
-      const data = await getRevenueByCategory()
+    async fetchRevenueByCategory(period = 'month') {
+      const data = await getRevenueByCategory(period)
       console.log(data)
 
-      this.revenueByCategory = data.data
+      this.revenueByCategory = data.revenue
     },
     async fetchTopProducts() {
       // Mock API call, replace with your backend API

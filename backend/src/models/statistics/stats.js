@@ -208,10 +208,90 @@ async function getTopProducts({
     throw err;
   }
 }
+/**
+ * 🔹 Récupère le revenu total par catégorie
+ */
+async function getRevenueByCategory({
+  userId,
+  enterpriseId,
+  period = 'month'
+}) {
+  // 1️⃣ Filtrage entreprise / utilisateur
+  let entrepriseIds = [];
+  if (enterpriseId) {
+    entrepriseIds = [enterpriseId];
+  } else if (userId) {
+    const entreprises = await db.Entreprise.findAll({
+      where: { user_id: userId },
+      attributes: ['id'],
+    });
+    entrepriseIds = entreprises.map(e => e.id);
+  }
+
+  if (entrepriseIds.length === 0) return [];
+
+  // 2️⃣ Définir la période
+  const now = new Date();
+  let startDate, endDate;
+
+  if (period === 'day') {
+    startDate = new Date(now.setHours(0, 0, 0, 0));
+    endDate = new Date(now.setHours(23, 59, 59, 999));
+  } else if (period === 'week') {
+    const day = now.getDay();
+    startDate = new Date(now);
+    startDate.setDate(now.getDate() - day);
+    endDate = new Date();
+  } else { // month
+    startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+    endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  }
+
+  const start = formatDate(startDate);
+  const end = formatDate(endDate);
+
+  try {
+    // 3️⃣ Requête SQL pour calculer le revenu par catégorie
+    const rows = await sequelize.query(`
+      SELECT 
+  c.name AS category,
+  IFNULL(SUM(s.total_price), 0) AS total_revenue,
+  IFNULL(SUM(s.total_profit), 0) AS total_profit,
+  COUNT(DISTINCT p.id) AS product_count
+FROM Products p
+LEFT JOIN Sales s 
+  ON p.id = s.product_id
+LEFT JOIN Categories c 
+  ON p.category_id = c.id
+WHERE p.entreprise_id IN (:entrepriseIds)
+  AND s.sale_date BETWEEN :start AND :end
+GROUP BY c.name
+ORDER BY total_revenue DESC
+
+    `, {
+      replacements: { start, end, entrepriseIds },
+      type: sequelize.QueryTypes.SELECT
+    });
+
+    // 4️⃣ Formater la réponse
+    return rows.map(r => ({
+      category: r.category || 'Uncategorized',
+      total_revenue: Number(r.total_revenue) || 0,
+      total_profit: Number(r.total_profit) || 0,
+      product_count: Number(r.product_count) || 0
+    }));
+
+  } catch (err) {
+    console.error('Erreur SQL dans getRevenueByCategory:', err);
+    throw err;
+  }
+}
+
 
 module.exports = {
   getSales,
   getProfit,
   getClients,
+  getRevenueByCategory,
   getTopProducts
 };

@@ -2,6 +2,7 @@
 
 /* === Global Font to match Naive UI === */
 html, body {
+  font-size: 14px;
    font-family: 'Nunito', sans-serif;
   color: #1f2937; /* Optional: neutral gray for better readability */
   background-color:white; /* Optional clean background */

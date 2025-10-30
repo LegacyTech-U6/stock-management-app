@@ -19,4 +19,5 @@ router.get("/sales", statsController.sales);
 router.get("/profit", statsController.profit);
 router.get("/clients", statsController.clients);
 router.get("/products", statsController.topProducts);
+router.get("/revenue-by-category", statsController.revenueByCategory);
 module.exports = router;

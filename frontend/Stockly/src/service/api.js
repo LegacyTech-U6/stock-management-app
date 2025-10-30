@@ -440,8 +440,8 @@ export async function getBestCategory(period = "month") {
 }
 
 // ✅ Récupérer les meilleurs produits par catégorie
-export async function getBestByCategory(categoryId, period = "month") {
-  const { data } = await API.get(`/stats/best-by-category/${categoryId}`, { params: { period } });
+export async function getBestByCategory( period = "month") {
+  const { data } = await API.get(`/stats/revenue-by-category`, { params: { period } });
   return data;
 }
 

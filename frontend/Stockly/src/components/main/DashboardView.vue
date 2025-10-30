@@ -38,13 +38,11 @@
 
       </div>
       <!-- Product Distribution -->
-      <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-        <div class="flex items-center gap-2 mb-6">
-          <PieChart class="w-5 h-5 text-gray-700" />
-          <h2 class="text-lg font-semibold text-gray-800">Product Distribution</h2>
-        </div>
 
-      </div>
+
+        <RevenueCatgeory />
+
+
 
     </div>
 
@@ -104,6 +102,7 @@ import {
   RotateCcw,
   Wallet,
 } from 'lucide-vue-next'
+import RevenueCatgeory from '../statistics/RevenueCatgeory.vue'
 
 
 const handleQuickAction = (action) => {
