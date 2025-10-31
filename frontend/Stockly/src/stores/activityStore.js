@@ -48,7 +48,7 @@ export const useActivityStore = defineStore('Activity', {
         const data= await getSellingReport()
         console.log(data);
 
-        this.salesReport = data.data
+        this.salesReport = data
 
 
       } catch (err) {

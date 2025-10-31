@@ -15,50 +15,68 @@
         View All
       </button>
     </div>
+    <div v-if="products?.length<= 0" class="flex flex-col items-center justify-center py-16">
+      <h3 class="text-lg font-semibold text-gray-900 mb-2">No  low Stock Products</h3>
 
-    <div class="space-y-3 px-6">
+    </div>
+
+    <div v-else class="space-y-3 px-6">
       <div v-for="(product, index) in products" :key="index"
-           class="flex items-center gap-4 p-3 rounded-2xl hover:bg-gray-50 transition-colors">
-        <div :class="`w-12 h-12 ${product.color} rounded-xl flex items-center justify-center text-2xl shadow-sm`">
-          {{ product.image }}
-        </div>
-        <div class="flex-1 min-w-0">
-          <h3 class="font-medium text-gray-800 text-sm truncate">{{ product.name }}</h3>
-          <p class="text-xs text-gray-500">ID : {{ product.id }}</p>
-        </div>
-        <div class="text-right">
-          <p class="text-xs text-gray-400 mb-1">Instock</p>
-          <p :class="`text-lg font-semibold ${getStockColor(product.stock)}`">
-            {{ product.stock }}
-          </p>
-        </div>
-      </div>
+     class="flex items-center gap-4 p-3 rounded-2xl hover:bg-gray-50 transition-colors">
+
+  <!-- Product image -->
+  <div class="w-20 h-20 rounded-xl overflow-hidden shadow-sm flex items-center justify-center">
+    <img
+      v-if="product.Prod_image"
+      :src="product.Prod_image"
+      :alt=product.Prod_name
+      class="w-full h-full object-cover transition-transform duration-300 transform hover:scale-110"
+    />
+    <div v-else :class="`w-full h-full bg-gray-200 flex items-center justify-center text-lg font-semibold text-gray-600`">
+      {{ product.Prod_name[0] }}
+    </div>
+  </div>
+
+  <!-- Product info -->
+  <div class="flex-1 min-w-0">
+    <h3 class="font-medium text-gray-800 text-sm truncate">{{ product.Prod_name }}</h3>
+    <p class="text-xs text-gray-500">ID : {{ product.id }}</p>
+  </div>
+
+  <!-- Stock -->
+  <div class="text-right">
+    <p class="text-xs text-gray-400 mb-1">Instock</p>
+    <p :class="`text-lg font-semibold ${getStockColor(product.quantity)}`">
+      {{ product.quantity }}
+    </p>
+  </div>
+</div>
+
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  name: 'LowStockProducts',
-  data() {
-    return {
-      products: [
-        { name: 'Dell XPS 13', id: '#665814', stock: 8, image: '💻', color: 'bg-blue-900' },
-        { name: 'Vacuum Cleaner Robot', id: '#940004', stock: 14, image: '🤖', color: 'bg-purple-900' },
-        { name: 'KitchenAid Stand Mixer', id: '#325569', stock: 21, image: '🍴', color: 'bg-amber-900' },
-        { name: "Levi's Trucker Jacket", id: '#124588', stock: 12, image: '👕', color: 'bg-blue-600' },
-        { name: "Lay's Classic", id: '#365586', stock: 10, image: '🍟', color: 'bg-yellow-600' }
-      ]
-    }
-  },
-  methods: {
-    getStockColor(stock) {
+<script setup>
+import { onMounted ,ref,computed } from 'vue';
+import { useStatisticsStore } from '@/stores/statisticStore';
+import { useProductStore } from '@/stores/productStore';
+
+const productStore = useProductStore()
+
+const products = computed(()=>productStore.lowProducts)
+
+
+
+  const  getStockColor =(stock)=> {
       if (stock < 10) return 'text-red-500';
       if (stock < 15) return 'text-orange-500';
       return 'text-yellow-600';
     }
-  }
-}
+
+onMounted( async()=>{
+  productStore.fetchLowStockProducts()
+
+})
 </script>
 
 <style scoped>

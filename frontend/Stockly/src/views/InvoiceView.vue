@@ -184,7 +184,7 @@
         </div>
 
         <div class="text-sm text-gray-500">
-          2014 - 2025 © DreamsPOS. All Right Reserved
+           2025 © Stockly. All Right Reserved
         </div>
 
         <div class="flex items-center gap-2">
@@ -217,12 +217,7 @@
     <InvoiceDetailModal v-if="showInvoiceModal" :invoice="selectedInvoice" :entreprise="entreprise"
       @close="showInvoiceModal = false" />
 
-    <!-- Floating Action Button -->
-    <button
-      class="fixed bottom-8 right-8 w-14 h-14 flex items-center justify-center rounded-full bg-orange-500 text-white shadow-lg hover:bg-orange-600 transition-colors"
-      title="Settings">
-      <Settings class="w-6 h-6" />
-    </button>
+  
   </div>
 </template>
 

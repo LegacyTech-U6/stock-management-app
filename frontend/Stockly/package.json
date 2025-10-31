@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@fontsource/nunito": "^5.2.7",
+    "@lottiefiles/lottie-player": "^2.0.12",
     "@tailwindcss/postcss": "^4.1.15",
     "@tailwindcss/vite": "^4.1.15",
     "axios": "^1.12.2",

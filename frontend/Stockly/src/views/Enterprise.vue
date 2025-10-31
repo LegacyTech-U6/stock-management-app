@@ -24,9 +24,7 @@
       <DashboardOverview />
     </div>
 
-    <div v-else-if="activeTab === 'enterprise'">
-      <EnterpriseAnalytics />
-    </div>
+
   </div>
 </template>
 
@@ -40,11 +38,11 @@ const isEntrepriseReady = ref(false)
 const entrepriseStore = useEntrepriseStore()
 onMounted(() => {
   // attendre la restauration de Pinia Persist
-  setTimeout(() => {
+
     if (entrepriseStore.activeEntreprise) {
       isEntrepriseReady.value = true
     }
-  }, 100) // court délai pour laisser Pinia se restaurer
+   // court délai pour laisser Pinia se restaurer
 })
 const activeEntreprise = computed(() => entrepriseStore.activeEntreprise)
 import { Download, ShoppingCart, Eye } from 'lucide-vue-next'

@@ -59,6 +59,7 @@ const InvoiceController = {
           where: { id: item.id, entreprise_id },
         });
         if (!product) throw new Error(`Produit introuvable: ${item.id}`);
+        console.log('Ancienne quantité:', product.quantity, 'Quantité vendue:', item.quantity);
 
         product.quantity -= item.quantity;
         await product.save();
@@ -126,9 +127,7 @@ async getAllInvoices(req, res) {
     });
 
     const count = await Invoice.count({ where: query.where });
-    console.log('====================================');
-    console.log(data.item);
-    console.log('====================================');
+   
     res.status(200).json({ count, data });
   } catch (err) {
     console.error("🔥 Erreur getAllInvoices:", err);

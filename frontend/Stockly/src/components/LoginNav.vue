@@ -225,10 +225,20 @@
             <span>Audit Trail</span>
           </router-link>
         </div>
+          <div class="flex items-center gap-3 ml-auto">
+            <button
+              @click="notificationOpen = !notificationOpen"
+              class="relative p-2.5 hover:bg-gray-100/80 rounded-xl transition-all duration-300 hidden sm:block group"
+            >
+              <Bell class="w-5 h-5 text-gray-600 group-hover:text-gray-700 transition-colors" />
+              <span v-if="unreadCount > 0" class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full ring-2 ring-white"></span>
+            </button>
+          </div>
       </nav>
 
       <!-- User Profile Section -->
       <div class="mt-auto border-t border-gray-200/50">
+
         <div class="px-4 py-4">
           <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50/80 transition-all duration-300 cursor-pointer group">
             <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-medium flex-shrink-0 shadow-sm">
@@ -255,23 +265,7 @@
 
     <!-- Main Content -->
     <div class="flex-1 flex flex-col overflow-hidden">
-      <!-- Top Bar - Aligned with sidebar border -->
-      <header class="bg-white/80 backdrop-blur-md border-b border-gray-200/60 px-6 py-4 h-[88px] flex items-center">
-        <div class="flex items-center justify-between gap-4 w-full">
-          <h2 class="text-lg font-semibold text-gray-900 hidden sm:block">
-            Welcome back, <span class="text-blue-600">{{ userFirstName }}!</span>
-          </h2>
-          <div class="flex items-center gap-3 ml-auto">
-            <button
-              @click="notificationOpen = !notificationOpen"
-              class="relative p-2.5 hover:bg-gray-100/80 rounded-xl transition-all duration-300 hidden sm:block group"
-            >
-              <Bell class="w-5 h-5 text-gray-600 group-hover:text-gray-700 transition-colors" />
-              <span v-if="unreadCount > 0" class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full ring-2 ring-white"></span>
-            </button>
-          </div>
-        </div>
-      </header>
+   
 
       <!-- Page Content -->
       <main class="flex-1 overflow-y-auto p-6">

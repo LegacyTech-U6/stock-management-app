@@ -109,24 +109,31 @@ exports.createProduct = async (req, res) => {
     };
 
     const product = await Product.create(productData);
+
+    // ✅ Vérifie que req.user existe
+    const user_id = req.user?.id || null;
+
+    // 🔹 Logger l’activité
     await logActivity({
-      user_id: req.user.id,
-      action: "creation d'un produit(achat de un nouveux)",
+      user_id:user_id,
+      action: "Création produit",
       entity_type: "Product",
       entity_id: product.id,
-      description: `Création du produit "${product.Prod_name} "`,
-      quantity: product.quantity,
-      amount: product.quantity,
+      description: `Création du produit "${product.Prod_name}"`,
+      quantity: product.quantity || 0,
+      amount: product.quantity || 0,
       ip_address: req.ip,
       user_agent: req.headers["user-agent"],
-      entreprise_id: entrepriseId,
+      entreprise_id:entreprise_id, // 👈 ici c’est correct
     });
+
     res.status(201).json(product);
   } catch (err) {
     console.error("🔥 Erreur createProduct:", err);
     res.status(500).json({ message: err.message });
   }
 };
+
 
 // ===============================
 // 🔹 Mettre à jour un produit
@@ -245,41 +252,47 @@ exports.addQuantity = async (req, res) => {
   console.log("add product called");
   console.log("====================================");
 
-  const t = await db.sequelize.transaction(); // 🔸 Démarrer la transaction
-  try {
-    const { productId, quantityAdd } = req.body;
-    const entrepriseId = req.entrepriseId;
+  const { productId, quantityAdd } = req.body;
+  const entrepriseId = req.entrepriseId;
 
-    console.log("====================================");
-    console.log(req.body);
-    console.log("====================================");
+  console.log("====================================");
+  console.log(req.body);
+  console.log("====================================");
 
-    // 🔹 1. Vérifier que le produit existe
-    const product = await db.Product.findOne({
-      where: { id: productId, entreprise_id: entrepriseId },
-      transaction: t, // ✅ lier à la transaction
-      lock: true, // ✅ empêche les accès concurrents
-    });
+  const MAX_RETRIES = 3; // nombre de tentatives si lock timeout
+  let attempt = 0;
 
-    if (!product) {
-      await t.rollback(); // rollback si produit non trouvé
-      return res.status(404).json({
-        success: false,
-        message: "Produit non trouvé",
+  while (attempt < MAX_RETRIES) {
+    const t = await db.sequelize.transaction();
+    try {
+      // 🔹 1. Vérifier que le produit existe avec lock
+      const product = await db.Product.findOne({
+        where: { id: productId, entreprise_id: entrepriseId },
+        transaction: t,
+        lock: true, // SELECT ... FOR UPDATE
       });
-    }
 
-    // 🔹 2. Mettre à jour la quantité
-    product.quantity += quantityAdd;
-    await product.save({ transaction: t });
+      if (!product) {
+        await t.rollback();
+        return res.status(404).json({
+          success: false,
+          message: "Produit non trouvé",
+        });
+      }
 
-    console.log("✅ Quantité mise à jour");
-        const entreprise = await Entreprise.findByPk(entrepriseId);
-        const user_id = entreprise?.user_id || null;
-    // 🔹 3. Enregistrer l’activité
-    await logActivity(
-      {
-        user_id: user_id,
+      // 🔹 2. Mettre à jour la quantité
+      product.quantity += Number(quantityAdd);
+      await product.save({ transaction: t });
+
+      await t.commit();
+      console.log("✅ Quantité mise à jour avec succès");
+
+      // 🔹 3. Enregistrer le log d’activité hors transaction
+      const entreprise = await db.Entreprise.findByPk(entrepriseId);
+      const user_id = req.user?.id || entreprise?.user_id || null;
+
+      await logActivity({
+        user_id,
         action: "Achat",
         entity_type: "Product",
         entity_id: product.id,
@@ -289,25 +302,33 @@ exports.addQuantity = async (req, res) => {
         ip_address: req.ip,
         user_agent: req.headers["user-agent"],
         entreprise_id: entrepriseId,
-        transaction: t, // ✅ très important
-      },
-      { transaction: t }
-    );
+      });
 
-    // 🔹 4. Si tout est ok → valider la transaction
-    await t.commit();
+      return res.status(200).json({
+        success: true,
+        message: "Quantité ajoutée avec succès",
+        product,
+      });
 
-    res.status(200).json({
-      success: true,
-      message: "Quantité ajoutée avec succès",
-      product,
-    });
-  } catch (err) {
-    // 🔹 Si erreur → annuler la transaction
-    await t.rollback();
-    console.error("🔥 Transaction échouée :", err);
-    res.status(500).json({ success: false, message: err.message });
+    } catch (err) {
+      await t.rollback();
+
+      if (err.code === "ER_LOCK_WAIT_TIMEOUT") {
+        attempt++;
+        console.log(`⚠️ Lock timeout, tentative ${attempt}... retrying`);
+        await new Promise(r => setTimeout(r, 100 * attempt)); // wait avant retry
+      } else {
+        console.error("🔥 Transaction échouée :", err);
+        return res.status(500).json({ success: false, message: err.message });
+      }
+    }
   }
+
+  // Si toutes les tentatives échouent
+  return res.status(500).json({
+    success: false,
+    message: "Impossible d'ajouter la quantité, lock timeout répété",
+  });
 };
 
 // ===============================
@@ -386,10 +407,17 @@ exports.getLowStockProducts = async (req, res) => {
         { model: Supplier,as: "supplierInfo", attributes: ["id", "supplier_name"] },
       ],
     });
+      const data = products.map((p) => {
+      const prodJSON = p.toJSON();
+      if (prodJSON.Prod_image) {
+        prodJSON.Prod_image = `${BASE_URL}${prodJSON.Prod_image}`;
+      }
+      return prodJSON;
+    });
   console.log('====================================');
-    console.log(Product);
+    console.log(data);
     console.log('====================================');
-    res.json({ threshold, products });
+    res.json({ threshold, products: data });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

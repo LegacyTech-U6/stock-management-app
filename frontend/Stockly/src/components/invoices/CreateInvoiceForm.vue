@@ -68,7 +68,8 @@ import { useInvoiceStore } from '@/stores/FactureStore'
 import { useClientStore } from '@/stores/clientStore'
 import { useEntrepriseStore } from '@/stores/entrepriseStore'
 const { showSuccess, showError } = useActionMessage()
-
+import { useGlobalModal } from "@/composable/useValidation";
+const { show } = useGlobalModal();
 const entreprise = useEntrepriseStore()
 const clientStore = useClientStore()
 const invoiceContent = ref(null)
@@ -111,7 +112,7 @@ const entrepriseData = computed(() => {
 async function downloadPDF() {
    await invoiceStore.createInvoice(props.invoice)
 
-    showSuccess('invoice created  succesfully')
+    show('invoice and sales created successfully', 'success')
   $emit('close')
 }
 
@@ -140,7 +141,7 @@ defineEmits(['close'])
   justify-content: space-between;
   margin-top: 2rem;
   padding-top: 1rem;
-  
+
 }
 
 .btn {

@@ -443,7 +443,8 @@ import {
   X,
   Save
 } from 'lucide-vue-next'
-
+import { useGlobalModal } from "@/composable/useValidation";
+const { show } = useGlobalModal();
 const { showSuccess, showError } = useActionMessage()
 
 interface Product {
@@ -494,7 +495,7 @@ onMounted(async () => {
         product.value = response
       }
     } catch (error) {
-      showError('Error fetching product details')
+      show('Error fetching product details', 'error')
       console.error('Error fetching product:', error)
     } finally {
       loading.value = false
@@ -613,10 +614,10 @@ const handleSaveEdit = async () => {
     // Update local product data
     product.value = { ...editForm.value }
 
-    showSuccess('Product updated successfully')
+    show('Product updated successfully', 'success')
     showEditModal.value = false
   } catch (error) {
-    showError('Failed to update product')
+    show('Failed to update product', 'error')
     console.error('Error updating product:', error)
   } finally {
     saving.value = false

@@ -21,7 +21,7 @@ export const useWorkerStore = defineStore('worker', {
       try {
         const data = await getAllWorkers()
         console.log(data)
-        this.workers = data.workers
+        this.workers = data.data
 
       } catch (err) {
         this.error = err.message || 'Erreur lors du chargement des workers'

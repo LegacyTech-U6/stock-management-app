@@ -13,6 +13,7 @@ import {
   getSalesTrend,
   getRevenueByCategory,
   getProductDistributionByCategory,
+  getClientsTats
 } from '@/service/api'
 
 export const useStatisticsStore = defineStore('statistics', {
@@ -30,15 +31,8 @@ export const useStatisticsStore = defineStore('statistics', {
     loading: false,
     error: null,
     revenueByCategory: [],
-    profitTrend: [
-      { month: 'Jan', revenue: 1000, costs: 700, profit: 300 },
-      { month: 'Feb', revenue: 2000, costs: 1300, profit: 700 },
-      { month: 'Mar', revenue: 2500, costs: 1700, profit: 800 },
-      { month: 'Apr', revenue: 3000, costs: 2100, profit: 900 },
-      { month: 'May', revenue: 3500, costs: 2600, profit: 900 },
-      { month: 'Jun', revenue: 4000, costs: 3000, profit: 1000 },
-    ],
     topProducts: [],
+    client:[]
   }),
 
   actions: {
@@ -210,5 +204,17 @@ export const useStatisticsStore = defineStore('statistics', {
         console.error('Erreur distribution produits:', err)
       }
     },
+    async fetclient(period = 'month'){
+      try {
+         const data = await getClientsTats(period)
+      console.log(data);
+      this.client = data
+      } catch (err) {
+        console.error('Erreur', err)
+      }
+
+
+
+    }
   },
 })

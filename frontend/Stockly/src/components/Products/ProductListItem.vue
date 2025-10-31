@@ -49,6 +49,7 @@
       </h3>
 
       <div class="space-y-2 mb-4">
+
         <div class="flex items-center text-sm text-gray-600">
           <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
@@ -89,7 +90,7 @@
 
   <!-- List View Row -->
   <div v-else class="bg-white hover:bg-gray-50 transition-colors duration-150 border-b border-gray-100 last:border-b-0">
-    <div class="px-6 py-4 flex items-center gap-4">
+    <div @click="handleView" class="px-6 py-4 flex items-center gap-4">
       <!-- Product Name -->
       <div class="flex-1 min-w-0">
         <button
@@ -98,6 +99,11 @@
         >
           {{ product.Prod_name }}
         </button>
+      </div>
+      <div class="w-36 hidden lg:block">
+        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-700">
+          {{ formatDate( product.updatedAt) }}
+        </span>
       </div>
 
       <!-- Category -->
@@ -163,6 +169,7 @@ interface Product {
   date_of_arrival: string
   supplier: string
   Prod_image?: string
+  updatedAt?:string
 }
 
 const props = defineProps<{
@@ -202,6 +209,13 @@ const stockBadgeClass = computed(() => {
 const handleView = () => {
   emit('view', props.product)
 }
+
+const formatDate = (dateString: string) => {
+  if (!dateString) return 'N/A'
+  const date = new Date(dateString)
+  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+}
+
 </script>
 
 <style scoped>

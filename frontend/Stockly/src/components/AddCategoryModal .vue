@@ -1,40 +1,65 @@
 <template>
-  <div class="modal-overlay" @click.self="$emit('close')">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>{{ editingCategory ? 'Edit Category' : 'Add New Category' }}</h2>
-        <button class="close-btn" @click="$emit('close')">×</button>
+  <div
+    class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50"
+    @click.self="$emit('close')"
+  >
+    <div
+      class="bg-white rounded-xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-lg animate-slide-up"
+    >
+      <!-- Header -->
+      <div class="flex justify-between items-center p-6 border-b border-gray-200">
+        <h2 class="text-lg font-semibold text-gray-900">
+          {{ editingCategory ? 'Edit Category' : 'Add New Category' }}
+        </h2>
+        <button
+          @click="$emit('close')"
+          class="text-gray-400 hover:text-gray-700 text-2xl font-bold transition"
+        >
+          ✕
+        </button>
       </div>
 
-      <form @submit.prevent="handleSubmit" class="modal-form">
-        <div class="form-group">
-          <label for="category-name" class="form-label">Category Name</label>
+      <!-- Form -->
+      <form @submit.prevent="handleSubmit" class="p-6 space-y-4">
+        <div>
+          <label for="category-name" class="block text-sm font-medium text-gray-700 mb-1">
+            Category Name
+          </label>
           <input
             id="category-name"
             v-model="formData.name"
             type="text"
-            class="form-input"
-            required
             placeholder="Enter category name"
+            required
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 transition"
           />
         </div>
 
-        <div class="form-group">
-          <label for="category-description" class="form-label">Description</label>
+        <div>
+          <label for="category-description" class="block text-sm font-medium text-gray-700 mb-1">
+            Description
+          </label>
           <textarea
             id="category-description"
             v-model="formData.description"
-            class="form-textarea"
             rows="3"
             placeholder="Enter category description"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 resize-y transition"
           ></textarea>
         </div>
 
-        <div class="modal-actions">
-          <button type="button" class="btn-secondary" @click="$emit('close')">
+        <div class="flex justify-end gap-3 mt-4">
+          <button
+            type="button"
+            @click="$emit('close')"
+            class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg font-medium hover:bg-gray-300 transition"
+          >
             Cancel
           </button>
-          <button type="submit" class="btn-primary">
+          <button
+            type="submit"
+            class="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition"
+          >
             {{ editingCategory ? 'Update' : 'Create' }} Category
           </button>
         </div>
@@ -47,144 +72,41 @@
 import { ref, watch } from 'vue';
 
 const props = defineProps({
-  category: {
-    type: Object,
-    default: null
-  }
+  category: { type: Object, default: null }
 });
-
 const emit = defineEmits(['save', 'close']);
 
-const formData = ref({
-  name: '',
-  description: ''
-});
-
+const formData = ref({ name: '', description: '' });
 const editingCategory = ref(props.category);
 
-watch(() => props.category, (newCategory) => {
-  editingCategory.value = newCategory;
-  if (newCategory) {
-    formData.value = {
-      name: newCategory.name,
-      description: newCategory.description
-    };
-  } else {
-    formData.value = {
-      name: '',
-      description: ''
-    };
-  }
-}, { immediate: true });
+watch(
+  () => props.category,
+  (newCategory) => {
+    editingCategory.value = newCategory;
+    formData.value = newCategory
+      ? { name: newCategory.name, description: newCategory.description }
+      : { name: '', description: '' };
+  },
+  { immediate: true }
+);
 
 const handleSubmit = () => {
-  const categoryData = {
-    ...formData.value,
-    id: editingCategory.value?.id
-  };
-  emit('save', categoryData);
+  emit('save', { ...formData.value, id: editingCategory.value?.id });
 };
 </script>
 
-<style scoped>
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
+<style>
+@keyframes slide-up {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
-
-.modal-content {
-  background: white;
-  border-radius: 8px;
-  width: 90%;
-  max-width: 500px;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.modal-header h2 {
-  margin: 0;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #1f2937;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: #6b7280;
-  padding: 0;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.close-btn:hover {
-  color: #374151;
-}
-
-.modal-form {
-  padding: 1.5rem;
-}
-
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-.form-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-  color: #374151;
-  font-size: 0.875rem;
-}
-
-.form-input,
-.form-textarea {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 0.875rem;
-  transition: border-color 0.2s ease;
-}
-
-.form-input:focus,
-.form-textarea:focus {
-  outline: none;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-
-.form-textarea {
-  resize: vertical;
-  min-height: 80px;
-}
-
-.modal-actions {
-  display: flex;
-  gap: 0.75rem;
-  justify-content: flex-end;
-  margin-top: 2rem;
+.animate-slide-up {
+  animation: slide-up 0.25s ease-out;
 }
 </style>

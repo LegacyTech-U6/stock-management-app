@@ -130,6 +130,8 @@ import {
   Users, Search, Plus, Inbox, FileText, FileSpreadsheet,
   RefreshCw, Eye, Edit2, Trash2
 } from 'lucide-vue-next';
+import { useGlobalModal } from "@/composable/useValidation";
+const { show } = useGlobalModal();
 import { useClientStore } from '@/stores/clientStore';
 import { useActionMessage } from '@/composable/useActionMessage';
 import FromModal from '../components/clients/FromModal.vue';
@@ -361,19 +363,20 @@ const handleSubmit = async (formData) => {
   try {
     if (isEditMode.value) {
       await clientStore.updateClient(selectedClient.value.id, formData);
-      showSuccess('Customer updated successfully!');
+      show('Customer updated successfully!', 'success');
     } else {
       console.log('====================================');
       console.log(formData);
       console.log('====================================');
       await clientStore.addClient(formData);
-      showSuccess('Customer created successfully!');
+      show('Customer created successfully!', 'success');
     }
 
     showModal.value = false;
     await clientStore.fetchClients();
   } catch (err) {
     error.value = err.response?.data?.message || 'Operation failed';
+    show('Operation failed: ' + error.value, 'error');
   } finally {
     loading.value = false;
   }
@@ -387,10 +390,10 @@ const handleDeleteClient = (client) => {
 const confirmDelete = async () => {
   try {
     await clientStore.deleteclient(selectedClient.value.id);
-    showSuccess('Customer deleted successfully!');
+    show('Customer deleted successfully!', 'success');
     await clientStore.fetchClients();
   } catch (err) {
-    showError('Failed to delete customer');
+    show('Failed to delete customer', 'error');
   } finally {
     showDeleteModal.value = false;
     selectedClient.value = null;

@@ -445,6 +445,13 @@ export async function getBestByCategory( period = "month") {
   return data;
 }
 
+// recuperer l'evolution des clients
+export async function getClientsTats(period = "month") {
+  const {data} = await API.get(`/stats/clients`,{params:{period}});
+  return data;
+
+}
+
 // ✅ Récupérer le chiffre d'affaires pour une période
 // period = "day" | "month" | "year"
 export async function getRevenue(period = "month") {

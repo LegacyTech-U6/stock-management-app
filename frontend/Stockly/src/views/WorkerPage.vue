@@ -113,7 +113,8 @@ import ActionModal from '@/components/ui/ActionModal.vue'
 import WorkersCard from '@/components/workers/WorkersCard.vue'
 import WorkerModals from '@/components/workers/WorkerModals.vue'
 import GridCard from '@/components/ui/cards/GridCard.vue'
-
+import { useGlobalModal } from "@/composable/useValidation";
+const { show } = useGlobalModal();
 const { showSuccess, showError } = useActionMessage()
 
 const store = useWorkerStore()
@@ -194,22 +195,22 @@ const handleSubmit = async (formData) => {
     if (isEditing.value) {
       const success = await store.updateWorker(formData.worker_id, formData)
       if (success) {
-        showSuccess('Worker updated successfully!')
+        show('Worker updated successfully!', 'success')
       } else {
-        showError('Failed to update worker')
+        show('Failed to update worker', 'error')
       }
     } else {
       const success = await store.addWorker(formData)
       if (success) {
-        showSuccess('Worker created successfully!')
+        show('Worker created successfully!', 'success')
       } else {
-        showError('Failed to create worker')
+        show('Failed to create worker', 'error')
       }
     }
     closeModal()
   } catch (error) {
     console.error('Error saving worker:', error)
-    showError('Error saving worker. Please try again.')
+    show('Error saving worker. Please try again.', 'error')
   }
 }
 
@@ -222,13 +223,13 @@ const confirmDelete = async () => {
   try {
     const success = await store.removeWorker(workerToDelete.value)
     if (success) {
-      showSuccess('Worker deleted successfully!')
+      show('Worker deleted successfully!', 'success')
     } else {
-      showError('Failed to delete worker')
+      show('Failed to delete worker', 'error')
     }
   } catch (error) {
     console.error('Error deleting worker:', error)
-    showError('Failed to delete worker')
+    show('Failed to delete worker', 'error')
   } finally {
     showDeleteModal.value = false
     workerToDelete.value = null

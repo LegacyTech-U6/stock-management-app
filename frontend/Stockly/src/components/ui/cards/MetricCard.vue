@@ -23,9 +23,10 @@
       </div>
 
       <div class="flex items-center gap-2 mt-3">
-        <span :class="trend >= 0 ? 'text-green-500' : 'text-red-600'" class=" text-sm  font-semibold">
-          {{ trend >= 0 ? '+' : '' }}{{ trend }}%
-        </span>
+        <span :class="trend >= 0 ? 'text-green-500' : 'text-red-600'" class="text-sm font-semibold">
+  {{ trend >= 0 ? '+' : '' }}{{ formatedValue }}%
+</span>
+
         <span class="text-gray-400 text-sm">vs Last {{ period }}</span>
         <a
           v-if="viewLink"
@@ -40,6 +41,8 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
+
 const props = defineProps({
   icon: [Object, Function], // ✅ supports Lucide icons
   value: [String, Number],
@@ -51,4 +54,8 @@ const props = defineProps({
   period: String,
 
 })
+const formatedValue = computed  (() => {
+   return props.trend ? props.trend.toFixed(2) : '0.00';
+});
+
 </script>

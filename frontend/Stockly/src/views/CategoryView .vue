@@ -117,6 +117,8 @@ import { toast } from 'vue-sonner'
 import { useRouter } from 'vue-router'
 import ActionModal from '@/components/ui/ActionModal.vue'
 import { useActionMessage } from '@/composable/useActionMessage'
+import { useGlobalModal } from "@/composable/useValidation";
+const { show } = useGlobalModal();
 const { showSuccess, showError } = useActionMessage()
 // Mock data - replace with actual API calls
 const categoryStore = useCategoryStore()
@@ -190,9 +192,9 @@ const handleSaveCategory = async (categoryData) => {
         description: categoryData.description,
       })
       if (success) {
-        showSuccess('Catégorie mise à jour avec succès !')
+        show('Catégorie mise à jour avec succès !', 'success')
       } else {
-        showError('Échec de la mise à jour de la catégorie')
+        show('Échec de la mise à jour de la catégorie', 'error')
       }
     } else {
       // 🔹 Création d'une nouvelle catégorie
@@ -201,9 +203,9 @@ const handleSaveCategory = async (categoryData) => {
         description: categoryData.description,
       })
       if (success) {
-        showSuccess('Nouvelle catégorie créée avec succès !')
+        show('Nouvelle catégorie créée avec succès !', 'success')
       } else {
-        showError('Echec de la creation de la category')
+        show('Echec de la creation de la category', 'error')
       }
     }
 

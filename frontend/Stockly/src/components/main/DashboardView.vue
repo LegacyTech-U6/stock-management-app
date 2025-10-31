@@ -152,18 +152,18 @@ const statsTable = computed(() => [
     iconBg: '#FFF7E6',
     iconColor: '#f59e0b',
     viewLink: '/expenses',
-    period: 'Month',
+    period: statisticStore.client.period,
   },
   {
     id: 4,
     label: 'Total Customers',
-    value: '4,820',
-    trend: 20,
+    value: statisticStore.client.clients?.total,
+    trend: statisticStore.client.clients?.history?.at(-1)?.growth_percent,
     icon: Users,
     iconBg: '#E6F0FF',
     iconColor: '#2563eb',
     viewLink: '/customers',
-    period: 'Month',
+    period: statisticStore.client.period,
   },
 ])
 onMounted(async () => {
@@ -171,6 +171,7 @@ onMounted(async () => {
   await productStore.fetchProducts()
   await statisticStore.fetchProductSales('day')
   await statisticStore.fetchProfit('day')
+  await statisticStore.fetclient('day')
   productStore.fetchFinishedProducts()
   await fetchLowStockProducts()
   await fetchFinishedProducts()

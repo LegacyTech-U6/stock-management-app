@@ -1,6 +1,7 @@
+const sequelizeQuery = require("sequelize-query");
 const  { Op } = require( "sequelize");
 const  db = require('../config/db')  // tes modèles Sequelize
-
+const queryParser = sequelizeQuery(db);
 exports.getDailySalesReport = async (req, res) => {
   try {
     const entrepriseId = req.entrepriseId; // entreprise actuelle
@@ -132,33 +133,33 @@ exports.getDailySalesReport = async (req, res) => {
     res.status(500).json({ error: "Erreur lors de la génération du rapport." });
   }
 };
- exports.getReport = async (req,res) => {
+exports.getReport = async (req, res) => {
   try {
-        console.log('====================================');
-    console.log("id",req.entrepriseId);
-    console.log('====================================');
-    const query =  await queryParser.parse(req);
-   const entreprise_id= req.entrepriseId 
-      query.where = { ...query.where , entreprise_id};
-      
-    
-    console.log('====================================');
-    console.log("id",entreprise_id);
-    console.log('====================================');
+    const entreprise_id = req.entrepriseId;
+    if (!entreprise_id) {
+      return res.status(400).json({ message: "Entreprise ID missing" });
+    }
+
+    const query = await queryParser.parse(req);
+    query.where = { ...query.where, entreprise_id };
+
+    console.log("Query where:", query.where);
+
     const data = await db.salesReport.findAll({
       ...query,
-      attributes:{exclude:[]}
-    })
-    const count  = await db.salesReport.count({
-      where :query.where,
-    })
-    console.log(data);
-    
+     
+    });
 
-    res.status(200).json({count , data})
-    
+    const count = await db.salesReport.count({
+      where: query.where,
+    });
+
+    console.log("Returned data:", data);
+
+    res.status(200).json({ count, data });
   } catch (err) {
+    console.error("Error fetching report:", err);
     res.status(500).json({ message: err.message });
   }
-  
- }
+};
+

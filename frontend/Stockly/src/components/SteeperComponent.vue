@@ -365,11 +365,13 @@ import { useProductStore } from '@/stores/productStore'
 import { useCategoryStore } from '@/stores/CategoryStore'
 import { useSupplierStore } from '@/stores/SupplierStore'
 import ImageUploader from './main/ImageUploader.vue'
-
+import { useGlobalModal } from "@/composable/useValidation";
+const { show } = useGlobalModal();
+import { useRouter } from 'vue-router'
 const productStore = useProductStore()
 const categoryStore = useCategoryStore()
 const supplierStore = useSupplierStore()
-
+const router = useRouter()
 const loading = computed(() => productStore.loading)
 const isEditMode = ref(false)
 
@@ -454,14 +456,22 @@ const submit = async () => {
       productData.Prod_image = form.image
     }
 
-    await productStore.addProduct(productData)
+    const result = await productStore.addProduct(productData)
+
+    if (!result.success) {
+      throw new Error(result.message || 'Failed to add product')
+    }
+    show('Product added successfully!', 'success') // ✅ Affiche le modal global
     resetForm()
-    alert('✅ Product added successfully!')
+    router.back()
   } catch (error) {
-    submitError.value = error?.response?.data?.message || error.message || 'An error occurred while adding the product.'
+    submitError.value =
+      error?.response?.data?.message || error.message || 'An error occurred while adding the product.'
     console.error('❌ Error adding product:', error)
+    show(error?.message || 'Failed to add product', 'error') // ✅ Affiche erreur dans modal
   }
 }
+
 
 const resetForm = () => {
   Object.keys(form).forEach(key => {

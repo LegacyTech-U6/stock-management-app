@@ -5,9 +5,10 @@ import NavBar from './components/NavBar.vue'
 import FooTer from './components/FooTer.vue'
 import LoginNav from './components/LoginNav.vue'
 import FloatingActionButton from './components/ui/FloatingActionButton.vue'
-
+import ValidationModal from '@/components/ui/ValidationModal.vue'
 const route = useRoute()
 import { useRouter } from 'vue-router'
+
 const router = useRouter()
 
 const onActionSelect = (item) => {
@@ -23,12 +24,20 @@ const onActionSelect = (item) => {
       </div>
     </div>
   </header>
-  <FloatingActionButton v-if="!['/login', '/register'].includes($route.path)"
-    @select="onActionSelect" />
-  <RouterView  />
+
+  <FloatingActionButton
+    v-if="!['/login', '/register'].includes($route.path)"
+    @select="onActionSelect"
+  />
+
+  <RouterView />
 
   <FooTer v-if="$route.meta.showNavbarAndFooter !== false" />
+
+  <!-- ✅ Modal global de validation -->
+  <ValidationModal />
 </template>
+
 
 <style scoped>
 header {

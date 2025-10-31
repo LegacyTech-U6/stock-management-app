@@ -137,9 +137,9 @@ export const useProductStore = defineStore('product', {
       this.loading = true
       try {
         const data = await LowStock()
-        this.lowProducts = Array.isArray(data) ? data : []
+        this.lowProducts = data.products
         this.error = null
-        console.log('✅ Low products loaded:', this.lowProducts)
+        console.log('✅ Low products loaded:', data)
       } catch (err) {
         this.error = err
         this.lowProducts = []

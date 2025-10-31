@@ -8,41 +8,37 @@ const { Op } = require("sequelize");
 
 const queryParser = sequelizeQuery(db);
 
-// ===============================
-// 🔹 Récupérer tous les employés pour un utilisateur
-// ===============================
 exports.getAllWorkers = async (req, res) => {
   try {
     const query = await queryParser.parse(req);
 
-    if (req.user.id) {
-      query.where = { ...query.where, user_id: req.user.id };
+    query.where = { ...(query.where || {}) };
+    if (req.user?.id) {
+      query.where.user_id = req.user.id;
     }
-    console.log("====================================");
-    console.log(req.user.id);
-    console.log("====================================");
+
+    console.log("Query where:", query.where);
+
     const data = await Worker.findAll({
-      ...query,
+      where: query.where,
+      order: query.order || [['id','ASC']],
+      limit: query.limit,
+      offset: query.offset,
       include: [
-        // {
-        //   model: Entreprise,
-        //   as: "entreprise",
-        //   attributes: ["id", "name", "description"],
-        // },
-        // { model: Role, as: "role", attributes: ["id", "name"] },
-      ],
+        { model: Entreprise, as: 'entreprise', attributes: ['id','name','description'] },
+        { model: Role, as: 'role', attributes: ['id','name'] }
+      ]
     });
-    console.log("====================================");
-    console.log(data);
-    console.log("====================================");
 
     const count = await Worker.count({ where: query.where });
 
     res.status(200).json({ count, data });
   } catch (err) {
+    console.error("Error fetching workers:", err);
     res.status(500).json({ message: err.message });
   }
 };
+
 
 // ===============================
 // 🔹 Récupérer un employé par ID
