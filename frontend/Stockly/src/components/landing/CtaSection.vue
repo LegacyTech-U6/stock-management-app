@@ -3,7 +3,13 @@ import { ArrowRight } from 'lucide-vue-next'
 </script>
 
 <template>
-  <section class="py-32 px-6 bg-gray-900 text-white">
+   <section class="py-32 h-screen p-40 px-6 bg-white">
+<div class="p-2">
+      <img src="@/assets/image/image (9).png" alt="">
+    </div>
+
+  </section>
+  <section class="py-32 px-6 flex bg-gray-900 text-white">
     <div class="max-w-4xl mx-auto text-center space-y-12">
       <div class="space-y-6">
         <h2 class="text-4xl md:text-6xl font-light leading-tight">
@@ -32,5 +38,6 @@ import { ArrowRight } from 'lucide-vue-next'
         Questions ? Contactez-nous à support@stockly.com
       </p>
     </div>
+
   </section>
 </template>

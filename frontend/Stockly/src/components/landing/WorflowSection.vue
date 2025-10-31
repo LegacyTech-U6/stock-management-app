@@ -97,7 +97,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <section ref="sectionRef" class="h-screen overflow-hidden bg-gray-900">
+  <section ref="sectionRef" class="h-screen overflow-hidden bg-gray-500">
     <div class="h-full flex items-center">
       <div
         ref="horizontalContainerRef"

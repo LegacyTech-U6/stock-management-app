@@ -167,8 +167,20 @@ const handleLeave = (element: HTMLElement) => {
 </script>
 
 <template>
-  <section ref="sectionRef" class="py-32 px-6 bg-indigo-50 overflow-hidden">
-    <div class="max-w-6xl mx-auto">
+
+
+  <section ref="sectionRef" class="py-32  grid grid-cols-1 lg:grid-cols-4 bg-indigo-50 overflow-hidden">
+
+  <div class="lg:grid  lg:gap-6 items-center p-4">
+    <!-- Image: visible on large screens only -->
+    <div class="hidden w-full lg:block">
+      <img src="@/assets/image/handStockly.png" alt="Hand Stockly" class="w-full h-auto">
+    </div>
+
+    <!-- Content: always visible -->
+
+  </div>
+    <div class="max-w-6xl mx-auto col-span-1 lg:col-span-3 px-6">
       <div class="max-w-2xl mb-20">
         <h2 ref="headerRef" class="text-4xl md:text-5xl font-light text-gray-900 mb-6">
           Tout ce dont vous avez besoin
@@ -212,6 +224,9 @@ const handleLeave = (element: HTMLElement) => {
         </div>
       </div>
     </div>
+
+
+
   </section>
 </template>
 

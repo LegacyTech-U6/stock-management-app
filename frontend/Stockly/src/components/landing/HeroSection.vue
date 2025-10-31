@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import { Rotate3D } from 'lucide-vue-next'
-import { ref, onMounted ,onUnmounted } from 'vue'
-import { useRoute,useRouter } from 'vue-router'
+import { ref, onMounted, onUnmounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 // Options de bénéfices
 const benefits = ['14-day free trial', 'No credit card required', 'Cancel anytime']
 const isScrolled = ref(false)
 
-
 const handleScroll = () => {
-   isScrolled.value =  window.scrollY > 80
+  isScrolled.value = window.scrollY > 80
 }
 
 onMounted(() => {
@@ -20,50 +19,53 @@ onUnmounted(() => {
 })
 
 const router = useRouter()
-const handleRegister =()=>{
+const handleRegister = () => {
   router.push('/register')
 }
-
-
 </script>
 
 <template>
-  <section :style="{ backgroundImage: `url('/src/assets/image/branding.png')`, }"
- class="relative lg:mt-10 text-white  pt-30 lg:grid grid-cols-3 bg-cover min-h-[90vh] items-center justify-center px-6 overflow-x-hidden bg-indigo-50">
-
+  <section
+    :style="{ backgroundImage: `url('/src/assets/image/branding.png')` }"
+    class="relative lg:mt-10 text-white pt-30 lg:grid grid-cols-3 bg-cover min-h-[90vh] items-center justify-center px-6 overflow-x-hidden bg-indigo-50"
+  >
     <div class="relative z-10 col-span-2 max-w-5xl w-full space-y-12 text-center">
       <h1 class="text-5xl md:text-7xl font-light text-white tracking-tight leading-tight">
         Modern & Smart
         <span class="block font-medium mt-2 text-orange-500">Inventory Management</span>
       </h1>
 
-      <p class="text-xl   text-white max-w-2xl mx-auto font-light leading-relaxed">
+      <p class="text-xl text-white max-w-2xl mx-auto font-light leading-relaxed">
         Automate your inventory, sales, and customer management with an all-in-one platform.
         Real-time data, multi-company support.
       </p>
 
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <button @click="handleRegister()" class="px-8 py-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-all">
+        <button
+          @click="handleRegister()"
+          class="px-8 py-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-all"
+        >
           Start Free Trial
         </button>
-        <button class="px-8 py-4 border border-indigo-600 rounded-lg hover:bg-indigo-50 transition-all">
+        <button
+          class="px-8 py-4 border border-indigo-600 rounded-lg hover:bg-indigo-50 transition-all"
+        >
           Watch Demo
         </button>
       </div>
 
       <div class="flex flex-wrap items-center justify-center gap-8 pt-4">
-        <div v-for="benefit in benefits" :key="benefit" class="flex items-center gap-2 text-gray-600">
+        <div
+          v-for="benefit in benefits"
+          :key="benefit"
+          class="flex items-center gap-2 text-gray-600"
+        >
           <i class="fas fa-check text-green-500"></i>
           <span>{{ benefit }}</span>
         </div>
       </div>
     </div>
-    <div class="p-2 space-y-3 space-x-2">
-      <div :class="['p-2 hover:translate-3 transition-all duration-800 ease-in-out  bg-indigo-300 h-40 rounded-4xl rotate-10 hidden md:block shadow-pink-500', isScrolled ? 'bg-blue-900 m-3  rotate-360' : Rotate3D]"> </div>
- <div :class="['p-2 hover:translate-3 transition-all duration-800 ease-in-out  bg-indigo-400 h-40 rounded-4xl rotate-10 hidden md:block shadow-pink-500', isScrolled ? 'bg-blue-900 rotate-180' : Rotate3D]"> </div>
-       <div :class="['p-2 hover:translate-3 transition-all duration-800 ease-in-out  bg-indigo-500 h-40 rounded-4xl rotate-10 hidden md:block shadow-pink-500', isScrolled ? 'bg-blue-900 rotate-90' : Rotate3D]"> </div>
-    </div>
-
+    
   </section>
 </template>
 

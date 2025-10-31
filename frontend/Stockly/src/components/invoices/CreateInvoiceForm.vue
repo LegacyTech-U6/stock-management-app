@@ -108,19 +108,24 @@ const clientData = computed(() => {
 const entrepriseData = computed(() => {
   return entreprise.currentEntreprise || entreprise.activeEntreprise
 })
-
+const emit = defineEmits(['close'])
 async function downloadPDF() {
-   await invoiceStore.createInvoice(props.invoice)
-
-    show('invoice and sales created successfully', 'success')
-  $emit('close')
+  try {
+    await invoiceStore.createInvoice(props.invoice)
+    show('Invoice and sales created successfully', 'success')
+    emit('close')
+  } catch (err) {
+    console.error(err)
+    show(err.message || 'Failed to create invoice', 'error')
+  }
 }
+
 
 function printInvoice() {
   window.print()
 }
 
-defineEmits(['close'])
+
 </script>
 <style scoped>
 .invoice-content {
