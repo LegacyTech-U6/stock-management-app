@@ -2,24 +2,30 @@ require('dotenv').config(); // charge les variables du .env
 
 module.exports = {
   development: {
-    username: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQL_DATABASE,
-    host: process.env.MYSQL_HOST,
+    username: process.env.MYSQL_USER || "root",
+    password: process.env.MYSQL_PASSWORD || "",
+    database: process.env.MYSQL_DATABASE || "dev_db",
+    host: process.env.MYSQL_HOST || "127.0.0.1",
     dialect: "mysql",
   },
   test: {
-    username: "root",
-    password: "ton_mot_de_passe",
-    database: "test_db",
-    host: "127.0.0.1",
+    username: process.env.MYSQL_USER || "root",
+    password: process.env.MYSQL_PASSWORD || "",
+    database: process.env.MYSQL_DATABASE || "test_db",
+    host: process.env.MYSQL_HOST || "127.0.0.1",
     dialect: "mysql",
   },
   production: {
-    username: "root",
-    password: "ton_mot_de_passe",
-    database: "prod_db",
-    host: "127.0.0.1",
+    username: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_DATABASE,
+    host: process.env.MYSQL_HOST, // Railway ou autre host fourni par ton provider
+    port: process.env.MYSQL_PORT || 3306,
     dialect: "mysql",
+    dialectOptions: {
+      ssl: {
+        rejectUnauthorized: false // nécessaire si Railway active SSL
+      }
+    }
   },
 };
