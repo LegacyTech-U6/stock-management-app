@@ -487,7 +487,7 @@
 import { ref, onMounted, computed, nextTick } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
 import { useRouter } from 'vue-router'
-import { gsap } from 'gsap'
+import { gsap } from "gsap";
 
 const router = useRouter()
 const authStore = useAuthStore()
