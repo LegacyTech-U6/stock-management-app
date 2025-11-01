@@ -1,23 +1,28 @@
 import { defineStore } from 'pinia'
-import { getAllActivities,getDailyPurchaseReport,getDailySalesReport, getSellingReport } from '@/service/api'
+import {
+  getAllActivities,
+  getDailyPurchaseReport,
+  getDailySalesReport,
+  getSellingReport,
+} from '@/service/api'
 export const useActivityStore = defineStore('Activity', {
   state: () => ({
     activities: [],
-    salesReport:[],
-    loading:false,
-     error: null,
+    salesReport: [],
+    loading: false,
+    error: null,
   }),
   actions: {
     async fetchActivities() {
       try {
         const data = await getAllActivities()
-        console.log('====================================');
-        console.log(data);
-        console.log('====================================');
+        console.log('====================================')
+        console.log(data)
+        console.log('====================================')
         this.activities = data.activities
-        console.log('====================================');
-        console.log(this.activities);
-        console.log('====================================');
+        console.log('====================================')
+        console.log(this.activities)
+        console.log('====================================')
       } catch (error) {
         console.error = error
       }
@@ -25,9 +30,9 @@ export const useActivityStore = defineStore('Activity', {
     async fetchDailySalesReport() {
       try {
         const data = await getDailySalesReport()
-        console.log('====================================');
-        console.log("report :",data);
-        console.log('====================================');
+        console.log('====================================')
+        console.log('report :', data)
+        console.log('====================================')
         return data
       } catch (error) {
         console.error = error
@@ -41,21 +46,19 @@ export const useActivityStore = defineStore('Activity', {
         console.error = error
       }
     },
-    async fetchSalesReports(){
+    async fetchSalesReports() {
       this.loading = true
       this.error = null
       try {
-        const data= await getSellingReport()
-        console.log(data);
+        const data = await getSellingReport()
+        console.log(data)
 
         this.salesReport = data
-
-
       } catch (err) {
-         this.error = err.response?.data?.message
-      }finally{
-        this.loading =  false
+        this.error = err.response?.data?.message
+      } finally {
+        this.loading = false
       }
-    }
+    },
   },
 })

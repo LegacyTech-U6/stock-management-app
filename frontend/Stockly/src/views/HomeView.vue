@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import CtaSection from '@/components/landing/CtaSection.vue';
-import FeatureSection from '@/components/landing/FeatureSection.vue';
-import HeroSection from '@/components/landing/HeroSection.vue';
-import PricingSection from '@/components/landing/PricingSection.vue';
-import StatsSection from '@/components/landing/StatsSection.vue';
-import TestimonialMain from '@/components/landing/testimonail/TestimonialMain.vue';
-import WorflowSection from '@/components/landing/WorflowSection.vue';
-
-
+import CtaSection from '@/components/landing/CtaSection.vue'
+import FeatureSection from '@/components/landing/FeatureSection.vue'
+import HeroSection from '@/components/landing/HeroSection.vue'
+import PricingSection from '@/components/landing/PricingSection.vue'
+import StatsSection from '@/components/landing/StatsSection.vue'
+import TestimonialMain from '@/components/landing/testimonail/TestimonialMain.vue'
+import WorflowSection from '@/components/landing/WorflowSection.vue'
 </script>
 <template>
   <HeroSection />

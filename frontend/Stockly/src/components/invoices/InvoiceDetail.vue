@@ -111,8 +111,12 @@
             <div class="font-semibold text-black">{{ invoice.client_name || 'Client Name' }}</div>
             <div class="text-gray-600">{{ invoice.client_company || 'Company Name' }}</div>
             <div class="text-gray-600">{{ invoice.client_address || 'Address not provided' }}</div>
-            <div class="text-gray-600" v-if="invoice.client_email">Email: {{ invoice.client_email }}</div>
-            <div class="text-gray-600" v-if="invoice.client_phone">Phone: {{ invoice.client_phone }}</div>
+            <div class="text-gray-600" v-if="invoice.client_email">
+              Email: {{ invoice.client_email }}
+            </div>
+            <div class="text-gray-600" v-if="invoice.client_phone">
+              Phone: {{ invoice.client_phone }}
+            </div>
           </div>
         </div>
 
@@ -121,11 +125,23 @@
           <table class="w-full border-collapse border border-gray-300">
             <thead>
               <tr class="bg-gray-100">
-                <th class="border border-gray-300 px-4 py-3 text-left font-bold text-sm uppercase">#</th>
-                <th class="border border-gray-300 px-4 py-3 text-left font-bold text-sm uppercase">Description</th>
-                <th class="border border-gray-300 px-4 py-3 text-center font-bold text-sm uppercase">Qty</th>
-                <th class="border border-gray-300 px-4 py-3 text-right font-bold text-sm uppercase">Unit Price</th>
-                <th class="border border-gray-300 px-4 py-3 text-right font-bold text-sm uppercase">Amount</th>
+                <th class="border border-gray-300 px-4 py-3 text-left font-bold text-sm uppercase">
+                  #
+                </th>
+                <th class="border border-gray-300 px-4 py-3 text-left font-bold text-sm uppercase">
+                  Description
+                </th>
+                <th
+                  class="border border-gray-300 px-4 py-3 text-center font-bold text-sm uppercase"
+                >
+                  Qty
+                </th>
+                <th class="border border-gray-300 px-4 py-3 text-right font-bold text-sm uppercase">
+                  Unit Price
+                </th>
+                <th class="border border-gray-300 px-4 py-3 text-right font-bold text-sm uppercase">
+                  Amount
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -133,10 +149,14 @@
                 <td class="border border-gray-300 px-4 py-3 text-center">{{ index + 1 }}</td>
                 <td class="border border-gray-300 px-4 py-3">
                   <div class="font-medium">{{ item.Prod_name }}</div>
-                  <div class="text-sm text-gray-600" v-if="item.description">{{ item.description }}</div>
+                  <div class="text-sm text-gray-600" v-if="item.description">
+                    {{ item.description }}
+                  </div>
                 </td>
                 <td class="border border-gray-300 px-4 py-3 text-center">{{ item.quantity }}</td>
-                <td class="border border-gray-300 px-4 py-3 text-right font-mono">${{ item.selling_price.toFixed(2) }}</td>
+                <td class="border border-gray-300 px-4 py-3 text-right font-mono">
+                  ${{ item.selling_price.toFixed(2) }}
+                </td>
                 <td class="border border-gray-300 px-4 py-3 text-right font-mono font-semibold">
                   ${{ (item.quantity * item.selling_price).toFixed(2) }}
                 </td>
@@ -152,7 +172,10 @@
               <span class="font-semibold">Subtotal:</span>
               <span class="font-mono">${{ calculateSubtotal().toFixed(2) }}</span>
             </div>
-            <div v-if="invoice.discount > 0" class="flex justify-between px-4 py-3 border-b border-gray-300">
+            <div
+              v-if="invoice.discount > 0"
+              class="flex justify-between px-4 py-3 border-b border-gray-300"
+            >
               <span class="font-semibold">Discount ({{ invoice.discount }}%):</span>
               <span class="font-mono text-red-600">- ${{ calculateDiscount().toFixed(2) }}</span>
             </div>
@@ -172,7 +195,10 @@
           <h4 class="font-bold text-black text-sm mb-3">PAYMENT TERMS</h4>
           <div class="text-sm text-gray-600 space-y-1">
             <p><strong>Due Date:</strong> Payment is due within 30 days of invoice date.</p>
-            <p><strong>Payment Methods:</strong> {{ invoice.mode_paiement || 'Bank Transfer, Credit Card, Check' }}</p>
+            <p>
+              <strong>Payment Methods:</strong>
+              {{ invoice.mode_paiement || 'Bank Transfer, Credit Card, Check' }}
+            </p>
             <p><strong>Late Payment:</strong> 1.5% monthly interest on overdue amounts.</p>
           </div>
           <div class="text-center mt-8 pt-4 border-t border-gray-300">
@@ -206,20 +232,20 @@ const invoice = ref({
   tva: 0,
   total: 0,
   mode_paiement: '',
-  status: ''
+  status: '',
 })
 
 onMounted(async () => {
   const invoiceId = route.params.id
   if (invoiceId) {
-    await  loadInvoice(invoiceId)
+    await loadInvoice(invoiceId)
   }
 })
 
 async function loadInvoice(id) {
   try {
     const invoices = await invoiceStore.fetchInvoiceById(id)
-    const foundInvoice = invoices.find(inv => inv.id.toString() === id.toString())
+    const foundInvoice = invoices.find((inv) => inv.id.toString() === id.toString())
     if (foundInvoice) {
       invoice.value = foundInvoice
     } else {
@@ -233,7 +259,7 @@ async function loadInvoice(id) {
 }
 
 function calculateSubtotal() {
-  return invoice.value.items.reduce((sum, item) => sum + (item.selling_price * item.quantity), 0)
+  return invoice.value.items.reduce((sum, item) => sum + item.selling_price * item.quantity, 0)
 }
 
 function calculateDiscount() {
@@ -253,7 +279,7 @@ function formatDate(date) {
     return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
     })
   } catch {
     return 'N/A'

@@ -5,14 +5,10 @@ import LoginNav from '@/components/LoginNav.vue'
 <template>
   <LoginNav>
     <router-view v-slot="{ Component }">
-        <transition
-          name="page"
-          mode="out-in"
-          appear
-        >
-          <component :is="Component" />
-        </transition>
-      </router-view>
+      <transition name="page" mode="out-in" appear>
+        <component :is="Component" />
+      </transition>
+    </router-view>
   </LoginNav>
 </template>
 

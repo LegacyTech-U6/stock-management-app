@@ -24,10 +24,7 @@
       </button>
 
       <!-- Selected / Info Indicator -->
-      <div
-        v-if="selectedDisplay"
-        class="absolute top-full mt-2  left-0 text-sm text-gray-600"
-      >
+      <div v-if="selectedDisplay" class="absolute top-full mt-2 left-0 text-sm text-gray-600">
         Selected: {{ selectedDisplay }}
       </div>
 
@@ -41,7 +38,7 @@
           :key="client.id"
           :class="{
             'bg-teal-500 text-white': index === highlightedIndex,
-            'px-4 py-2 text-sm cursor-pointer hover:bg-gray-100': true
+            'px-4 py-2 text-sm cursor-pointer hover:bg-gray-100': true,
           }"
           @mouseenter="highlightedIndex = index"
           @click="selectClient(client)"
@@ -93,9 +90,7 @@ function handleGlobalShortcut(e) {
 const filteredClients = computed(() => {
   if (!searchQuery.value.trim() || searchQuery.value.toLowerCase() === 'walk-in') return []
   const query = searchQuery.value.toLowerCase()
-  return clients.value.filter(client =>
-    client.client_name.toLowerCase().includes(query)
-  )
+  return clients.value.filter((client) => client.client_name.toLowerCase().includes(query))
 })
 
 // Display text
@@ -108,16 +103,14 @@ const selectedDisplay = computed(() => {
 // Keyboard navigation
 function highlightNext() {
   if (filteredClients.value.length === 0) return
-  highlightedIndex.value =
-    (highlightedIndex.value + 1) % filteredClients.value.length
+  highlightedIndex.value = (highlightedIndex.value + 1) % filteredClients.value.length
   showFilteredList.value = true
 }
 
 function highlightPrev() {
   if (filteredClients.value.length === 0) return
   highlightedIndex.value =
-    (highlightedIndex.value - 1 + filteredClients.value.length) %
-    filteredClients.value.length
+    (highlightedIndex.value - 1 + filteredClients.value.length) % filteredClients.value.length
   showFilteredList.value = true
 }
 
@@ -132,10 +125,7 @@ function selectHighlightedOrWalkIn() {
     return
   }
 
-  if (
-    highlightedIndex.value >= 0 &&
-    highlightedIndex.value < filteredClients.value.length
-  ) {
+  if (highlightedIndex.value >= 0 && highlightedIndex.value < filteredClients.value.length) {
     selectClient(filteredClients.value[highlightedIndex.value])
   }
 }

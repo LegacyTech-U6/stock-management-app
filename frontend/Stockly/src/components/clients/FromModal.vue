@@ -21,7 +21,12 @@
               class="w-8 h-8 rounded-full flex items-center justify-center bg-red-500 hover:bg-red-600 transition-colors disabled:opacity-50"
             >
               <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
@@ -30,20 +35,40 @@
           <div v-if="error" class="mx-6 mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
             <div class="flex items-center gap-2 text-red-700">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
               <span class="text-sm font-medium">{{ error }}</span>
             </div>
           </div>
 
           <!-- Form -->
-          <form @submit.prevent="handleSubmit" class="p-6 space-y-4 max-h-[calc(90vh-140px)] overflow-y-auto">
+          <form
+            @submit.prevent="handleSubmit"
+            class="p-6 space-y-4 max-h-[calc(90vh-140px)] overflow-y-auto"
+          >
             <!-- Image Upload Section -->
             <div class="flex items-center gap-4 pb-4 border-b border-gray-200">
               <div class="flex flex-col items-center gap-2">
-                <div class="w-20 h-20 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50">
-                  <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                <div
+                  class="w-20 h-20 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50"
+                >
+                  <svg
+                    class="w-8 h-8 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 4v16m8-8H4"
+                    />
                   </svg>
                 </div>
                 <span class="text-xs text-gray-600">Add Image</span>
@@ -54,12 +79,12 @@
                   class="px-6 py-2 bg-orange-400 hover:bg-orange-500 text-white rounded-md font-medium transition-colors text-sm"
                   :disabled="loading"
                 >
-                 <ImageUploader
-              v-model="formData.image"
-              :maxSize="5"
-              accept="image/png, image/jpeg"
-              :preview="true"
-            />
+                  <ImageUploader
+                    v-model="formData.image"
+                    :maxSize="5"
+                    accept="image/png, image/jpeg"
+                    :preview="true"
+                  />
                 </button>
                 <span class="text-xs text-gray-500">JPEG, PNG up to 2 MB</span>
               </div>
@@ -213,7 +238,9 @@
                   class="sr-only peer"
                   :disabled="loading"
                 />
-                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+                <div
+                  class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"
+                ></div>
               </label>
             </div>
           </form>
@@ -245,17 +272,17 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch } from 'vue'
 import ImageUploader from '../main/ImageUploader.vue'
 const props = defineProps({
   open: Boolean,
   isEdit: Boolean,
   clientData: Object,
   loading: Boolean,
-  error: String
-});
+  error: String,
+})
 
-const emit = defineEmits(['close', 'submit']);
+const emit = defineEmits(['close', 'submit'])
 
 const formData = ref({
   first_name: '',
@@ -268,67 +295,74 @@ const formData = ref({
   country: '',
   postal_code: '',
   status: true,
-  client_Signature: ''
-});
+  client_Signature: '',
+})
 
 // Initialiser le formulaire
-watch(() => props.open, (isOpen) => {
-  if (isOpen) {
-    if (props.isEdit && props.clientData) {
-      // Mode édition - split client_name if it exists
-      const nameParts = props.clientData.client_name ? props.clientData.client_name.split(' ') : ['', ''];
-      formData.value = {
-        ...props.clientData,
-        first_name: nameParts[0] || '',
-        last_name: nameParts.slice(1).join(' ') || '',
-        city: props.clientData.city || '',
-        state: props.clientData.state || '',
-        country: props.clientData.country || '',
-        postal_code: props.clientData.postal_code || '',
-        status: props.clientData.status !== undefined ? props.clientData.status : true
-      };
-    } else {
-      // Mode création
-      formData.value = {
-        first_name: '',
-        last_name: '',
-        email: '',
-        client_PhoneNumber: '',
-        location: '',
-        city: '',
-        state: '',
-        country: '',
-        postal_code: '',
-        status: true,
-        client_Signature: '',
-        image:''
-      };
+watch(
+  () => props.open,
+  (isOpen) => {
+    if (isOpen) {
+      if (props.isEdit && props.clientData) {
+        // Mode édition - split client_name if it exists
+        const nameParts = props.clientData.client_name
+          ? props.clientData.client_name.split(' ')
+          : ['', '']
+        formData.value = {
+          ...props.clientData,
+          first_name: nameParts[0] || '',
+          last_name: nameParts.slice(1).join(' ') || '',
+          city: props.clientData.city || '',
+          state: props.clientData.state || '',
+          country: props.clientData.country || '',
+          postal_code: props.clientData.postal_code || '',
+          status: props.clientData.status !== undefined ? props.clientData.status : true,
+        }
+      } else {
+        // Mode création
+        formData.value = {
+          first_name: '',
+          last_name: '',
+          email: '',
+          client_PhoneNumber: '',
+          location: '',
+          city: '',
+          state: '',
+          country: '',
+          postal_code: '',
+          status: true,
+          client_Signature: '',
+          image: '',
+        }
+      }
     }
-  }
-});
+  },
+)
 
 const handleSubmit = () => {
   // Combine first and last name back into client_name for compatibility
   const submitData = {
     ...formData.value,
-    client_name: `${formData.value.first_name} ${formData.value.last_name}`.trim()
-  };
-  emit('submit', submitData);
-};
+    client_name: `${formData.value.first_name} ${formData.value.last_name}`.trim(),
+  }
+  emit('submit', submitData)
+}
 
 const handleBackdropClick = () => {
   if (!props.loading) {
-    emit('close');
+    emit('close')
   }
-};
+}
 </script>
 
 <style scoped>
-.modal-enter-active, .modal-leave-active {
+.modal-enter-active,
+.modal-leave-active {
   transition: all 0.3s ease;
 }
 
-.modal-enter-from, .modal-leave-to {
+.modal-enter-from,
+.modal-leave-to {
   opacity: 0;
   transform: scale(0.95);
 }
@@ -343,7 +377,11 @@ const handleBackdropClick = () => {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>

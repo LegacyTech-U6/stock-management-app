@@ -30,29 +30,29 @@ import { computed } from 'vue'
 const props = defineProps({
   items: { type: Array, default: () => [] },
   discount: { type: Number, default: 0 },
-  taxRate: { type: Number, default: 0 }
+  taxRate: { type: Number, default: 0 },
 })
 
 const subtotal = computed(() =>
-  props.items.reduce((sum, item) => sum + (item.selling_price * item.quantity), 0)
+  props.items.reduce((sum, item) => sum + item.selling_price * item.quantity, 0),
 )
 
 const discountAmount = computed(() =>
-  parseFloat(((subtotal.value * props.discount) / 100).toFixed(2))
+  parseFloat(((subtotal.value * props.discount) / 100).toFixed(2)),
 )
 
 const taxAmount = computed(() =>
-  parseFloat(((subtotal.value - discountAmount.value) * props.taxRate / 100).toFixed(2))
+  parseFloat((((subtotal.value - discountAmount.value) * props.taxRate) / 100).toFixed(2)),
 )
 
 const total = computed(() =>
-  parseFloat((subtotal.value - discountAmount.value + taxAmount.value).toFixed(2))
+  parseFloat((subtotal.value - discountAmount.value + taxAmount.value).toFixed(2)),
 )
 
 const formatCurrency = (amount) => {
   return new Intl.NumberFormat('en-US', {
     minimumFractionDigits: 2,
-    maximumFractionDigits: 2
+    maximumFractionDigits: 2,
   }).format(amount)
 }
 </script>

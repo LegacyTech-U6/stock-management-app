@@ -44,7 +44,6 @@
             placeholder="+237..."
           />
         </div>
-
       </div>
 
       <div class="flex justify-start mt-6">
@@ -111,9 +110,7 @@
               <p class="text-sm text-gray-500">{{ profileForm.email }}</p>
             </div>
           </div>
-          <button class="text-blue-600 text-sm font-semibold hover:underline">
-            Unlink
-          </button>
+          <button class="text-blue-600 text-sm font-semibold hover:underline">Unlink</button>
         </div>
 
         <div class="flex items-center justify-between">
@@ -124,9 +121,7 @@
               <p class="text-sm text-gray-400">Not Connected</p>
             </div>
           </div>
-          <button class="text-blue-600 text-sm font-semibold hover:underline">
-            Link
-          </button>
+          <button class="text-blue-600 text-sm font-semibold hover:underline">Link</button>
         </div>
       </div>
     </section>
@@ -161,7 +156,7 @@ watch(
       Object.assign(profileForm.value, user)
     }
   },
-  { immediate: true }
+  { immediate: true },
 )
 
 const updateProfile = async () => {

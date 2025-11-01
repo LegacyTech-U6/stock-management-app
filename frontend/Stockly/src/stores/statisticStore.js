@@ -13,7 +13,7 @@ import {
   getSalesTrend,
   getRevenueByCategory,
   getProductDistributionByCategory,
-  getClientsTats
+  getClientsTats,
 } from '@/service/api'
 
 export const useStatisticsStore = defineStore('statistics', {
@@ -32,7 +32,7 @@ export const useStatisticsStore = defineStore('statistics', {
     error: null,
     revenueByCategory: [],
     topProducts: [],
-    client:[]
+    client: [],
   }),
 
   actions: {
@@ -41,7 +41,7 @@ export const useStatisticsStore = defineStore('statistics', {
       this.loading = true
       try {
         // Pass the selected period to your backend API
-        const data = await getProductSales( period )
+        const data = await getProductSales(period)
 
         // Store the returned stats
         this.topProducts = data || []
@@ -76,9 +76,9 @@ export const useStatisticsStore = defineStore('statistics', {
       try {
         const data = await getBestSellingProduct(period)
         this.bestSellingProduct = data
-        console.log('====================================');
-        console.log(data);
-        console.log('====================================');
+        console.log('====================================')
+        console.log(data)
+        console.log('====================================')
       } catch (err) {
         this.error = err.message
       } finally {
@@ -132,9 +132,9 @@ export const useStatisticsStore = defineStore('statistics', {
       this.loading = true
       try {
         const data = await getProfit(period)
-        console.log('====================================');
-        console.log(data);
-        console.log('====================================');
+        console.log('====================================')
+        console.log(data)
+        console.log('====================================')
         this.profit = data || 0
       } catch (err) {
         this.error = err.message
@@ -204,17 +204,14 @@ export const useStatisticsStore = defineStore('statistics', {
         console.error('Erreur distribution produits:', err)
       }
     },
-    async fetclient(period = 'month'){
+    async fetclient(period = 'month') {
       try {
-         const data = await getClientsTats(period)
-      console.log(data);
-      this.client = data
+        const data = await getClientsTats(period)
+        console.log(data)
+        this.client = data
       } catch (err) {
         console.error('Erreur', err)
       }
-
-
-
-    }
+    },
   },
 })

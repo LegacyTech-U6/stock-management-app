@@ -73,7 +73,7 @@ app.use((req, res, next) => {
 });
 app.use(
   cors({
-    origin: "http://localhost:5173", // ou "*" pour tout autoriser (déconseillé en prod)
+    origin: "http://localhost:4173", // ou "*" pour tout autoriser (déconseillé en prod)
     credentials: true,
   })
 );

@@ -1,5 +1,5 @@
 <template>
-  <div class="out-of-stock-card" :class="{ 'high-value': product.isHighValue, 'selected': selected }">
+  <div class="out-of-stock-card" :class="{ 'high-value': product.isHighValue, selected: selected }">
     <div class="card-header">
       <div class="product-info">
         <h3 class="product-name">{{ product.name }}</h3>
@@ -52,7 +52,11 @@
     <div class="card-footer">
       <button class="btn-restock" @click="$emit('restock', product)">
         <svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
-          <path d="M20 12V8H4v4m16 0H4m16 0a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4a2 2 0 012-2" stroke="currentColor" stroke-width="2"/>
+          <path
+            d="M20 12V8H4v4m16 0H4m16 0a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4a2 2 0 012-2"
+            stroke="currentColor"
+            stroke-width="2"
+          />
         </svg>
         Restock Now
       </button>
@@ -64,12 +68,12 @@
 defineProps({
   product: {
     type: Object,
-    required: true
+    required: true,
   },
   selected: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 
 defineEmits(['select', 'restock'])
@@ -77,7 +81,7 @@ defineEmits(['select', 'restock'])
 const formatCurrency = (amount) => {
   return new Intl.NumberFormat('en-US', {
     minimumFractionDigits: 2,
-    maximumFractionDigits: 2
+    maximumFractionDigits: 2,
   }).format(amount)
 }
 

@@ -1,23 +1,22 @@
 <template>
   <div
-    class="fixed inset-0 z-50 bg-white/80 bg-opacity-50 flex flex-col  justify-center items-center  overflow-auto mb-5"  style="
-        background-color: rgba(0, 0, 0, 0.85);
-        backdrop-filter: blur(4px);
-        inset: 0px;
-        margin-bottom: -1px;
-      "
+    class="fixed inset-0 z-50 bg-white/80 bg-opacity-50 flex flex-col justify-center items-center overflow-auto mb-5"
+    style="
+      background-color: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(4px);
+      inset: 0px;
+      margin-bottom: -1px;
+    "
   >
-  <div class="action-buttons w-full pt-10 px-5">
-        <button class="btn btn-secondary" @click="$emit('close')">Close</button>
-        <div class="flex space-x-5">
-             <button class="btn btn-primary" @click="downloadPDF">Confirm</button>
+    <div class="action-buttons w-full pt-10 px-5">
+      <button class="btn btn-secondary" @click="$emit('close')">Close</button>
+      <div class="flex space-x-5">
+        <button class="btn btn-primary" @click="downloadPDF">Confirm</button>
         <button class="btn" @click="printInvoice">Print</button>
-        </div>
-
       </div>
+    </div>
     <div class="bg-white rounded shadow max-w-3xl w-full relative">
       <!-- Action Buttons -->
-
 
       <div class="p-1">
         <div v-if="loading" class="text-center py-8">
@@ -68,8 +67,8 @@ import { useInvoiceStore } from '@/stores/FactureStore'
 import { useClientStore } from '@/stores/clientStore'
 import { useEntrepriseStore } from '@/stores/entrepriseStore'
 const { showSuccess, showError } = useActionMessage()
-import { useGlobalModal } from "@/composable/useValidation";
-const { show } = useGlobalModal();
+import { useGlobalModal } from '@/composable/useValidation'
+const { show } = useGlobalModal()
 const entreprise = useEntrepriseStore()
 const clientStore = useClientStore()
 const invoiceContent = ref(null)
@@ -120,12 +119,9 @@ async function downloadPDF() {
   }
 }
 
-
 function printInvoice() {
   window.print()
 }
-
-
 </script>
 <style scoped>
 .invoice-content {
@@ -146,7 +142,6 @@ function printInvoice() {
   justify-content: space-between;
   margin-top: 2rem;
   padding-top: 1rem;
-
 }
 
 .btn {

@@ -74,14 +74,12 @@
       </div>
     </div>
 
-    <div class="text-xs text-gray-400">
-      Last order: {{ formatDate(client.lastOrder) }}
-    </div>
+    <div class="text-xs text-gray-400">Last order: {{ formatDate(client.lastOrder) }}</div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { defineProps, ref,defineEmits } from 'vue'
+import { defineProps, ref, defineEmits } from 'vue'
 import PhoneIcon from '@/assets/icon svg/PhoneIcon.vue'
 import WriteIcon from '@/assets/icon svg/WriteIcon.vue'
 import DustbinIcon from '@/assets/icon svg/DustbinIcon.vue'
@@ -173,7 +171,7 @@ const formatDate = (date?: string): string => {
     return d.toLocaleDateString('en-US', {
       month: 'numeric',
       day: 'numeric',
-      year: 'numeric'
+      year: 'numeric',
     })
   } catch {
     return date

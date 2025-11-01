@@ -38,7 +38,6 @@ const onActionSelect = (item) => {
   <ValidationModal />
 </template>
 
-
 <style scoped>
 header {
   line-height: 1.5;
@@ -74,7 +73,6 @@ nav a {
 nav a:first-of-type {
   border: 0;
 }
-
 
 @media (min-width: 1024px) {
   header {

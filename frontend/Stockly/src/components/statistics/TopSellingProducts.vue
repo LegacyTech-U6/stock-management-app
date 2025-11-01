@@ -3,23 +3,16 @@
     <!-- Header -->
     <div class="flex items-center justify-between p-6 border-b border-gray-200">
       <h2 class="text-lg font-semibold text-gray-800">Best Seller</h2>
-      <button
-        class="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors"
-      >
+      <button class="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors">
         View All
       </button>
     </div>
 
     <!-- Filter Section -->
-    
 
     <!-- Products List -->
     <div class="p-6 space-y-4">
-      <div
-        v-for="(product, index) in products"
-        :key="index"
-        class="flex items-center gap-4"
-      >
+      <div v-for="(product, index) in products" :key="index" class="flex items-center gap-4">
         <!-- Product Image -->
         <div class="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
           <img

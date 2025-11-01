@@ -1,5 +1,11 @@
 import { defineStore } from 'pinia'
-import {getAllWorkers,getWorkerById,createWorker,updateWorker,deleteWorker} from '../service/api'
+import {
+  getAllWorkers,
+  getWorkerById,
+  createWorker,
+  updateWorker,
+  deleteWorker,
+} from '../service/api'
 
 export const useWorkerStore = defineStore('worker', {
   // -----------------------------
@@ -22,7 +28,6 @@ export const useWorkerStore = defineStore('worker', {
         const data = await getAllWorkers()
         console.log(data)
         this.workers = data.data
-
       } catch (err) {
         this.error = err.message || 'Erreur lors du chargement des workers'
       } finally {

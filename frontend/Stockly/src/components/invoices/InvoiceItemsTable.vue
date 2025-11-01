@@ -28,7 +28,7 @@
 
 <script setup>
 defineProps({
-  items: Array
+  items: Array,
 })
 </script>
 
@@ -97,9 +97,15 @@ defineProps({
   font-family: 'Courier New', monospace;
 }
 
-.text-left { text-align: left; }
-.text-center { text-align: center; }
-.text-right { text-align: right; }
+.text-left {
+  text-align: left;
+}
+.text-center {
+  text-align: center;
+}
+.text-right {
+  text-align: right;
+}
 
 @media (max-width: 768px) {
   .invoice-items {

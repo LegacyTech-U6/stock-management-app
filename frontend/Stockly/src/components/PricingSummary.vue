@@ -3,7 +3,9 @@
     <!-- Discount Banner -->
     <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
       <div class="flex items-start gap-2">
-        <div class="bg-blue-100 text-blue-700 rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">
+        <div
+          class="bg-blue-100 text-blue-700 rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5"
+        >
           <span class="text-xs font-bold">%</span>
         </div>
         <div>
@@ -80,16 +82,16 @@ const props = defineProps({
   taxRate: Number,
   shipping: {
     type: Number,
-    default: 40.21
+    default: 40.21,
   },
   coupon: {
     type: Number,
-    default: 25
+    default: 25,
   },
   roundoff: {
     type: Number,
-    default: 0.11
-  }
+    default: 0.11,
+  },
 })
 
 const emit = defineEmits(['update-discount', 'update-tax', 'create-invoice'])
@@ -101,19 +103,23 @@ const updateDiscount = () => {
 }
 
 const subtotal = computed(() =>
-  props.items.reduce((sum, item) => sum + item.selling_price * item.quantity, 0)
+  props.items.reduce((sum, item) => sum + item.selling_price * item.quantity, 0),
 )
 
-const taxAmount = computed(() =>
-  parseFloat(((subtotal.value * props.taxRate) / 100).toFixed(2))
-)
+const taxAmount = computed(() => parseFloat(((subtotal.value * props.taxRate) / 100).toFixed(2)))
 
 const discountAmount = computed(() =>
-  parseFloat(((subtotal.value * localDiscount.value) / 100).toFixed(2))
+  parseFloat(((subtotal.value * localDiscount.value) / 100).toFixed(2)),
 )
 
 const totalPayable = computed(() => {
-  const baseTotal = subtotal.value + props.shipping + taxAmount.value - props.coupon - discountAmount.value + props.roundoff
+  const baseTotal =
+    subtotal.value +
+    props.shipping +
+    taxAmount.value -
+    props.coupon -
+    discountAmount.value +
+    props.roundoff
   return parseFloat(baseTotal.toFixed(2))
 })
 </script>

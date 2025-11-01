@@ -5,18 +5,18 @@ import {
   createCategory,
   updateCategory,
   deleteCategory,
-  getProductsByCategory
+  getProductsByCategory,
 } from '../service/api'
 export const useCategoryStore = defineStore('Category', {
   state: () => ({
     categories: [],
     totalCategory: null,
-     category: null,
+    category: null,
     loading: false,
     error: null,
     submitLoading: false,
     submitError: null,
-    products:[]
+    products: [],
   }),
   actions: {
     async Create(categoryData) {
@@ -29,27 +29,27 @@ export const useCategoryStore = defineStore('Category', {
         console.error("erreur lors de l'ajout de la category")
       }
     },
-  async fetchCategory() {
-  this.loading = true
-  this.error = null
-  try {
-    const category = await getCategory()
-    console.log("category loged from store", category.data)
-    this.categories = category.data
-    console.log('====================================');
-    console.log(this.categories);
-    console.log('====================================');
-    this.totalCategory = category.count
+    async fetchCategory() {
+      this.loading = true
+      this.error = null
+      try {
+        const category = await getCategory()
+        console.log('category loged from store', category.data)
+        this.categories = category.data
+        console.log('====================================')
+        console.log(this.categories)
+        console.log('====================================')
+        this.totalCategory = category.count
 
-    this.loading = false
-    return this.categories // ✅ return the data
-  } catch (error) {
-    this.error = error
-    this.loading = false
-    console.error('Erreur lors de la récupération des catégories', error)
-    return [] // return empty array in case of error
-  }
-},
+        this.loading = false
+        return this.categories // ✅ return the data
+      } catch (error) {
+        this.error = error
+        this.loading = false
+        console.error('Erreur lors de la récupération des catégories', error)
+        return [] // return empty array in case of error
+      }
+    },
     async fetchOneCategory(id) {
       this.loading = true
       this.error = null
@@ -57,7 +57,7 @@ export const useCategoryStore = defineStore('Category', {
         const response = await getOneCategory(id)
         console.log(response)
         this.category = response
-        console.log("category loged from store", this.category)
+        console.log('category loged from store', this.category)
         this.error = null
       } catch (error) {
         this.error = error
@@ -90,14 +90,14 @@ export const useCategoryStore = defineStore('Category', {
         this.submitLoading = false
       }
     },
-    async Product(CategoryId){
+    async Product(CategoryId) {
       this.loading = true
       this.error = null
       try {
         const response = await getProductsByCategory(CategoryId)
         console.log(response)
         this.products = response.products
-        console.log("products loged from store", this.products)
+        console.log('products loged from store', this.products)
         this.error = null
       } catch (error) {
         this.error = error
@@ -105,7 +105,6 @@ export const useCategoryStore = defineStore('Category', {
       } finally {
         this.loading = false
       }
-    }
-
+    },
   },
 })

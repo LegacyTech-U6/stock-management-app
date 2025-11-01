@@ -9,7 +9,7 @@ const stats = [
   { value: '40%', label: 'Réduction des coûts de stockage' },
   { value: '3x', label: 'Traitement des commandes plus rapide' },
   { value: '99.9%', label: 'Disponibilité garantie' },
-  { value: '24/7', label: 'Mises à jour en temps réel' }
+  { value: '24/7', label: 'Mises à jour en temps réel' },
 ]
 
 const sectionRef = ref(null)
@@ -29,7 +29,7 @@ onMounted(() => {
       scrub: 1,
       pin: true,
       anticipatePin: 1,
-    }
+    },
   })
 
   // Animate stats counting
@@ -49,8 +49,8 @@ onMounted(() => {
         start: 'left 80%',
         end: 'left 20%',
         toggleActions: 'play none none reverse',
-        containerAnimation: ScrollTrigger.getById('horizontal-scroll')
-      }
+        containerAnimation: ScrollTrigger.getById('horizontal-scroll')?.animation,
+      },
     })
   })
 })
@@ -60,19 +60,13 @@ onMounted(() => {
   <section ref="sectionRef" class="py-32 px-6 bg-indigo-900">
     <div class="max-w-6xl mx-auto">
       <div class="max-w-2xl mb-20 text-center mx-auto">
-        <h2 class="text-4xl md:text-5xl font-light text-white mb-6">
-          Des résultats mesurables
-        </h2>
+        <h2 class="text-4xl md:text-5xl font-light text-white mb-6">Des résultats mesurables</h2>
         <p class="text-lg text-indigo-200 font-light">
           Rejoignez les entreprises qui ont transformé leur gestion avec Stockly
         </p>
       </div>
 
-      <div
-        ref="statsGridRef"
-        class="flex gap-px pb-8"
-        style="width: max-content;"
-      >
+      <div ref="statsGridRef" class="flex gap-px pb-8" style="width: max-content">
         <div
           v-for="stat in stats"
           :key="stat.label"

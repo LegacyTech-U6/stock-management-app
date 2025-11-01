@@ -17,12 +17,12 @@
 </template>
 
 <script setup>
-import { Download } from 'lucide-vue-next';
+import { Download } from 'lucide-vue-next'
 
 defineProps({
   title: {
     type: String,
-    required: true
-  }
-});
+    required: true,
+  },
+})
 </script>

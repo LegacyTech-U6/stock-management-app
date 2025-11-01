@@ -94,7 +94,6 @@ onMounted(async () => {
   await statsStore.fetchRevenue('day')
   await statsStore.fetchProfit('day')
   loadingClients.value = false
-
 })
 const totalProductsValue = computed(() =>
   productStore.products.reduce((sum, product) => {
@@ -124,10 +123,11 @@ const topStats = computed(() => [
     id: 3,
     icon: DollarSign,
     label: 'Total Sales',
-    value: computed(() => statsStore.topProducts.sales?.total),
+    value: statsStore.topProducts.reduce((sum, p) => sum + (p.sales?.total || 0), 0),
+
+    trend: statsStore.topProducts.at(-1)?.sales?.history.at(-1)?.growth_percent,
     gradientFrom: '#092C4C',
     gradientTo: '#092C4C',
-    trend: statsStore.topProducts.sales?.history.at(-1)?.growth_percent,
   },
   {
     id: 4,

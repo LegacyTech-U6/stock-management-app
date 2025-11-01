@@ -1,4 +1,3 @@
-
 import API from '../api/axios'
 // const API_BASE_URL = "http://localhost:5000/api";
 export async function CreateClient(clientData) {
@@ -17,10 +16,8 @@ export async function CreateClient(clientData) {
   // Add image (if present)
   if (clientData.image instanceof File) {
     formData.append('image', clientData.image)
-
   } else if (clientData.image) {
     formData.append('image', clientData.image)
-
   }
 
   // Log FormData contents for debugging
@@ -40,7 +37,6 @@ export async function CreateClient(clientData) {
     }
     throw error
   }
-
 }
 export async function getClient() {
   const { data } = await API.get('/client')
@@ -125,7 +121,6 @@ export async function createProduct(productData) {
     throw error
   }
 }
-
 
 export async function OutOfStock() {
   const { data } = await API.get('/products/out-of-stock')
@@ -263,16 +258,13 @@ export async function deleteSupplier(supplierId) {
   return data
 }
 
-
 ///////////////////////////////////////
 // Entreprise Management
 ///////////////////////////////////////
 
-
-
 // ✅ Créer une entreprise
 export async function createEntreprise(entrepriseData) {
-  console.log('🚀 API: Creating client with data:',entrepriseData)
+  console.log('🚀 API: Creating client with data:', entrepriseData)
 
   const formData = new FormData()
 
@@ -280,17 +272,14 @@ export async function createEntreprise(entrepriseData) {
   for (const key in entrepriseData) {
     if (key !== 'logo_url' && entrepriseData[key] !== null && entrepriseData[key] !== undefined) {
       formData.append(key, entrepriseData[key])
-
     }
   }
 
   // Add image (if present)
-  if (entrepriseData .logo_url instanceof File) {
+  if (entrepriseData.logo_url instanceof File) {
     formData.append('logo_url', entrepriseData.logo_url)
-
   } else if (entrepriseData.logo_url) {
     formData.append('logo_url', entrepriseData.logo_ur)
-
   }
 
   // Log FormData contents for debugging
@@ -310,7 +299,6 @@ export async function createEntreprise(entrepriseData) {
     }
     throw error
   }
-
 }
 
 // ✅ Récupérer toutes les entreprises de l'utilisateur connecté
@@ -336,7 +324,6 @@ export async function deleteEntreprise(uuid) {
   const { data } = await API.delete(`/entreprises/${uuid}`)
   return data
 }
-
 
 /////////////////////////////////////////////////////////
 // Worker management
@@ -378,7 +365,7 @@ export async function deleteWorker(id) {
 ///////////////////////////////////////////////////////////////
 // ✅ Récupérer tous les rôles
 export async function getAllRoles() {
-  const { data } = await API.get("/roles")
+  const { data } = await API.get('/roles')
   return data
 }
 
@@ -390,7 +377,7 @@ export async function getRoleById(id) {
 
 // ✅ Créer un nouveau rôle
 export async function createRole(roleData) {
-  const { data } = await API.post("/roles", roleData)
+  const { data } = await API.post('/roles', roleData)
   return data
 }
 
@@ -406,105 +393,101 @@ export async function deleteRole(id) {
   return data
 }
 
-
 ////////////////////////////////////////////////////////////
 // Statistics / Analytics API
 ///////////////////////////////////////////////////////////////
 
 // ✅ Récupérer le total des ventes par produit (global) with period
 export async function getProductSales(period) {
-  const { data } = await API.get("/stats/sales", {
-    params: { period }  // send period as query parameter
-  });
-  return data;
+  const { data } = await API.get('/stats/sales', {
+    params: { period }, // send period as query parameter
+  })
+  return data
 }
-
 
 // ✅ Récupérer le rapport des ventes pour une période donnée
 // period = "day" | "week" | "month"
-export async function getSalesReport(period="month") {
-  const { data } = await API.get("/stats/sales-report", { params: { period } });
-  return data;
+export async function getSalesReport(period = 'month') {
+  const { data } = await API.get('/stats/sales-report', { params: { period } })
+  return data
 }
 
 // ✅ Récupérer le meilleur produit vendu pour une période
-export async function getBestSellingProduct(period = "month") {
-  const { data } = await API.get("/stats/products", { params: { period } });
-  return data;
+export async function getBestSellingProduct(period = 'month') {
+  const { data } = await API.get('/stats/products', { params: { period } })
+  return data
 }
 
 // ✅ Récupérer la meilleure catégorie globale pour une période
-export async function getBestCategory(period = "month") {
-  const { data } = await API.get("/stats/best-category", { params: { period } });
-  return data;
+export async function getBestCategory(period = 'month') {
+  const { data } = await API.get('/stats/best-category', { params: { period } })
+  return data
 }
 
 // ✅ Récupérer les meilleurs produits par catégorie
-export async function getBestByCategory( period = "month") {
-  const { data } = await API.get(`/stats/revenue-by-category`, { params: { period } });
-  return data;
+export async function getBestByCategory(period = 'month') {
+  const { data } = await API.get(`/stats/revenue-by-category`, { params: { period } })
+  return data
 }
 
 // recuperer l'evolution des clients
-export async function getClientsTats(period = "month") {
-  const {data} = await API.get(`/stats/clients`,{params:{period}});
-  return data;
-
+export async function getClientsTats(period = 'month') {
+  const { data } = await API.get(`/stats/clients`, { params: { period } })
+  return data
 }
 
 // ✅ Récupérer le chiffre d'affaires pour une période
 // period = "day" | "month" | "year"
-export async function getRevenue(period = "month") {
-  const { data } = await API.get("/stats/revenue", { params: { period } });
-  return data;
+export async function getRevenue(period = 'month') {
+  const { data } = await API.get('/stats/revenue', { params: { period } })
+  return data
 }
 
 // ✅ Récupérer le profit pour une période
 // period = "day" | "month"
-export async function getProfit(period = "month") {
-  const { data } = await API.get("/stats/profit", { params: { period } });
-  return data;
+export async function getProfit(period = 'month') {
+  const { data } = await API.get('/stats/profit', { params: { period } })
+  return data
 }
 
 // ✅ Comparer les ventes actuelles vs période précédente
 // period = "day" | "month"
-export async function compareSales(period = "month") {
-  const { data } = await API.get("/stats/compare-sales", { params: { period } });
-  return data;
+export async function compareSales(period = 'month') {
+  const { data } = await API.get('/stats/compare-sales', { params: { period } })
+  return data
 }
 
 // ✅ Récupérer les ventes par trimestre pour analyse saisonnière
-export async function getQuarterlySales(period = "year") {
-  const { data } = await API.get("/stats/quarterly-sales", { params: { period } });
-  return data;
+export async function getQuarterlySales(period = 'year') {
+  const { data } = await API.get('/stats/quarterly-sales', { params: { period } })
+  return data
 }
 
 // ✅ Récupérer la tendance des ventes pour graphique
 // period = "month" | "year"
-export async function getSalesTrend(period = "month") {
-  const { data } = await API.get("/stats/sales-trend", { params: { period } });
-  return data;
+export async function getSalesTrend(period = 'month') {
+  const { data } = await API.get('/stats/sales-trend', { params: { period } })
+  return data
 }
 
 // ✅ Récupérer la tendance des revenus par catégorie
 // period = "month" | "year"
-export async function getRevenueByCategory(period = "month") {
-  const { data } = await API.get("/stats/revenue-by-category", { params: { period } });
-  return data;
+export async function getRevenueByCategory(period = 'month') {
+  const { data } = await API.get('/stats/revenue-by-category', { params: { period } })
+  return data
 }
 
 export async function getProductDistributionByCategory() {
-  const response = await API.get("/stats/products/distribution-by-category")
+  const response = await API.get('/stats/products/distribution-by-category')
   return response.data
 }
-
 
 //////////////////////////////////////////////////
 // Activity logger
 /////////////////////////////////////////////////
 
-export async function getAllActivities(){
-  const response  = await API.get("/activities")
+export async function getAllActivities() {
+  const response = await API.get('/activities')
   return response.data
 }
 ////////////////////////////////////////////////////
@@ -513,19 +496,19 @@ export async function getAllActivities(){
 
 // ✅ voir le rapport des ventes journalières
 export async function getDailySalesReport() {
-  const { data } = await API.get("/activities/reports/daily-sales");
-  return data;
+  const { data } = await API.get('/activities/reports/daily-sales')
+  return data
 }
 
 // ✅ Générer le rapport des achats journaliers
 export async function getDailyPurchaseReport() {
-  const { data } = await API.get("/activities/reports/daily-purchases");
-  return data;
+  const { data } = await API.get('/activities/reports/daily-purchases')
+  return data
 }
 
 // ✅ generer le raport des ventejounalier
 
 export async function getSellingReport() {
-  const {data} = await API.get("/activities/reports/sales-report");
-  return data;
+  const { data } = await API.get('/activities/reports/sales-report')
+  return data
 }

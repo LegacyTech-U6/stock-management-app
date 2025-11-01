@@ -1,13 +1,13 @@
 <template>
   <div
-    class="bg-white border border-gray-200 rounded-2xl p-5   transition-all duration-300 flex justify-between items-center"
+    class="bg-white border border-gray-200 rounded-2xl p-5 transition-all duration-300 flex justify-between items-center"
   >
     <!-- Left section -->
     <div class="w-full">
       <div class="border-b border-gray-200 grid grid-cols-8 pb-3">
         <div class="col-span-7">
-            <p class="text-2xl font-semibold text-gray-900">{{ value }}</p>
-        <p class="text-gray-500 text-sm">{{ label }}</p>
+          <p class="text-2xl font-semibold text-gray-900">{{ value }}</p>
+          <p class="text-gray-500 text-sm">{{ label }}</p>
         </div>
 
         <!-- Right section (icon) -->
@@ -24,8 +24,8 @@
 
       <div class="flex items-center gap-2 mt-3">
         <span :class="trend >= 0 ? 'text-green-500' : 'text-red-600'" class="text-sm font-semibold">
-  {{ trend >= 0 ? '+' : '' }}{{ formatedValue }}%
-</span>
+          {{ trend >= 0 ? '+' : '' }}{{ formatedValue }}%
+        </span>
 
         <span class="text-gray-400 text-sm">vs Last {{ period }}</span>
         <a
@@ -41,7 +41,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed } from 'vue'
 
 const props = defineProps({
   icon: [Object, Function], // ✅ supports Lucide icons
@@ -52,10 +52,8 @@ const props = defineProps({
   iconBg: String,
   iconColor: String,
   period: String,
-
 })
-const formatedValue = computed  (() => {
-   return props.trend ? props.trend.toFixed(2) : '0.00';
-});
-
+const formatedValue = computed(() => {
+  return props.trend ? props.trend.toFixed(2) : '0.00'
+})
 </script>

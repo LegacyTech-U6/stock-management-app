@@ -2,7 +2,11 @@
   <div
     class="rounded-xl p-5 text-white shadow-sm transition-transform duration-200 hover:scale-[1.02]"
     :class="isTailwind ? `bg-gradient-to-br from-${gradientFrom} to-${gradientTo}` : ''"
-    :style="!isTailwind ? { background: `linear-gradient(to bottom right, ${gradientFrom}, ${gradientTo})` } : {}"
+    :style="
+      !isTailwind
+        ? { background: `linear-gradient(to bottom right, ${gradientFrom}, ${gradientTo})` }
+        : {}
+    "
   >
     <div class="flex items-center justify-between mb-3">
       <span class="text-sm font-medium opacity-90">{{ title }}</span>
@@ -16,7 +20,7 @@
           :class="{
             'text-green-400': trend > 0,
             'text-red-400': trend < 0,
-            'text-gray-300': trend === 0
+            'text-gray-300': trend === 0,
           }"
         >
           <span v-if="trend > 0">▲</span>
@@ -40,7 +44,7 @@ const props = defineProps({
   gradientTo: { type: String, default: 'blue-600' },
 })
 
-const isTailwind = computed(() =>
-  props.gradientFrom.includes('-') && props.gradientTo.includes('-')
+const isTailwind = computed(
+  () => props.gradientFrom.includes('-') && props.gradientTo.includes('-'),
 )
 </script>

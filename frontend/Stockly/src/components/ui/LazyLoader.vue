@@ -33,10 +33,8 @@
 import { defineProps } from 'vue'
 
 defineProps({
-  skeletonCount: { type: Number, default: 6 }
+  skeletonCount: { type: Number, default: 6 },
 })
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

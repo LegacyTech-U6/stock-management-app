@@ -1,7 +1,13 @@
 <template>
-  <div :class="isTop ? 'bg-yellow-50 border-2 border-yellow-300' : 'bg-white border border-gray-200'" class="rounded-lg p-6">
+  <div
+    :class="isTop ? 'bg-yellow-50 border-2 border-yellow-300' : 'bg-white border border-gray-200'"
+    class="rounded-lg p-6"
+  >
     <div class="flex items-start gap-4">
-      <div :class="isTop ? 'bg-yellow-600' : 'bg-gray-400'" class="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold">
+      <div
+        :class="isTop ? 'bg-yellow-600' : 'bg-gray-400'"
+        class="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold"
+      >
         {{ worker.initials }}
       </div>
       <div class="flex-1">
@@ -36,11 +42,11 @@
 defineProps({
   worker: {
     type: Object,
-    required: true
+    required: true,
   },
   isTop: {
     type: Boolean,
-    default: false
-  }
-});
+    default: false,
+  },
+})
 </script>

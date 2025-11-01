@@ -11,7 +11,7 @@ export const useClientStore = defineStore('client', {
       client_PhoneNumber: '',
       email: '',
       location: '',
-      image:'',
+      image: '',
     },
     loading: false,
     error: null,
@@ -43,9 +43,9 @@ export const useClientStore = defineStore('client', {
       this.error = null
       try {
         this.selectedClient = await getClientById(id)
-        console.log('====================================');
-        console.log(this.selectedClient);
-        console.log('====================================');
+        console.log('====================================')
+        console.log(this.selectedClient)
+        console.log('====================================')
       } catch (err) {
         this.error = err.response?.data?.message || err.message || 'Failed to fetch client details'
         console.error('Error fetching client:', err)
@@ -59,10 +59,9 @@ export const useClientStore = defineStore('client', {
       this.submitLoading = true
       this.submitError = null
       try {
-
-        console.log('====================================');
-        console.log(formData);
-        console.log('====================================');
+        console.log('====================================')
+        console.log(formData)
+        console.log('====================================')
 
         await CreateClient(formData)
         await this.fetchClients() // Refresh the list
@@ -126,7 +125,7 @@ export const useClientStore = defineStore('client', {
         client_PhoneNumber: '',
         email: '',
         location: '',
-        image:''
+        image: '',
       }
     },
 

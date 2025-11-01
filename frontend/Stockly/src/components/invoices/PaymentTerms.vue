@@ -9,9 +9,7 @@
       </div>
     </div>
 
-    <div class="thank-you">
-      Thank you for your business!
-    </div>
+    <div class="thank-you">Thank you for your business!</div>
   </div>
 </template>
 

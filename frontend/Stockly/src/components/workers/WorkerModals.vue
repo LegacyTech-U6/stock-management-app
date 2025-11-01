@@ -6,7 +6,9 @@
   >
     <div class="bg-white rounded-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
       <!-- Header -->
-      <div class="sticky top-0 bg-white border-b border-gray-100 px-8 py-6 flex items-center justify-between rounded-t-2xl">
+      <div
+        class="sticky top-0 bg-white border-b border-gray-100 px-8 py-6 flex items-center justify-between rounded-t-2xl"
+      >
         <div>
           <h2 class="text-2xl font-semibold text-gray-800">
             {{ isEditing ? 'Edit Employee' : 'Add Employee' }}
@@ -38,7 +40,10 @@
               <h3 class="text-lg font-semibold text-gray-800">Employee Information</h3>
             </div>
             <ChevronDown
-              :class="['w-5 h-5 text-gray-400 transition-transform', { 'rotate-180': sections.employee }]"
+              :class="[
+                'w-5 h-5 text-gray-400 transition-transform',
+                { 'rotate-180': sections.employee },
+              ]"
             />
           </button>
 
@@ -171,7 +176,10 @@
               <h3 class="text-lg font-semibold text-gray-800">Password</h3>
             </div>
             <ChevronDown
-              :class="['w-5 h-5 text-gray-400 transition-transform', { 'rotate-180': sections.password_hash }]"
+              :class="[
+                'w-5 h-5 text-gray-400 transition-transform',
+                { 'rotate-180': sections.password_hash },
+              ]"
             />
           </button>
 
@@ -226,7 +234,7 @@
 </template>
 
 <script setup>
-import { ref, watch, computed,onMounted } from 'vue'
+import { ref, watch, computed, onMounted } from 'vue'
 import { X, User, Lock, ChevronDown, UserCircle } from 'lucide-vue-next'
 import { useRoleStore } from '@/stores/roleStore'
 import { useEntrepriseStore } from '@/stores/entrepriseStore'
@@ -253,9 +261,9 @@ const enterpriseStore = useEntrepriseStore()
 
 const roles = computed(() => roleStore.roles)
 const entreprises = computed(() => enterpriseStore.entreprises)
-console.log('====================================');
-console.log(roles);
-console.log('====================================');
+console.log('====================================')
+console.log(roles)
+console.log('====================================')
 const isSubmitting = ref(false)
 const confirmPassword = ref('')
 
@@ -304,9 +312,9 @@ watch(
       resetForm()
     }
   },
-  { immediate: true }
+  { immediate: true },
 )
-onMounted(()=>{
+onMounted(() => {
   roleStore.fetchRoles()
 })
 

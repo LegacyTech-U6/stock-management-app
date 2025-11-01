@@ -24,7 +24,7 @@
 defineProps({
   invoiceNumber: String,
   creationDate: String,
-  dueDate: String
+  dueDate: String,
 })
 </script>
 

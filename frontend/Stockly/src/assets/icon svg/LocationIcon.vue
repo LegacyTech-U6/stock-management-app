@@ -26,7 +26,6 @@
 defineProps<{
   width?: string | number
   height?: string | number
-  color?: string 
+  color?: string
 }>()
 </script>
-

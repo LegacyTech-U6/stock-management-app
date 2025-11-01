@@ -2,14 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import {
-  Package,
-  ShoppingCart,
-  Users,
-  TrendingUp,
-  FileText,
-  Bell
-} from 'lucide-vue-next'
+import { Package, ShoppingCart, Users, TrendingUp, FileText, Bell } from 'lucide-vue-next'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -17,33 +10,39 @@ const features = [
   {
     icon: Package,
     title: 'Gestion complète des stocks',
-    description: 'Suivi en temps réel, alertes automatiques de stock faible, catégorisation intelligente et historique complet des mouvements.'
+    description:
+      'Suivi en temps réel, alertes automatiques de stock faible, catégorisation intelligente et historique complet des mouvements.',
   },
   {
     icon: ShoppingCart,
     title: 'Point de vente intégré',
-    description: 'Création rapide de factures, calcul automatique TVA et remises, modes de paiement multiples, génération instantanée.'
+    description:
+      'Création rapide de factures, calcul automatique TVA et remises, modes de paiement multiples, génération instantanée.',
   },
   {
     icon: Users,
     title: 'Base clients et fournisseurs',
-    description: 'Historique d\'achats, coordonnées centralisées, commandes automatiques aux fournisseurs, communication simplifiée.'
+    description:
+      "Historique d'achats, coordonnées centralisées, commandes automatiques aux fournisseurs, communication simplifiée.",
   },
   {
     icon: TrendingUp,
     title: 'Analyses en temps réel',
-    description: 'Rapports de vente quotidiens, top produits, statistiques par catégorie, indicateurs de performance (KPI).'
+    description:
+      'Rapports de vente quotidiens, top produits, statistiques par catégorie, indicateurs de performance (KPI).',
   },
   {
     icon: FileText,
     title: 'Multi-entreprises',
-    description: 'Gérez plusieurs entreprises depuis un compte, isolation des données, personnalisation par entreprise.'
+    description:
+      'Gérez plusieurs entreprises depuis un compte, isolation des données, personnalisation par entreprise.',
   },
   {
     icon: Bell,
     title: 'Notifications intelligentes',
-    description: 'Alertes de rupture de stock, notifications de commandes, rappels personnalisables, journal d\'activités complet.'
-  }
+    description:
+      "Alertes de rupture de stock, notifications de commandes, rappels personnalisables, journal d'activités complet.",
+  },
 ]
 
 const activeFeature = ref(0)
@@ -58,12 +57,12 @@ onMounted(() => {
       trigger: sectionRef.value,
       start: 'top 80%',
       end: 'top 20%',
-      toggleActions: 'play none none reverse'
+      toggleActions: 'play none none reverse',
     },
     opacity: 0,
     y: 50,
     duration: 1,
-    ease: 'power3.out'
+    ease: 'power3.out',
   })
 
   gsap.from(subtitleRef.value, {
@@ -71,13 +70,13 @@ onMounted(() => {
       trigger: sectionRef.value,
       start: 'top 80%',
       end: 'top 20%',
-      toggleActions: 'play none none reverse'
+      toggleActions: 'play none none reverse',
     },
     opacity: 0,
     y: 30,
     duration: 1,
     delay: 0.2,
-    ease: 'power3.out'
+    ease: 'power3.out',
   })
 
   // Staggered card animation
@@ -86,7 +85,7 @@ onMounted(() => {
       trigger: '.features-grid',
       start: 'top 75%',
       end: 'top 25%',
-      toggleActions: 'play none none reverse'
+      toggleActions: 'play none none reverse',
     },
     opacity: 0,
     y: 60,
@@ -95,9 +94,9 @@ onMounted(() => {
     stagger: {
       amount: 0.6,
       from: 'start',
-      ease: 'power2.out'
+      ease: 'power2.out',
     },
-    ease: 'power3.out'
+    ease: 'power3.out',
   })
 
   // Icon rotation on scroll
@@ -106,12 +105,12 @@ onMounted(() => {
       scrollTrigger: {
         trigger: icon,
         start: 'top 85%',
-        toggleActions: 'play none none reverse'
+        toggleActions: 'play none none reverse',
       },
       rotation: -180,
       scale: 0,
       duration: 1,
-      ease: 'back.out(1.7)'
+      ease: 'back.out(1.7)',
     })
   })
 })
@@ -128,14 +127,14 @@ const handleHover = (index: number, element: HTMLElement) => {
     scale: 1.1,
     rotation: 5,
     duration: 0.4,
-    ease: 'power2.out'
+    ease: 'power2.out',
   })
 
   // Subtle title animation
   gsap.to(title, {
     x: 5,
     duration: 0.3,
-    ease: 'power2.out'
+    ease: 'power2.out',
   })
 
   // Description fade
@@ -143,7 +142,7 @@ const handleHover = (index: number, element: HTMLElement) => {
     opacity: 1,
     y: 0,
     duration: 0.3,
-    ease: 'power2.out'
+    ease: 'power2.out',
   })
 }
 
@@ -155,38 +154,38 @@ const handleLeave = (element: HTMLElement) => {
     scale: 1,
     rotation: 0,
     duration: 0.4,
-    ease: 'power2.out'
+    ease: 'power2.out',
   })
 
   gsap.to(title, {
     x: 0,
     duration: 0.3,
-    ease: 'power2.out'
+    ease: 'power2.out',
   })
 }
 </script>
 
 <template>
+  <section
+    ref="sectionRef"
+    class="py-32 grid grid-cols-1 lg:grid-cols-4 bg-indigo-50 overflow-hidden"
+  >
+    <div class="lg:grid lg:gap-6 items-center p-4">
+      <!-- Image: visible on large screens only -->
+      <div class="hidden w-full lg:block">
+        <img src="@/assets/image/handStockly.png" alt="Hand Stockly" class="w-full h-auto" />
+      </div>
 
-
-  <section ref="sectionRef" class="py-32  grid grid-cols-1 lg:grid-cols-4 bg-indigo-50 overflow-hidden">
-
-  <div class="lg:grid  lg:gap-6 items-center p-4">
-    <!-- Image: visible on large screens only -->
-    <div class="hidden w-full lg:block">
-      <img src="@/assets/image/handStockly.png" alt="Hand Stockly" class="w-full h-auto">
+      <!-- Content: always visible -->
     </div>
-
-    <!-- Content: always visible -->
-
-  </div>
     <div class="max-w-6xl mx-auto col-span-1 lg:col-span-3 px-6">
       <div class="max-w-2xl mb-20">
         <h2 ref="headerRef" class="text-4xl md:text-5xl font-light text-gray-900 mb-6">
           Tout ce dont vous avez besoin
         </h2>
         <p ref="subtitleRef" class="text-lg text-gray-600 font-light leading-relaxed">
-          Une solution complète pour digitaliser et automatiser l'ensemble de vos processus commerciaux.
+          Une solution complète pour digitaliser et automatiser l'ensemble de vos processus
+          commerciaux.
         </p>
       </div>
 
@@ -199,7 +198,9 @@ const handleLeave = (element: HTMLElement) => {
           class="feature-card bg-white p-10 transition-colors hover:bg-gray-900 hover:text-white group cursor-pointer relative overflow-hidden"
         >
           <!-- Background pulse effect on hover -->
-          <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/0 to-purple-500/0 group-hover:from-indigo-500/10 group-hover:to-purple-500/10 transition-all duration-500"></div>
+          <div
+            class="absolute inset-0 bg-gradient-to-br from-indigo-500/0 to-purple-500/0 group-hover:from-indigo-500/10 group-hover:to-purple-500/10 transition-all duration-500"
+          ></div>
 
           <div class="relative z-10">
             <component
@@ -211,7 +212,9 @@ const handleLeave = (element: HTMLElement) => {
             <h3 class="feature-title text-xl font-medium mb-3">
               {{ feature.title }}
             </h3>
-            <p class="feature-description text-sm text-gray-600 group-hover:text-gray-300 font-light leading-relaxed">
+            <p
+              class="feature-description text-sm text-gray-600 group-hover:text-gray-300 font-light leading-relaxed"
+            >
               {{ feature.description }}
             </p>
           </div>
@@ -224,9 +227,6 @@ const handleLeave = (element: HTMLElement) => {
         </div>
       </div>
     </div>
-
-
-
   </section>
 </template>
 

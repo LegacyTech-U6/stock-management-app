@@ -21,16 +21,16 @@
 </template>
 
 <script setup>
-import TopWorkerCard from './TopWorkerCard.vue';
+import TopWorkerCard from './TopWorkerCard.vue'
 
 defineProps({
   topWorker: {
     type: Object,
-    required: true
+    required: true,
   },
   otherWorkers: {
     type: Array,
-    required: true
-  }
-});
+    required: true,
+  },
+})
 </script>

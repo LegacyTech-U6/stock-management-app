@@ -1,5 +1,7 @@
 <template>
-  <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-lg transition-shadow">
+  <div
+    class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-lg transition-shadow"
+  >
     <!-- Three Dots Menu -->
     <div class="flex justify-end mb-2">
       <div class="relative">
@@ -75,10 +77,7 @@
         >
           {{ role }}
         </span>
-        <span
-          v-if="!worker.roles || worker.roles.length === 0"
-          class="text-gray-400 text-sm"
-        >
+        <span v-if="!worker.roles || worker.roles.length === 0" class="text-gray-400 text-sm">
           No roles assigned
         </span>
       </div>

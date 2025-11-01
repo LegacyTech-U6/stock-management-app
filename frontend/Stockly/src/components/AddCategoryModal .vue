@@ -69,30 +69,30 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch } from 'vue'
 
 const props = defineProps({
-  category: { type: Object, default: null }
-});
-const emit = defineEmits(['save', 'close']);
+  category: { type: Object, default: null },
+})
+const emit = defineEmits(['save', 'close'])
 
-const formData = ref({ name: '', description: '' });
-const editingCategory = ref(props.category);
+const formData = ref({ name: '', description: '' })
+const editingCategory = ref(props.category)
 
 watch(
   () => props.category,
   (newCategory) => {
-    editingCategory.value = newCategory;
+    editingCategory.value = newCategory
     formData.value = newCategory
       ? { name: newCategory.name, description: newCategory.description }
-      : { name: '', description: '' };
+      : { name: '', description: '' }
   },
-  { immediate: true }
-);
+  { immediate: true },
+)
 
 const handleSubmit = () => {
-  emit('save', { ...formData.value, id: editingCategory.value?.id });
-};
+  emit('save', { ...formData.value, id: editingCategory.value?.id })
+}
 </script>
 
 <style>

@@ -34,23 +34,16 @@
           <!-- <SalesPerformanceChart /> -->
           <SalesChart />
         </div>
-
-
       </div>
       <!-- Product Distribution -->
 
-
-        <RevenueCatgeory />
-
-
-
+      <RevenueCatgeory />
     </div>
 
     <!-- Rest of your dashboard content -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <TopSellingProducts />
       <LowStockAlertsPanel />
-
     </div>
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <!-- Left Column: Charts (2/3 width) -->
@@ -58,7 +51,6 @@
       <!-- Right Column: Side Panels (1/3 width) -->
       <div class="space-y-8">
         <!-- Notifications -->
-
 
         <!-- Recent Activity -->
         <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
@@ -72,7 +64,6 @@
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -103,7 +94,6 @@ import {
   Wallet,
 } from 'lucide-vue-next'
 import RevenueCatgeory from '../statistics/RevenueCatgeory.vue'
-
 
 const handleQuickAction = (action) => {
   console.log('Selected action:', action.value)

@@ -19,7 +19,13 @@
                 <n-icon :component="FileSpreadsheet" size="20" color="#10b981" />
               </template>
             </n-button>
-            <n-button class="icon-button" quaternary circle @click="handleRefresh" :focusable="false">
+            <n-button
+              class="icon-button"
+              quaternary
+              circle
+              @click="handleRefresh"
+              :focusable="false"
+            >
               <template #icon>
                 <n-icon :component="RefreshCw" size="20" />
               </template>
@@ -38,15 +44,25 @@
         <!-- Search and Filter Bar -->
         <n-card :bordered="false" class="toolbar-card">
           <div class="toolbar-content">
-            <n-input v-model:value="search" placeholder="Search" class="search-input" clearable
-              :input-props="{ autocomplete: 'off' }">
+            <n-input
+              v-model:value="search"
+              placeholder="Search"
+              class="search-input"
+              clearable
+              :input-props="{ autocomplete: 'off' }"
+            >
               <template #prefix>
                 <n-icon :component="Search" />
               </template>
             </n-input>
 
-            <n-select v-model:value="statusFilter" :options="statusOptions" placeholder="Status" class="status-select"
-              clearable />
+            <n-select
+              v-model:value="statusFilter"
+              :options="statusOptions"
+              placeholder="Status"
+              class="status-select"
+              clearable
+            />
           </div>
         </n-card>
 
@@ -60,30 +76,53 @@
 
         <!-- Client Table -->
         <n-card v-else-if="filteredClients.length > 0" :bordered="false" class="table-card">
-          <n-data-table :columns="columns" :data="paginatedClients" :bordered="false" :single-line="false"
-            class="clients-table" />
+          <n-data-table
+            :columns="columns"
+            :data="paginatedClients"
+            :bordered="false"
+            :single-line="false"
+            class="clients-table"
+          />
 
           <!-- Pagination -->
           <div class="pagination-container">
             <div class="pagination-info">
               <n-text depth="3">Row Per Page</n-text>
-              <n-select v-model:value="pageSize" :options="pageSizeOptions" size="small" class="page-size-select" />
+              <n-select
+                v-model:value="pageSize"
+                :options="pageSizeOptions"
+                size="small"
+                class="page-size-select"
+              />
               <n-text depth="3">Entries</n-text>
             </div>
-            <n-pagination v-model:page="currentPage" :page-count="pageCount" :page-slot="5" class="pagination" />
+            <n-pagination
+              v-model:page="currentPage"
+              :page-count="pageCount"
+              :page-slot="5"
+              class="pagination"
+            />
           </div>
         </n-card>
 
         <!-- Empty State -->
         <n-card v-else :bordered="false" class="empty-card">
-          <n-empty class="empty-state" :description="search ? 'No customers found' : 'No customers yet'" size="large">
+          <n-empty
+            class="empty-state"
+            :description="search ? 'No customers found' : 'No customers yet'"
+            size="large"
+          >
             <template #icon>
               <n-icon size="64" :component="Inbox" />
             </template>
             <template #extra>
               <n-space vertical :size="12" align="center">
                 <n-text depth="3">
-                  {{ search ? 'Try adjusting your search terms' : 'Get started by adding your first customer' }}
+                  {{
+                    search
+                      ? 'Try adjusting your search terms'
+                      : 'Get started by adding your first customer'
+                  }}
                 </n-text>
                 <n-button v-if="!search" type="success" @click="handleAddClient" size="large">
                   <template #icon>
@@ -91,9 +130,7 @@
                   </template>
                   Add Your First Customer
                 </n-button>
-                <n-button v-else @click="search = ''" size="large">
-                  Clear Search
-                </n-button>
+                <n-button v-else @click="search = ''" size="large"> Clear Search </n-button>
               </n-space>
             </template>
           </n-empty>
@@ -101,17 +138,29 @@
       </div>
 
       <!-- Modals -->
-      <FromModal :open="showModal" :isEdit="isEditMode" :clientData="selectedClient" :loading="loading" :error="error"
-        @close="handleCloseModal" @submit="handleSubmit" />
+      <FromModal
+        :open="showModal"
+        :isEdit="isEditMode"
+        :clientData="selectedClient"
+        :loading="loading"
+        :error="error"
+        @close="handleCloseModal"
+        @submit="handleSubmit"
+      />
 
-      <n-modal v-model:show="showDeleteModal" preset="dialog" title="Delete Customer" :positive-text="'Delete'"
-        :negative-text="'Cancel'" @positive-click="confirmDelete">
+      <n-modal
+        v-model:show="showDeleteModal"
+        preset="dialog"
+        title="Delete Customer"
+        :positive-text="'Delete'"
+        :negative-text="'Cancel'"
+        @positive-click="confirmDelete"
+      >
         <n-space vertical :size="16">
-          <n-alert type="warning" :show-icon="true">
-            This action cannot be undone
-          </n-alert>
+          <n-alert type="warning" :show-icon="true"> This action cannot be undone </n-alert>
           <n-text>
-            Are you sure you want to delete <n-text strong>{{ selectedClient?.client_name }}</n-text>?
+            Are you sure you want to delete <n-text strong>{{ selectedClient?.client_name }}</n-text
+            >?
           </n-text>
         </n-space>
       </n-modal>
@@ -120,24 +169,45 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, h } from 'vue';
+import { ref, computed, onMounted, h } from 'vue'
 import {
-  NConfigProvider, NCard, NButton, NIcon, NSpace, NText,
-  NInput, NSpin, NEmpty, NSelect, NModal, NAlert, NDataTable,
-  NPagination, NAvatar, NTag
-} from 'naive-ui';
+  NConfigProvider,
+  NCard,
+  NButton,
+  NIcon,
+  NSpace,
+  NText,
+  NInput,
+  NSpin,
+  NEmpty,
+  NSelect,
+  NModal,
+  NAlert,
+  NDataTable,
+  NPagination,
+  NAvatar,
+  NTag,
+} from 'naive-ui'
 import {
-  Users, Search, Plus, Inbox, FileText, FileSpreadsheet,
-  RefreshCw, Eye, Edit2, Trash2
-} from 'lucide-vue-next';
-import { useGlobalModal } from "@/composable/useValidation";
-const { show } = useGlobalModal();
-import { useClientStore } from '@/stores/clientStore';
-import { useActionMessage } from '@/composable/useActionMessage';
-import FromModal from '../components/clients/FromModal.vue';
+  Users,
+  Search,
+  Plus,
+  Inbox,
+  FileText,
+  FileSpreadsheet,
+  RefreshCw,
+  Eye,
+  Edit2,
+  Trash2,
+} from 'lucide-vue-next'
+import { useGlobalModal } from '@/composable/useValidation'
+const { show } = useGlobalModal()
+import { useClientStore } from '@/stores/clientStore'
+import { useActionMessage } from '@/composable/useActionMessage'
+import FromModal from '../components/clients/FromModal.vue'
 
-const { showSuccess, showError } = useActionMessage();
-const clientStore = useClientStore();
+const { showSuccess, showError } = useActionMessage()
+const clientStore = useClientStore()
 
 // Theme customization with green primary
 const themeOverrides = {
@@ -164,58 +234,64 @@ const themeOverrides = {
   DataTable: {
     thColor: '#f9fafb',
     borderColor: '#f3f4f6',
-  }
-};
+  },
+}
 
 // State
-const search = ref('');
-const statusFilter = ref(null);
-const showModal = ref(false);
-const showDeleteModal = ref(false);
-const isEditMode = ref(false);
-const selectedClient = ref(null);
-const loading = ref(false);
-const error = ref('');
-const loadingClients = ref(true);
-const currentPage = ref(1);
-const pageSize = ref(10);
+const search = ref('')
+const statusFilter = ref(null)
+const showModal = ref(false)
+const showDeleteModal = ref(false)
+const isEditMode = ref(false)
+const selectedClient = ref(null)
+const loading = ref(false)
+const error = ref('')
+const loadingClients = ref(true)
+const currentPage = ref(1)
+const pageSize = ref(10)
 
 // Options
 const statusOptions = [
   { label: 'All Status', value: null },
   { label: 'Active', value: 'active' },
   { label: 'Inactive', value: 'inactive' },
-  { label: 'Pending', value: 'pending' }
-];
+  { label: 'Pending', value: 'pending' },
+]
 
 const pageSizeOptions = [
   { label: '10', value: 10 },
   { label: '20', value: 20 },
   { label: '50', value: 50 },
-  { label: '100', value: 100 }
-];
+  { label: '100', value: 100 },
+]
 
 // Helper functions
 const getInitials = (name) => {
-  if (!name) return '?';
-  const parts = name.trim().split(' ');
+  if (!name) return '?'
+  const parts = name.trim().split(' ')
   if (parts.length >= 2) {
-    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
   }
-  return name.substring(0, 2).toUpperCase();
-};
+  return name.substring(0, 2).toUpperCase()
+}
 
 const getAvatarColor = (name) => {
   const colors = [
-    '#3B82F6', '#10B981', '#F59E0B', '#EF4444',
-    '#8B5CF6', '#EC4899', '#14B8A6', '#F97316'
-  ];
-  let hash = 0;
+    '#3B82F6',
+    '#10B981',
+    '#F59E0B',
+    '#EF4444',
+    '#8B5CF6',
+    '#EC4899',
+    '#14B8A6',
+    '#F97316',
+  ]
+  let hash = 0
   for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    hash = name.charCodeAt(i) + ((hash << 5) - hash)
   }
-  return colors[Math.abs(hash) % colors.length];
-};
+  return colors[Math.abs(hash) % colors.length]
+}
 
 // Table columns
 const columns = [
@@ -229,16 +305,20 @@ const columns = [
     key: 'customer',
     render: (row) => {
       return h('div', { class: 'customer-cell' }, [
-        h(NAvatar, {
-          size: 32,
-          round: true,
-          style: { backgroundColor: getAvatarColor(row.client_name) }
-        }, {
-          default: () => getInitials(row.client_name)
-        }),
-        h('span', { class: 'customer-name' }, row.client_name)
-      ]);
-    }
+        h(
+          NAvatar,
+          {
+            size: 32,
+            round: true,
+            style: { backgroundColor: getAvatarColor(row.client_name) },
+          },
+          {
+            default: () => getInitials(row.client_name),
+          },
+        ),
+        h('span', { class: 'customer-name' }, row.client_name),
+      ])
+    },
   },
   {
     title: 'Email',
@@ -256,16 +336,20 @@ const columns = [
     title: 'Status',
     key: 'status',
     render: (row) => {
-      const status = row.status || 'active';
-      const type = status === 'active' ? 'success' : status === 'inactive' ? 'default' : 'warning';
-      return h(NTag, {
-        type,
-        size: 'small',
-        round: true
-      }, {
-        default: () => status.charAt(0).toUpperCase() + status.slice(1)
-      });
-    }
+      const status = row.status || 'active'
+      const type = status === 'active' ? 'success' : status === 'inactive' ? 'default' : 'warning'
+      return h(
+        NTag,
+        {
+          type,
+          size: 'small',
+          round: true,
+        },
+        {
+          default: () => status.charAt(0).toUpperCase() + status.slice(1),
+        },
+      )
+    },
   },
   {
     title: '',
@@ -273,154 +357,167 @@ const columns = [
     width: 120,
     render: (row) => {
       return h('div', { class: 'action-buttons' }, [
-        h(NButton, {
-          quaternary: true,
-          circle: true,
-          size: 'small',
-          onClick: () => handleViewClient(row)
-        }, {
-          icon: () => h(NIcon, { component: Eye, size: 18 })
-        }),
-        h(NButton, {
-          quaternary: true,
-          circle: true,
-          size: 'small',
-          onClick: () => handleEditClient(row)
-        }, {
-          icon: () => h(NIcon, { component: Edit2, size: 18 })
-        }),
-        h(NButton, {
-          quaternary: true,
-          circle: true,
-          size: 'small',
-          onClick: () => handleDeleteClient(row)
-        }, {
-          icon: () => h(NIcon, { component: Trash2, size: 18, color: '#ef4444' })
-        })
-      ]);
-    }
-  }
-];
+        h(
+          NButton,
+          {
+            quaternary: true,
+            circle: true,
+            size: 'small',
+            onClick: () => handleViewClient(row),
+          },
+          {
+            icon: () => h(NIcon, { component: Eye, size: 18 }),
+          },
+        ),
+        h(
+          NButton,
+          {
+            quaternary: true,
+            circle: true,
+            size: 'small',
+            onClick: () => handleEditClient(row),
+          },
+          {
+            icon: () => h(NIcon, { component: Edit2, size: 18 }),
+          },
+        ),
+        h(
+          NButton,
+          {
+            quaternary: true,
+            circle: true,
+            size: 'small',
+            onClick: () => handleDeleteClient(row),
+          },
+          {
+            icon: () => h(NIcon, { component: Trash2, size: 18, color: '#ef4444' }),
+          },
+        ),
+      ])
+    },
+  },
+]
 
 // Computed properties
 const filteredClients = computed(() => {
-  let clients = clientStore.clients;
+  let clients = clientStore.clients
 
   // Filter by search
   if (search.value) {
-    clients = clients.filter(client =>
-      client.client_name?.toLowerCase().includes(search.value.toLowerCase()) ||
-      client.email?.toLowerCase().includes(search.value.toLowerCase()) ||
-      client.client_signature?.toLowerCase().includes(search.value.toLowerCase())
-    );
+    clients = clients.filter(
+      (client) =>
+        client.client_name?.toLowerCase().includes(search.value.toLowerCase()) ||
+        client.email?.toLowerCase().includes(search.value.toLowerCase()) ||
+        client.client_signature?.toLowerCase().includes(search.value.toLowerCase()),
+    )
   }
 
   // Filter by status
   if (statusFilter.value) {
-    clients = clients.filter(c => c.status === statusFilter.value);
+    clients = clients.filter((c) => c.status === statusFilter.value)
   }
 
-  return clients;
-});
+  return clients
+})
 
-const pageCount = computed(() => Math.ceil(filteredClients.value.length / pageSize.value));
+const pageCount = computed(() => Math.ceil(filteredClients.value.length / pageSize.value))
 
 const paginatedClients = computed(() => {
-  const start = (currentPage.value - 1) * pageSize.value;
-  const end = start + pageSize.value;
-  return filteredClients.value.slice(start, end);
-});
+  const start = (currentPage.value - 1) * pageSize.value
+  const end = start + pageSize.value
+  return filteredClients.value.slice(start, end)
+})
 
 // Methods
 const handleAddClient = () => {
-  isEditMode.value = false;
-  selectedClient.value = null;
-  showModal.value = true;
-  error.value = '';
-};
+  isEditMode.value = false
+  selectedClient.value = null
+  showModal.value = true
+  error.value = ''
+}
 
 const handleViewClient = (client) => {
   // Implement view logic
-  console.log('View client:', client);
-};
+  console.log('View client:', client)
+}
 
 const handleEditClient = (client) => {
-  isEditMode.value = true;
-  selectedClient.value = client;
-  showModal.value = true;
-  error.value = '';
-};
+  isEditMode.value = true
+  selectedClient.value = client
+  showModal.value = true
+  error.value = ''
+}
 
 const handleCloseModal = () => {
-  showModal.value = false;
-  error.value = '';
-};
+  showModal.value = false
+  error.value = ''
+}
 
 const handleSubmit = async (formData) => {
-  loading.value = true;
-  error.value = '';
+  loading.value = true
+  error.value = ''
 
   try {
     if (isEditMode.value) {
-      await clientStore.updateClient(selectedClient.value.id, formData);
-      show('Customer updated successfully!', 'success');
+      await clientStore.updateClient(selectedClient.value.id, formData)
+      show('Customer updated successfully!', 'success')
     } else {
-      console.log('====================================');
-      console.log(formData);
-      console.log('====================================');
-      await clientStore.addClient(formData);
-      show('Customer created successfully!', 'success');
+      console.log('====================================')
+      console.log(formData)
+      console.log('====================================')
+      await clientStore.addClient(formData)
+      show('Customer created successfully!', 'success')
     }
 
-    showModal.value = false;
-    await clientStore.fetchClients();
+    showModal.value = false
+    await clientStore.fetchClients()
   } catch (err) {
-    error.value = err.response?.data?.message || 'Operation failed';
-    show('Operation failed: ' + error.value, 'error');
+    error.value = err.response?.data?.message || 'Operation failed'
+    show('Operation failed: ' + error.value, 'error')
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 
 const handleDeleteClient = (client) => {
-  selectedClient.value = client;
-  showDeleteModal.value = true;
-};
+  selectedClient.value = client
+  showDeleteModal.value = true
+}
 
 const confirmDelete = async () => {
   try {
-    await clientStore.deleteclient(selectedClient.value.id);
-    show('Customer deleted successfully!', 'success');
-    await clientStore.fetchClients();
+    await clientStore.deleteclient(selectedClient.value.id)
+    show('Customer deleted successfully!', 'success')
+    await clientStore.fetchClients()
   } catch (err) {
-    show('Failed to delete customer', 'error');
+    show('Failed to delete customer', 'error')
   } finally {
-    showDeleteModal.value = false;
-    selectedClient.value = null;
+    showDeleteModal.value = false
+    selectedClient.value = null
   }
-};
+}
 
 const handleRefresh = async () => {
-  loadingClients.value = true;
-  await clientStore.fetchClients();
-  loadingClients.value = false;
-  showSuccess('Data refreshed!');
-};
+  loadingClients.value = true
+  await clientStore.fetchClients()
+  loadingClients.value = false
+  showSuccess('Data refreshed!')
+}
 
 const exportPDF = () => {
-  showSuccess('PDF export feature coming soon!');
-};
+  showSuccess('PDF export feature coming soon!')
+}
 
 const exportExcel = () => {
-  showSuccess('Excel export feature coming soon!');
-};
+  showSuccess('Excel export feature coming soon!')
+}
 
 // Lifecycle
 onMounted(async () => {
-  loadingClients.value = true;
-  await clientStore.fetchClients();
-  loadingClients.value = false;
-});
+  loadingClients.value = true
+  await clientStore.fetchClients()
+  loadingClients.value = false
+})
 </script>
 
 <style scoped>
@@ -430,7 +527,6 @@ onMounted(async () => {
 }
 
 .page-header {
-
   border-bottom: 1px solid #f3f4f6;
   padding: 20px 32px;
 }

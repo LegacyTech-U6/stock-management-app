@@ -5,7 +5,9 @@
       <div class="flex justify-between items-start mb-2">
         <div>
           <h1 class="text-3xl font-bold text-gray-900">Role Management</h1>
-          <p class="text-gray-500 text-sm">Organize your user roles with permissions • <span id="total-roles">0</span> roles total</p>
+          <p class="text-gray-500 text-sm">
+            Organize your user roles with permissions • <span id="total-roles">0</span> roles total
+          </p>
         </div>
         <button
           @click="openCreateForm"
@@ -19,8 +21,18 @@
     <!-- Search Bar -->
     <div class="mb-8">
       <div class="relative">
-        <svg class="absolute left-3 top-3 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        <svg
+          class="absolute left-3 top-3 w-5 h-5 text-gray-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+          ></path>
         </svg>
         <input
           v-model="searchQuery"
@@ -104,7 +116,12 @@
               class="text-gray-400 hover:text-blue-500 transition-colors p-2"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                ></path>
               </svg>
             </button>
             <button
@@ -112,7 +129,9 @@
               class="text-gray-400 hover:text-red-500 transition-colors p-2"
             >
               <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"></path>
+                <path
+                  d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"
+                ></path>
               </svg>
             </button>
           </div>
@@ -131,8 +150,18 @@
 
     <!-- Empty State -->
     <div v-if="roleStore.roles.length === 0 && !roleStore.loading" class="text-center py-12">
-      <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+      <svg
+        class="w-16 h-16 text-gray-300 mx-auto mb-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+        ></path>
       </svg>
       <p class="text-gray-500 text-lg">No roles found</p>
       <p class="text-gray-400 text-sm">Create your first role to get started</p>
@@ -144,7 +173,10 @@
     </div>
 
     <!-- Error State -->
-    <div v-if="roleStore.error" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+    <div
+      v-if="roleStore.error"
+      class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg"
+    >
       {{ roleStore.error }}
     </div>
 
@@ -155,19 +187,14 @@
       @click="closeModal"
     >
       <!-- Modal -->
-      <div
-        class="bg-white rounded-lg shadow-xl max-w-md w-full p-6"
-        @click.stop
-      >
+      <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6" @click.stop>
         <h2 class="text-2xl font-bold text-gray-900 mb-4">
           {{ editingRole ? 'Edit Role' : 'Create New Role' }}
         </h2>
 
         <form @submit.prevent="handleSubmitForm" class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Role Name *
-            </label>
+            <label class="block text-sm font-medium text-gray-700 mb-2"> Role Name * </label>
             <input
               v-model="formData.name"
               type="text"
@@ -178,9 +205,7 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Description
-            </label>
+            <label class="block text-sm font-medium text-gray-700 mb-2"> Description </label>
             <textarea
               v-model="formData.description"
               placeholder="Describe the purpose of this role..."
@@ -208,28 +233,28 @@
       </div>
     </div>
   </div>
-    <ActionModal
-      v-model="showDeleteModal"
-      title="Delete Role"
-      message="Are you sure you want to delete this role? This action cannot be undone."
-      confirm-text="Delete"
-      cancel-text="Cancel"
-      @confirm="confirmDelete"
-    />
+  <ActionModal
+    v-model="showDeleteModal"
+    title="Delete Role"
+    message="Are you sure you want to delete this role? This action cannot be undone."
+    confirm-text="Delete"
+    cancel-text="Cancel"
+    @confirm="confirmDelete"
+  />
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue"
-import { useRoleStore } from "@/stores/roleStore"
+import { ref, computed, onMounted } from 'vue'
+import { useRoleStore } from '@/stores/roleStore'
 import { useActionMessage } from '@/composable/useActionMessage'
 const { showSuccess, showError } = useActionMessage()
 const roleStore = useRoleStore()
-const searchQuery = ref("")
+const searchQuery = ref('')
 const showModal = ref(false)
 const editingRole = ref(null)
-const formData = ref({ name: "", description: "" })
+const formData = ref({ name: '', description: '' })
 
-const colors = ["#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#8B5CF6", "#EC4899"]
+const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899']
 
 // Fetch roles on mount
 onMounted(() => {
@@ -259,9 +284,10 @@ const confirmDelete = async () => {
 }
 const filteredRoles = computed(() => {
   if (!searchQuery.value) return roleStore.roles
-  return roleStore.roles.filter(role =>
-    role.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-    role.description.toLowerCase().includes(searchQuery.value.toLowerCase())
+  return roleStore.roles.filter(
+    (role) =>
+      role.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      role.description.toLowerCase().includes(searchQuery.value.toLowerCase()),
   )
 })
 
@@ -279,7 +305,7 @@ function calculatePermissions() {
 
 function openCreateForm() {
   editingRole.value = null
-  formData.value = { name: "", description: "" }
+  formData.value = { name: '', description: '' }
   showModal.value = true
 }
 
@@ -292,7 +318,7 @@ function openEditForm(role) {
 function closeModal() {
   showModal.value = false
   editingRole.value = null
-  formData.value = { name: "", description: "" }
+  formData.value = { name: '', description: '' }
 }
 
 async function handleSubmitForm() {
@@ -316,8 +342,6 @@ async function handleSubmitForm() {
 
   closeModal()
 }
-
-
 </script>
 
 <style scoped>

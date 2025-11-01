@@ -1,19 +1,11 @@
 <template>
-
   <NavbarAdmin>
-     <router-view v-slot="{ Component }">
-        <transition
-          name="page"
-          mode="out-in"
-          appear
-        >
-          <component :is="Component" />
-        </transition>
-      </router-view>
-
+    <router-view v-slot="{ Component }">
+      <transition name="page" mode="out-in" appear>
+        <component :is="Component" />
+      </transition>
+    </router-view>
   </NavbarAdmin>
-
-
 </template>
 
 <script setup>
@@ -21,8 +13,11 @@ import NavbarAdmin from '@/components/NavbarAdmin.vue'
 </script>
 <style>
 /* Enter/Leave animations */
-.page-enter-active, .page-leave-active {
-  transition: opacity 0.5s ease, transform 0.5s ease;
+.page-enter-active,
+.page-leave-active {
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
 }
 
 /* Entry animation */
@@ -45,6 +40,3 @@ import NavbarAdmin from '@/components/NavbarAdmin.vue'
   transform: translateY(-20px); /* slide up while leaving */
 }
 </style>
-
-
-

@@ -38,13 +38,13 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useAuthStore } from "@/stores/authStore";
+import { ref } from 'vue'
+import { useAuthStore } from '@/stores/authStore'
 
-const authStore = useAuthStore();
-const email = ref("");
+const authStore = useAuthStore()
+const email = ref('')
 
 const sendResetLink = () => {
-  authStore.forgotPassword(email.value);
-};
+  authStore.forgotPassword(email.value)
+}
 </script>

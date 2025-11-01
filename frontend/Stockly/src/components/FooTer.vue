@@ -39,7 +39,7 @@
       </div>
     </div>
 
-    <hr class="my-6 border-gray-300">
+    <hr class="my-6 border-gray-300" />
 
     <div class="flex justify-between text-sm text-gray-600">
       <div>

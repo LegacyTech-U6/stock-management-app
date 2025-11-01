@@ -27,20 +27,20 @@ const routes: RouteRecordRaw[] = [
     meta: { showNavbarAndFooter: false },
   },
   {
-  path: "/verify/:token",
-  name: "VerifyEmail",
-  component: () => import("@/views/auth/VerifyEmail.vue"),
-},
-{
-  path:"/activation",
-  name:"activation",
-  component:()=>import("@/views/auth/ActivationSent.vue")
-},
+    path: '/verify/:token',
+    name: 'VerifyEmail',
+    component: () => import('@/views/auth/VerifyEmail.vue'),
+  },
+  {
+    path: '/activation',
+    name: 'activation',
+    component: () => import('@/views/auth/ActivationSent.vue'),
+  },
 
   {
     path: '/ad',
     component: () => import('@/views/AdminLayout.vue'),
-    meta: { showNavbarAndFooter: false ,requiresAuth: true},
+    meta: { showNavbarAndFooter: false, requiresAuth: true },
     children: [
       {
         path: 'admin',
@@ -71,18 +71,19 @@ const routes: RouteRecordRaw[] = [
         name: 'company',
         component: () => import('@/views/CreateEntreprise.vue'),
         meta: { showNavbarAndFooter: false },
-      },{
-        path:'settings',
-        name:'settings',
-        component:()=>import('@/views/settings/AdminSetting.vue')
-      }
+      },
+      {
+        path: 'settings',
+        name: 'settings',
+        component: () => import('@/views/settings/AdminSetting.vue'),
+      },
     ],
   },
   {
     path: '/:uuid',
     name: 'real',
     component: () => import('../views/LayoutPage.vue'),
-    meta: { showNavbarAndFooter: false,requiresAuth: true },
+    meta: { showNavbarAndFooter: false, requiresAuth: true },
     redirect: '/real/sales', // Optional: redirect to a default page
     children: [
       {
@@ -91,9 +92,9 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/views/Enterprise.vue'),
       },
       {
-        path:'AuditTrail',
-        name:'Audit Trail',
-        component:()=>import('@/views/ActivityLogPage.vue')
+        path: 'AuditTrail',
+        name: 'Audit Trail',
+        component: () => import('@/views/ActivityLogPage.vue'),
       },
       {
         path: 'sales',
@@ -169,12 +170,12 @@ const routes: RouteRecordRaw[] = [
         path: 'invoices/:id',
         name: 'InvoiceDetail',
         component: () => import('@/components/invoices/InvoiceDetail.vue'),
-      },{
-        path:'reports',
-        name:'reports',
-        component:()=>import('@/views/SalesReport.vue')
-
-      }
+      },
+      {
+        path: 'reports',
+        name: 'reports',
+        component: () => import('@/views/SalesReport.vue'),
+      },
     ],
   },
 ]
@@ -200,14 +201,10 @@ router.beforeEach(async (to, from, next) => {
   }
 })
 
-
-
 router.afterEach((to, from) => {
   // Si on revient sur la page /entreprises, on désactive l’entreprise
   if (to.path === '/admin') {
     localStorage.removeItem('activeEnterprise')
-
-
   }
 })
 

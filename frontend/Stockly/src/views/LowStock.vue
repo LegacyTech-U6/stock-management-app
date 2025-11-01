@@ -1,4 +1,3 @@
-
 <template>
   <div class="min-h-screen bg-gray-50 p-8">
     <div class="max-w-7xl mx-auto">
@@ -11,7 +10,9 @@
               {{ lowStockProducts.length }} products below minimum stock levels
             </p>
           </div>
-          <button class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-700 font-medium">
+          <button
+            class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-700 font-medium"
+          >
             Back to Inventory
           </button>
         </div>
@@ -22,8 +23,18 @@
         <div class="bg-white rounded-lg border border-gray-200 p-6">
           <div class="flex items-center gap-3 mb-2">
             <div class="p-2 bg-blue-100 rounded-lg">
-              <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+              <svg
+                class="w-5 h-5 text-blue-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                />
               </svg>
             </div>
             <span class="text-gray-600 text-sm">Total Units Needed</span>
@@ -34,8 +45,18 @@
         <div class="bg-white rounded-lg border border-gray-200 p-6">
           <div class="flex items-center gap-3 mb-2">
             <div class="p-2 bg-green-100 rounded-lg">
-              <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg
+                class="w-5 h-5 text-green-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
             </div>
             <span class="text-gray-600 text-sm">Est. Reorder Cost</span>
@@ -46,8 +67,18 @@
         <div class="bg-white rounded-lg border border-gray-200 p-6">
           <div class="flex items-center gap-3 mb-2">
             <div class="p-2 bg-red-100 rounded-lg">
-              <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              <svg
+                class="w-5 h-5 text-red-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                />
               </svg>
             </div>
             <span class="text-gray-600 text-sm">Urgent Restocks</span>
@@ -59,8 +90,18 @@
       <!-- Search and Filters -->
       <div class="bg-white rounded-lg border border-gray-200 p-6 mb-8">
         <div class="relative mb-4">
-          <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          <svg
+            class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
           </svg>
           <input
             type="text"
@@ -72,9 +113,7 @@
 
         <div class="flex gap-4">
           <div class="flex-1">
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Stock Level
-            </label>
+            <label class="block text-sm font-medium text-gray-700 mb-2"> Stock Level </label>
             <select
               v-model="stockLevelFilter"
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -86,9 +125,7 @@
           </div>
 
           <div class="flex-1">
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Sort by
-            </label>
+            <label class="block text-sm font-medium text-gray-700 mb-2"> Sort by </label>
             <select
               v-model="sortBy"
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -114,10 +151,12 @@
       <div v-else class="bg-white rounded-lg border border-gray-200 p-12 text-center">
         <div class="text-6xl mb-4">✅</div>
         <h3 class="text-xl font-semibold text-gray-900 mb-2">No Low Stock Products</h3>
-        <p class="text-gray-500">All products are adequately stocked. Excellent inventory management!</p>
+        <p class="text-gray-500">
+          All products are adequately stocked. Excellent inventory management!
+        </p>
       </div>
     </div>
-     <RestockModal
+    <RestockModal
       :isOpen="isModalOpen"
       :product="selectedProduct"
       :suppliers="suppliers"
@@ -125,113 +164,107 @@
       @restock="handleRestock"
     />
   </div>
-
 </template>
 <script setup>
-import { ref, computed, onMounted } from "vue";
-import LowStockCard from "../components/LowStockCard.vue";
-import { LowStock } from "@/service/api";
-import RestockModal from "@/components/RestockModal.vue";
+import { ref, computed, onMounted } from 'vue'
+import LowStockCard from '../components/LowStockCard.vue'
+import { LowStock } from '@/service/api'
+import RestockModal from '@/components/RestockModal.vue'
 import { useRouter, useRoute } from 'vue-router'
-const searchQuery = ref("");
-const stockLevelFilter = ref("all");
-const sortBy = ref("urgency");
-const lowStockProducts = ref([]); // ✅ reactive list
-const error = ref(null);
-const isModalOpen = ref(false);
+const searchQuery = ref('')
+const stockLevelFilter = ref('all')
+const sortBy = ref('urgency')
+const lowStockProducts = ref([]) // ✅ reactive list
+const error = ref(null)
+const isModalOpen = ref(false)
 const message = ref('')
 onMounted(async () => {
-  await fetchLowStockProducts();
-});
+  await fetchLowStockProducts()
+})
 
 const router = useRouter()
 const route = useRoute()
-const selectedProduct = ref(null);
+const selectedProduct = ref(null)
 async function fetchLowStockProducts() {
   try {
-    const data = await LowStock();
+    const data = await LowStock()
     message.value = data.message
 
-    lowStockProducts.value =  data.products;
-    error.value = null;
-    console.log("✅ Low products loaded:", lowStockProducts.value);
+    lowStockProducts.value = data.products
+    error.value = null
+    console.log('✅ Low products loaded:', lowStockProducts.value)
   } catch (err) {
-    console.error("❌ Error fetching low stock:", err);
-    error.value = err;
-    lowStockProducts.value = [];
+    console.error('❌ Error fetching low stock:', err)
+    error.value = err
+    lowStockProducts.value = []
   }
 }
 const suppliers = ref([
-  { id: 1, name: "Supplier A" },
-  { id: 2, name: "Supplier B" },
-]);
+  { id: 1, name: 'Supplier A' },
+  { id: 2, name: 'Supplier B' },
+])
 
 const totalUnitsNeeded = computed(() =>
-  (lowStockProducts.value || []).reduce(
-    (sum, p) => sum + (p.min_stock_level - p.quantity),
-    0
-  )
-);
+  (lowStockProducts.value || []).reduce((sum, p) => sum + (p.min_stock_level - p.quantity), 0),
+)
 
 const totalReorderCost = computed(() =>
-  (lowStockProducts.value || []).reduce((sum, p) => sum + (p.cost_price * (p.min_stock_level - p.quantity)), 0)
-);
+  (lowStockProducts.value || []).reduce(
+    (sum, p) => sum + p.cost_price * (p.min_stock_level - p.quantity),
+    0,
+  ),
+)
 
-const urgentRestockCount = computed(() =>
-  (lowStockProducts.value || []).filter((p) => p.stockLevel === "critical").length
-);
+const urgentRestockCount = computed(
+  () => (lowStockProducts.value || []).filter((p) => p.stockLevel === 'critical').length,
+)
 
 const filteredProducts = computed(() => {
-  let result = lowStockProducts.value || [];
+  let result = lowStockProducts.value || []
 
   if (searchQuery.value) {
-    const q = searchQuery.value.toLowerCase();
+    const q = searchQuery.value.toLowerCase()
     result = result.filter(
       (p) =>
         p.name.toLowerCase().includes(q) ||
         p.sku.toLowerCase().includes(q) ||
-        p.supplier.toLowerCase().includes(q)
-    );
+        p.supplier.toLowerCase().includes(q),
+    )
   }
 
-  if (stockLevelFilter.value !== "all") {
-    result = result.filter((p) => p.stockLevel === stockLevelFilter.value);
+  if (stockLevelFilter.value !== 'all') {
+    result = result.filter((p) => p.stockLevel === stockLevelFilter.value)
   }
 
-  if (sortBy.value === "unitsNeeded") {
-    result = result.sort(
-      (a, b) => b.minStock - b.currentStock - (a.minStock - a.currentStock)
-    );
-  } else if (sortBy.value === "reorderCost") {
-    result = result.sort((a, b) => b.reorderCost - a.reorderCost);
+  if (sortBy.value === 'unitsNeeded') {
+    result = result.sort((a, b) => b.minStock - b.currentStock - (a.minStock - a.currentStock))
+  } else if (sortBy.value === 'reorderCost') {
+    result = result.sort((a, b) => b.reorderCost - a.reorderCost)
   } else {
     result = result.sort(
-      (a, b) =>
-        (b.stockLevel === "critical" ? 1 : 0) -
-        (a.stockLevel === "critical" ? 1 : 0)
-    );
+      (a, b) => (b.stockLevel === 'critical' ? 1 : 0) - (a.stockLevel === 'critical' ? 1 : 0),
+    )
   }
 
-  return result;
-});
+  return result
+})
 function openRestockModal(product) {
-  selectedProduct.value = product;
-  isModalOpen.value = true;
+  selectedProduct.value = product
+  isModalOpen.value = true
 }
 const handleRestock = (lowStockProduct) => {
-  if (!lowStockProduct) return console.error("❌ No product loaded")
+  if (!lowStockProduct) return console.error('❌ No product loaded')
 
   router.push({
     name: 'restock',
-    params: { reStockId: lowStockProduct.id }
+    params: { reStockId: lowStockProduct.id },
   })
   console.log('Restock product:', lowStockProduct.id)
 }
 function formatCurrency(amount) {
-  return new Intl.NumberFormat("en-US", {
+  return new Intl.NumberFormat('en-US', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  }).format(amount);
+  }).format(amount)
 }
 </script>
-

@@ -19,14 +19,17 @@ const props = defineProps({
   message: { type: String, default: 'Are you sure you want to proceed?' },
   confirmText: { type: String, default: 'Yes' },
   cancelText: { type: String, default: 'Cancel' },
-  modelValue: { type: Boolean, default: false }
+  modelValue: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['update:modelValue', 'confirm', 'cancel'])
 
 const show = ref(props.modelValue)
 
-watch(() => props.modelValue, (val) => (show.value = val))
+watch(
+  () => props.modelValue,
+  (val) => (show.value = val),
+)
 watch(show, (val) => emit('update:modelValue', val))
 
 const handleConfirm = () => {

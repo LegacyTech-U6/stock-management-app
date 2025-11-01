@@ -26,8 +26,8 @@ const handleRegister = () => {
 
 <template>
   <section
-    :style="{ backgroundImage: `url('/src/assets/image/branding.png')` }"
-    class="relative lg:mt-10 text-white pt-30 lg:grid grid-cols-3 bg-cover min-h-[90vh] items-center justify-center px-6 overflow-x-hidden bg-indigo-50"
+    :style="{ backgroundImage: `url('@/assets/image/branding.png')` }"
+    class="relative lg:mt-10 text-white pt-30 lg:grid grid-cols-3 bg-cover min-h-[90vh] items-center justify-center px-6 overflow-x-hidden bg-indigo-500"
   >
     <div class="relative z-10 col-span-2 max-w-5xl w-full space-y-12 text-center">
       <h1 class="text-5xl md:text-7xl font-light text-white tracking-tight leading-tight">
@@ -65,7 +65,6 @@ const handleRegister = () => {
         </div>
       </div>
     </div>
-    
   </section>
 </template>
 

@@ -55,5 +55,5 @@ const props = defineProps({
     required: true,
   },
 })
-const quantity=ref()
+const quantity = ref()
 </script>

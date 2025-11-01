@@ -16,9 +16,7 @@
     </div>
 
     <!-- Loading -->
-    <div v-if="roleStore.loading" class="text-center text-gray-500 py-10">
-      Loading roles...
-    </div>
+    <div v-if="roleStore.loading" class="text-center text-gray-500 py-10">Loading roles...</div>
 
     <!-- Error -->
     <div v-else-if="roleStore.error" class="text-center text-red-500 py-10">
@@ -35,13 +33,19 @@
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
               ID
             </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
               Role Name
             </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
               Actions
             </th>
           </tr>
@@ -52,10 +56,7 @@
             <td class="px-6 py-4 text-sm text-gray-700">{{ role.id }}</td>
             <td class="px-6 py-4 text-sm text-gray-700">{{ role.name }}</td>
             <td class="px-6 py-4 text-sm text-gray-700 space-x-3">
-              <button
-                @click="editRole(role)"
-                class="text-blue-600 hover:text-blue-800 font-medium"
-              >
+              <button @click="editRole(role)" class="text-blue-600 hover:text-blue-800 font-medium">
                 Edit
               </button>
               <button
@@ -114,13 +115,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue"
-import { useRoleStore } from "@/stores/roleStore"
+import { ref, onMounted } from 'vue'
+import { useRoleStore } from '@/stores/roleStore'
 
 const roleStore = useRoleStore()
 const showModal = ref(false)
 const editingRole = ref(null)
-const form = ref({ name: "" })
+const form = ref({ name: '' })
 
 onMounted(() => {
   roleStore.fetchRoles()
@@ -129,7 +130,7 @@ onMounted(() => {
 // Open modal for new role
 function openAddModal() {
   editingRole.value = null
-  form.value = { name: "" }
+  form.value = { name: '' }
   showModal.value = true
 }
 
@@ -152,7 +153,7 @@ async function saveRole() {
 
 // Delete role
 async function deleteRole(id) {
-  if (confirm("Are you sure you want to delete this role?")) {
+  if (confirm('Are you sure you want to delete this role?')) {
     await roleStore.removeRole(id)
   }
 }

@@ -29,8 +29,8 @@
         <svg class="w-20 h-10 opacity-70" viewBox="0 0 80 40">
           <defs>
             <linearGradient :id="`gradient-${idx}`" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" style="stop-color:#ff7b54; stop-opacity:0.3" />
-              <stop offset="100%" style="stop-color:#ff7b54; stop-opacity:0" />
+              <stop offset="0%" style="stop-color: #ff7b54; stop-opacity: 0.3" />
+              <stop offset="100%" style="stop-color: #ff7b54; stop-opacity: 0" />
             </linearGradient>
           </defs>
           <polyline

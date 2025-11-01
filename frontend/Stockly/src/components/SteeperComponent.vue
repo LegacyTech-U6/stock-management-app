@@ -10,7 +10,12 @@
               class="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 mb-2 transition-colors"
             >
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 19l-7-7 7-7"
+                />
               </svg>
               <span>Back to Product</span>
             </button>
@@ -50,8 +55,18 @@
           >
             <div class="flex items-center gap-3">
               <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center">
-                <svg class="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg
+                  class="w-4 h-4 text-orange-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
               </div>
               <h2 class="text-base font-semibold text-gray-900">Product Information</h2>
@@ -63,7 +78,12 @@
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
             </svg>
           </button>
 
@@ -98,7 +118,9 @@
                   <option value="">Select category</option>
                   <option v-for="c in categories" :key="c.id" :value="c.id">{{ c.name }}</option>
                 </select>
-                <p v-if="errors.category" class="text-red-600 text-xs mt-1">{{ errors.category }}</p>
+                <p v-if="errors.category" class="text-red-600 text-xs mt-1">
+                  {{ errors.category }}
+                </p>
               </div>
 
               <!-- Barcode -->
@@ -141,7 +163,9 @@
                     {{ s.supplier_name }}
                   </option>
                 </select>
-                <p v-if="errors.supplier" class="text-red-600 text-xs mt-1">{{ errors.supplier }}</p>
+                <p v-if="errors.supplier" class="text-red-600 text-xs mt-1">
+                  {{ errors.supplier }}
+                </p>
               </div>
             </div>
 
@@ -152,7 +176,12 @@
                 <div class="bg-gray-50 border-b border-gray-300 px-3 py-2 flex items-center gap-2">
                   <button class="p-1 hover:bg-gray-200 rounded">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
                     </svg>
                   </button>
                   <span class="text-xs text-gray-600">Normal</span>
@@ -178,8 +207,18 @@
           >
             <div class="flex items-center gap-3">
               <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center">
-                <svg class="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg
+                  class="w-4 h-4 text-orange-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
               </div>
               <h2 class="text-base font-semibold text-gray-900">Pricing & Stocks</h2>
@@ -191,7 +230,12 @@
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
             </svg>
           </button>
 
@@ -223,7 +267,9 @@
                   class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   :class="{ 'border-red-500': errors.costPrice }"
                 />
-                <p v-if="errors.costPrice" class="text-red-600 text-xs mt-1">{{ errors.costPrice }}</p>
+                <p v-if="errors.costPrice" class="text-red-600 text-xs mt-1">
+                  {{ errors.costPrice }}
+                </p>
               </div>
 
               <!-- Selling Price -->
@@ -238,7 +284,9 @@
                   class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   :class="{ 'border-red-500': errors.sellingPrice }"
                 />
-                <p v-if="errors.sellingPrice" class="text-red-600 text-xs mt-1">{{ errors.sellingPrice }}</p>
+                <p v-if="errors.sellingPrice" class="text-red-600 text-xs mt-1">
+                  {{ errors.sellingPrice }}
+                </p>
               </div>
 
               <!-- Min & Max Stock Level -->
@@ -271,7 +319,10 @@
             </div>
 
             <!-- Profit Display -->
-            <div v-if="form.costPrice > 0 && form.sellingPrice > 0" class="bg-green-50 border border-green-200 rounded-lg p-4">
+            <div
+              v-if="form.costPrice > 0 && form.sellingPrice > 0"
+              class="bg-green-50 border border-green-200 rounded-lg p-4"
+            >
               <div class="flex items-center justify-between">
                 <div>
                   <p class="text-sm font-medium text-gray-900">Profit Margin</p>
@@ -282,7 +333,11 @@
                     ${{ (form.sellingPrice - form.costPrice).toFixed(2) }}
                   </p>
                   <p class="text-xs text-gray-600">
-                    {{ (((form.sellingPrice - form.costPrice) / form.costPrice) * 100 || 0).toFixed(1) }}% margin
+                    {{
+                      (((form.sellingPrice - form.costPrice) / form.costPrice) * 100 || 0).toFixed(
+                        1,
+                      )
+                    }}% margin
                   </p>
                 </div>
               </div>
@@ -298,8 +353,18 @@
           >
             <div class="flex items-center gap-3">
               <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center">
-                <svg class="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                <svg
+                  class="w-4 h-4 text-orange-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
                 </svg>
               </div>
               <h2 class="text-base font-semibold text-gray-900">Images</h2>
@@ -311,7 +376,12 @@
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
             </svg>
           </button>
 
@@ -347,8 +417,18 @@
         <!-- Error Message -->
         <div v-if="submitError" class="p-4 bg-red-50 border border-red-200 rounded-lg">
           <div class="flex gap-3">
-            <svg class="w-5 h-5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg
+              class="w-5 h-5 text-red-600 flex-shrink-0"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
             <p class="text-sm text-red-800">{{ submitError }}</p>
           </div>
@@ -358,15 +438,14 @@
   </div>
 </template>
 
-
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useProductStore } from '@/stores/productStore'
 import { useCategoryStore } from '@/stores/CategoryStore'
 import { useSupplierStore } from '@/stores/SupplierStore'
 import ImageUploader from './main/ImageUploader.vue'
-import { useGlobalModal } from "@/composable/useValidation";
-const { show } = useGlobalModal();
+import { useGlobalModal } from '@/composable/useValidation'
+const { show } = useGlobalModal()
 import { useRouter } from 'vue-router'
 const productStore = useProductStore()
 const categoryStore = useCategoryStore()
@@ -378,15 +457,15 @@ const isEditMode = ref(false)
 const sections = reactive({
   info: true,
   pricing: true,
-  images: true
+  images: true,
 })
 
 const errors = reactive({})
 const submitError = ref('')
 const categories = computed(() => categoryStore.categories)
-console.log('====================================');
-console.log(categories.value);
-console.log('====================================');
+console.log('====================================')
+console.log(categories.value)
+console.log('====================================')
 const form = reactive({
   name: '',
   barcode: '',
@@ -399,11 +478,11 @@ const form = reactive({
   maxStock: 100,
   arrivalDate: new Date().toISOString().split('T')[0],
   image: '',
-  description: ''
+  description: '',
 })
 
 onMounted(async () => {
-   await categoryStore.fetchCategory()
+  await categoryStore.fetchCategory()
   supplierStore.fetchSuppliers()
 })
 
@@ -413,13 +492,21 @@ const toggleSection = (section) => {
 
 const generateBarcode = () => {
   if (!form.name) return
-  const prefix = form.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 3) || 'PRD'
-  form.barcode = `${prefix}-${Date.now().toString().slice(-6)}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`
+  const prefix =
+    form.name
+      .split(' ')
+      .map((w) => w[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 3) || 'PRD'
+  form.barcode = `${prefix}-${Date.now().toString().slice(-6)}-${Math.floor(Math.random() * 1000)
+    .toString()
+    .padStart(3, '0')}`
   delete errors.barcode
 }
 
 const validate = () => {
-  Object.keys(errors).forEach(key => delete errors[key])
+  Object.keys(errors).forEach((key) => delete errors[key])
 
   if (!form.name.trim()) errors.name = 'Product name is required'
   if (!form.barcode.trim()) errors.barcode = 'Barcode is required'
@@ -427,7 +514,8 @@ const validate = () => {
 
   if (form.costPrice <= 0) errors.costPrice = 'Cost price must be greater than 0'
   if (form.sellingPrice <= 0) errors.sellingPrice = 'Selling price must be greater than 0'
-  if (form.sellingPrice < form.costPrice) errors.sellingPrice = 'Selling price should be greater than cost price'
+  if (form.sellingPrice < form.costPrice)
+    errors.sellingPrice = 'Selling price should be greater than cost price'
 
   return Object.keys(errors).length === 0
 }
@@ -447,7 +535,7 @@ const submit = async () => {
       date_of_arrival: form.arrivalDate,
       supplier: form.supplier ? parseInt(form.supplier) : null,
       min_stock_level: parseInt(form.minStock) || 10,
-      max_stock_level: parseInt(form.maxStock) || 100
+      max_stock_level: parseInt(form.maxStock) || 100,
     }
 
     if (form.image && form.image instanceof File) {
@@ -466,19 +554,26 @@ const submit = async () => {
     router.back()
   } catch (error) {
     submitError.value =
-      error?.response?.data?.message || error.message || 'An error occurred while adding the product.'
+      error?.response?.data?.message ||
+      error.message ||
+      'An error occurred while adding the product.'
     console.error('❌ Error adding product:', error)
     show(error?.message || 'Failed to add product', 'error') // ✅ Affiche erreur dans modal
   }
 }
 
-
 const resetForm = () => {
-  Object.keys(form).forEach(key => {
-    form[key] = key === 'arrivalDate' ? new Date().toISOString().split('T')[0]
-      : key === 'minStock' ? 10
-      : key === 'maxStock' ? 100
-      : typeof form[key] === 'number' ? 0 : ''
+  Object.keys(form).forEach((key) => {
+    form[key] =
+      key === 'arrivalDate'
+        ? new Date().toISOString().split('T')[0]
+        : key === 'minStock'
+          ? 10
+          : key === 'maxStock'
+            ? 100
+            : typeof form[key] === 'number'
+              ? 0
+              : ''
   })
   submitError.value = ''
 }
@@ -495,8 +590,12 @@ const resetForm = () => {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .rotate-180 {

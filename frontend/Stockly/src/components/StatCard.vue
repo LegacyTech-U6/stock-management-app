@@ -13,7 +13,7 @@
 defineProps({
   stat: {
     type: Object,
-    required: true
-  }
+    required: true,
+  },
 })
 </script>

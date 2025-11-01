@@ -93,9 +93,7 @@
         </div>
         <div class="flex justify-between items-center">
           <span class="text-sm text-gray-600">Est. Reorder Cost</span>
-          <span class="text-lg font-bold text-gray-900"
-            >${{ formatCurrency(reorderCost) }}</span
-          >
+          <span class="text-lg font-bold text-gray-900">${{ formatCurrency(reorderCost) }}</span>
         </div>
       </div>
 
@@ -127,11 +125,13 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-  reorderCost: Number
+  reorderCost: Number,
 })
 const emit = defineEmits(['restock'])
 
-const stockPercentage = computed(() => (props.product.quantity / props.product.min_stock_level) * 100)
+const stockPercentage = computed(
+  () => (props.product.quantity / props.product.min_stock_level) * 100,
+)
 const unitsNeeded = computed(() => props.product.min_stock_level - props.product.quantity)
 
 function formatCurrency(amount) {

@@ -9,7 +9,9 @@
       <div class="client-contact">
         <div class="contact-line" v-if="client.location">{{ client.location }}</div>
         <div class="contact-line" v-if="client.email">Email: {{ client.email }}</div>
-        <div class="contact-line" v-if="client.client_PhoneNumber">Phone: {{ client.client_PhoneNumber }}</div>
+        <div class="contact-line" v-if="client.client_PhoneNumber">
+          Phone: {{ client.client_PhoneNumber }}
+        </div>
       </div>
     </div>
   </div>
@@ -19,8 +21,8 @@
 defineProps({
   client: {
     type: Object,
-    default: () => ({})
-  }
+    default: () => ({}),
+  },
 })
 </script>
 

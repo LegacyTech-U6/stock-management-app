@@ -40,11 +40,21 @@ onMounted(async () => {
 })
 
 const chartData = computed(() => ({
-  labels: statsStore.salesTrend?.map((d) => d.label) || ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+  labels: statsStore.salesTrend?.map((d) => d.label) || [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+  ],
   datasets: [
     {
       label: 'Sales ($)',
-      data: statsStore.salesTrend?.map((d) => d.revenue) || [4000, 3000, 4500, 4000, 5500, 6000, 6500],
+      data: statsStore.salesTrend?.map((d) => d.revenue) || [
+        4000, 3000, 4500, 4000, 5500, 6000, 6500,
+      ],
       borderColor: '#8B5CF6',
       backgroundColor: 'rgba(139, 92, 246, 0.3)',
       tension: 0.4,
@@ -75,7 +85,7 @@ const chartOptions = {
           weight: '500',
         },
         color: '#6B7280',
-      }
+      },
     },
     tooltip: {
       mode: 'index',
@@ -123,13 +133,13 @@ const chartOptions = {
           size: 11,
         },
         color: '#9CA3AF',
-      }
+      },
     },
   },
   interaction: {
     mode: 'nearest',
     axis: 'x',
-    intersect: false
+    intersect: false,
   },
 }
 </script>

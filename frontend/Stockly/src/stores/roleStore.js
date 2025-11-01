@@ -1,14 +1,8 @@
 // src/stores/roleStore.js
-import { defineStore } from "pinia"
-import {
-  getAllRoles,
-  getRoleById,
-  createRole,
-  updateRole,
-  deleteRole,
-} from "@/service/api"
+import { defineStore } from 'pinia'
+import { getAllRoles, getRoleById, createRole, updateRole, deleteRole } from '@/service/api'
 
-export const useRoleStore = defineStore("roleStore", {
+export const useRoleStore = defineStore('roleStore', {
   state: () => ({
     roles: [],
     selectedRole: null,
@@ -21,13 +15,13 @@ export const useRoleStore = defineStore("roleStore", {
       this.loading = true
       this.error = null
       try {
-        const data =await getAllRoles()
-        console.log('====================================');
-        console.log(data);
-        console.log('====================================');
+        const data = await getAllRoles()
+        console.log('====================================')
+        console.log(data)
+        console.log('====================================')
         this.roles = data.data
       } catch (err) {
-        this.error = err.response?.data?.message || "Failed to fetch roles"
+        this.error = err.response?.data?.message || 'Failed to fetch roles'
       } finally {
         this.loading = false
       }
@@ -39,7 +33,7 @@ export const useRoleStore = defineStore("roleStore", {
       try {
         this.selectedRole = await getRoleById(id)
       } catch (err) {
-        this.error = err.response?.data?.message || "Failed to fetch role"
+        this.error = err.response?.data?.message || 'Failed to fetch role'
       } finally {
         this.loading = false
       }
@@ -53,7 +47,7 @@ export const useRoleStore = defineStore("roleStore", {
         await this.fetchRoles() // Refresh the list after creation
         return newRole
       } catch (err) {
-        this.error = err.response?.data?.message || "Failed to create role"
+        this.error = err.response?.data?.message || 'Failed to create role'
       } finally {
         this.loading = false
       }
@@ -66,7 +60,7 @@ export const useRoleStore = defineStore("roleStore", {
         await updateRole(id, roleData)
         await this.fetchRoles()
       } catch (err) {
-        this.error = err.response?.data?.message || "Failed to update role"
+        this.error = err.response?.data?.message || 'Failed to update role'
       } finally {
         this.loading = false
       }
@@ -79,7 +73,7 @@ export const useRoleStore = defineStore("roleStore", {
         await deleteRole(id)
         this.roles = this.roles.filter((r) => r.id !== id)
       } catch (err) {
-        this.error = err.response?.data?.message || "Failed to delete role"
+        this.error = err.response?.data?.message || 'Failed to delete role'
       } finally {
         this.loading = false
       }

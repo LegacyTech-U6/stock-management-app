@@ -1,6 +1,9 @@
 <!-- components/EnterpriseCard.vue -->
 <template>
-  <div v-if="enterprise" class="bg-white rounded-lg p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+  <div
+    v-if="enterprise"
+    class="bg-white rounded-lg p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
+  >
     <!-- Edit Button -->
     <div class="flex justify-end mb-2">
       <button
@@ -22,7 +25,9 @@
     <!-- Header with logo/icon and basic info -->
     <div class="flex items-start justify-between mb-6">
       <div class="flex items-center gap-4">
-        <div class="w-16 h-16 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+        <div
+          class="w-16 h-16 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center"
+        >
           <Building2 class="w-8 h-8 text-white" />
         </div>
         <div>
@@ -32,14 +37,14 @@
           <p class="text-sm text-gray-500 mt-1">ID: {{ enterprise.id }}</p>
         </div>
       </div>
-      
+
       <div class="text-right">
-        <span class="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-semibold">
+        <span
+          class="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-semibold"
+        >
           Active
         </span>
-        <p class="text-xs text-gray-500 mt-2">
-          Created recently
-        </p>
+        <p class="text-xs text-gray-500 mt-2">Created recently</p>
       </div>
     </div>
 
@@ -92,9 +97,7 @@
           <span class="text-xs font-semibold text-orange-700">HEALTH</span>
           <Activity class="w-4 h-4 text-orange-600" />
         </div>
-        <p class="text-lg font-bold text-gray-900">
-          {{ calculateHealthScore() }}%
-        </p>
+        <p class="text-lg font-bold text-gray-900">{{ calculateHealthScore() }}%</p>
         <p class="text-xs text-orange-600 mt-1">Performance</p>
       </div>
     </div>
@@ -129,7 +132,10 @@
   </div>
 
   <!-- Fallback for null enterprise -->
-  <div v-else class="text-gray-400 text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
+  <div
+    v-else
+    class="text-gray-400 text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200"
+  >
     <Building2 class="w-12 h-12 mx-auto mb-3 opacity-50" />
     <p>No enterprise data available</p>
   </div>
@@ -160,7 +166,7 @@ function formatCurrency(value) {
   const numValue = Number(value) || 0
   return numValue.toLocaleString('en-US', {
     minimumFractionDigits: 0,
-    maximumFractionDigits: 0
+    maximumFractionDigits: 0,
   })
 }
 
@@ -169,13 +175,13 @@ function calculateHealthScore() {
   const revenue = Number(props.enterprise.totalRevenue) || 0
   const inventory = Number(props.enterprise.inventoryValue) || 0
   const members = Number(props.enterprise.totalMembers) || 0
-  
+
   let score = 50 // Base score
-  
+
   if (revenue > 0) score += 25
   if (inventory > 0) score += 15
   if (members > 0) score += 10
-  
+
   return Math.min(score, 100)
 }
 

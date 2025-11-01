@@ -23,27 +23,27 @@
 </template>
 
 <script setup>
-import { AlertTriangle, Package } from 'lucide-vue-next';
+import { AlertTriangle, Package } from 'lucide-vue-next'
 
 defineProps({
   title: {
     type: String,
-    required: true
+    required: true,
   },
   count: {
     type: [String, Number],
-    required: true
+    required: true,
   },
   color: {
     type: String,
-    required: true
+    required: true,
   },
   action: {
     type: Object,
-    default: null
-  }
-});
+    default: null,
+  },
+})
 
 // Emit event when action button is clicked
-defineEmits(['action-click']);
+defineEmits(['action-click'])
 </script>

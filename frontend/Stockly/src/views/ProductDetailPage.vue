@@ -30,7 +30,9 @@
           </div>
           <span :class="stockBadgeClass" class="flex items-center gap-2">
             <span class="relative flex h-2 w-2">
-              <span :class="`absolute inline-flex h-full w-full rounded-full opacity-75 ${stockPulseClass} ${quantityNum <= 10 ? 'animate-ping' : ''}`"></span>
+              <span
+                :class="`absolute inline-flex h-full w-full rounded-full opacity-75 ${stockPulseClass} ${quantityNum <= 10 ? 'animate-ping' : ''}`"
+              ></span>
               <span :class="`relative inline-flex rounded-full h-2 w-2 ${stockDotClass}`"></span>
             </span>
             {{ stockStatus }}
@@ -41,7 +43,7 @@
 
     <!-- Content -->
     <div class="flex-1 overflow-y-auto">
-      <div class=" mx-auto px-5  py-8">
+      <div class="mx-auto px-5 py-8">
         <!-- Loading State -->
         <div v-if="loading" class="bg-white rounded-xl shadow-sm p-12">
           <div class="flex flex-col items-center justify-center">
@@ -53,7 +55,9 @@
         <!-- No Product State -->
         <div v-else-if="!product" class="bg-white rounded-xl shadow-sm p-12">
           <div class="text-center">
-            <div class="w-20 h-20 bg-gray-100 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+            <div
+              class="w-20 h-20 bg-gray-100 rounded-2xl mx-auto mb-4 flex items-center justify-center"
+            >
               <PackageX class="w-10 h-10 text-gray-400" />
             </div>
             <h3 class="text-xl font-bold text-gray-900 mb-2">No product data found</h3>
@@ -74,7 +78,9 @@
           <div class="lg:col-span-2 space-y-6">
             <!-- Product Image Card -->
             <div class="bg-white rounded-xl shadow-sm p-4 sticky top-24">
-              <div class="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl mb-6 flex items-center justify-center overflow-hidden group">
+              <div
+                class="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl mb-6 flex items-center justify-center overflow-hidden group"
+              >
                 <div v-if="product.Prod_image" class="relative w-full h-full">
                   <img
                     :src="product.Prod_image"
@@ -89,7 +95,9 @@
               </div>
 
               <div class="space-y-4">
-                <div class="flex items-center justify-between p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
+                <div
+                  class="flex items-center justify-between p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-100"
+                >
                   <div>
                     <div class="text-xs font-medium text-blue-600 mb-1 flex items-center gap-1">
                       <DollarSign class="w-3 h-3" />
@@ -100,7 +108,9 @@
                     </div>
                   </div>
                   <div class="text-right">
-                    <div class="text-xs font-medium text-green-600 mb-1 flex items-center gap-1 justify-end">
+                    <div
+                      class="text-xs font-medium text-green-600 mb-1 flex items-center gap-1 justify-end"
+                    >
                       <TrendingUp class="w-3 h-3" />
                       Profit
                     </div>
@@ -130,12 +140,16 @@
                 </div>
 
                 <div class="relative">
-                  <div class="flex items-center justify-between text-xs font-medium text-gray-500 mb-2">
+                  <div
+                    class="flex items-center justify-between text-xs font-medium text-gray-500 mb-2"
+                  >
                     <span class="flex items-center gap-1">
                       <AlertCircle class="w-3 h-3" />
                       Min: 10
                     </span>
-                    <span :class="`font-semibold ${stockPercentageColor}`">{{ stockPercentage.toFixed(1) }}%</span>
+                    <span :class="`font-semibold ${stockPercentageColor}`"
+                      >{{ stockPercentage.toFixed(1) }}%</span
+                    >
                     <span>Max: 100</span>
                   </div>
                   <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden shadow-inner">
@@ -154,19 +168,21 @@
                     <Truck class="w-3 h-3" />
                     Supplier
                   </div>
-                  <div class="text-sm font-semibold text-gray-900">{{ product.supplier_name || 'N/A' }}</div>
+                  <div class="text-sm font-semibold text-gray-900">
+                    {{ product.supplier_name || 'N/A' }}
+                  </div>
                 </div>
                 <div class="p-4 bg-gray-50 rounded-lg">
                   <div class="text-xs font-medium text-gray-500 mb-2 flex items-center gap-1">
                     <Calendar class="w-3 h-3" />
                     Last Restocked
                   </div>
-                  <div class="text-sm font-semibold text-gray-900">{{ formatDate(product.date_of_arrival) }}</div>
+                  <div class="text-sm font-semibold text-gray-900">
+                    {{ formatDate(product.date_of_arrival) }}
+                  </div>
                 </div>
               </div>
             </div>
-
-
 
             <!-- Pricing Information -->
             <div class="bg-white rounded-xl shadow-sm p-4 hover:shadow-md transition-shadow">
@@ -183,52 +199,74 @@
                       <ArrowDown class="w-3 h-3 text-red-500" />
                       Cost Price (Unit)
                     </span>
-                    <span class="text-lg font-bold text-gray-900">${{ formatPrice(product.cost_price) }}</span>
+                    <span class="text-lg font-bold text-gray-900"
+                      >${{ formatPrice(product.cost_price) }}</span
+                    >
                   </div>
                   <div class="py-3 px-4 bg-gray-50 rounded-lg">
                     <span class="text-xs font-medium text-gray-500 flex items-center gap-1 mb-1">
                       <ArrowUp class="w-3 h-3 text-blue-500" />
                       Selling Price (Unit)
                     </span>
-                    <span class="text-lg font-bold text-gray-900">${{ formatPrice(product.selling_price) }}</span>
+                    <span class="text-lg font-bold text-gray-900"
+                      >${{ formatPrice(product.selling_price) }}</span
+                    >
                   </div>
                 </div>
 
                 <!-- Total Values -->
                 <div class="grid grid-cols-2 gap-3">
-                  <div class="py-3 px-4 bg-gradient-to-br from-red-50 to-orange-50 border border-red-200 rounded-lg">
+                  <div
+                    class="py-3 px-4 bg-gradient-to-br from-red-50 to-orange-50 border border-red-200 rounded-lg"
+                  >
                     <div class="flex items-center gap-1 mb-1">
                       <Layers class="w-3 h-3 text-red-600" />
                       <span class="text-xs font-medium text-red-600">Total Cost Value</span>
                     </div>
-                    <div class="text-xl font-bold text-red-700">${{ formatPrice(totalCostValue) }}</div>
-                    <div class="text-xs text-red-600 mt-0.5">{{ quantityNum }} units × ${{ formatPrice(product.cost_price) }}</div>
+                    <div class="text-xl font-bold text-red-700">
+                      ${{ formatPrice(totalCostValue) }}
+                    </div>
+                    <div class="text-xs text-red-600 mt-0.5">
+                      {{ quantityNum }} units × ${{ formatPrice(product.cost_price) }}
+                    </div>
                   </div>
-                  <div class="py-3 px-4 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg">
+                  <div
+                    class="py-3 px-4 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg"
+                  >
                     <div class="flex items-center gap-1 mb-1">
                       <Layers class="w-3 h-3 text-blue-600" />
                       <span class="text-xs font-medium text-blue-600">Total Selling Value</span>
                     </div>
-                    <div class="text-xl font-bold text-blue-700">${{ formatPrice(totalSellingValue) }}</div>
-                    <div class="text-xs text-blue-600 mt-0.5">{{ quantityNum }} units × ${{ formatPrice(product.selling_price) }}</div>
+                    <div class="text-xl font-bold text-blue-700">
+                      ${{ formatPrice(totalSellingValue) }}
+                    </div>
+                    <div class="text-xs text-blue-600 mt-0.5">
+                      {{ quantityNum }} units × ${{ formatPrice(product.selling_price) }}
+                    </div>
                   </div>
                 </div>
 
                 <!-- Profit Summary -->
                 <div class="space-y-2 pt-2">
-                  <div class="flex items-center justify-between py-4 px-4 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-lg">
+                  <div
+                    class="flex items-center justify-between py-4 px-4 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-lg"
+                  >
                     <span class="text-sm font-semibold text-green-700 flex items-center gap-2">
                       <TrendingUp class="w-4 h-4" />
                       Profit Margin
                     </span>
                     <span class="text-2xl font-bold text-green-700">+{{ profitMargin }}%</span>
                   </div>
-                  <div class="flex items-center justify-between py-4 px-4 bg-gradient-to-r from-emerald-50 to-teal-50 border-2 border-emerald-300 rounded-lg">
+                  <div
+                    class="flex items-center justify-between py-4 px-4 bg-gradient-to-r from-emerald-50 to-teal-50 border-2 border-emerald-300 rounded-lg"
+                  >
                     <span class="text-sm font-semibold text-emerald-700 flex items-center gap-2">
                       <DollarSign class="w-4 h-4" />
                       Total Potential Profit
                     </span>
-                    <span class="text-2xl font-bold text-emerald-700">${{ formatPrice(totalProfit) }}</span>
+                    <span class="text-2xl font-bold text-emerald-700"
+                      >${{ formatPrice(totalProfit) }}</span
+                    >
                   </div>
                 </div>
               </div>
@@ -252,38 +290,47 @@
               </button>
             </div>
           </div>
-               <!-- Product Details -->
-            <div class="bg-white rounded-xl shadow-sm p-4 hover:shadow-md transition-shadow">
-              <div class="flex items-center gap-2 mb-6">
-                <FileText class="w-5 h-5 text-gray-700" />
-                <h3 class="text-lg font-bold text-gray-900">Product Details</h3>
-              </div>
-
-              <div class="mb-6">
-                <h4 class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                  <Info class="w-4 h-4" />
-                  Description
-                </h4>
-                <p class="text-sm text-gray-600 leading-relaxed pl-6">
-                  {{ product.Prod_Description || 'No description available for this product.' }}
-                </p>
-              </div>
+          <!-- Product Details -->
+          <div class="bg-white rounded-xl shadow-sm p-4 hover:shadow-md transition-shadow">
+            <div class="flex items-center gap-2 mb-6">
+              <FileText class="w-5 h-5 text-gray-700" />
+              <h3 class="text-lg font-bold text-gray-900">Product Details</h3>
             </div>
+
+            <div class="mb-6">
+              <h4 class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                <Info class="w-4 h-4" />
+                Description
+              </h4>
+              <p class="text-sm text-gray-600 leading-relaxed pl-6">
+                {{ product.Prod_Description || 'No description available for this product.' }}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Edit Modal -->
-    <div v-if="showEditModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" @click.self="showEditModal = false">
+    <div
+      v-if="showEditModal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      @click.self="showEditModal = false"
+    >
       <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between z-10">
+        <div
+          class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between z-10"
+        >
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
               <Edit3 class="w-5 h-5 text-blue-600" />
             </div>
             <h2 class="text-xl font-bold text-gray-900">Edit Product</h2>
           </div>
-          <button @click="showEditModal = false" class="text-gray-400 hover:text-gray-600 transition-colors">
+          <button
+            @click="showEditModal = false"
+            class="text-gray-400 hover:text-gray-600 transition-colors"
+          >
             <X class="w-6 h-6" />
           </button>
         </div>
@@ -349,7 +396,9 @@
             </div>
 
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">Selling Price ($)</label>
+              <label class="block text-sm font-semibold text-gray-700 mb-2"
+                >Selling Price ($)</label
+              >
               <input
                 v-model.number="editForm.selling_price"
                 type="number"
@@ -441,10 +490,10 @@ import {
   RefreshCw,
   Loader2,
   X,
-  Save
+  Save,
 } from 'lucide-vue-next'
-import { useGlobalModal } from "@/composable/useValidation";
-const { show } = useGlobalModal();
+import { useGlobalModal } from '@/composable/useValidation'
+const { show } = useGlobalModal()
 const { showSuccess, showError } = useActionMessage()
 
 interface Product {
@@ -478,7 +527,7 @@ const editForm = ref<Product>({
   code_bar: '',
   date_of_arrival: '',
   supplier_name: '',
-  Prod_image: ''
+  Prod_image: '',
 })
 
 onMounted(async () => {
@@ -590,15 +639,18 @@ const handleEdit = () => {
   // Populate edit form with current product data
   editForm.value = {
     ...product.value,
-    quantity: typeof product.value.quantity === 'string'
-      ? parseInt(product.value.quantity)
-      : product.value.quantity,
-    cost_price: typeof product.value.cost_price === 'string'
-      ? parseFloat(product.value.cost_price)
-      : product.value.cost_price,
-    selling_price: typeof product.value.selling_price === 'string'
-      ? parseFloat(product.value.selling_price)
-      : product.value.selling_price
+    quantity:
+      typeof product.value.quantity === 'string'
+        ? parseInt(product.value.quantity)
+        : product.value.quantity,
+    cost_price:
+      typeof product.value.cost_price === 'string'
+        ? parseFloat(product.value.cost_price)
+        : product.value.cost_price,
+    selling_price:
+      typeof product.value.selling_price === 'string'
+        ? parseFloat(product.value.selling_price)
+        : product.value.selling_price,
   }
 
   showEditModal.value = true
@@ -629,7 +681,7 @@ const handleRestock = () => {
 
   router.push({
     name: 'restock',
-    params: { reStockId: product.value.id }
+    params: { reStockId: product.value.id },
   })
 }
 

@@ -7,13 +7,7 @@
     @drop.prevent="handleDrop"
     @click="openFilePicker"
   >
-    <input
-      ref="fileInput"
-      type="file"
-      class="hidden"
-      :accept="accept"
-      @change="handleFileChange"
-    />
+    <input ref="fileInput" type="file" class="hidden" :accept="accept" @change="handleFileChange" />
 
     <div v-if="!previewImage" class="text-gray-500">
       <p class="font-medium">Glissez-déposez une image ici</p>
@@ -21,15 +15,8 @@
     </div>
 
     <div v-else class="flex flex-col items-center gap-3">
-      <img
-        :src="previewImage"
-        alt="Preview"
-        class="max-h-56 rounded-lg shadow"
-      />
-      <button
-        class="text-red-500 text-sm hover:underline"
-        @click.stop="removeImage"
-      >
+      <img :src="previewImage" alt="Preview" class="max-h-56 rounded-lg shadow" />
+      <button class="text-red-500 text-sm hover:underline" @click.stop="removeImage">
         Supprimer
       </button>
     </div>
@@ -50,7 +37,7 @@ const props = withDefaults(defineProps<Props>(), {
   modelValue: null,
   maxSize: 5,
   accept: 'image/*',
-  preview: true
+  preview: true,
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -87,7 +74,7 @@ function validateFile(file: File) {
   emit('update:modelValue', file)
   if (props.preview) {
     const reader = new FileReader()
-    reader.onload = e => {
+    reader.onload = (e) => {
       previewImage.value = e.target?.result as string
     }
     reader.readAsDataURL(file)
@@ -103,9 +90,9 @@ function removeImage() {
 // 🔁 Synchroniser avec v-model externe
 watch(
   () => props.modelValue,
-  newVal => {
+  (newVal) => {
     if (!newVal) previewImage.value = null
-  }
+  },
 )
 </script>
 

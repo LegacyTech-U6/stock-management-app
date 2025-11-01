@@ -1,6 +1,5 @@
 <template>
   <div class="p-8 max-w-[1400px] mx-auto bg-gray-50 min-h-screen">
-
     <!-- Header Section -->
     <div class="flex flex-col md:flex-row justify-between items-start mb-8">
       <div class="flex-1">
@@ -8,10 +7,16 @@
         <p class="text-sm text-gray-500 font-normal">Manage your product categories</p>
       </div>
       <div class="flex gap-3 mt-4 md:mt-0">
-        <button @click="$router.back()" class="bg-white text-gray-700 border border-gray-300 px-5 py-2.5 rounded-md text-sm font-medium hover:bg-gray-50 hover:border-gray-400 transition">
+        <button
+          @click="$router.back()"
+          class="bg-white text-gray-700 border border-gray-300 px-5 py-2.5 rounded-md text-sm font-medium hover:bg-gray-50 hover:border-gray-400 transition"
+        >
           Back to Products
         </button>
-        <button @click="showAddCategory = true" class="bg-black text-white px-5 py-2.5 rounded-md text-sm font-medium hover:bg-gray-800 transition">
+        <button
+          @click="showAddCategory = true"
+          class="bg-black text-white px-5 py-2.5 rounded-md text-sm font-medium hover:bg-gray-800 transition"
+        >
           + Add Category
         </button>
       </div>
@@ -20,10 +25,19 @@
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
       <!-- Total Categories -->
-      <div class="flex items-center gap-4 bg-white p-6 rounded-xl border border-gray-200 hover:shadow-md transition">
-        <div class="w-12 h-12 rounded-lg flex items-center justify-center bg-blue-100 text-blue-600">
+      <div
+        class="flex items-center gap-4 bg-white p-6 rounded-xl border border-gray-200 hover:shadow-md transition"
+      >
+        <div
+          class="w-12 h-12 rounded-lg flex items-center justify-center bg-blue-100 text-blue-600"
+        >
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 10h16M4 14h16M4 18h16"
+            ></path>
           </svg>
         </div>
         <div class="flex-1 min-w-0">
@@ -33,10 +47,19 @@
       </div>
 
       <!-- Total Products -->
-      <div class="flex items-center gap-4 bg-white p-6 rounded-xl border border-gray-200 hover:shadow-md transition">
-        <div class="w-12 h-12 rounded-lg flex items-center justify-center bg-purple-100 text-purple-700">
+      <div
+        class="flex items-center gap-4 bg-white p-6 rounded-xl border border-gray-200 hover:shadow-md transition"
+      >
+        <div
+          class="w-12 h-12 rounded-lg flex items-center justify-center bg-purple-100 text-purple-700"
+        >
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+            ></path>
           </svg>
         </div>
         <div class="flex-1 min-w-0">
@@ -46,10 +69,19 @@
       </div>
 
       <!-- Avg Products -->
-      <div class="flex items-center gap-4 bg-white p-6 rounded-xl border border-gray-200 hover:shadow-md transition">
-        <div class="w-12 h-12 rounded-lg flex items-center justify-center bg-orange-100 text-orange-600">
+      <div
+        class="flex items-center gap-4 bg-white p-6 rounded-xl border border-gray-200 hover:shadow-md transition"
+      >
+        <div
+          class="w-12 h-12 rounded-lg flex items-center justify-center bg-orange-100 text-orange-600"
+        >
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+            ></path>
           </svg>
         </div>
         <div class="flex-1 min-w-0">
@@ -62,10 +94,25 @@
     <!-- Search Section -->
     <div class="mb-6">
       <div class="relative max-w-full">
-        <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        <svg
+          class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+          ></path>
         </svg>
-        <input v-model="searchQuery" type="text" placeholder="Search categories by name or description..." class="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition">
+        <input
+          v-model="searchQuery"
+          type="text"
+          placeholder="Search categories by name or description..."
+          class="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition"
+        />
       </div>
     </div>
 
@@ -82,9 +129,22 @@
     </div>
 
     <!-- Empty State -->
-    <div v-if="filteredCategories.length === 0" class="text-center p-16 bg-white border border-gray-200 rounded-xl text-gray-400">
-      <svg class="mx-auto mb-4 w-16 h-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+    <div
+      v-if="filteredCategories.length === 0"
+      class="text-center p-16 bg-white border border-gray-200 rounded-xl text-gray-400"
+    >
+      <svg
+        class="mx-auto mb-4 w-16 h-16 text-gray-300"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+        ></path>
       </svg>
       <p class="text-base">No categories found matching your search.</p>
     </div>
@@ -107,7 +167,6 @@
   </div>
 </template>
 
-
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import CategoryCard from '../components/ CategoryCard .vue'
@@ -117,8 +176,8 @@ import { toast } from 'vue-sonner'
 import { useRouter } from 'vue-router'
 import ActionModal from '@/components/ui/ActionModal.vue'
 import { useActionMessage } from '@/composable/useActionMessage'
-import { useGlobalModal } from "@/composable/useValidation";
-const { show } = useGlobalModal();
+import { useGlobalModal } from '@/composable/useValidation'
+const { show } = useGlobalModal()
 const { showSuccess, showError } = useActionMessage()
 // Mock data - replace with actual API calls
 const categoryStore = useCategoryStore()
@@ -237,6 +296,4 @@ onMounted(async () => {
 })
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

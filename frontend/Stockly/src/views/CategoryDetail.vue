@@ -1,14 +1,19 @@
 <template>
   <div class="category-view">
     <!-- Header Section -->
-     <div class="">
-      <div class=" mx-auto px-6 py-4">
+    <div class="">
+      <div class="mx-auto px-6 py-4">
         <button
           @click="goBack"
           class="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-3 transition-colors text-sm"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"
+            />
           </svg>
           Back to Category
         </button>
@@ -24,29 +29,37 @@
           </div>
         </div>
       </div>
-     <div class="flex items-center border border-gray-200 rounded-md">
-              <button
-                :class="viewMode === 'grid' ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'"
-                class="p-2 transition-colors"
-                @click="viewMode = 'grid'"
-                title="Grid View"
-              >
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M3 3h7v7H3V3zm0 11h7v7H3v-7zm11-11h7v7h-7V3zm0 11h7v7h-7v-7z"/>
-                </svg>
-              </button>
-              <div class="w-px h-6 bg-gray-200"></div>
-              <button
-                :class="viewMode === 'list' ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'"
-                class="p-2 transition-colors"
-                @click="viewMode = 'list'"
-                title="List View"
-              >
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M3 4h18v2H3V4zm0 7h18v2H3v-2zm0 7h18v2H3v-2z"/>
-                </svg>
-              </button>
-            </div>
+      <div class="flex items-center border border-gray-200 rounded-md">
+        <button
+          :class="
+            viewMode === 'grid'
+              ? 'bg-gray-100 text-gray-900'
+              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+          "
+          class="p-2 transition-colors"
+          @click="viewMode = 'grid'"
+          title="Grid View"
+        >
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M3 3h7v7H3V3zm0 11h7v7H3v-7zm11-11h7v7h-7V3zm0 11h7v7h-7v-7z" />
+          </svg>
+        </button>
+        <div class="w-px h-6 bg-gray-200"></div>
+        <button
+          :class="
+            viewMode === 'list'
+              ? 'bg-gray-100 text-gray-900'
+              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+          "
+          class="p-2 transition-colors"
+          @click="viewMode = 'list'"
+          title="List View"
+        >
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M3 4h18v2H3V4zm0 7h18v2H3v-2zm0 7h18v2H3v-2z" />
+          </svg>
+        </button>
+      </div>
     </div>
 
     <!-- Stats Cards -->
@@ -67,8 +80,6 @@
           <div class="stat-value">{{ Category?.productCount }}</div>
         </div>
       </div>
-
-
 
       <div class="stat-card">
         <div class="stat-icon-wrapper purple">
@@ -126,23 +137,41 @@
     </div>
 
     <!-- Categories Grid -->
-<div class="px-8 py-6">
+    <div class="px-8 py-6">
       <!-- Loading State -->
       <div v-if="loading" class="flex justify-center items-center py-32">
-        <div class="animate-spin rounded-full h-12 w-12 border-3 border-gray-200 border-t-green-600"></div>
+        <div
+          class="animate-spin rounded-full h-12 w-12 border-3 border-gray-200 border-t-green-600"
+        ></div>
       </div>
 
       <!-- Empty State -->
-      <div v-else-if="filteredProducts.length === 0" class="bg-white border border-gray-200 rounded-lg py-20">
+      <div
+        v-else-if="filteredProducts.length === 0"
+        class="bg-white border border-gray-200 rounded-lg py-20"
+      >
         <div class="text-center">
-          <div class="w-16 h-16 bg-gray-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
-            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+          <div
+            class="w-16 h-16 bg-gray-100 rounded-lg mx-auto mb-4 flex items-center justify-center"
+          >
+            <svg
+              class="w-8 h-8 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+              />
             </svg>
           </div>
           <h3 class="text-lg font-semibold text-gray-900 mb-2">No products found</h3>
           <p class="text-gray-500 mb-6 max-w-md mx-auto">
-            We couldn't find any products matching your criteria. Try adjusting your filters or search query.
+            We couldn't find any products matching your criteria. Try adjusting your filters or
+            search query.
           </p>
           <button
             @click="clearFilters"
@@ -154,7 +183,10 @@
       </div>
 
       <!-- Grid View -->
-      <div v-else-if="viewMode === 'grid'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-4 gap-1">
+      <div
+        v-else-if="viewMode === 'grid'"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-4 gap-1"
+      >
         <ProductListItem
           v-for="product in filteredProducts"
           :key="product.id"
@@ -168,7 +200,9 @@
       <div v-else class="bg-white border border-gray-200 rounded-lg overflow-hidden">
         <!-- List Header -->
         <div class="bg-gray-50 px-6 py-3 border-b border-gray-200">
-          <div class="flex items-center gap-4 text-xs font-medium text-gray-600 uppercase tracking-wide">
+          <div
+            class="flex items-center gap-4 text-xs font-medium text-gray-600 uppercase tracking-wide"
+          >
             <div class="flex-1">Product Name</div>
             <div class="w-36 hidden lg:block">Category</div>
             <div class="w-32 hidden md:block">Barcode</div>
@@ -218,29 +252,24 @@ const filteredProducts = computed(() => {
   if (!searchQuery.value) return products.value
 
   const query = searchQuery.value.toLowerCase()
-  return products.value.filter(
-    (product) =>
-      product.Prod_name.toLowerCase().includes(query)
-
-  )
+  return products.value.filter((product) => product.Prod_name.toLowerCase().includes(query))
 })
 const handleViewProduct = (product) => {
   router.push({
     name: 'product-detail',
-    params: { id: product.id }
+    params: { id: product.id },
   })
 }
 // Computed: total products across all categories
 const totalProducts = computed(() =>
-  categoryStore.categories.reduce((sum, category) => sum + category.productCount, 0)
+  categoryStore.categories.reduce((sum, category) => sum + category.productCount, 0),
 )
-
 
 const totalProductsValue = computed(() =>
   products.value.reduce((sum, product) => {
     const productTotal = product.selling_price * (product.quantity ?? 1)
     return sum + productTotal
-  }, 0)
+  }, 0),
 )
 
 // Methods
@@ -248,8 +277,6 @@ const formatDate = (dateString) => {
   const date = new Date(dateString)
   return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
 }
-
-
 
 const closeModal = () => {
   showAddCategory.value = false

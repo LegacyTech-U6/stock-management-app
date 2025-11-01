@@ -8,7 +8,10 @@
     </div>
 
     <div class="company-details">
-      <div class="contact-line" v-if="entreprise.adresse || entreprise.ville || entreprise.code_postal">
+      <div
+        class="contact-line"
+        v-if="entreprise.adresse || entreprise.ville || entreprise.code_postal"
+      >
         {{ entreprise.adresse }}
         <span v-if="entreprise.ville">, {{ entreprise.ville }}</span>
         <span v-if="entreprise.code_postal"> {{ entreprise.code_postal }}</span>
@@ -20,9 +23,7 @@
         <span v-if="entreprise.email_contact">✉️ {{ entreprise.email_contact }}</span>
       </div>
 
-      <div class="contact-line" v-if="entreprise.site_web">
-        🌐 {{ entreprise.site_web }}
-      </div>
+      <div class="contact-line" v-if="entreprise.site_web">🌐 {{ entreprise.site_web }}</div>
 
       <div class="contact-line" v-if="entreprise.numero_fiscal || entreprise.nui">
         <span v-if="entreprise.numero_fiscal">Numéro fiscal : {{ entreprise.numero_fiscal }}</span>

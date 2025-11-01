@@ -38,13 +38,12 @@
             @click="isDropdownOpen = !isDropdownOpen"
             class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-all"
           >
-            <div
-              class="w-5 h-5 bg-green-600 rounded flex items-center justify-center"
-            >
-              <span class="text-white text-xs font-bold">{{getInitials(activeEntreprise.name)}}</span>
+            <div class="w-5 h-5 bg-green-600 rounded flex items-center justify-center">
+              <span class="text-white text-xs font-bold">{{
+                getInitials(activeEntreprise.name)
+              }}</span>
             </div>
             <span>{{ activeEntreprise.name }}</span>
-          
           </button>
         </div>
 
@@ -52,12 +51,7 @@
         <button
           class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-orange-400 to-orange-500 rounded-lg hover:from-orange-500 hover:to-orange-600 transition-all shadow-sm"
         >
-          <svg
-            class="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -72,12 +66,7 @@
         <button
           class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-slate-700 to-slate-800 rounded-lg hover:from-slate-800 hover:to-slate-900 transition-all shadow-sm"
         >
-          <svg
-            class="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -89,25 +78,12 @@
         </button>
 
         <!-- Icon Buttons -->
-        <button
-          class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-all"
-        >
-          <img
-            src="https://flagcdn.com/w20/us.png"
-            alt="US Flag"
-            class="w-5 h-5"
-          />
+        <button class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-all">
+          <img src="https://flagcdn.com/w20/us.png" alt="US Flag" class="w-5 h-5" />
         </button>
 
-        <button
-          class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-all"
-        >
-          <svg
-            class="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+        <button class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-all">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -117,15 +93,8 @@
           </svg>
         </button>
 
-        <button
-          class="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-all"
-        >
-          <svg
-            class="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+        <button class="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-all">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -133,20 +102,11 @@
               d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
             />
           </svg>
-          <span
-            class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"
-          ></span>
+          <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
         </button>
 
-        <button
-          class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-all"
-        >
-          <svg
-            class="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+        <button class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-all">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -156,15 +116,8 @@
           </svg>
         </button>
 
-        <button
-          class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-all"
-        >
-          <svg
-            class="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+        <button class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-all">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -196,11 +149,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref ,computed} from 'vue';
+import { ref, computed } from 'vue'
 import { useEntrepriseStore } from '@/stores/entrepriseStore'
 const entrepriseStore = useEntrepriseStore()
 const activeEntreprise = computed(() => entrepriseStore.activeEntreprise)
-const isDropdownOpen = ref(false);
+const isDropdownOpen = ref(false)
 // Generate initials from name
 const getInitials = (name: string): string => {
   if (!name) return '?'
@@ -210,7 +163,6 @@ const getInitials = (name: string): string => {
   }
   return name.substring(0, 2).toUpperCase()
 }
-
 </script>
 
 <style scoped>

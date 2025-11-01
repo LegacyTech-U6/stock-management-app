@@ -58,7 +58,8 @@
     </div>
 
     <div class="category-meta">
-      Last updated: {{ formatDate(category.productCount > 0 ? category.updatedAt : 'No updates yet') }}
+      Last updated:
+      {{ formatDate(category.productCount > 0 ? category.updatedAt : 'No updates yet') }}
     </div>
   </div>
 </template>

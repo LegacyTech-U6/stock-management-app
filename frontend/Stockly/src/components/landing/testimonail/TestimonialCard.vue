@@ -3,16 +3,10 @@
     class="testimonial-card bg-white shadow-md rounded-2xl p-5 w-64 h-72 flex flex-col justify-between border border-gray-100"
   >
     <div>
-      <p class="text-gray-700 text-sm leading-relaxed">
-        "{{ testimonial.message }}"
-      </p>
+      <p class="text-gray-700 text-sm leading-relaxed">"{{ testimonial.message }}"</p>
     </div>
     <div class="flex items-center gap-3 mt-4">
-      <img
-        :src="testimonial.avatar"
-        alt="avatar"
-        class="w-10 h-10 rounded-full object-cover"
-      />
+      <img :src="testimonial.avatar" alt="avatar" class="w-10 h-10 rounded-full object-cover" />
       <div>
         <h4 class="text-gray-900 font-semibold text-sm">
           {{ testimonial.name }}
@@ -36,5 +30,5 @@ defineProps({
     type: Object,
     required: true,
   },
-});
+})
 </script>

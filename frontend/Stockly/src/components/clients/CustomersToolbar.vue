@@ -19,9 +19,7 @@
       />
 
       <!-- Add customer button -->
-      <n-button type="primary" strong @click="$emit('add-customer')">
-        Add Customer
-      </n-button>
+      <n-button type="primary" strong @click="$emit('add-customer')"> Add Customer </n-button>
     </div>
   </div>
 </template>
@@ -31,7 +29,7 @@ import { ref } from 'vue'
 
 // Props for parent binding
 const props = defineProps({
-  search: String
+  search: String,
 })
 
 // Emits to parent
@@ -43,6 +41,6 @@ const selectedFilter = ref(null)
 const filters = [
   { label: 'All', value: 'all' },
   { label: 'Active', value: 'active' },
-  { label: 'Inactive', value: 'inactive' }
+  { label: 'Inactive', value: 'inactive' },
 ]
 </script>

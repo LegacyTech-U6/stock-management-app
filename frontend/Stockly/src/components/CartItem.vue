@@ -39,12 +39,11 @@
             </button>
           </div>
           <div class="text-right">
-          <p class="text-sm font-semibold text-gray-900">
-            ${{ (item.selling_price * item.quantity).toFixed(2) }}
-          </p>
+            <p class="text-sm font-semibold text-gray-900">
+              ${{ (item.selling_price * item.quantity).toFixed(2) }}
+            </p>
+          </div>
         </div>
-        </div>
-
       </div>
 
       <!-- Cost -->

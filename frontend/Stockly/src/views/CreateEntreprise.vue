@@ -56,8 +56,8 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useEntrepriseStore } from '@/stores/entrepriseStore'
 import { useActionMessage } from '@/composable/useActionMessage'
-import { useGlobalModal } from "@/composable/useValidation";
-const { show } = useGlobalModal();
+import { useGlobalModal } from '@/composable/useValidation'
+const { show } = useGlobalModal()
 const { showSuccess, showError } = useActionMessage()
 const router = useRouter()
 const store = useEntrepriseStore()
@@ -65,7 +65,7 @@ const store = useEntrepriseStore()
 const entreprise = ref({
   name: '',
   description: '',
-  logo_url: ''
+  logo_url: '',
 })
 
 const handleSubmit = async () => {
@@ -83,7 +83,7 @@ const handleSubmit = async () => {
     show('Entreprise créée avec succès !', 'success')
     // Rediriger vers la liste des entreprises après création
     router.push('/entreprises')
-  }else {
+  } else {
     show('Échec de la création de l’entreprise', 'error')
   }
 }

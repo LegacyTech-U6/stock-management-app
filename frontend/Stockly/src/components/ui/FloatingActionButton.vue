@@ -55,8 +55,8 @@ const props = defineProps({
     type: Array,
     default: () => [
       { label: 'Add Product', icon: Package, value: 'product' },
-  { label: 'Add Category', icon: Tag, value: 'category' },
-  { label: 'Add Client', icon: Users, value: 'client' },
+      { label: 'Add Category', icon: Tag, value: 'category' },
+      { label: 'Add Client', icon: Users, value: 'client' },
     ],
   },
 })

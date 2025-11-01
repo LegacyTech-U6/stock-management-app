@@ -25,7 +25,9 @@
       <h4 class="text-sm font-semibold text-gray-700 mb-1">Top Products</h4>
       <ul class="text-sm text-gray-600">
         <li v-for="product in report.top_products" :key="product.product_id">
-          {{ product.product_name }} — {{ product.quantity_sold }} pcs ({{ formatCurrency(product.total_amount) }})
+          {{ product.product_name }} — {{ product.quantity_sold }} pcs ({{
+            formatCurrency(product.total_amount)
+          }})
         </li>
       </ul>
     </div>
@@ -45,7 +47,9 @@
       <h4 class="text-sm font-semibold text-gray-700 mb-1">Transactions</h4>
       <ul class="text-sm text-gray-600">
         <li v-for="tx in report.details" :key="tx.invoice_id">
-          {{ formatDate(tx.date) }} — {{ tx.customer_name }} — {{ formatCurrency(tx.amount) }} ({{ tx.payment_method }})
+          {{ formatDate(tx.date) }} — {{ tx.customer_name }} — {{ formatCurrency(tx.amount) }} ({{
+            tx.payment_method
+          }})
         </li>
       </ul>
     </div>
@@ -56,8 +60,8 @@
 const props = defineProps({
   report: {
     type: Object,
-    required: true
-  }
+    required: true,
+  },
 })
 
 const formatCurrency = (value) => {

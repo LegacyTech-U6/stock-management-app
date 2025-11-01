@@ -6,27 +6,37 @@
         <div class="flex items-center justify-between mb-6">
           <div>
             <h1 class="text-2xl font-semibold text-gray-900">Product Inventory</h1>
-            <p class="text-sm text-gray-500 mt-1">
-              Manage and track your product database
-            </p>
+            <p class="text-sm text-gray-500 mt-1">Manage and track your product database</p>
           </div>
 
           <div class="flex items-center gap-3">
             <!-- Quick Links -->
-            <router-link to="/OutOfStock"
-              class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-md transition-colors">
+            <router-link
+              to="/OutOfStock"
+              class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-md transition-colors"
+            >
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                />
               </svg>
               Out of Stock
             </router-link>
 
-            <router-link to="/lowStock"
-              class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-amber-600 bg-amber-50 hover:bg-amber-100 rounded-md transition-colors">
+            <router-link
+              to="/lowStock"
+              class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-amber-600 bg-amber-50 hover:bg-amber-100 rounded-md transition-colors"
+            >
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
               Low Stock
             </router-link>
@@ -34,16 +44,30 @@
             <!-- View Mode Toggle -->
             <div class="flex items-center border border-gray-200 rounded-md">
               <button
-                :class="viewMode === 'grid' ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'"
-                class="p-2 transition-colors" @click="viewMode = 'grid'" title="Grid View">
+                :class="
+                  viewMode === 'grid'
+                    ? 'bg-gray-100 text-gray-900'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                "
+                class="p-2 transition-colors"
+                @click="viewMode = 'grid'"
+                title="Grid View"
+              >
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M3 3h7v7H3V3zm0 11h7v7H3v-7zm11-11h7v7h-7V3zm0 11h7v7h-7v-7z" />
                 </svg>
               </button>
               <div class="w-px h-6 bg-gray-200"></div>
               <button
-                :class="viewMode === 'list' ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'"
-                class="p-2 transition-colors" @click="viewMode = 'list'" title="List View">
+                :class="
+                  viewMode === 'list'
+                    ? 'bg-gray-100 text-gray-900'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                "
+                class="p-2 transition-colors"
+                @click="viewMode = 'list'"
+                title="List View"
+              >
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M3 4h18v2H3V4zm0 7h18v2H3v-2zm0 7h18v2H3v-2z" />
                 </svg>
@@ -51,10 +75,17 @@
             </div>
 
             <!-- Add Product Button -->
-            <button @click="handleAddProduct"
-              class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-md transition-colors flex items-center gap-2">
+            <button
+              @click="handleAddProduct"
+              class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-md transition-colors flex items-center gap-2"
+            >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4v16m8-8H4"
+                />
               </svg>
               Add Product
             </button>
@@ -62,17 +93,35 @@
         </div>
         <!-- Stats Cards -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <GridCard title="Total Products" :value="productStore.totalProducts || 0" :icon="Users"
-            gradientFrom="purple-500" gradientTo="purple-600" />
-          <GridCard title="in Stock" :value="inStockCount" :icon="UserCheck" gradientFrom="teal-500"
-            gradientTo="teal-600" />
-          <GridCard title="Low Stock" :value="lowStockCount" :icon="UserX" gradientFrom="slate-700"
-            gradientTo="slate-800" />
-          <GridCard title="Nember of categories" :value="categories.length" :icon="UserPlus" gradientFrom="blue-500"
-            gradientTo="blue-600" />
+          <GridCard
+            title="Total Products"
+            :value="productStore.totalProducts || 0"
+            :icon="Users"
+            gradientFrom="purple-500"
+            gradientTo="purple-600"
+          />
+          <GridCard
+            title="in Stock"
+            :value="inStockCount"
+            :icon="UserCheck"
+            gradientFrom="teal-500"
+            gradientTo="teal-600"
+          />
+          <GridCard
+            title="Low Stock"
+            :value="lowStockCount"
+            :icon="UserX"
+            gradientFrom="slate-700"
+            gradientTo="slate-800"
+          />
+          <GridCard
+            title="Nember of categories"
+            :value="categories.length"
+            :icon="UserPlus"
+            gradientFrom="blue-500"
+            gradientTo="blue-600"
+          />
         </div>
-
-
       </div>
     </div>
 
@@ -81,18 +130,32 @@
       <div class="flex flex-col sm:flex-row gap-3">
         <!-- Search -->
         <div class="flex-1 relative">
-          <svg class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none"
-            stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          <svg
+            class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
           </svg>
-          <input v-model="searchQuery" type="text" placeholder="Search by product name or barcode..."
-            class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all" />
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Search by product name or barcode..."
+            class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+          />
         </div>
 
         <!-- Category Filter -->
-        <select v-model="selectedCategory"
-          class="px-4 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all min-w-[200px]">
+        <select
+          v-model="selectedCategory"
+          class="px-4 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all min-w-[200px]"
+        >
           <option value="">All Categories</option>
           <option v-for="category in categories" :key="category" :value="category">
             {{ category }}
@@ -100,8 +163,10 @@
         </select>
 
         <!-- Stock Filter -->
-        <select v-model="selectedStock"
-          class="px-4 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all min-w-[180px]">
+        <select
+          v-model="selectedStock"
+          class="px-4 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all min-w-[180px]"
+        >
           <option value="">All Stock Levels</option>
           <option value="in-stock">In Stock</option>
           <option value="low-stock">Low Stock</option>
@@ -109,11 +174,19 @@
         </select>
 
         <!-- Clear Filters Button -->
-        <button v-if="searchQuery || selectedCategory || selectedStock" @click="clearFilters"
+        <button
+          v-if="searchQuery || selectedCategory || selectedStock"
+          @click="clearFilters"
           class="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-200 hover:bg-gray-100 rounded-md transition-colors"
-          title="Clear all filters">
+          title="Clear all filters"
+        >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         </button>
       </div>
@@ -123,40 +196,69 @@
     <div class="px-8 py-6">
       <!-- Loading State -->
       <div v-if="loading" class="flex justify-center items-center py-32">
-        <div class="animate-spin rounded-full h-12 w-12 border-3 border-gray-200 border-t-green-600"></div>
+        <div
+          class="animate-spin rounded-full h-12 w-12 border-3 border-gray-200 border-t-green-600"
+        ></div>
       </div>
 
       <!-- Empty State -->
-      <div v-else-if="filteredProducts.length === 0" class="bg-white border border-gray-200 rounded-lg py-20">
+      <div
+        v-else-if="filteredProducts.length === 0"
+        class="bg-white border border-gray-200 rounded-lg py-20"
+      >
         <div class="text-center">
-          <div class="w-16 h-16 bg-gray-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
-            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+          <div
+            class="w-16 h-16 bg-gray-100 rounded-lg mx-auto mb-4 flex items-center justify-center"
+          >
+            <svg
+              class="w-8 h-8 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+              />
             </svg>
           </div>
           <h3 class="text-lg font-semibold text-gray-900 mb-2">No products found</h3>
           <p class="text-gray-500 mb-6 max-w-md mx-auto">
-            We couldn't find any products matching your criteria. Try adjusting your filters or search query.
+            We couldn't find any products matching your criteria. Try adjusting your filters or
+            search query.
           </p>
-          <button @click="clearFilters"
-            class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md transition-colors">
+          <button
+            @click="clearFilters"
+            class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md transition-colors"
+          >
             Clear All Filters
           </button>
         </div>
       </div>
 
       <!-- Grid View -->
-      <div v-else-if="viewMode === 'grid'" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-1">
-        <ProductListItem v-for="product in filteredProducts" :key="product.id" :product="product"
-          :display-mode="viewMode" @view="handleViewProduct" />
+      <div
+        v-else-if="viewMode === 'grid'"
+        class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-1"
+      >
+        <ProductListItem
+          v-for="product in filteredProducts"
+          :key="product.id"
+          :product="product"
+          :display-mode="viewMode"
+          @view="handleViewProduct"
+        />
       </div>
 
       <!-- List View -->
       <div v-else class="bg-white border border-gray-200 rounded-lg overflow-hidden">
         <!-- List Header -->
         <div class="bg-gray-50 px-6 py-3 border-b border-gray-200">
-          <div class="flex items-center gap-4 text-xs font-medium text-gray-600 uppercase tracking-wide">
+          <div
+            class="flex items-center gap-4 text-xs font-medium text-gray-600 uppercase tracking-wide"
+          >
             <div class="flex-1">Product Name</div>
             <div class="w-36 hidden lg:block">Last time Restock</div>
             <div class="w-36 hidden lg:block">Category</div>
@@ -169,8 +271,13 @@
         </div>
 
         <!-- List Items -->
-        <ProductListItem v-for="product in filteredProducts" :key="product.id" :product="product"
-          :display-mode="viewMode" @view="handleViewProduct" />
+        <ProductListItem
+          v-for="product in filteredProducts"
+          :key="product.id"
+          :product="product"
+          :display-mode="viewMode"
+          @view="handleViewProduct"
+        />
       </div>
     </div>
     <ValidationModal />
@@ -196,7 +303,7 @@ const selectedStock = ref('')
 const viewMode = ref('list')
 const loading = ref(false)
 const categories = computed(() => {
-  const cats = new Set(productStore.products.map(p => p.category_id))
+  const cats = new Set(productStore.products.map((p) => p.category_id))
   return Array.from(cats).filter(Boolean)
 })
 
@@ -205,18 +312,17 @@ const filteredProducts = computed(() => {
 
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
-    products = products.filter(p =>
-      p.Prod_name.toLowerCase().includes(query) ||
-      p.code_bar.toLowerCase().includes(query)
+    products = products.filter(
+      (p) => p.Prod_name.toLowerCase().includes(query) || p.code_bar.toLowerCase().includes(query),
     )
   }
 
   if (selectedCategory.value) {
-    products = products.filter(p => p.category_id === selectedCategory.value)
+    products = products.filter((p) => p.category_id === selectedCategory.value)
   }
 
   if (selectedStock.value) {
-    products = products.filter(p => {
+    products = products.filter((p) => {
       const qty = typeof p.quantity === 'string' ? parseInt(p.quantity) : p.quantity
       if (selectedStock.value === 'in-stock') return qty > 10
       if (selectedStock.value === 'low-stock') return qty > 0 && qty <= 10
@@ -229,14 +335,14 @@ const filteredProducts = computed(() => {
 })
 
 const inStockCount = computed(() => {
-  return productStore.products.filter(p => {
+  return productStore.products.filter((p) => {
     const qty = typeof p.quantity === 'string' ? parseInt(p.quantity) : p.quantity
     return qty > 10
   }).length
 })
 
 const lowStockCount = computed(() => {
-  return productStore.products.filter(p => {
+  return productStore.products.filter((p) => {
     const qty = typeof p.quantity === 'string' ? parseInt(p.quantity) : p.quantity
     return qty > 0 && qty <= 10
   }).length
@@ -255,13 +361,13 @@ const handleAddProduct = () => {
 const handleViewProduct = (product) => {
   router.push({
     name: 'product-detail',
-    params: { id: product.id }
+    params: { id: product.id },
   })
 }
 
 onMounted(async () => {
   loading.value = true
- 
+
   await productStore.fetchProducts()
 
   loading.value = false

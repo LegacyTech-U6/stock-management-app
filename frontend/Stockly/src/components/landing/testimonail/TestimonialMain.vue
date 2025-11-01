@@ -1,16 +1,18 @@
 <template>
-  <section
-    ref="sectionRef"
-    class="bg-indigo-50 py-20 overflow-hidden relative"
-  >
+  <section ref="sectionRef" class="bg-indigo-50 py-20 overflow-hidden relative">
     <!-- Gradient overlays for blurred top and bottom borders -->
-    <div class="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-indigo-50 to-transparent z-10 pointer-events-none"></div>
-    <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-indigo-50 to-transparent z-10 pointer-events-none"></div>
+    <div
+      class="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-indigo-50 to-transparent z-10 pointer-events-none"
+    ></div>
+    <div
+      class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-indigo-50 to-transparent z-10 pointer-events-none"
+    ></div>
 
     <div class="text-center mb-12 relative z-20">
       <h2 class="text-3xl font-bold text-indigo-900 mb-3">Témoignages</h2>
       <p class="text-gray-600 max-w-2xl mx-auto">
-        Découvrez ce que nos utilisateurs pensent de <span class="font-semibold text-indigo-700">Stockly</span>.
+        Découvrez ce que nos utilisateurs pensent de
+        <span class="font-semibold text-indigo-700">Stockly</span>.
       </p>
     </div>
 
@@ -22,30 +24,22 @@
         class="w-200 overflow-hidden"
         :style="{
           transform: `translateY(${columnOffsets[index]}px)`,
-          transition: 'transform 0.1s ease-out'
+          transition: 'transform 0.1s ease-out',
         }"
       >
         <div
           class="flex flex-col gap-6 animate-scroll-column"
           :style="{
             animationDuration: `${scrollDurations[index]}s`,
-            animationDirection: index % 2 === 0 ? 'normal' : 'reverse'
+            animationDirection: index % 2 === 0 ? 'normal' : 'reverse',
           }"
           @mouseenter="pauseAnimation(index)"
           @mouseleave="resumeAnimation(index)"
         >
           <!-- Original content -->
-          <TestimonialCard
-            v-for="(t, i) in col"
-            :key="`original-${i}`"
-            :testimonial="t"
-          />
+          <TestimonialCard v-for="(t, i) in col" :key="`original-${i}`" :testimonial="t" />
           <!-- Duplicated content for seamless loop -->
-          <TestimonialCard
-            v-for="(t, i) in col"
-            :key="`duplicate-${i}`"
-            :testimonial="t"
-          />
+          <TestimonialCard v-for="(t, i) in col" :key="`duplicate-${i}`" :testimonial="t" />
         </div>
       </div>
     </div>
@@ -63,8 +57,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
-import TestimonialCard from './TestimonialCard.vue';
+import { ref, onMounted, onUnmounted } from 'vue'
+import TestimonialCard from './TestimonialCard.vue'
 
 const testimonials = [
   {
@@ -81,7 +75,7 @@ const testimonials = [
   },
   {
     name: 'Lucie T.',
-    message: 'Le meilleur outil que j\'ai utilisé pour mes factures clients.',
+    message: "Le meilleur outil que j'ai utilisé pour mes factures clients.",
     avatar: 'https://i.pravatar.cc/100?img=3',
     rating: 5,
   },
@@ -129,7 +123,7 @@ const testimonials = [
   },
   {
     name: 'David C.',
-    message: 'J\'ai réduit mon temps de gestion administrative de moitié.',
+    message: "J'ai réduit mon temps de gestion administrative de moitié.",
     avatar: 'https://i.pravatar.cc/100?img=11',
     rating: 5,
   },
@@ -139,10 +133,10 @@ const testimonials = [
     avatar: 'https://i.pravatar.cc/100?img=12',
     rating: 5,
   },
-];
+]
 
 // Create more testimonials to fill 7 columns
-const extendedTestimonials = [...testimonials, ...testimonials, ...testimonials];
+const extendedTestimonials = [...testimonials, ...testimonials, ...testimonials]
 
 // Distribute across 7 columns
 const columns = [
@@ -153,71 +147,74 @@ const columns = [
   extendedTestimonials.slice(16, 20),
   extendedTestimonials.slice(20, 24),
   extendedTestimonials.slice(24, 28),
-];
+]
 
 // Different scroll speeds for internal animation
-const scrollDurations = [25, 30, 35, 40, 35, 30, 25];
-const isPaused = ref(Array(columns.length).fill(false));
+const scrollDurations = [25, 30, 35, 40, 35, 30, 25]
+const isPaused = ref(Array(columns.length).fill(false))
 
 // Parallax effect on page scroll
-const sectionRef = ref(null);
-const columnOffsets = ref(Array(columns.length).fill(0));
-const parallaxFactors = [0.1, 0.05, 0.02, 0, -0.02, -0.05, -0.1]; // Different factors for each column
+const sectionRef = ref(null)
+const columnOffsets = ref(Array(columns.length).fill(0))
+const parallaxFactors = [0.1, 0.05, 0.02, 0, -0.02, -0.05, -0.1] // Different factors for each column
 
 function handleScroll() {
-  if (!sectionRef.value) return;
+  if (!sectionRef.value) return
 
-  const section = sectionRef.value;
-  const rect = section.getBoundingClientRect();
-  const windowHeight = window.innerHeight;
+  const section = sectionRef.value
+  const rect = section.getBoundingClientRect()
+  const windowHeight = window.innerHeight
 
   // Calculate how much of the section is visible
-  const sectionTop = rect.top;
-  const sectionHeight = rect.height;
+  const sectionTop = rect.top
+  const sectionHeight = rect.height
 
   // Calculate progress through the section (0 to 1)
-  const progress = Math.max(0, Math.min(1, (windowHeight - sectionTop) / (windowHeight + sectionHeight)));
+  const progress = Math.max(
+    0,
+    Math.min(1, (windowHeight - sectionTop) / (windowHeight + sectionHeight)),
+  )
 
   // Apply parallax effect to each column
   columns.forEach((_, index) => {
-    const maxOffset = 50; // Maximum parallax movement in pixels
-    columnOffsets.value[index] = progress * maxOffset * parallaxFactors[index];
-  });
+    const maxOffset = 50 // Maximum parallax movement in pixels
+    columnOffsets.value[index] = progress * maxOffset * parallaxFactors[index]
+  })
 }
 
 function pauseAnimation(index) {
-  isPaused.value[index] = true;
-  const elements = document.querySelectorAll('.animate-scroll-column');
+  isPaused.value[index] = true
+  const elements = document.querySelectorAll('.animate-scroll-column')
   if (elements[index]) {
-    elements[index].style.animationPlayState = 'paused';
+    elements[index].style.animationPlayState = 'paused'
   }
 }
 
 function resumeAnimation(index) {
-  isPaused.value[index] = false;
-  const elements = document.querySelectorAll('.animate-scroll-column');
+  isPaused.value[index] = false
+  const elements = document.querySelectorAll('.animate-scroll-column')
   if (elements[index]) {
-    elements[index].style.animationPlayState = 'running';
+    elements[index].style.animationPlayState = 'running'
   }
 }
 
 onMounted(() => {
   // Add smooth initialization
   setTimeout(() => {
-    const elements = document.querySelectorAll('.animate-scroll-column');
-    elements.forEach(el => {
-      el.style.animationPlayState = 'running';
-    });
-  }, 100);
+    const elements = document.querySelectorAll('.animate-scroll-column')
+    elements.forEach((el) => {
+      el.style.animationPlayState = 'running'
+    })
+  }, 100)
 
   // Add scroll listener for parallax effect
-  window.addEventListener('scroll', handleScroll);
-  handleScroll(); // Initial calculation
-});
+  window.addEventListener('scroll', handleScroll)
+  handleScroll() // Initial calculation
+})
 
 onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll);
-});
+  window.removeEventListener('scroll', handleScroll)
+})
 </script>
 
 <style scoped>
@@ -284,6 +281,8 @@ onUnmounted(() => {
 
 /* Smooth transitions for parallax */
 .hidden.md\:flex > div {
-  transition: transform 0.2s ease-out, filter 0.2s ease-out;
+  transition:
+    transform 0.2s ease-out,
+    filter 0.2s ease-out;
 }
 </style>

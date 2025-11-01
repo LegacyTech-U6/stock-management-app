@@ -1,8 +1,7 @@
 <template>
   <div style="" class="w-full">
-
     <div
-      class="fixed z-50 bg-black bg-opacity-50 flex justify-center items-start  overflow-auto"
+      class="fixed z-50 bg-black bg-opacity-50 flex justify-center items-start overflow-auto"
       style="
         background-color: rgba(0, 0, 0, 0.85);
         backdrop-filter: blur(4px);
@@ -10,37 +9,14 @@
         margin-bottom: -1px;
       "
     >
-      <div
-      class="flex  absolute  justify-between w-full p-4"
-      style="z-index: 701"
-    >
-       <button
-        @click="$emit('close')"
-        class=" text-gray-500 bg-gray-400 p-4  hover:text-gray-700 hover:bg-gray-100 rounded-2xl transition-colors"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M6 18L18 6M6 6l12 12"
-          />
-        </svg>
-      </button>
-      <div class="flex items-center gap-2">
+      <div class="flex absolute justify-between w-full p-4" style="z-index: 701">
         <button
-          @click="printInvoice"
-          class="bg-white border border-gray-300 text-gray-700 px-3 py-2 rounded-lg font-medium flex items-center gap-2 hover:bg-gray-50 transition-colors text-sm"
+          @click="$emit('close')"
+          class="text-gray-500 bg-gray-400 p-4 hover:text-gray-700 hover:bg-gray-100 rounded-2xl transition-colors"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4"
+            class="h-5 w-5"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -49,33 +25,53 @@
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
-              d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+              d="M6 18L18 6M6 6l12 12"
             />
           </svg>
-          Print
         </button>
-        <button
-          @click="downloadPDF"
-          class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg font-medium flex items-center gap-2 transition-colors text-sm"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+        <div class="flex items-center gap-2">
+          <button
+            @click="printInvoice"
+            class="bg-white border border-gray-300 text-gray-700 px-3 py-2 rounded-lg font-medium flex items-center gap-2 hover:bg-gray-50 transition-colors text-sm"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            />
-          </svg>
-          PDF
-        </button>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+              />
+            </svg>
+            Print
+          </button>
+          <button
+            @click="downloadPDF"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg font-medium flex items-center gap-2 transition-colors text-sm"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
+            PDF
+          </button>
+        </div>
       </div>
-    </div>
 
       <div class="bg-white rounded shadow-xl max-w-3xl w-full h-screen pb-10 relative m-4">
         <!-- Header -->
@@ -112,7 +108,9 @@
           <div class="mb-6">
             <h3 class="font-bold text-black text-lg mb-3 border-b border-gray-300 pb-2">BILL TO</h3>
             <div class="text-sm">
-              <div class="font-semibold text-black">{{ invoice.client.client_name || 'Client Name' }}</div>
+              <div class="font-semibold text-black">
+                {{ invoice.client.client_name || 'Client Name' }}
+              </div>
               <div class="text-gray-600">
                 {{ invoice.client.client_adresse || 'Address not specified' }}
               </div>

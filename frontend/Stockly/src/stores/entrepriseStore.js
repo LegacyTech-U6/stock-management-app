@@ -12,7 +12,7 @@ export const useEntrepriseStore = defineStore('entreprise', {
   state: () => ({
     entreprises: [],
     currentEntreprise: null,
-    totalEntreprise:null,
+    totalEntreprise: null,
     activeEntreprise: null,
     isLoading: false,
     error: null,
@@ -23,12 +23,10 @@ export const useEntrepriseStore = defineStore('entreprise', {
       this.activeEntreprise = entreprise
     },
 
-   clearActiveEntreprise() {
-  this.activeEntreprise = null
-  localStorage.removeItem('stockly_entreprise') // clé exacte du persist
-}
-,
-
+    clearActiveEntreprise() {
+      this.activeEntreprise = null
+      localStorage.removeItem('stockly_entreprise') // clé exacte du persist
+    },
     async createEntreprise(entrepriseData) {
       this.isLoading = true
       this.error = null
@@ -52,7 +50,7 @@ export const useEntrepriseStore = defineStore('entreprise', {
 
       try {
         const data = await getEntreprises()
-        console.log(data);
+        console.log(data)
 
         this.entreprises = data.data // data.entreprises contient maintenant id = UUID
         this.totalEntreprise = data.count

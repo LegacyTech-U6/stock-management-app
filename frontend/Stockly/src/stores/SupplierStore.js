@@ -1,20 +1,20 @@
 // stores/supplierStore.js
-import { defineStore } from "pinia"
+import { defineStore } from 'pinia'
 import {
   createSupplier,
   getSuppliers,
   getOneSupplier,
   updateSupplier,
-  deleteSupplier
-} from "@/service/api" // adjust the path if needed
+  deleteSupplier,
+} from '@/service/api' // adjust the path if needed
 
-export const useSupplierStore = defineStore("supplier", {
+export const useSupplierStore = defineStore('supplier', {
   state: () => ({
     suppliers: [],
     selectedSupplier: null,
     loading: false,
     submitError: null,
-    submitLoading: false
+    submitLoading: false,
   }),
 
   actions: {
@@ -27,7 +27,7 @@ export const useSupplierStore = defineStore("supplier", {
         this.suppliers = data
         console.log(data)
       } catch (error) {
-        console.error("Error fetching suppliers:", error)
+        console.error('Error fetching suppliers:', error)
         this.submitError = error
       } finally {
         this.loading = false
@@ -43,7 +43,7 @@ export const useSupplierStore = defineStore("supplier", {
         this.selectedSupplier = data
         return data
       } catch (error) {
-        console.error("Error fetching supplier:", error)
+        console.error('Error fetching supplier:', error)
         this.submitError = error
       } finally {
         this.loading = false
@@ -59,7 +59,7 @@ export const useSupplierStore = defineStore("supplier", {
         this.suppliers.push(data) // add to state
         return data
       } catch (error) {
-        console.error("Error creating supplier:", error)
+        console.error('Error creating supplier:', error)
         this.submitError = error
       } finally {
         this.submitLoading = false
@@ -72,11 +72,11 @@ export const useSupplierStore = defineStore("supplier", {
       this.submitError = null
       try {
         const updated = await updateSupplier(id, supplierData)
-        const index = this.suppliers.findIndex(s => s.id === id)
+        const index = this.suppliers.findIndex((s) => s.id === id)
         if (index !== -1) this.suppliers[index] = updated
         return updated
       } catch (error) {
-        console.error("Error updating supplier:", error)
+        console.error('Error updating supplier:', error)
         this.submitError = error
       } finally {
         this.submitLoading = false
@@ -89,13 +89,13 @@ export const useSupplierStore = defineStore("supplier", {
       this.submitError = null
       try {
         await deleteSupplier(id)
-        this.suppliers = this.suppliers.filter(s => s.id !== id)
+        this.suppliers = this.suppliers.filter((s) => s.id !== id)
       } catch (error) {
-        console.error("Error deleting supplier:", error)
+        console.error('Error deleting supplier:', error)
         this.submitError = error
       } finally {
         this.submitLoading = false
       }
-    }
-  }
+    },
+  },
 })
