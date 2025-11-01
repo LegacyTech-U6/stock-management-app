@@ -2,6 +2,7 @@
 import { Rotate3D } from 'lucide-vue-next'
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import branding from '@/assets/image/branding.png'
 // Options de bénéfices
 const benefits = ['14-day free trial', 'No credit card required', 'Cancel anytime']
 const isScrolled = ref(false)
@@ -26,7 +27,7 @@ const handleRegister = () => {
 
 <template>
   <section
-    :style="{ backgroundImage: `url('@/assets/image/branding.png')` }"
+    :style="{ backgroundImage: `url(${branding})` }"
     class="relative lg:mt-10 text-white pt-30 lg:grid grid-cols-3 bg-cover min-h-[90vh] items-center justify-center px-6 overflow-x-hidden bg-indigo-500"
   >
     <div class="relative z-10 col-span-2 max-w-5xl w-full space-y-12 text-center">
