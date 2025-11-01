@@ -33,6 +33,8 @@ cron.schedule("0 */2 * * *", async () => {
     console.error("❌ Error during cleanup:", error);
   }
 });
+
+
 // 🔹 Rôles prédéfinis
 const predefinedRoles = [
   { name: 'Admin', description: 'Full access to all system features and settings' },
@@ -53,7 +55,7 @@ async function seedPredefinedRoles() {
   }
 }
 const threst_hold=[{}]
-
+const env = process.env.NODE_ENV || 'development';
 // ⚠️ ATTENTION: supprime les données existantes en dev
 db.sequelize.sync().then(async () => {
   console.log("✅ Toutes les tables ont été créées !");

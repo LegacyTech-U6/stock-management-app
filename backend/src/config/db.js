@@ -22,28 +22,66 @@ dotenv.config();
 const { Sequelize, DataTypes } = require("sequelize");
 require("dotenv").config();
 
-const sequelize = new Sequelize(
-  process.env.MYSQL_DATABASE,
-  process.env.MYSQL_USER,
-  process.env.MYSQL_PASSWORD,
-  {
-    host: process.env.MYSQL_HOST,
+// Déterminer l'environnement actuel : development, test ou production
+const env = process.env.NODE_ENV || "development";
+
+// Configurations par environnement
+const config = {
+  development: {
+    username: process.env.MYSQL_USER_local || "root",
+    password: process.env.MYSQL_PASSWORD_local || "",
+    database: process.env.MYSQL_DATABASE_local || "dev_db",
+    host: process.env.MYSQL_HOST_local || "127.0.0.1",
+    dialect: "mysql",
+    logging: console.log,
+  },
+  test: {
+    username: process.env.MYSQL_USER_test || "root",
+    password: process.env.MYSQL_PASSWORD_test || "",
+    database: process.env.MYSQL_DATABASE_test || "test_db",
+    host: process.env.MYSQL_HOST_test || "127.0.0.1",
     dialect: "mysql",
     logging: false,
-  }
+  },
+  production: {
+    username: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_DATABASE,
+    host: process.env.MYSQL_HOST,
+    port: process.env.MYSQL_PORT || 3306,
+    dialect: "mysql",
+    logging: false,
+    dialectOptions: {
+      ssl: {
+        rejectUnauthorized: false, // nécessaire pour certains providers (Railway, PlanetScale, etc.)
+      },
+    },
+  },
+};
+const env1 = process.env.NODE_ENV || "development";
+console.log("Environnement courant :", env1);
+
+
+// Créer la connexion Sequelize avec la config appropriée
+const sequelize = new Sequelize(
+  config[env].database,
+  config[env].username,
+  config[env].password,
+  config[env]
 );
 
-// Vérification de la connexion
+// Tester la connexion
 sequelize
   .authenticate()
-  .then(() => console.log("✅ Connecté à MySQL !"))
-  .catch((err) => console.error("❌ Erreur de connexion à MySQL :", err));
+  .then(() => console.log(`✅ Connecté à MySQL en ${env} !`))
+  .catch((err) => console.error(`❌ Erreur de connexion à MySQL en ${env} :`, err));
 
-// Initialisation des modèles
+// Exporter pour utilisation dans les modèles et le serveur
 const db = {};
-
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
+
+
 // ===============================
 // IMPORT MODELS
 // ===============================
