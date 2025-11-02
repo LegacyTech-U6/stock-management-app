@@ -75,7 +75,7 @@ app.use((req, res, next) => {
 });
 app.use(
   cors({
-    origin: "http://localhost:4173", // ou "*" pour tout autoriser (déconseillé en prod)
+    origin: process.env.FRONTEND_URL, // ou "*" pour tout autoriser (déconseillé en prod)
     credentials: true,
   })
 );
