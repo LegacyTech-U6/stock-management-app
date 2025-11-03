@@ -15,55 +15,67 @@ exports.register = async (req, res) => {
   try {
     const { username, Last_name, email, telephone, password } = req.body;
 
-    // Vérifier si l'email existe déjà
+    // 1️⃣ Vérifier si l'email existe déjà
     const existing = await User.findOne({ where: { email } });
     if (existing)
       return res.status(400).json({ message: "Email déjà utilisé" });
 
-    // Hacher le mot de passe
-   
+    // 2️⃣ Hacher le mot de passe (à remplacer par bcrypt)
+    const password_hash = password; // TODO: bcrypt.hash(password, 10)
 
-    // ✅ Création du compte
+    // 3️⃣ Création du compte
     const newUser = await User.create({
       username,
       Last_name,
       email,
       telephone,
-      password_hash: password,
-      is_active: false, // Compte inactif jusqu'à activation
+      password_hash,
+      is_active: false,
     });
 
-    // ✅ Création du token d’activation
+    // 4️⃣ Création du token d’activation
     const activationToken = jwt.sign(
       { id: newUser.id },
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
 
-    // ✅ Lien d’activation
+    // 5️⃣ Lien d’activation
     const activationLink = `${process.env.FRONTEND_URL}/verify/${activationToken}`;
 
-    // ✅ Envoi du mail
-    await sendMail({
-      userId: newUser.id,
+    // 6️⃣ Préparer le mail
+    const site = await Setting.findOne({ where: { key: "site" } });
+    const htmlContent = `
+      <h2>Bienvenue, ${username} 👋</h2>
+      <p>Merci de vous être inscrit sur <strong>Stockly</strong>.</p>
+      <p>Cliquez sur le bouton ci-dessous pour activer votre compte :</p>
+      <a href="${activationLink}" 
+         style="display:inline-block;background:#2563eb;color:white;padding:10px 20px;border-radius:8px;text-decoration:none;">
+        Activer mon compte
+      </a>
+      <p>Ce lien expire dans 24 heures.</p>
+    `;
+
+    // 7️⃣ Envoi du mail via Resend + logs détaillés
+    const mailResult = await sendMail({
+      userId: newUser.id, // facultatif si tu veux récupérer l'email depuis la DB
       subject: "Activez votre compte Stockly",
-      html: `
-        <h2>Bienvenue, ${newUser.username} 👋</h2>
-        <p>Merci de vous être inscrit sur <strong>Stockly</strong>.</p>
-        <p>Cliquez sur le bouton ci-dessous pour activer votre compte :</p>
-        <a href="${activationLink}" 
-           style="display:inline-block;background:#2563eb;color:white;padding:10px 20px;border-radius:8px;text-decoration:none;">
-          Activer mon compte
-        </a>
-        <p>Ce lien expire dans 24 heures.</p>
-      `,
+      html: htmlContent,
+      to: email, // facultatif si userId fourni
     });
 
+    if (!mailResult.success) {
+      console.error("⚠️ L’email d’activation n’a pas pu être envoyé.");
+    }
+
+    // 8️⃣ Réponse API
     res.status(201).json({
-      message: "Utilisateur créé. Un email d’activation a été envoyé.",
+      message: "Utilisateur créé. Un email d’activation a été envoyé (voir logs pour debug).",
+      mailLog: mailResult.response || null,
     });
+
   } catch (err) {
-    console.error("Erreur register:", err);
+    console.error("❌ Erreur register:", err);
     res.status(500).json({ message: err.message });
   }
 };
