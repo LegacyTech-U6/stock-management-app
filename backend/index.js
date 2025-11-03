@@ -6,6 +6,7 @@ const db = require('./src/config/db')
 // 🕐 Charger le cron des rapports journaliers
 require('./src/crons/dailyReports')
 const cron = require("node-cron");
+const { testMailjetConnection } = require('./src/config/mail.config');
 const createAllUsersView = require('./src/config/createAllUsersView');
 const purchaseRoutes = require('./src/routes/purchase.route')
 const ProductRoute = require("./src/routes/product.route");
@@ -34,7 +35,7 @@ cron.schedule("0 */2 * * *", async () => {
   }
 });
 
-
+testMailjetConnection();
 // 🔹 Rôles prédéfinis
 const predefinedRoles = [
   { name: 'Admin', description: 'Full access to all system features and settings' },
