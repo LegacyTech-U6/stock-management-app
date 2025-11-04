@@ -32,11 +32,11 @@
           <div
             class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-sm"
           >
-            <Package class="w-5 h-5 text-white" />
+            
           </div>
           <div>
-            <h1 class="font-semibold text-gray-900 text-lg">StockFlow</h1>
-            <p class="text-xs text-gray-500 font-medium">POS System</p>
+            <h1 class="font-semibold text-gray-900 text-lg">Inventelo</h1>
+
           </div>
         </div>
       </div>

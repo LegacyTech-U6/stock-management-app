@@ -24,7 +24,7 @@ const ROLE_PERMISSIONS = {
     canAccessSettings: false,
   },
   SalesPoint: {
-    canViewDashboard: true,
+    canViewDashboard: false,
     canMakeSales: true,
     canViewInvoices: true,
     canManageStock: false,
