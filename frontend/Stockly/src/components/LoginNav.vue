@@ -32,7 +32,7 @@
           <div
             class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-sm"
           >
-            
+
           </div>
           <div>
             <h1 class="font-semibold text-gray-900 text-lg">Inventelo</h1>
@@ -261,11 +261,12 @@
           </div>
           <div class="p-2 mt-2">
             <button
-              @click="logoutEntreprise"
-              class="w-full py-2.5 px-4 bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-medium rounded-xl transition-all duration-300 shadow-sm hover:shadow-md text-sm"
-            >
-              Sign Out
-            </button>
+  @click="logoutEntreprise"
+  class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
+>
+  {{ authStore.user?.type === 'admin' ? 'Retour à l’espace admin' : 'Déconnexion' }}
+</button>
+
           </div>
         </div>
       </div>
@@ -494,8 +495,9 @@ const closeSidebarOnMobile = () => {
 
 const logoutEntreprise = () => {
   entrepriseStore.clearActiveEntreprise()
-  authStore.logout()
-  router.push('/login')
+   const userType = authStore.user?.type
+  if (userType === 'admin') authStore.logout('backToAdmin')
+  else authStore.logout()
 }
 
 const handleResize = () => {

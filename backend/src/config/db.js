@@ -61,14 +61,23 @@ const config = {
 const env1 = process.env.NODE_ENV || "development";
 console.log("Environnement courant :", env1);
 
-
-// Créer la connexion Sequelize avec la config appropriée
 const sequelize = new Sequelize(
-  config[env].database,
-  config[env].username,
-  config[env].password,
-  config[env]
+  process.env.MYSQL_DATABASE_local,
+  process.env.MYSQL_USER_local,
+  process.env.MYSQL_PASSWORD_local,
+  {
+    host: process.env.MYSQL_HOST_local,
+    dialect: "mysql",
+    logging: false,
+  }
 );
+// Créer la connexion Sequelize avec la config appropriée
+// const sequelize = new Sequelize(
+//   config[env].database,
+//   config[env].username,
+//   config[env].password,
+//   config[env]
+// );
 
 // Tester la connexion
 sequelize

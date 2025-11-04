@@ -3,7 +3,7 @@ import axios from 'axios'
 import router from '@/router'
 import { useEntrepriseStore } from './entrepriseStore'
 
-const API_URL = import.meta.env.VITE_API_URL
+const API_URL = "http://localhost:5000/api"
 
 // Définition centralisée des permissions
 const ROLE_PERMISSIONS = {
@@ -165,9 +165,8 @@ export const useAuthStore = defineStore('auth', {
       localStorage.removeItem('entreprise')
 
       const userType = this.user?.type // on garde avant de vider le user
+      console.log("User type at logout:", userType);
 
-      this.user = null
-      this.token = null
 
       // 2️⃣ Redirection selon le type
       if (userType === 'admin') {
@@ -177,6 +176,8 @@ export const useAuthStore = defineStore('auth', {
         // 👷‍♂️ Worker ou autre → retour login
         router.push('/login')
       }
+       this.user = null
+      this.token = null
     },
     /**
      * Mot de passe oublié
