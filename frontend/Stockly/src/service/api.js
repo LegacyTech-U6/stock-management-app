@@ -264,7 +264,7 @@ export async function deleteSupplier(supplierId) {
 
 // ✅ Créer une entreprise
 export async function createEntreprise(entrepriseData) {
-  console.log('🚀 API: Creating client with data:', entrepriseData)
+  console.log('🚀 API: Creating entreprise with data:', entrepriseData)
 
   const formData = new FormData()
 
@@ -279,7 +279,7 @@ export async function createEntreprise(entrepriseData) {
   if (entrepriseData.logo_url instanceof File) {
     formData.append('logo_url', entrepriseData.logo_url)
   } else if (entrepriseData.logo_url) {
-    formData.append('logo_url', entrepriseData.logo_ur)
+    formData.append('logo_url', entrepriseData.logo_url)
   }
 
   // Log FormData contents for debugging
@@ -510,5 +510,23 @@ export async function getDailyPurchaseReport() {
 
 export async function getSellingReport() {
   const { data } = await API.get('/activities/reports/sales-report')
+  return data
+}
+
+// ===============================
+// 🔹 Notifications
+// ===============================
+
+// ✅ Récupérer les dernières notifications (5 dernières)
+export async function getNotifications() {
+  const { data } = await API.get('/notifications') // route GET /api/notifications
+  console.log('🔔 Notifications API Response:', data)
+  return data
+}
+
+// ✅ Marquer une notification comme lue
+export async function markNotificationAsRead(notificationId) {
+  const { data } = await API.patch(`/notifications/${notificationId}/read`) // route PATCH /api/notifications/:id/read
+  console.log(`🔔 Notification ${notificationId} marked as read:`, data)
   return data
 }

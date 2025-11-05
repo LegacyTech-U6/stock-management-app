@@ -12,24 +12,16 @@
       <div class="flex items-center justify-between p-4 border-b border-gray-100">
         <!-- Search -->
         <div class="relative w-64">
-          <Search
-            class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400"
-          />
-          <input
-            v-model="searchQuery"
-            type="text"
-            placeholder="Search"
-            class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
-          />
+          <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <input v-model="searchQuery" type="text" placeholder="Search"
+            class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none" />
         </div>
 
         <!-- Filters and Actions -->
         <div class="flex items-center gap-3">
           <!-- Customer Filter -->
-          <select
-            v-model="selectedCustomer"
-            class="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none bg-white"
-          >
+          <select v-model="selectedCustomer"
+            class="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none bg-white">
             <option :value="null">Customer</option>
             <option v-for="option in customerOptions" :key="option.value" :value="option.value">
               {{ option.label }}
@@ -37,10 +29,8 @@
           </select>
 
           <!-- Status Filter -->
-          <select
-            v-model="selectedStatus"
-            class="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none bg-white"
-          >
+          <select v-model="selectedStatus"
+            class="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none bg-white">
             <option :value="null">Status</option>
             <option v-for="option in statusOptions" :key="option.value" :value="option.value">
               {{ option.label }}
@@ -48,44 +38,21 @@
           </select>
 
           <!-- Sort By -->
-          <select
-            v-model="sortBy"
-            class="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none bg-white"
-          >
+          <select v-model="sortBy"
+            class="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none bg-white">
             <option v-for="option in sortOptions" :key="option.value" :value="option.value">
               {{ option.label }}
             </option>
           </select>
 
-          <!-- Action Buttons -->
-          <button
-            class="w-10 h-10 flex items-center justify-center rounded-full border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
-            title="Export PDF"
-          >
-            <FileText class="w-5 h-5" />
-          </button>
 
-          <button
-            class="w-10 h-10 flex items-center justify-center rounded-full border border-green-200 bg-green-50 text-green-600 hover:bg-green-100 transition-colors"
-            title="Export Excel"
-          >
-            <FileText class="w-5 h-5" />
-          </button>
 
           <button
             class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-200 hover:bg-gray-50 transition-colors"
-            title="Refresh"
-            @click="refreshInvoices"
-          >
+            title="Refresh" @click="refreshInvoices">
             <RefreshCw class="w-5 h-5 text-gray-600" />
           </button>
 
-          <button
-            class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-200 hover:bg-gray-50 transition-colors"
-            title="Collapse"
-          >
-            <ChevronUp class="w-5 h-5 text-gray-600" />
-          </button>
         </div>
       </div>
 
@@ -100,111 +67,65 @@
         <table class="w-full">
           <thead class="bg-gray-50 border-b border-gray-200">
             <tr>
-              <th
-                class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
-              >
+              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Invoice No
               </th>
-              <th
-                class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
-              >
+              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Customer
               </th>
-              <th
-                class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
-              >
+              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Due Date
               </th>
-              <th
-                class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
-              >
+              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Amount
               </th>
-              <th
-                class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
-              >
+              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Paid
               </th>
-              <th
-                class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
-              >
+              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Amount Due
               </th>
-              <th
-                class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
-              >
+              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Status
               </th>
-              <th
-                class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
-              >
-                Actions
-              </th>
+
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100 bg-white">
-            <tr
-              v-for="invoice in paginatedInvoices"
-              :key="invoice.id"
-              class="hover:bg-gray-50 transition-colors cursor-pointer"
-              @click="viewInvoice(invoice.id)"
-            >
+            <tr title="click to view" v-for="invoice in paginatedInvoices" :key="invoice.id"
+              class="hover:bg-gray-50 transition-colors cursor-pointer" @click="viewInvoice(invoice.id)">
               <td class="px-6 py-4 whitespace-nowrap">
                 <span class="font-medium text-gray-900">{{ invoice.id }}</span>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
+              <td class="px-6 py-1 whitespace-nowrap">
                 <div class="flex items-center gap-3">
-                  <div
-                    class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-semibold"
-                    :style="{ backgroundColor: getAvatarColor(invoice.client_name) }"
-                  >
-                    {{ getInitials(invoice.client.client_name) }}
-                  </div>
+
                   <span class="font-medium text-gray-900">{{
                     invoice.client.client_name || 'N/A'
-                  }}</span>
+                    }}</span>
                 </div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <td class="px-6 py-1 whitespace-nowrap text-sm text-gray-900">
                 {{ formatDate(invoice.createdAt) }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+              <td class="px-6 py-1 text-green-600 whitespace-nowrap text-sm font-medium ">
                 {{ formatPrice(invoice.total) }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <td class="px-6 py-1 whitespace-nowrap text-sm text-gray-900">
                 {{ formatPrice(invoice.status === 'payée' ? invoice.total : 0) }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <td class="px-6 py-1 whitespace-nowrap text-sm text-gray-900">
                 {{ formatPrice(invoice.status !== 'payée' ? invoice.total : 0) }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span
-                  :class="[
-                    'inline-flex items-center px-3 py-1 rounded-full text-xs font-medium',
-                    getStatusClass(invoice.status),
-                  ]"
-                >
+              <td class="px-6 py-1 whitespace-nowrap">
+                <span :class="[
+                  'inline-flex items-center px-3 py-1 rounded-full text-xs font-medium',
+                  getStatusClass(invoice.status),
+                ]">
                   {{ formatStatus(invoice.status) }}
                 </span>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="flex items-center gap-2">
-                  <button
-                    @click.stop="viewInvoice(invoice.id)"
-                    class="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                    title="View"
-                  >
-                    <Eye class="w-5 h-5" />
-                  </button>
-                  <button
-                    @click.stop="handleDeleteInvoice(invoice.id)"
-                    class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                    title="Delete"
-                  >
-                    <Trash2 class="w-5 h-5" />
-                  </button>
-                </div>
-              </td>
+
             </tr>
           </tbody>
         </table>
@@ -221,10 +142,8 @@
       <div class="flex items-center justify-between px-6 py-4 border-t border-gray-100">
         <div class="flex items-center gap-2">
           <span class="text-sm text-gray-600">Row Per Page</span>
-          <select
-            v-model="pageSize"
-            class="px-2 py-1 border border-gray-200 rounded text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
-          >
+          <select v-model="pageSize"
+            class="px-2 py-1 border border-gray-200 rounded text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none">
             <option :value="10">10</option>
             <option :value="20">20</option>
             <option :value="50">50</option>
@@ -235,31 +154,20 @@
         <div class="text-sm text-gray-500">2025 © Stockly. All Right Reserved</div>
 
         <div class="flex items-center gap-2">
-          <button
-            @click="prevPage"
-            :disabled="currentPage === 1"
-            class="w-8 h-8 flex items-center justify-center rounded border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
+          <button @click="prevPage" :disabled="currentPage === 1"
+            class="w-8 h-8 flex items-center justify-center rounded border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
             <ChevronUp class="w-4 h-4 transform rotate-[-90deg]" />
           </button>
-          <button
-            v-for="page in visiblePages"
-            :key="page"
-            @click="currentPage = page"
-            :class="[
-              'w-8 h-8 flex items-center justify-center rounded border text-sm font-medium transition-colors',
-              currentPage === page
-                ? 'bg-orange-500 text-white border-orange-500'
-                : 'border-gray-200 hover:bg-gray-50',
-            ]"
-          >
+          <button v-for="page in visiblePages" :key="page" @click="currentPage = page" :class="[
+            'w-8 h-8 flex items-center justify-center rounded border text-sm font-medium transition-colors',
+            currentPage === page
+              ? 'bg-orange-500 text-white border-orange-500'
+              : 'border-gray-200 hover:bg-gray-50',
+          ]">
             {{ page }}
           </button>
-          <button
-            @click="nextPage"
-            :disabled="currentPage === totalPages"
-            class="w-8 h-8 flex items-center justify-center rounded border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
+          <button @click="nextPage" :disabled="currentPage === totalPages"
+            class="w-8 h-8 flex items-center justify-center rounded border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
             <ChevronUp class="w-4 h-4 transform rotate-90" />
           </button>
         </div>
@@ -267,22 +175,13 @@
     </div>
 
     <!-- Delete Modal -->
-    <ActionModal
-      v-model="showDeleteModal"
-      title="Delete Invoice"
-      message="Are you sure you want to delete this invoice? This action cannot be undone."
-      confirm-text="Delete"
-      cancel-text="Cancel"
-      @confirm="confirmDelete"
-    />
+    <ActionModal v-model="showDeleteModal" title="Delete Invoice"
+      message="Are you sure you want to delete this invoice? This action cannot be undone." confirm-text="Delete"
+      cancel-text="Cancel" @confirm="confirmDelete" />
 
     <!-- Invoice Detail Modal -->
-    <InvoiceDetailModal
-      v-if="showInvoiceModal"
-      :invoice="selectedInvoice"
-      :entreprise="entreprise"
-      @close="showInvoiceModal = false"
-    />
+    <InvoiceDetailModal v-if="showInvoiceModal" :invoice="selectedInvoice" :entreprise="entreprise"
+      @close="showInvoiceModal = false" />
   </div>
 </template>
 
@@ -389,10 +288,7 @@ const nextPage = () => {
   }
 }
 
-const handleDeleteInvoice = (invoiceId) => {
-  invoiceToDelete.value = invoiceId
-  showDeleteModal.value = true
-}
+
 
 const confirmDelete = async () => {
   try {
@@ -467,9 +363,9 @@ const formatStatus = (status) => {
 
 const getStatusClass = (status) => {
   const classMap = {
-    payée: 'bg-green-100 text-green-800',
-    en_attente: 'bg-red-100 text-red-800',
-    overdue: 'bg-yellow-100 text-yellow-800',
+    payée: ' text-green-800',
+    en_attente: ' text-red-600',
+    overdue: ' text-yellow-800',
   }
   return classMap[status] || 'bg-gray-100 text-gray-800'
 }

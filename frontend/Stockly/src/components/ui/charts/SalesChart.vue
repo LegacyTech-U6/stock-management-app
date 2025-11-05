@@ -164,9 +164,9 @@ import { useStatisticsStore } from '@/stores/statisticStore'
 
 const store = useStatisticsStore()
 const tabs = [
-  { label: '1D', value: 'day' },
-  { label: '1W', value: 'week' },
-  { label: '1M', value: 'month' },
+  { label: 'This week', value: 'day' },
+  { label: 'This month', value: 'week' },
+  { label: 'This year', value: 'month' },
 ]
 
 const activeTab = ref('month')
@@ -232,49 +232,57 @@ const hideTooltip = () => (tooltip.value.visible = false)
 const tooltip = ref({ visible: false, x: 0, y: 0, data: {} })
 
 // --- Fetch & map data from store ---
+import { startOfWeek, addDays, format, getWeek, getWeeksInMonth, startOfMonth, addWeeks, getMonth, formatISO } from 'date-fns'
+
 async function fetchData(period) {
   await store.fetchProductSales(period)
-  const salesHistory = store.topProducts?.sales?.history || []
+  const history = store.topProducts?.sales?.history || []
 
-  if (period === 'month') {
-    const monthNames = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ]
-    chartData.value = monthNames.map((name, i) => {
-      const match = salesHistory.find((d) => {
-        const [y, m] = d.period.split('-')
-        return parseInt(m) === i + 1
-      })
+  const today = new Date()
+
+  if (period === 'day') {
+    // 🗓️ Semaine actuelle (Lundi → Dimanche)
+    const start = startOfWeek(today, { weekStartsOn: 1 })
+    const days = Array.from({ length: 7 }, (_, i) => {
+      const date = addDays(start, i)
+      const key = format(date, 'yyyy-MM-dd')
+      const match = history.find((h) => h.period === key)
       return {
-        time: name,
+        time: format(date, 'EEE'), // Mon, Tue, ...
         sales: match?.value || 0,
         purchase: match?.total || 0,
       }
     })
+    chartData.value = days
+
   } else if (period === 'week') {
-    chartData.value = Array.from({ length: 4 }, (_, i) => {
-      const match = salesHistory[i]
+    // 📅 Toutes les semaines du mois courant
+    const year = today.getFullYear()
+    const month = getMonth(today)
+    const start = startOfMonth(today)
+    const weekCount = getWeeksInMonth(today, { weekStartsOn: 1 })
+
+    const weeks = Array.from({ length: weekCount }, (_, i) => {
+      const weekStart = addWeeks(start, i)
+      const weekNum = getWeek(weekStart, { weekStartsOn: 1 })
+      const key = `${year}-${weekNum}`
+      const match = history.find((h) => h.period === key)
       return {
-        time: `Week ${i + 1}`,
+        time: `Week ${weekNum}`,
         sales: match?.value || 0,
         purchase: match?.total || 0,
       }
     })
-  } else if (period === 'day') {
-    const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-    chartData.value = dayNames.map((name, i) => {
-      const match = salesHistory[i]
+    chartData.value = weeks
+
+  } else if (period === 'month') {
+    // 📆 Les 12 mois de l'année actuelle
+    const year = today.getFullYear()
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+    chartData.value = monthNames.map((name, i) => {
+      const key = `${year}-${String(i + 1).padStart(2, '0')}`
+      const match = history.find((h) => h.period === key)
       return {
         time: name,
         sales: match?.value || 0,
@@ -283,6 +291,8 @@ async function fetchData(period) {
     })
   }
 }
+
+
 
 onMounted(() => fetchData(activeTab.value))
 watch(activeTab, (t) => fetchData(t))

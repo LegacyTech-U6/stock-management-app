@@ -154,7 +154,6 @@ exports.getReport = async (req, res) => {
       where: query.where,
     });
 
-    console.log("Returned data:", data);
 
     res.status(200).json({ count, data });
   } catch (err) {

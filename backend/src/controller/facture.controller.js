@@ -4,9 +4,10 @@ const db = require("../config/db");
 const { Invoice, InvoiceItem, Product, Client, Entreprise, Sales } = db;
 const logActivity = require("../utils/activityLogger");
 const queryParser = sequelizeQuery(db);
+const { sendNotification } = require("../utils/notification");
 
 const InvoiceController = {
-  // 🔹 Créer une facture
+  // 🔹 Create an invoice
   async createInvoice(req, res) {
     try {
       const entreprise_id = req.entrepriseId;
@@ -29,6 +30,7 @@ const InvoiceController = {
       const general_total =
         total_hors_reduction - Number(discount) + Number(tax);
       const total = total_hors_reduction;
+
       const invoice = await Invoice.create({
         client_id,
         entreprise_id,
@@ -39,9 +41,15 @@ const InvoiceController = {
         general_total,
         notes,
         status: "en_attente",
-        general_total,
         mode_paiement,
         date_echeance,
+      });
+
+      // ✅ Send notification for invoice creation
+      await sendNotification({
+        type: "invoice",
+        message: `New invoice created (ID: ${invoice.id})`,
+        user_id: req.user?.id,
       });
 
       for (const item of items) {
@@ -54,17 +62,16 @@ const InvoiceController = {
           discount: item.discount || 0,
         });
 
-        // Mettre à jour le stock et créer la vente
+        // Update stock and create sale
         const product = await Product.findOne({
           where: { id: item.id, entreprise_id },
         });
-        if (!product) throw new Error(`Produit introuvable: ${item.id}`);
-        console.log('Ancienne quantité:', product.quantity, 'Quantité vendue:', item.quantity);
+        if (!product) throw new Error(`Product not found: ${item.id}`);
 
         product.quantity -= item.quantity;
         await product.save();
 
-        await Sales.create({
+        const sale = await Sales.create({
           product_id: item.id,
           quantity_sold: item.quantity,
           total_price: item.selling_price * item.quantity,
@@ -72,20 +79,29 @@ const InvoiceController = {
             (item.selling_price - product.cost_price) * item.quantity,
           entreprise_id,
         });
+
         const entreprise = await Entreprise.findByPk(entreprise_id);
         const user_id = entreprise?.user_id || null;
-        // Logger la vente
+
+        // Log the sale activity
         await logActivity({
-          user_id: user_id,
-          action: "Vente",
+          user_id,
+          action: "Sale",
           entity_type: "Product",
           entity_id: product.id,
-          description: `Vente de ${item.quantity} unités de "${product.Prod_name}"`,
+          description: `Sold ${item.quantity} units of "${product.Prod_name}"`,
           quantity: item.quantity,
           amount: item.quantity * item.selling_price,
           ip_address: req.ip,
           user_agent: req.headers["user-agent"],
-          entreprise_id:entreprise_id
+          entreprise_id,
+        });
+
+        // ✅ Send notification for sale
+        await sendNotification({
+          type: "sale",
+          message: `New sale: ${item.quantity} units of "${product.Prod_name}"`,
+          user_id,
         });
       }
 
@@ -96,45 +112,44 @@ const InvoiceController = {
     }
   },
 
-async getAllInvoices(req, res) {
-  try {
-    const entreprise_id = req.entrepriseId;
-    const query = await queryParser.parse(req);
+  async getAllInvoices(req, res) {
+    try {
+      const entreprise_id = req.entrepriseId;
+      const query = await queryParser.parse(req);
 
-    query.where = { ...query.where, entreprise_id };
+      query.where = { ...query.where, entreprise_id };
 
-    const data = await Invoice.findAll({
-      ...query,
-      include: [
-        {
-          model: Client,
-          as: "client",
-          attributes: ["id", "client_name", "email"],
-        },
-        {
-          model: InvoiceItem,
-          as: "items", // ✅ alias obligatoire ici
-          include: [
-            {
-              model: Product,
-              as: "product", // ✅ alias cohérent avec ton association
-              attributes: ["id", "Prod_name"],
-            },
-          ],
-        },
-      ],
-      order: [["id", "DESC"]],
-    });
+      const data = await Invoice.findAll({
+        ...query,
+        include: [
+          {
+            model: Client,
+            as: "client",
+            attributes: ["id", "client_name", "email"],
+          },
+          {
+            model: InvoiceItem,
+            as: "items", // ✅ alias obligatoire ici
+            include: [
+              {
+                model: Product,
+                as: "product", // ✅ alias cohérent avec ton association
+                attributes: ["id", "Prod_name"],
+              },
+            ],
+          },
+        ],
+        order: [["id", "DESC"]],
+      });
 
-    const count = await Invoice.count({ where: query.where });
-   
-    res.status(200).json({ count, data });
-  } catch (err) {
-    console.error("🔥 Erreur getAllInvoices:", err);
-    res.status(500).json({ message: err.message });
-  }
-}
-,
+      const count = await Invoice.count({ where: query.where });
+
+      res.status(200).json({ count, data });
+    } catch (err) {
+      console.error("🔥 Erreur getAllInvoices:", err);
+      res.status(500).json({ message: err.message });
+    }
+  },
   // 🔹 Récupérer une facture par ID
   async getInvoiceById(req, res) {
     try {

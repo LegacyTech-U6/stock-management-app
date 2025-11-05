@@ -2,6 +2,7 @@
 const sequelizeQuery = require("sequelize-query");
 const db = require("../config/db"); // index.js où tous tes modèles sont importés
 const { Category, Product } = db;
+const { sendNotification } = require('../utils/notification');
 
 const queryParser = sequelizeQuery(db);
 
@@ -73,69 +74,92 @@ exports.getAllCategories = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 }),
-  // 🔹 Créer une catégorie
-  (exports.createCategory = async (req, res) => {
-    try {
-      const entreprise_id = req.entrepriseId;
-      const { name, description } = req.body;
+// 🔹 Créer une catégorie
+exports.createCategory = async (req, res) => {
+  try {
+    const entreprise_id = req.entrepriseId;
+    const { name, description } = req.body;
 
-      if (!name)
-        return res
-          .status(400)
-          .json({ message: "Le nom de la catégorie est requis" });
+    if (!name)
+      return res
+        .status(400)
+        .json({ message: "Le nom de la catégorie est requis" });
 
-      const category = await Category.create({
-        name,
-        description,
-        entreprise_id,
-      });
+    const category = await Category.create({
+      name,
+      description,
+      entreprise_id,
+    });
 
-      res.status(201).json(category);
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: err.message });
-    }
-  }),
-  // 🔹 Mettre à jour une catégorie
-  (exports.updateCategory = async (req, res) => {
-    try {
-      const { id } = req.params;
-      const entreprise_id = req.entrepriseId;
-      const { name, description } = req.body;
+    // ✅ Envoyer notification
+    await sendNotification({
+      type: 'category',
+      message: `New category created : ${category.name}`,
+      user_id: req.user?.id,
+    });
 
-      if (!name)
-        return res
-          .status(400)
-          .json({ message: "Le nom de la catégorie est requis" });
+    res.status(201).json(category);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
+  }
+};
 
-      const [updated] = await Category.update(
-        { name, description },
-        { where: { id, entreprise_id } }
-      );
+// 🔹 Mettre à jour une catégorie
+exports.updateCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const entreprise_id = req.entrepriseId;
+    const { name, description } = req.body;
 
-      if (!updated)
-        return res.status(404).json({ message: "Catégorie non trouvée" });
+    if (!name)
+      return res
+        .status(400)
+        .json({ message: "Le nom de la catégorie est requis" });
 
-      res.status(200).json({ message: "Catégorie mise à jour avec succès" });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: err.message });
-    }
-  }),
-  // 🔹 Supprimer une catégorie
-  (exports.deleteCategory = async (req, res) => {
-    try {
-      const { id } = req.params;
-      const entreprise_id = req.entrepriseId;
+    const [updated] = await Category.update(
+      { name, description },
+      { where: { id, entreprise_id } }
+    );
 
-      const deleted = await Category.destroy({ where: { id, entreprise_id } });
+    if (!updated)
+      return res.status(404).json({ message: "Catégorie non trouvée" });
 
-      if (!deleted)
-        return res.status(404).json({ message: "Catégorie non trouvée" });
+    // ✅ Envoyer notification
+    await sendNotification({
+      type: 'category',
+      message: `Catégory updated : ${name}`,
+      user_id: req.user?.id,
+    });
 
-      res.status(200).json({ message: "Catégorie supprimée avec succès" });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: err.message });
-    }
-  });
+    res.status(200).json({ message: "Catégorie mise à jour avec succès" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// 🔹 Supprimer une catégorie
+exports.deleteCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const entreprise_id = req.entrepriseId;
+
+    const deleted = await Category.destroy({ where: { id, entreprise_id } });
+
+    if (!deleted)
+      return res.status(404).json({ message: "Catégorie non trouvée" });
+
+    // ✅ Envoyer notification
+    await sendNotification({
+      type: 'category',
+      message: `Catégory deleted (ID: ${id})`,
+      user_id: req.user?.id,
+    });
+
+    res.status(200).json({ message: "Catégorie supprimée avec succès" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
+  }
+};

@@ -31,12 +31,9 @@
         <div class="flex items-center gap-3">
           <div
             class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-sm"
-          >
-
-          </div>
+          ></div>
           <div>
             <h1 class="font-semibold text-gray-900 text-lg">Inventelo</h1>
-
           </div>
         </div>
       </div>
@@ -227,7 +224,7 @@
         </div>
         <div class="flex items-center gap-3 ml-auto">
           <button
-            @click="notificationOpen = !notificationOpen"
+            @click="toggleNotificationPanel"
             class="relative p-2.5 hover:bg-gray-100/80 rounded-xl transition-all duration-300 hidden sm:block group"
           >
             <Bell class="w-5 h-5 text-gray-600 group-hover:text-gray-700 transition-colors" />
@@ -261,12 +258,11 @@
           </div>
           <div class="p-2 mt-2">
             <button
-  @click="logoutEntreprise"
-  class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
->
-  {{ authStore.user?.type === 'admin' ? 'Retour à l’espace admin' : 'Déconnexion' }}
-</button>
-
+              @click="logoutEntreprise"
+              class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
+            >
+              {{ authStore.user?.type === 'admin' ? 'Retour à l’espace admin' : 'Déconnexion' }}
+            </button>
           </div>
         </div>
       </div>
@@ -281,90 +277,11 @@
     </div>
 
     <!-- Notification Panel - Right Sidebar -->
-    <Transition name="slide-fade">
-      <div
-        v-if="notificationOpen"
-        class="fixed top-0 right-0 h-screen w-96 bg-white/95 backdrop-blur-md z-50 flex flex-col shadow-2xl border-l border-gray-200/60"
-      >
-        <!-- Panel Header -->
-        <div
-          class="bg-gray-50/80 px-6 py-5 border-b border-gray-200/60 flex justify-between items-center"
-        >
-          <div>
-            <h2 class="text-xl font-semibold text-gray-900">Notifications</h2>
-            <p class="text-sm text-gray-600 mt-1">
-              You have {{ unreadCount }} unread notification{{ unreadCount !== 1 ? 's' : '' }}
-            </p>
-          </div>
-          <button
-            @click="notificationOpen = false"
-            class="p-1.5 hover:bg-gray-200/50 rounded-lg transition-all duration-300"
-          >
-            <X class="w-5 h-5 text-gray-500" />
-          </button>
-        </div>
-
-        <!-- Notifications List -->
-        <div class="flex-1 overflow-y-auto">
-          <div v-if="notifications.length > 0">
-            <div
-              v-for="notification in notifications"
-              :key="notification.id"
-              @click="markAsRead(notification.id)"
-              :class="[
-                'px-6 py-4 border-b border-gray-100 hover:bg-gray-50/80 cursor-pointer transition-all duration-300',
-                notification.read ? 'bg-white' : 'bg-blue-50/50',
-              ]"
-            >
-              <div class="flex items-start gap-4">
-                <div
-                  class="mt-1 flex-shrink-0"
-                  v-html="getNotificationIcon(notification.icon)"
-                ></div>
-                <div class="flex-1 min-w-0">
-                  <div class="flex justify-between items-start gap-2">
-                    <h3 class="font-semibold text-gray-900 text-sm">
-                      {{ notification.title }}
-                    </h3>
-                    <div
-                      v-if="!notification.read"
-                      class="w-2.5 h-2.5 bg-blue-500 rounded-full mt-1 flex-shrink-0 ring-2 ring-blue-100"
-                    ></div>
-                  </div>
-                  <p class="text-gray-600 text-sm mt-2 leading-relaxed">
-                    {{ notification.message }}
-                  </p>
-                  <div class="flex items-center justify-between mt-3">
-                    <p class="text-xs text-gray-500 font-medium">{{ notification.company }}</p>
-                    <p class="text-xs text-gray-400">{{ notification.time }}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div v-else class="flex items-center justify-center h-full">
-            <div class="text-center">
-              <Bell class="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <p class="text-gray-500 text-lg font-medium">No notifications</p>
-              <p class="text-gray-400 text-sm mt-2">You're all caught up!</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Footer -->
-        <div
-          v-if="notifications.length > 0"
-          class="bg-gray-50/80 px-6 py-4 border-t border-gray-200/60"
-        >
-          <button
-            @click="markAllAsRead"
-            class="w-full text-center text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors duration-300 py-2.5 rounded-lg hover:bg-blue-50/50"
-          >
-            Mark all as read
-          </button>
-        </div>
-      </div>
-    </Transition>
+    <!-- Notification Panel -->
+    <NotificationPanel
+      v-model:notificationOpen="notificationOpen"
+      @close="notificationOpen = false"
+    />
   </div>
 </template>
 
@@ -390,7 +307,20 @@ import {
   ChevronDown,
 } from 'lucide-vue-next'
 import { useAuthStore } from '@/stores/authStore.js'
+import { useNotificationStore } from '@/stores/notificationStore'
+import NotificationPanel from '@/components/ui/NotificationPanel.vue'
 
+const notificationStore = useNotificationStore()
+
+const unreadCount = computed(() => notificationStore.unreadCount)
+
+const toggleNotificationPanel = () => {
+  notificationOpen.value = !notificationOpen.value
+  // Optionnel : si on ouvre le panel, fetch les dernières notifications
+  if (notificationOpen.value) {
+    notificationStore.fetchNotifications()
+  }
+}
 const router = useRouter()
 const route = useRoute()
 const entrepriseStore = useEntrepriseStore()
@@ -495,7 +425,8 @@ const closeSidebarOnMobile = () => {
 
 const logoutEntreprise = () => {
   entrepriseStore.clearActiveEntreprise()
-   const userType = authStore.user?.type
+  const userType = authStore.user?.type
+  console.log('User type at logoutEntreprise:', userType)
   if (userType === 'admin') authStore.logout('backToAdmin')
   else authStore.logout()
 }
@@ -549,10 +480,6 @@ const notifications = ref([
     icon: 'alert-triangle',
   },
 ])
-
-const unreadCount = computed(() => {
-  return notifications.value.filter((n) => !n.read).length
-})
 
 const markAsRead = (id) => {
   const notification = notifications.value.find((n) => n.id === id)

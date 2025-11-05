@@ -23,9 +23,7 @@ exports.getAllActivities = async (req, res) => {
         }
       ]
     });
-    console.log('====================================');
-    console.log("route activity called",activities );
-    console.log('====================================');
+  
 
     res.status(200).json({ success: true, count: activities.length, activities });
   } catch (err) {

@@ -1,24 +1,33 @@
 <template>
   <div class="p-6">
-    <div class="flex justify-between items-center mb-8">
-      <div class="flex">
-        <img :src="activeEntreprise?.logo_url" :alt="activeEntreprise?.name" />
-        <div class="p-1">
-          <h1 class="text-3xl font-bold text-gray-900">
-            {{ activeEntreprise?.name || 'No enterprise selected' }} Management Dashboard
+    <!-- Header -->
+    <div class="flex flex-wrap items-center justify-between mb-8 bg-white/70 rounded-xl shadow-sm p-4">
+      <div class="flex items-center gap-4">
+        <!-- Logo -->
+        <img
+          v-if="activeEntreprise?.logo_url"
+          class="w-16 h-16 rounded-lg object-cover shadow"
+          :src="activeEntreprise.logo_url"
+          :alt="activeEntreprise.name"
+        />
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900 leading-tight">
+            {{ activeEntreprise?.name || 'No enterprise selected' }}
           </h1>
-          <p class="text-gray-600 text-sm">Monitor your inventory and business performance</p>
+          <p class="text-gray-500 text-sm">
+            Management Dashboard — Monitor your inventory and business performance
+          </p>
         </div>
       </div>
     </div>
-    <!-- Tabs -->
 
-    <!-- Views -->
+    <!-- Main content -->
     <div v-if="activeTab === 'overview'">
       <DashboardOverview />
     </div>
   </div>
 </template>
+
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'

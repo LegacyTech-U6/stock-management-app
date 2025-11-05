@@ -156,29 +156,32 @@ export const useAuthStore = defineStore('auth', {
     /**
      * Déconnexion utilisateur
      */
-    logout() {
-      const entrepriseStore = useEntrepriseStore()
+logout(mode = 'default') {
+  const entrepriseStore = useEntrepriseStore()
+  const userType = this.user?.type
+  console.log("👤 User type at logout:", userType)
+  console.log("🔁 Logout mode:", mode)
 
-      // 1️⃣ Vider les stores et le localStorage
-      entrepriseStore.clearActiveEntreprise()
-      localStorage.removeItem('token')
-      localStorage.removeItem('entreprise')
+  // 🧩 Cas 1 : Admin veut juste retourner à son tableau de bord admin
+  if (userType === 'admin' && mode === 'backToAdmin') {
+    console.log("➡️ Redirection vers /ad/admin sans déconnexion complète")
+    router.push('/ad/admin')
+    return
+  }
 
-      const userType = this.user?.type // on garde avant de vider le user
-      console.log("User type at logout:", userType);
+  // 🧩 Cas 2 : Déconnexion complète (admin ou worker)
+  entrepriseStore.clearActiveEntreprise()
+  localStorage.removeItem('token')
+  localStorage.removeItem('entreprise')
+  this.user = null
+  this.token = null
 
-
-      // 2️⃣ Redirection selon le type
-      if (userType === 'admin') {
-        // 👨‍💼 Redirige vers interface admin
-        router.push('/ad/admin')
-      } else {
-        // 👷‍♂️ Worker ou autre → retour login
-        router.push('/login')
-      }
-       this.user = null
-      this.token = null
-    },
+  // Attendre un peu pour que le router ait le temps de se mettre à jour
+  setTimeout(() => {
+    console.log("🚪 Déconnexion complète → redirection /login")
+    router.push('/login')
+  }, 100)
+},
     /**
      * Mot de passe oublié
      */

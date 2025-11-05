@@ -130,8 +130,8 @@
               <td class="px-6 py-4 text-gray-900 font-medium">
                 {{ activity.product.Prod_name || 'banana' }}
               </td>
-              <td :class="activity.action === 'Vente' ? 'text-red-600' : 'text-green-600'">
-                {{ activity.action === 'Vente' ? '-' : '+' }}{{ activity.quantity || 0 }} units
+              <td :class="activity.action === 'Vente'|| 'sale' ? 'text-red-600' : 'text-green-600'">
+                {{ activity.action === 'Vente' ||'sale' ? '-' : '+' }}{{ activity.quantity || 0 }} units
               </td>
 
               <td class="px-6 py-4 text-gray-600">
@@ -208,6 +208,7 @@ const formatDate = (date) => {
 
 const getTransactionType = (action) => {
   const types = {
+    Sale:'Sale of Goods',
     Vente: 'Sale of Goods',
     CREATE: 'Create',
     UPDATE: 'Update Quantity',

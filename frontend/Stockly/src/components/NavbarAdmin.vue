@@ -81,6 +81,7 @@
           </div>
           <div class="p-2 mt-2">
             <button
+              @click="logout()"
               class="w-full py-2.5 px-4 bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-medium rounded-xl transition-all duration-300 shadow-sm hover:shadow-md text-sm"
             >
               Sign Out
@@ -227,9 +228,14 @@ import {
 import NavLink from '@/components/NavLink.vue'
 import { useAuthStore } from '@/stores/authStore.js'
 
+const authStore = useAuthStore()
+
+const logout = () => {
+  authStore.logout()
+}
 const sidebarOpen = ref(false)
 const notificationOpen = ref(false)
-const authStore = useAuthStore()
+
 
 // Fetch user data on component mount
 onMounted(async () => {

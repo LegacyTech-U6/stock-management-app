@@ -13,6 +13,7 @@ const path = require("path");
 const queryParser = sequelizeQuery(db);
 const BASE_URL = process.env.BASE_URL;
 const logActivity = require("../utils/activityLogger");
+const { sendNotification } = require('../utils/notification');
 
 // ===============================
 // 🔹 Récupérer tous les produits
@@ -89,14 +90,15 @@ exports.getProductById = async (req, res) => {
   }
 };
 
+
 // ===============================
-// 🔹 Créer un produit (avec image)
+// 🔹 Create a product (with image)
 // ===============================
 exports.createProduct = async (req, res) => {
   try {
     const entreprise_id = req.entrepriseId;
 
-    // ✅ Si une image a été uploadée, on génère son URL publique
+    // ✅ If an image was uploaded, generate public URL
     let imagePath = null;
     if (req.file) {
       imagePath = `/uploads/${req.file.filename}`;
@@ -105,38 +107,44 @@ exports.createProduct = async (req, res) => {
     const productData = {
       ...req.body,
       entreprise_id,
-      Prod_image: imagePath, // 👈 ajouter ici l’image
+      Prod_image: imagePath,
     };
 
     const product = await Product.create(productData);
 
-    // ✅ Vérifie que req.user existe
     const user_id = req.user?.id || null;
 
-    // 🔹 Logger l’activité
+    // 🔹 Log activity
     await logActivity({
-      user_id:user_id,
-      action: "Création produit",
+      user_id,
+      action: "Create Product",
       entity_type: "Product",
       entity_id: product.id,
-      description: `Création du produit "${product.Prod_name}"`,
+      description: `Created product "${product.Prod_name}"`,
       quantity: product.quantity || 0,
       amount: product.quantity || 0,
       ip_address: req.ip,
       user_agent: req.headers["user-agent"],
-      entreprise_id:entreprise_id, // 👈 ici c’est correct
+      entreprise_id,
+    });
+
+    // ✅ Send notification
+    await sendNotification({
+      type: 'product',
+      message: `New product created: "${product.Prod_name}"`,
+      user_id,
     });
 
     res.status(201).json(product);
   } catch (err) {
-    console.error("🔥 Erreur createProduct:", err);
+    console.error("🔥 createProduct error:", err);
     res.status(500).json({ message: err.message });
   }
 };
 
 
 // ===============================
-// 🔹 Mettre à jour un produit
+// 🔹 Update a product
 // ===============================
 exports.updateProduct = async (req, res) => {
   try {
@@ -148,55 +156,68 @@ exports.updateProduct = async (req, res) => {
     });
 
     if (!product) {
-      return res.status(404).json({ message: "Produit non trouvé" });
+      return res.status(404).json({ message: "Product not found" });
     }
 
-    // ✅ Si une nouvelle image est uploadée
     if (req.file) {
-      // Supprimer l'ancienne image si elle existe
       if (product.Prod_image) {
         const oldPath = path.join(process.cwd(), product.Prod_image);
         if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
       }
-
       req.body.Prod_image = `/uploads/${req.file.filename}`;
     }
 
     await product.update(req.body);
 
+    // ✅ Send notification
+    await sendNotification({
+      type: 'product',
+      message: `Product updated: ${product.Prod_name}`,
+      user_id: req.user?.id,
+    });
+
     res.status(200).json({
-      message: "Produit mis à jour avec succès",
+      message: "Product updated successfully",
       product,
     });
   } catch (err) {
-    console.error("🔥 Erreur updateProduct:", err);
+    console.error("🔥 updateProduct error:", err);
     res.status(500).json({ message: err.message });
   }
 };
 
 // ===============================
-// 🔹 Supprimer un produit
+// 🔹 Delete a product
 // ===============================
 exports.deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
     const entreprise_id = req.entrepriseId;
 
-    const deleted = await Product.destroy({
+    const product = await Product.findOne({
       where: { id, entreprise_id },
     });
 
-    if (!deleted)
-      return res.status(404).json({ message: "Produit non trouvé" });
+    if (!product)
+      return res.status(404).json({ message: "Product not found" });
 
-    res.json({ message: "Produit supprimé avec succès" });
+    await Product.destroy({ where: { id, entreprise_id } });
+
+    // ✅ Send notification
+    await sendNotification({
+      type: 'product',
+      message: `Product deleted: ${product.Prod_name}`,
+      user_id: req.user?.id,
+    });
+
+    res.json({ message: "Product deleted successfully" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
 // ===============================
-// 🔹 Créer une vente
+// 🔹 Create a sale
 // ===============================
 exports.createSale = async (req, res) => {
   try {
@@ -208,7 +229,7 @@ exports.createSale = async (req, res) => {
     });
 
     if (!product)
-      return res.status(404).json({ message: "Produit introuvable" });
+      return res.status(404).json({ message: "Product not found" });
 
     const total_profit =
       (product.selling_price - product.cost_price) * quantitySold;
@@ -218,31 +239,38 @@ exports.createSale = async (req, res) => {
       quantity_sold: quantitySold,
       total_price: totalPrice,
       total_profit,
-      entreprise_id: entrepriseId,
+      entreprise_id,
     });
+
     await logActivity({
       user_id: req.user.id,
-      action: "Vente",
+      action: "Sale",
       entity_type: "Product",
       entity_id: product.id,
-      description: `Vente de ${quantitySold} unités de "${product.Prod_name}"`,
+      description: `Sold ${quantitySold} units of "${product.Prod_name}"`,
       quantity: quantitySold,
       amount: quantitySold * product.selling_price,
       ip_address: req.ip,
       user_agent: req.headers["user-agent"],
-      entreprise_id: entrepriseId,
+      entreprise_id,
     });
 
-    // 🔹 Mettre à jour la quantité en stock
+    // 🔹 Update stock
     product.quantity -= quantitySold;
     await product.save();
+
+    // ✅ Send notification
+    await sendNotification({
+      type: 'sale',
+      message: `New sale: ${quantitySold} units of "${product.Prod_name}"`,
+      user_id: req.user?.id,
+    });
 
     res.status(201).json(sale);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
-
 // ===============================
 // 🔹 Ajouter de la quantité
 // ===============================

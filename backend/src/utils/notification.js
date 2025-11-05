@@ -1,33 +1,40 @@
-const axios = require('axios');
-const nodemailer = require('nodemailer');
+const { getIo } = require("../config/socket"); // make sure you export io from server.js
+const db = require("../config/db");
+const Notification = db.Notification;
+/**
+ * Send a notification to all connected clients
+ * and optionally save it in the DB.
+ */
+async function sendNotification({
+  type,
+  message,
+  user_id = null,
+  save = true,
+}) {
+  try {
+    // 1️⃣ Save to DB (optional)
+    let notificationRecord = null;
+    if (save) {
+      notificationRecord = await Notification.create({
+        type,
+        message,
+        user_id,
+      });
+    }
 
-// --- WhatsApp ---
-async function sendWhatsApp(to, message) {
-    const ACCESS_TOKEN = 'TON_WHATSAPP_ACCESS_TOKEN';
-    await axios.post(
-        `https://graph.facebook.com/v17.0/TON_WHATSAPP_BUSINESS_ID/messages`,
-        {
-            messaging_product: "whatsapp",
-            to: to,
-            type: "text",
-            text: { body: message },
-        },
-        { headers: { Authorization: `Bearer ${ACCESS_TOKEN}` } }
-    );
-    console.log('WhatsApp envoyé à', to);
+    // 2️⃣ Emit via Socket.io
+    getIo.emit("new-notification", {
+      id: notificationRecord?.id,
+      type,
+      message,
+      date: new Date(),
+      user_id,
+    });
+
+    console.log("📣 Notification sent:", message);
+  } catch (error) {
+    console.error("❌ Error sending notification:", error);
+  }
 }
 
-// --- Email ---
-const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
-    auth: { user: 'stockly@example.com', pass: 'motdepasse' },
-});
-
-async function sendEmail(to, subject, text) {
-    await transporter.sendMail({ from: '"Stockly" <stockly@example.com>', to, subject, text });
-    console.log('Email envoyé à', to);
-}
-
-module.exports = { sendWhatsApp, sendEmail };
+module.exports = { sendNotification };

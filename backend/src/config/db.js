@@ -94,6 +94,7 @@ db.sequelize = sequelize;
 // ===============================
 // IMPORT MODELS
 // ===============================
+db.Notification = require("../models/Notification.model")(sequelize, DataTypes);
 db.DailyPurchaseReport = require("../models/DailyPurchaseReport.model")(sequelize, DataTypes);
 db.Purchase = require("../models/Purchase.model")(sequelize, DataTypes);
 db.PurchaseItem = require("../models/PurchaseItem.model")(sequelize, DataTypes);

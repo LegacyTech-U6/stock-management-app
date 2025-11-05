@@ -62,7 +62,7 @@
       </div>
       <div class="text-center">
         <p class="text-gray-500 text-sm font-medium mb-1">Department</p>
-        <p class="text-gray-900 font-semibold">{{ worker.entreprise_name || 'N/A' }}</p>
+        <p class="text-gray-900 font-semibold">{{ worker.entreprise.name || 'N/A' }}</p>
       </div>
     </div>
 
@@ -71,13 +71,13 @@
       <p class="text-gray-500 text-sm font-medium mb-2 text-center">Roles</p>
       <div class="flex flex-wrap gap-2 justify-center">
         <span
-          v-for="(role, index) in worker.roles"
-          :key="index"
+
+
           class="px-3 py-1 bg-blue-50 text-blue-600 text-xs rounded-full font-medium"
         >
-          {{ role }}
+          {{ worker.role.name}}
         </span>
-        <span v-if="!worker.roles || worker.roles.length === 0" class="text-gray-400 text-sm">
+        <span v-if="!worker.role || worker.role.length === 0" class="text-gray-400 text-sm">
           No roles assigned
         </span>
       </div>

@@ -29,6 +29,8 @@ exports.getAllEntreprises = async (req, res) => {
       }
       return EntJSON;
     });
+    console.log(data);
+    
 
     const count = await Entreprise.count({
       where: query.where,

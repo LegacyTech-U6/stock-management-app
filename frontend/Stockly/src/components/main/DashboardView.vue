@@ -44,26 +44,9 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <TopSellingProducts />
       <LowStockAlertsPanel />
+      <RecentSales />
     </div>
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <!-- Left Column: Charts (2/3 width) -->
 
-      <!-- Right Column: Side Panels (1/3 width) -->
-      <div class="space-y-8">
-        <!-- Notifications -->
-
-        <!-- Recent Activity -->
-        <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-          <div class="flex items-center gap-2 mb-6">
-            <Clock class="w-5 h-5 text-gray-700" />
-            <h2 class="text-lg font-semibold text-gray-800">Recent Activity</h2>
-          </div>
-          <div class="text-center py-8">
-            <p class="text-sm text-gray-500">No recent activity</p>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
