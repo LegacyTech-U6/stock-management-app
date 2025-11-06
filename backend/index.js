@@ -24,6 +24,7 @@ const activityRoutes = require("./src/routes/activity.routes");
 const cleanupInactiveUsers = require("./src/utils/cleanupInactiveUsers");
 const notificationRoutes = require('./src/routes/notification.routes');
 const DemoDataGenerator = require('./src/utils/demo-data-generator');
+const {startCurrencyCron,getRates} = require('./src/utils/currency.service');
 // Database
 // ton index.js Sequelize
 
@@ -31,12 +32,22 @@ cron.schedule("0 */2 * * *", async () => {
   try {
     console.log("⏰ Running scheduled cleanup of inactive users...");
     await cleanupInactiveUsers();
+    
     console.log("✅ Cleanup completed successfully!");
   } catch (error) {
     console.error("❌ Error during cleanup:", error);
   }
 });
 
+app.get('/convert', async (req, res) => {
+    
+    try {
+        const converted = await getRates()
+        res.json({  converted })
+    } catch (err) {
+        res.status(500).json({ error: err.message })
+    }
+})
 testMailjetConnection();
 // 🔹 Rôles prédéfinis
 const predefinedRoles = [
@@ -72,6 +83,7 @@ db.sequelize.sync().then(async () => {
   try {
     // const generator = new DemoDataGenerator();
     //   await generator.generateAll();
+    await startCurrencyCron();
     await seedPredefinedRoles();
     await createAllUsersView();
   } catch (err) {

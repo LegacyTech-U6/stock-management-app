@@ -113,6 +113,7 @@ db.StockMovement = require("../models/StockMovement.model")(
   sequelize,
   DataTypes
 );
+db.CurrencyRate = require("../models/CurrencyRate.model")(sequelize, DataTypes);
 db.mailSettings = require("../models/mailSetting.model")(sequelize, DataTypes);
 db.Setting = require("../models/setting.model")(sequelize, DataTypes);
 db.activities = require("../models/activity.model")(sequelize, DataTypes);
