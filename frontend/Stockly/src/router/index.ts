@@ -1,8 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 import { useAuthStore } from '@/stores/authStore'
 import { useEntrepriseStore } from '@/stores/entrepriseStore'
+import HomeView from '../views/HomeView.vue'
+
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
@@ -37,6 +38,7 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/views/auth/ActivationSent.vue'),
   },
 
+  // ===================== ADMIN =====================
   {
     path: '/ad',
     component: () => import('@/views/AdminLayout.vue'),
@@ -46,73 +48,78 @@ const routes: RouteRecordRaw[] = [
         path: 'admin',
         name: 'admin',
         component: () => import('@/views/MainPage.vue'),
-        meta: { showNavbarAndFooter: false },
+        meta: { showNavbarAndFooter: false, permission: 'canViewDashboard' },
       },
       {
         path: 'workers',
         name: 'workers',
         component: () => import('@/views/WorkerPage.vue'),
-        meta: { showNavbarAndFooter: false },
+        meta: { showNavbarAndFooter: false, permission: 'canManageUsers' },
       },
       {
         path: 'roles',
         name: 'roles',
         component: () => import('@/views/RoleManagement.vue'),
-        meta: { showNavbarAndFooter: false },
+        meta: { showNavbarAndFooter: false, permission: 'canManageUsers' },
       },
       {
         path: 'dashboard',
         name: 'dashboard',
         component: () => import('@/views/Statistics/DashBoard.vue'),
-        meta: { showNavbarAndFooter: false },
+        meta: { showNavbarAndFooter: false, permission: 'canViewDashboard' },
       },
       {
         path: 'company',
         name: 'company',
         component: () => import('@/views/CreateEntreprise.vue'),
-        meta: { showNavbarAndFooter: false },
+        meta: { showNavbarAndFooter: false, permission: 'canManageUsers' },
       },
       {
         path: 'settings',
         name: 'settings',
         component: () => import('@/views/settings/AdminSetting.vue'),
+        meta: { permission: 'canAccessSettings' },
       },
     ],
   },
+
+  // ===================== ENTERPRISE / WORKER =====================
   {
     path: '/:uuid',
     name: 'real',
     component: () => import('../views/LayoutPage.vue'),
     meta: { showNavbarAndFooter: false, requiresAuth: true },
-    redirect: '/real/sales', // Optional: redirect to a default page
+    redirect: '/real/sales',
     children: [
       {
         path: 'dashboard',
         name: 'EDashboardd',
         component: () => import('@/views/Enterprise.vue'),
+        meta: { permission: 'canViewDashboard' },
       },
       {
         path: 'AuditTrail',
         name: 'Audit Trail',
         component: () => import('@/views/ActivityLogPage.vue'),
+        meta: { permission: 'canViewDashboard' },
       },
       {
         path: 'sales',
         name: 'sales',
         component: () => import('../views/SalesInterface.vue'),
-        meta: { showNavbarAndFooter: false },
+        meta: { showNavbarAndFooter: false, permission: 'canMakeSales' },
       },
       {
         path: 'invoice',
         name: 'invoice',
         component: () => import('../components/invoices/CreateInvoiceForm.vue'),
-        meta: { showNavbarAndFooter: false },
+        meta: { showNavbarAndFooter: false, permission: 'canViewInvoices' },
       },
       {
         path: 'products',
         name: 'product',
         component: () => import('../views/ProductView.vue'),
-        meta: { showNavbarAndFooter: false },
+        meta: { showNavbarAndFooter: false, permission: 'canManageStock' },
       },
       {
         path: 'stepper',
@@ -125,56 +132,63 @@ const routes: RouteRecordRaw[] = [
         name: 'product-detail',
         component: () => import('@/views/ProductDetailPage.vue'),
         props: true,
-        meta: { showNavbarAndFooter: false },
+        meta: { showNavbarAndFooter: false, permission: 'canManageStock' },
       },
       {
         path: 'product/:reStockId',
         name: 'restock',
         component: () => import('@/views/RestockView.vue'),
         props: true,
-        meta: { showNavbarAndFooter: false },
+        meta: { showNavbarAndFooter: false, permission: 'canManageStock' },
       },
       {
         path: 'clients',
         name: 'client',
         component: () => import('../views/ClientManager.vue'),
-        meta: { showNavbarAndFooter: false },
+        meta: { showNavbarAndFooter: false, permission: 'canManageUsers' },
       },
       {
         path: 'invoices',
         name: 'invoices',
         component: () => import('@/views/InvoiceView.vue'),
+        meta: { permission: 'canViewInvoices' },
       },
       {
         path: 'categories',
         name: 'categories',
         component: () => import('@/views/CategoryView .vue'),
+        meta: { permission: 'canManageStock' },
       },
       {
         path: 'outOfStock',
         name: 'outOfStock',
         component: () => import('@/views/OutofStock.vue'),
+        meta: { permission: 'canManageStock' },
       },
       {
         path: 'lowStock',
         name: 'lowStock',
         component: () => import('@/views/LowStock.vue'),
+        meta: { permission: 'canManageStock' },
       },
       {
         path: 'detail/:id',
         name: 'category-detail',
         component: () => import('@/views/CategoryDetail.vue'),
         props: true,
+        meta: { permission: 'canManageStock' },
       },
       {
         path: 'invoices/:id',
         name: 'InvoiceDetail',
         component: () => import('@/components/invoices/InvoiceDetail.vue'),
+        meta: { permission: 'canViewInvoices' },
       },
       {
         path: 'reports',
         name: 'reports',
         component: () => import('@/views/SalesReport.vue'),
+        meta: { permission: 'canViewInvoices' },
       },
     ],
   },
@@ -184,26 +198,44 @@ const router = createRouter({
   history: createWebHistory(),
   routes,
 })
+
 router.beforeEach(async (to, from, next) => {
   const auth = useAuthStore()
 
-  // On récupère le user depuis le localStorage si page reload
+  // Si page reload et token existe → récupérer user
   if (!auth.user && auth.token) {
     await auth.getAccount()
   }
 
+  // Routes nécessitant authentification
   if (to.meta.requiresAuth && !auth.user) {
-    next('/login')
-  } else if (to.path === '/login' && auth.user) {
-    next('/dashboard')
-  } else {
-    next()
+    return next('/login')
   }
+
+  // Vérification des permissions
+  const requiredPermission = to.meta.permission as string
+  if (requiredPermission && !auth.can(requiredPermission)) {
+    console.warn(`❌ Accès refusé à ${to.fullPath}, permission manquante: ${requiredPermission}`)
+    // Redirection selon le rôle
+    if (auth.user?.type === 'admin') next('/ad/admin')
+    else if (auth.user?.type === 'worker' && auth.user?.entreprise?.uuid) {
+      next(`/${auth.user.entreprise.uuid}/dashboard`)
+    } else next('/login')
+    return
+  }
+
+  // Login page redirige si déjà connecté
+  if (to.path === '/login' && auth.user) {
+    next('/dashboard')
+    return
+  }
+
+  next()
 })
 
 router.afterEach((to, from) => {
-  // Si on revient sur la page /entreprises, on désactive l’entreprise
-  if (to.path === '/admin') {
+  // Si on revient sur la page /admin, on désactive l’entreprise active
+  if (to.path === '/ad/admin') {
     localStorage.removeItem('activeEnterprise')
   }
 })

@@ -23,7 +23,7 @@ const rolesRoutes = require("./src/routes/roles.routes");
 const activityRoutes = require("./src/routes/activity.routes");
 const cleanupInactiveUsers = require("./src/utils/cleanupInactiveUsers");
 const notificationRoutes = require('./src/routes/notification.routes');
-
+const DemoDataGenerator = require('./src/utils/demo-data-generator');
 // Database
 // ton index.js Sequelize
 
@@ -70,6 +70,8 @@ db.sequelize.sync().then(async () => {
   console.log("✅ Toutes les tables ont été créées !");
 
   try {
+    // const generator = new DemoDataGenerator();
+    //   await generator.generateAll();
     await seedPredefinedRoles();
     await createAllUsersView();
   } catch (err) {

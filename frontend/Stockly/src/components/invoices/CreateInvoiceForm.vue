@@ -110,18 +110,45 @@ const entrepriseData = computed(() => {
 const emit = defineEmits(['close'])
 async function downloadPDF() {
   try {
+    // Étape 1️⃣ — Créer la facture côté backend
     await invoiceStore.createInvoice(props.invoice)
-    show('Invoice and sales created successfully', 'success')
+
+    // Étape 2️⃣ — Afficher un message de succès
+    show('Invoice created successfully! Preparing for print...', 'success')
+
+    // Étape 4️⃣ — Ouvrir dans un nouvel onglet pour impression
+    const printWindow = window.open('', '_blank')
+
+    // Quand le PDF est chargé, ouvrir la boîte d'impression
+    printWindow.onload = () => {
+      printWindow.print()
+    }
+
+    // Étape 5️⃣ — Fermer la modale après impression
     emit('close')
   } catch (err) {
     console.error(err)
-    show(err.message || 'Failed to create invoice', 'error')
+    show(err.message || 'Failed to print invoice', 'error')
   }
 }
 
 function printInvoice() {
+  const printContent = invoiceContent.value.innerHTML
+  const originalContent = document.body.innerHTML
+
+  // Remplace tout le body temporairement par le contenu de la facture
+  document.body.innerHTML = printContent
+
+  // Lance l’impression
   window.print()
+
+  // Restaure le contenu original
+  document.body.innerHTML = originalContent
+
+  // Recharge le composant Vue pour éviter les bugs de réactivité
+  window.location.reload()
 }
+
 </script>
 <style scoped>
 .invoice-content {

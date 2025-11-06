@@ -73,7 +73,7 @@
         </div>
       </div>
 
-      <div class="bg-white rounded shadow-xl max-w-3xl w-full h-screen pb-10 relative m-4">
+      <div ref="invoiceContent" class="bg-white rounded shadow-xl max-w-3xl w-full h-screen pb-10 relative m-4">
         <!-- Header -->
 
         <!-- Invoice Content -->
@@ -218,7 +218,7 @@
 import { ref } from 'vue'
 import { useInvoiceStore } from '@/stores/FactureStore'
 import CompanyInfo from './CompanyInfo.vue'
-
+const invoiceContent = ref(null)
 const invoiceStore = useInvoiceStore()
 // const invoice = ref({
 //       id: '',
@@ -301,8 +301,21 @@ function formatStatus(status) {
 }
 
 function printInvoice() {
+  const printContent = invoiceContent.value.innerHTML
+  const originalContent = document.body.innerHTML
+
+  // Remplace tout le body temporairement par le contenu de la facture
+  document.body.innerHTML = printContent
+
+  // Lance l’impression
   window.print()
+
+  // Restaure le contenu original
+  document.body.innerHTML = originalContent
+
+  
 }
+
 
 async function downloadPDF() {
   try {

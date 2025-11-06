@@ -89,7 +89,7 @@ const salesTrendPercent = ref(0)
 onMounted(async () => {
   loadingClients.value = true
   await statsStore.fetchProductSales('day')
-  await new Promise((resolve) => setTimeout(resolve, 2000))
+
   await statsStore.fetchSalesReport('month')
   await statsStore.fetchRevenue('day')
   await statsStore.fetchProfit('day')
@@ -123,9 +123,9 @@ const topStats = computed(() => [
     id: 3,
     icon: DollarSign,
     label: 'Total Sales',
-    value: statsStore.topProducts.reduce((sum, p) => sum + (p.sales?.total || 0), 0),
+    value:statsStore.topProducts.sales?.total,
 
-    trend: statsStore.topProducts.at(-1)?.sales?.history.at(-1)?.growth_percent,
+    trend: statsStore.topProducts.sales?.history.at(-1)?.growth_percent,
     gradientFrom: '#092C4C',
     gradientTo: '#092C4C',
   },

@@ -28,7 +28,7 @@ const ROLE_PERMISSIONS = {
     canMakeSales: true,
     canViewInvoices: true,
     canManageStock: false,
-    canManageUsers: false,
+    canManageUsers: true,
     canAccessSettings: false,
   },
   default: {
