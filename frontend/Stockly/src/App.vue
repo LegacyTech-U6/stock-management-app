@@ -26,8 +26,8 @@ const onActionSelect = (item) => {
   </header>
 
   <FloatingActionButton
-    v-if="!['/login', '/register'].includes($route.path)"
-    @select="onActionSelect"
+   v-if="$route.params.uuid"
+
   />
 
   <RouterView />

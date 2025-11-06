@@ -38,37 +38,58 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import {
-  Package,
-  DollarSign,
-  Users,
-  PieChart,
-  Clock,
-  Tag,
-  Layers,
-  RotateCcw,
-  Wallet,
-} from 'lucide-vue-next'
-const props = defineProps({
-  actions: {
-    type: Array,
-    default: () => [
-      { label: 'Add Product', icon: Package, value: 'product' },
-      { label: 'Add Category', icon: Tag, value: 'category' },
-      { label: 'Add Client', icon: Users, value: 'client' },
-    ],
-  },
-})
+import { ref, computed } from 'vue'
+import { Package, Users, Tag, ShoppingBagIcon } from 'lucide-vue-next'
+import { useRouter, useRoute } from 'vue-router'
 
-const emit = defineEmits(['select'])
+const router = useRouter()
+const route = useRoute()
 const isOpen = ref(false)
-
 const toggleMenu = () => (isOpen.value = !isOpen.value)
+
+// UUID dynamique depuis le route
+const currentUuid = computed(() => route.params.uuid)
+
+// Actions
+const actions = [
+  { label: 'Add Product', icon: Package, value: 'product' },
+  { label: 'Add Category', icon: Tag, value: 'category' },
+  { label: 'New Sales', icon: ShoppingBagIcon, value: 'sales' },
+  { label: 'Add Client', icon: Users, value: 'client' },
+
+]
+
+// Navigation dynamique
 const handleAction = (item) => {
-  emit('select', item)
   isOpen.value = false
+
+  if (!currentUuid.value) {
+    console.warn('UUID non défini, impossible de naviguer')
+    return
+  }
+
+  let targetRoute = ''
+  switch (item.value) {
+    case 'product':
+      targetRoute = `/${currentUuid.value}/stepper`
+      break
+    case 'category':
+      targetRoute = `/${currentUuid.value}/categories`
+      break
+    case 'client':
+      targetRoute = `/${currentUuid.value}/clients`
+      break
+    case 'sales':
+      targetRoute = `/${currentUuid.value}/sales`
+      break
+    default:
+      console.log('Action selected:', item.value)
+      return
+  }
+
+  router.push(targetRoute)
 }
+
 </script>
 
 <style scoped>

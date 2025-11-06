@@ -210,6 +210,7 @@
             </div>
 
             <div v-else class="space-y-3">
+                 <ClientSelector @select-client="handleClientSelect" />
               <CartItem
                 v-for="item in saleItems"
                 :key="item.id"

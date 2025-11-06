@@ -1,44 +1,37 @@
 <template>
-  <div class="customer-information relative bg-white p-4 rounded-lg shadow">
-    <h3 class="text-lg font-semibold text-gray-800 mb-3">Customer Information</h3>
+  <div class="customer-selection relative">
+    <!-- Input pour chercher client -->
+    <input
+      ref="searchInput"
+      v-model="searchQuery"
+      @focus="openClientModal"
+      @keydown.down.prevent="highlightNext"
+      @keydown.up.prevent="highlightPrev"
+      @keydown.enter.prevent="selectHighlightedOrWalkIn"
+      placeholder="Search clients or type 'walk-in'..."
+      class="w-full px-4 py-2 border rounded-lg"
+    />
+    <button
+      @click.stop="addNewClient"
+      class="absolute right-2 top-1/2 -translate-y-1/2 bg-teal-600 text-white p-2 rounded-lg hover:bg-teal-700 focus:outline-none transition-colors"
+      title="Add New Client"
+    >
+      <UserPlusIcon class="w-5 h-5" />
+    </button>
 
-    <div class="relative">
-      <input
-        ref="searchInput"
-        v-model="searchQuery"
-        type="text"
-        placeholder="Search clients or type 'walk-in'..."
-        class="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg bg-white text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-        @keydown.down.prevent="highlightNext"
-        @keydown.up.prevent="highlightPrev"
-        @keydown.enter.prevent="selectHighlightedOrWalkIn"
-      />
-
-      <!-- Add New Client Button -->
-      <button
-        @click.stop="addNewClient"
-        class="absolute right-2 top-1/2 -translate-y-1/2 bg-teal-600 text-white p-2 rounded-lg hover:bg-teal-700 focus:outline-none transition-colors"
-        title="Add New Client"
-      >
-        <UserPlusIcon class="w-5 h-5" />
-      </button>
-
-      <!-- Selected / Info Indicator -->
-      <div v-if="selectedDisplay" class="absolute top-full mt-2 left-0 text-sm text-gray-600">
-        Selected: {{ selectedDisplay }}
-      </div>
-
-      <!-- Filtered clients list -->
-      <ul
-        v-if="filteredClients.length > 0 && showFilteredList"
-        class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-y-auto"
-      >
+    <!-- Mini Modal / Dropdown -->
+    <div
+      v-if="showClientModal"
+      class="absolute z-50 mt-2 w-full max-h-64 overflow-y-auto bg-white border border-gray-300 rounded shadow-lg p-2"
+    >
+      <!-- Liste filtrée -->
+      <ul>
         <li
           v-for="(client, index) in filteredClients"
           :key="client.id"
           :class="{
             'bg-teal-500 text-white': index === highlightedIndex,
-            'px-4 py-2 text-sm cursor-pointer hover:bg-gray-100': true,
+            'px-2 py-1 cursor-pointer hover:bg-gray-100': true,
           }"
           @mouseenter="highlightedIndex = index"
           @click="selectClient(client)"
@@ -46,128 +39,110 @@
           {{ client.client_name }}
         </li>
       </ul>
+
+      <!-- Walk-in -->
+      <div
+        :class="{ 'bg-teal-500 text-white': highlightedIndex === filteredClients.length }"
+        class="mt-2 px-2 py-1 hover:bg-gray-100 cursor-pointer"
+        @click="selectWalkIn"
+      >
+        Walk-in Customer
+      </div>
+
+      <!-- Add new client -->
+      <div
+        :class="{ 'bg-teal-500 text-white': highlightedIndex === filteredClients.length + 1 }"
+        class="mt-2 px-2 py-1 hover:bg-gray-100 cursor-pointer"
+        @click="addNewClient"
+      >
+        + Add New Client
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { ref, computed } from 'vue'
 import { useClientStore } from '@/stores/clientStore'
 import { UserPlusIcon } from 'lucide-vue-next'
-
 const clientStore = useClientStore()
+const searchQuery = ref('')
+const showClientModal = ref(false)
+const clients = ref([])
+const highlightedIndex = ref(-1)
+const selected = ref(null)
 const emit = defineEmits(['select-client'])
 
-const clients = ref([])
-const selected = ref(null)
-const searchQuery = ref('')
-const searchInput = ref(null)
-const highlightedIndex = ref(-1)
-const showFilteredList = ref(false)
-
-// Fetch clients
-onMounted(async () => {
-  await clientStore.fetchClients()
-  clients.value = clientStore.clients
-
-  // Keyboard shortcut Ctrl + R to focus search
-  window.addEventListener('keydown', handleGlobalShortcut)
-})
-onUnmounted(() => {
-  window.removeEventListener('keydown', handleGlobalShortcut)
-})
-
-// Global keyboard shortcut
-function handleGlobalShortcut(e) {
-  if (e.ctrlKey && e.key.toLowerCase() === 'a') {
-    e.preventDefault()
-    searchInput.value?.focus()
-    showFilteredList.value = true
+const openClientModal = async () => {
+  showClientModal.value = true
+  if (!clients.value.length) {
+    await clientStore.fetchClients()
+    clients.value = clientStore.clients
   }
+  highlightedIndex.value = -1
 }
 
-// Computed filtered clients
 const filteredClients = computed(() => {
-  if (!searchQuery.value.trim() || searchQuery.value.toLowerCase() === 'walk-in') return []
+  if (!searchQuery.value.trim() || searchQuery.value.toLowerCase() === 'walk-in')
+    return clients.value
   const query = searchQuery.value.toLowerCase()
-  return clients.value.filter((client) => client.client_name.toLowerCase().includes(query))
+  return clients.value.filter((c) => c.client_name.toLowerCase().includes(query))
 })
 
-// Display text
-const selectedDisplay = computed(() => {
-  if (!selected.value) return ''
-  if (selected.value === 'walk-in') return 'Walk in Customer'
-  return selected.value.client_name
-})
-
-// Keyboard navigation
-function highlightNext() {
-  if (filteredClients.value.length === 0) return
-  highlightedIndex.value = (highlightedIndex.value + 1) % filteredClients.value.length
-  showFilteredList.value = true
+// Navigation clavier
+const highlightNext = () => {
+  const total = filteredClients.value.length + 2 // walk-in + add new
+  highlightedIndex.value = (highlightedIndex.value + 1) % total
 }
 
-function highlightPrev() {
-  if (filteredClients.value.length === 0) return
-  highlightedIndex.value =
-    (highlightedIndex.value - 1 + filteredClients.value.length) % filteredClients.value.length
-  showFilteredList.value = true
+const highlightPrev = () => {
+  const total = filteredClients.value.length + 2
+  highlightedIndex.value = (highlightedIndex.value - 1 + total) % total
 }
 
-// Enter key: select highlighted client or walk-in
-function selectHighlightedOrWalkIn() {
-  if (searchQuery.value.toLowerCase() === 'walk-in') {
-    selected.value = 'walk-in'
-    searchQuery.value = 'Walk in Customer'
-    highlightedIndex.value = -1
-    showFilteredList.value = false
-    emit('select-client', selected.value)
-    return
-  }
-
-  if (highlightedIndex.value >= 0 && highlightedIndex.value < filteredClients.value.length) {
+const selectHighlightedOrWalkIn = () => {
+  if (highlightedIndex.value < 0) return
+  if (highlightedIndex.value < filteredClients.value.length) {
     selectClient(filteredClients.value[highlightedIndex.value])
+  } else if (highlightedIndex.value === filteredClients.value.length) {
+    selectWalkIn()
+  } else {
+    addNewClient()
   }
 }
 
-// Select client function
-function selectClient(client) {
+// Sélection client
+const selectClient = (client) => {
   selected.value = client
   searchQuery.value = client.client_name
+  showClientModal.value = false
   highlightedIndex.value = -1
-  showFilteredList.value = false
+  emit('select-client', client)
+}
+
+// Walk-in
+const selectWalkIn = () => {
+  selected.value = 'walk-in'
+  searchQuery.value = 'Walk-in Customer'
+  showClientModal.value = false
+  highlightedIndex.value = -1
   emit('select-client', selected.value)
 }
 
-// Add new client
-function addNewClient() {
+// Ajouter nouveau client
+const addNewClient = () => {
   selected.value = null
   searchQuery.value = ''
+  showClientModal.value = false
   highlightedIndex.value = -1
-  showFilteredList.value = false
   emit('select-client', { action: 'add-new-client' })
 }
-
-// Show filtered list while typing
-watch(searchQuery, (val) => {
-  if (val.trim()) {
-    showFilteredList.value = true
-  } else {
-    showFilteredList.value = false
-  }
-})
 </script>
 
 <style scoped>
-.customer-information {
-  position: relative;
-}
-
-ul::-webkit-scrollbar {
-  width: 6px;
-}
-ul::-webkit-scrollbar-thumb {
-  background: #cbd5e1; /* gray-300 */
-  border-radius: 3px;
+.customer-selection input:focus {
+  outline: none;
+  border-color: #14b8a6;
+  box-shadow: 0 0 0 2px rgba(20, 184, 166, 0.3);
 }
 </style>

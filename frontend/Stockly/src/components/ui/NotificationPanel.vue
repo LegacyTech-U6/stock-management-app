@@ -1,5 +1,5 @@
 <template>
-  <Transition name="slide-fade">
+  <Transition name="slide-fade" appear>
     <div
       v-if="notificationOpen"
       class="fixed top-0 right-0 h-screen w-96 bg-white/95 backdrop-blur-md z-50 flex flex-col shadow-2xl border-l border-gray-200/60"
@@ -24,7 +24,6 @@
 
       <!-- Notifications List -->
       <div class="flex-1 overflow-y-auto">
-        <!-- ✅ Empty State -->
         <div v-if="notifications.length === 0" class="flex items-center justify-center h-full">
           <div class="text-center">
             <Bell class="w-16 h-16 text-gray-300 mx-auto mb-4" />
@@ -33,7 +32,6 @@
           </div>
         </div>
 
-        <!-- Notifications exist -->
         <div v-else>
           <div
             v-for="notification in notifications"
@@ -65,7 +63,6 @@
         </div>
       </div>
 
-      <!-- Footer -->
       <div v-if="notifications.length > 0" class="bg-gray-50/80 px-6 py-4 border-t border-gray-200/60">
         <button
           @click="markAllAsRead"
@@ -86,24 +83,33 @@ import { X, Bell } from 'lucide-vue-next'
 const props = defineProps({
   notificationOpen: Boolean,
 })
-
 const emit = defineEmits(['update:notificationOpen'])
 
 const notificationStore = useNotificationStore()
-
 const notifications = computed(() => notificationStore.notifications)
 const unreadCount = computed(() => notificationStore.unreadCount)
 
-const markAsRead = (id) => {
-  notificationStore.markAsRead(id)
-}
+const markAsRead = (id) => notificationStore.markAsRead(id)
+const markAllAsRead = () => notificationStore.markAllAsRead()
 
-const markAllAsRead = () => {
-  notificationStore.markAllAsRead()
-}
-
-const getNotificationIcon = (icon) => {
-  // Retourne un SVG ou HTML pour l’icône selon ton icon type
-  return icon || '<svg class="w-6 h-6 text-gray-400"><circle cx="12" cy="12" r="10" /></svg>'
-}
+const getNotificationIcon = (icon) =>
+  icon || '<svg class="w-6 h-6 text-gray-400"><circle cx="12" cy="12" r="10" /></svg>'
 </script>
+
+<style scoped>
+/* Transition slide + fade */
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: transform 0.35s ease, opacity 0.35s ease;
+}
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(100%);
+  opacity: 0;
+}
+.slide-fade-enter-to,
+.slide-fade-leave-from {
+  transform: translateX(0%);
+  opacity: 1;
+}
+</style>
