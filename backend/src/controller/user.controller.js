@@ -14,7 +14,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 exports.register = async (req, res) => {
   try {
     const { username, Last_name, email, telephone, password } = req.body;
-
+console.log("Payload register:", req.body);
     // 1️⃣ Vérifier si l'email existe déjà
     const existing = await User.findOne({ where: { email } });
     if (existing)

@@ -79,6 +79,7 @@ export const useAuthStore = defineStore('auth', {
       this.isLoading = true
       this.error = null
       this.successMessage = null
+      console.log("📝 Registering user:", { username, Last_name, email, telephone })
 
       try {
         const res = await axios.post(`${this.API_URL}/auth/register`, {
