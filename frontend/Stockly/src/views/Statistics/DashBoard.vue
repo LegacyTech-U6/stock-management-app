@@ -45,7 +45,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup >
 import LazyLoader from '@/components/ui/LazyLoader.vue'
 import { ref, computed, onMounted } from 'vue'
 
