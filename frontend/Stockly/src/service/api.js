@@ -264,6 +264,7 @@ export async function deleteSupplier(supplierId) {
 
 // ✅ Créer une entreprise
 export async function createEntreprise(entrepriseData) {
+   console.log(API)
   console.log('🚀 API: Creating entreprise with data:', entrepriseData)
 
   const formData = new FormData()
@@ -303,6 +304,7 @@ export async function createEntreprise(entrepriseData) {
 
 // ✅ Récupérer toutes les entreprises de l'utilisateur connecté
 export async function getEntreprises() {
+ 
   const { data } = await API.get('/entreprises')
   return data
 }

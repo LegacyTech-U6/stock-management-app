@@ -3,7 +3,6 @@ import { ref, onMounted } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Package, ShoppingCart, Users, TrendingUp, FileText, Bell } from 'lucide-vue-next'
-
 gsap.registerPlugin(ScrollTrigger)
 
 const features = [
@@ -167,8 +166,8 @@ const handleLeave = (element: HTMLElement) => {
 
 <template>
   <section
-    ref="sectionRef"
-    class="pt-32 grid grid-cols-1 lg:grid-cols-4 bg-gradient-to-br from-green-50 to-white overflow-hidden"
+  ref="sectionRef"
+  class="pt-32 grid grid-cols-1 lg:grid-cols-4 overflow-hidden bg-cover bg-center"
   >
     <div class="lg:grid lg:gap-6 items-center p-4">
       <!-- Image: visible on large screens only -->
@@ -208,7 +207,7 @@ const handleLeave = (element: HTMLElement) => {
               :stroke-width="1.5"
               class="feature-icon mb-6 text-gray-900 group-hover:text-white transition-colors"
             />
-            <h3 class="feature-title text-xl font-medium mb-3">
+            <h3 class="feature-title text-lg leading-relaxed  mb-3">
               {{ feature.title }}
             </h3>
             <p

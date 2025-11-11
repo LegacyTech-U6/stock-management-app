@@ -12,6 +12,8 @@ API.interceptors.request.use(
   (config) => {
     const authStore = useAuthStore()
     const entrepriseStore = useEntrepriseStore()
+    console.log(API);
+    
 
     // ✅ Ajouter le token si présent
     if (authStore.token) {
