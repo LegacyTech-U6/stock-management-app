@@ -185,7 +185,7 @@ const setupMobileAnimations = () => {
 <template>
   <section 
     ref="sectionRef" 
-    class="workflow-section pl-50 item-center flex justify-center relative min-h-screen bg-gradient-to-br from-green-50 to-white"
+    class="workflow-section lg:pl-50 item-center flex justify-center relative min-h-screen bg-gradient-to-br from-green-50 to-white"
   >
     <!-- Desktop Layout -->
     <div v-if="!isMobile" class="grid grid-cols-12 h-screen max-w-7.5xl">
@@ -304,11 +304,12 @@ const setupMobileAnimations = () => {
           </div>
         </div>
       </div>
+
     </div>
 
     <!-- Mobile Layout -->
-    <div v-else class="py-16 px-6">
-      <div class="max-w-2xl mx-auto space-y-12">
+    <div v-else class="py-16 w-full px-6">
+      <div class="w-full mx-auto space-y-12">
         <!-- Header mobile -->
         <div class="text-center mb-16">
           <h2 class="text-3xl font-bold text-white mb-4">Processus Stockly</h2>
@@ -326,7 +327,7 @@ const setupMobileAnimations = () => {
           <div class="flex items-start gap-6">
             <!-- Icône et ligne -->
             <div class="flex flex-col items-center">
-              <div class="step-icon relative w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-300 rounded-xl flex items-center justify-center shadow-xl shadow-blue-500/50">
+              <div class="step-icon relative w-16 h-16 bg-gradient-to-br from-blue-300 to-blue-400 rounded-xl flex items-center justify-center shadow-xl shadow-blue-500/50">
                 <div class="absolute -top-2 -right-2 w-7 h-7 bg-yellow-400 rounded-full flex items-center justify-center text-slate-900 font-bold text-xs shadow-lg">
                   {{ index + 1 }}
                 </div>
@@ -342,7 +343,7 @@ const setupMobileAnimations = () => {
 
             <!-- Contenu -->
             <div class="step-content flex-1 pt-1">
-              <h3 class="text-xl font-bold text-white mb-2">
+              <h3 class="text-xl font-bold text-green-500 mb-2">
                 {{ step.title }}
               </h3>
               <p class="text-gray-400 leading-relaxed text-sm mb-3">

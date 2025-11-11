@@ -1,14 +1,13 @@
 <template>
   <section class="relative flex justify-center items-center max-h-150 px-6 py-12 overflow-hidden">
     <!-- Background avec formes géométriques colorées -->
-    <div class="absolute inset-0 -z-10">
+    <div class="absolute inset-0 z-10">
       <!-- Fond de base -->
-      <div class="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-blue-50"></div>
+      <div class="absolute inset-0 bg-gradient-to-br from-green-50 via-white h-20 to-blue-500"></div>
+      <div class="absolute inset-0 top-20 bg-gradient-to-tr from-green-50 via-white h-20 to-blue-500"></div>
+<div class="bg"></div>
       
       <!-- Formes géométriques colorées -->
-      <div class="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-orange-200 to-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse-slow"></div>
-      <div class="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-blue-200 to-green-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse-slow"></div>
-      <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-gradient-to-r from-purple-200 to-indigo-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse-slow"></div>
     </div>
 
     <div class="grid lg:grid-cols-2 gap-10 max-w-6xl w-full items-center relative z-10">

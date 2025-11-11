@@ -68,6 +68,7 @@ exports.getEntrepriseByUuid = async (req, res) => {
 exports.createEntreprise = async (req, res) => {
   try {
     const user_id = req.user.id; // l'utilisateur connecté
+    console.log(req.body,req.user)
   
     // ✅ Si une image a été uploadée, on génère son URL publique
     let imagePath = null;

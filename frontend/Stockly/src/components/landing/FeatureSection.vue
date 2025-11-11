@@ -168,7 +168,7 @@ const handleLeave = (element: HTMLElement) => {
 <template>
   <section
     ref="sectionRef"
-    class="py-32 grid grid-cols-1 lg:grid-cols-4 bg-gradient-to-br from-green-50 to-white overflow-hidden"
+    class="pt-32 grid grid-cols-1 lg:grid-cols-4 bg-gradient-to-br from-green-50 to-white overflow-hidden"
   >
     <div class="lg:grid lg:gap-6 items-center p-4">
       <!-- Image: visible on large screens only -->
