@@ -22,7 +22,7 @@
       <!-- Stats Grid Component -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
         <GridCard
-          v-for="(stat, idx) in stats"
+         v-for="(stat, idx) in stats ?? []"
           :key="idx"
           :title="stat.title"
           :value="stat.value"
@@ -381,46 +381,49 @@ const userName = computed(() => {
 })
 
 const filteredEntreprises = computed(() => {
-  if (!searchQuery.value) return store.entreprises
-  return store.entreprises.filter(
+  const entreprises = store.entreprises || []
+  if (!searchQuery.value) return entreprises
+  return entreprises.filter(
     (e) =>
       e.name?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
       e.description?.toLowerCase().includes(searchQuery.value.toLowerCase()),
   )
 })
 
+
 const stats = computed(() => {
   return [
     {
       title: 'Total Companies',
-      value: store?.totalEntreprise?.toString(),
-      icon: Users, // ✅ Lucide Icon
+      value: (store?.totalEntreprise ?? 0).toString(),
+      icon: Users,
       gradientFrom: 'orange-500',
       gradientTo: 'orange-600',
     },
     {
       title: 'Active Companies',
-      value: store?.totalEntreprise?.toString(),
-      icon: CheckCircle, // ✅ Lucide Icon
+      value: (store?.totalEntreprise ?? 0).toString(),
+      icon: CheckCircle,
       gradientFrom: 'green-500',
       gradientTo: 'green-600',
     },
     {
       title: 'Inactive Companies',
       value: '30',
-      icon: XCircle, // ✅ Lucide Icon
+      icon: XCircle,
       gradientFrom: 'red-500',
       gradientTo: 'red-600',
     },
     {
       title: 'Company Locations',
       value: '180',
-      icon: MapPin, // ✅ Lucide Icon
+      icon: MapPin,
       gradientFrom: 'cyan-500',
       gradientTo: 'cyan-600',
     },
   ]
 })
+
 
 const handleEditEnterprise = (enterprise) => {
   isEditing.value = true
