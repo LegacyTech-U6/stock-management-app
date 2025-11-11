@@ -1,14 +1,14 @@
-const db = require('../config/db'); // ton instance Sequelize
+const db = require('../config/db');
 
 async function createAllUsersView() {
   try {
     await db.sequelize.query(`
       CREATE OR REPLACE VIEW all_users AS
       SELECT id, email, password_hash, 'admin' AS type
-      FROM Users
+      FROM "Users"
       UNION ALL
       SELECT id, email, password_hash, 'worker' AS type
-      FROM Workers;
+      FROM "Workers";
     `);
     console.log("✅ Vue all_users créée ou mise à jour");
   } catch (err) {
@@ -17,5 +17,3 @@ async function createAllUsersView() {
 }
 
 module.exports = createAllUsersView;
-
-
