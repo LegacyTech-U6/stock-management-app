@@ -534,7 +534,7 @@ const isLoginFormValid = computed(() => {
 const isRegisterFormValid = computed(() => {
   return (
     registerData.value.username &&
-    registerData.value.last_name &&
+    registerData.value.Last_name &&
     registerData.value.email &&
     registerData.value.company &&
     registerData.value.password &&
