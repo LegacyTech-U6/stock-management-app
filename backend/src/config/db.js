@@ -3,32 +3,38 @@ dns.setDefaultResultOrder("ipv4first");
 
 const { Sequelize, DataTypes } = require("sequelize");
 require("dotenv").config();
+const databaseUrl = process.env.DATABASE_URL;
+const isProduction = process.env.NODE_ENV === "production";
 
+if (!databaseUrl) {
+  console.error("❌ DATABASE_URL non définie dans le .env !");
+  process.exit(1);
+}
 
+// Configuration Sequelize
+const sequelize = new Sequelize(databaseUrl, {
+  dialect: 'postgres',
+  logging: !isProduction,
+  dialectOptions: isProduction
+    ? {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false,
+        },
+      }
+    : {},
+});
 
-let sequelize;
+// Test de connexion
+(async () => {
+  try {
+    await sequelize.authenticate();
+    console.log('✅ Connexion à la base réussie !');
+  } catch (error) {
+    console.error('❌ Impossible de se connecter à la DB :', error);
+  }
+})();
 
-
-  // Supabase
-  sequelize = new Sequelize(process.env.DATABASE_URL, {
-    dialect: "postgres",
-    protocol: "postgres",
-    logging: false,
-    dialectOptions: {
-      ssl: { rejectUnauthorized: false },
-    },
-  });
-
-
-sequelize
-  .authenticate()
-  .then(() => console.log("✅ Connexion DB réussie !"))
-  .catch(err => console.error("❌ Impossible de se connecter :", err));
-
-
-
-
-// Exporter pour utilisation dans les modèles et le serveur
 const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
