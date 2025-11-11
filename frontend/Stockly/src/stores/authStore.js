@@ -65,32 +65,32 @@ export const useAuthStore = defineStore('auth', {
       return ROLE_PERMISSIONS[this.roleName] || ROLE_PERMISSIONS.default
     },
 
+    
+  },
+
+  actions: {
     can: (state) => (permission) => {
       const role = state.user?.type === 'admin' ? 'admin' : state.user?.role?.name || 'default'
       return ROLE_PERMISSIONS[role]?.[permission] || false
     },
-  },
-
-  actions: {
-    /**
-     * Connexion utilisateur avec redirection automatique
-     */
-    async login(email, password) {
+    async register(username, Last_name, email, telephone, password) {
       this.isLoading = true
       this.error = null
+      this.successMessage = null
 
       try {
-        const res = await axios.post(`${API_URL}/auth/login`, { email, password })
-        this.token = res.data.token
-        localStorage.setItem('token', this.token)
+        const res = await axios.post(`${API_URL}/auth/register`, {
+          username,
+          Last_name,
+          email,
+          telephone,
+          password,
+        })
 
-        await this.getAccount()
-        await this.redirectAfterLogin() // Redirection après connexion
+        // ⚠️ backend ne renvoie que { message }
+        this.successMessage = res.data.message || 'Inscription réussie 🎉'
       } catch (err) {
-        this.error = err.response?.data?.message || 'Erreur de connexion ❌'
-        this.user = null
-        this.token = null
-        localStorage.removeItem('token')
+        this.error = err.response?.data?.message || "Erreur d'inscription ❌"
       } finally {
         this.isLoading = false
       }
