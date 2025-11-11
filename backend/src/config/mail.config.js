@@ -1,55 +1,81 @@
-// config/mail.config.js
 require('dotenv').config();
 const Mailjet = require('node-mailjet');
 
-// ⚡ Connexion à l’API Mailjet
+// ⚡ Connexion Mailjet
 const mailjet = Mailjet.apiConnect(
-  process.env.MJ_APIKEY_PUBLIC,  // clé publique Mailjet
-  process.env.MJ_APIKEY_PRIVATE  // clé privée Mailjet
+  process.env.MJ_APIKEY_PUBLIC,
+  process.env.MJ_APIKEY_PRIVATE
 );
 
-// 🔧 Fonction utilitaire pour envoyer un mail avec logs détaillés
-async function sendMailDebug(message) {
+/**
+ * Envoi d'un mail via Mailjet
+ */
+async function sendMail({ to, subject, html }) {
   const timestamp = new Date().toISOString();
-  console.log(`\n[${timestamp}] 📨 Tentative d’envoi du mail via Mailjet...`);
-  console.log(`[${timestamp}] Message à envoyer:\n`, JSON.stringify(message, null, 2));
 
   try {
-    // Envoi du mail
-    const response = await mailjet.post('send', { version: 'v3.1' }).request(message);
+    const fromEmail = process.env.SITE_EMAIL || 'noreply@tondomaine.com';
+    const fromName = process.env.SITE_NAME || 'Stockly';
 
-    // Log complet de la réponse
-    console.log(`[${timestamp}] ✅ Mail envoyé avec succès !`);
-    console.log(`[${timestamp}] Mailjet Response:\n`, JSON.stringify(response.body, null, 2));
+    if (!to) throw new Error('Adresse email destinataire introuvable.');
 
-    return response.body;
+    const message = {
+      Messages: [
+        {
+          From: { Email: fromEmail, Name: fromName },
+          To: [{ Email: to, Name: 'Client' }],
+          Subject: subject,
+          HTMLPart: html,
+        },
+      ],
+    };
+
+    console.log(`[${timestamp}] 📨 Envoi mail à ${to}`);
+
+    const response = await Promise.race([
+      mailjet.post('send', { version: 'v3.1' }).request(message),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout Mailjet 10s')), 10000))
+    ]);
+
+    console.log(`[${timestamp}] ✅ Mail envoyé`);
+    return { success: true, response: response.body };
   } catch (err) {
-    console.error(`[${timestamp}] ❌ Erreur lors de l’envoi du mail :`, err.message);
-    if (err.response && err.response.body) {
-      console.error(`[${timestamp}] Détails de l’erreur Mailjet :\n`, JSON.stringify(err.response.body, null, 2));
-    }
-    throw err;
+    console.error(`[${timestamp}] ❌ Erreur mail :`, err.message);
+    if (err.response?.body) console.error('Détails Mailjet :', JSON.stringify(err.response.body, null, 2));
+    return { success: false, error: err };
   }
 }
 
-// 🔎 Fonction pour tester la connexion Mailjet au démarrage
+/**
+ * Test de connexion à Mailjet
+ */
 async function testMailjetConnection() {
-  console.log('🔎 Test de connexion à Mailjet...');
   try {
-    const response = await mailjet.get('account').request(); // récupère les infos du compte
-    console.log('✅ Connexion Mailjet OK !');
-    console.log('Infos du compte Mailjet :', JSON.stringify(response.body, null, 2));
+    const response = await mailjet
+      .post('send', { version: 'v3.1' })
+      .request({
+        Messages: [
+          {
+            From: { Email: process.env.SITE_EMAIL, Name: process.env.SITE_NAME },
+            To: [{ Email: 'djeutchouruxel@gmail.com', Name: 'Moi' }],
+            Subject: 'Test Mailjet',
+            TextPart: 'Ceci est un test',
+            HTMLPart: '<h3>Ceci est un test</h3>'
+          }
+        ]
+      });
+
+    console.log('✅ Mailjet response:');
+    console.log(JSON.stringify(response.body, null, 2)); // corps de la réponse lisible
   } catch (err) {
-    console.error('❌ Impossible de se connecter à Mailjet :', err.message);
-    if (err.response && err.response.body) {
-      console.error('Détails :', JSON.stringify(err.response.body, null, 2));
+    console.error('❌ Mailjet error:');
+    if (err.response) {
+      console.error('Status:', err.response.status);
+      console.error('Data:', JSON.stringify(err.response.data, null, 2));
+    } else {
+      console.error(err);
     }
   }
 }
 
-// Exporter l’instance Mailjet + utilitaires
-module.exports = {
-  mailjet,
-  sendMailDebug,
-  testMailjetConnection,
-};
+module.exports = { mailjet, sendMail, testMailjetConnection };
