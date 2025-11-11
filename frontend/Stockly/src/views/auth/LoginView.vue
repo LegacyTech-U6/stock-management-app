@@ -259,7 +259,7 @@
                   >
                   <input
                     type="text"
-                    v-model="registerData.last_name"
+                    v-model="registerData.Last_name"
                     placeholder="Doe"
                     required
                     class="w-full px-3 lg:px-4 py-2 bg-white lg:bg-gray-50 border border-gray-300 lg:rounded-lg rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition text-sm"
@@ -518,7 +518,7 @@ const loginData = ref({
 // Register data
 const registerData = ref({
   username: '',
-  last_name: '',
+  Last_name: '',
   email: '',
   telephone: '',
   company: '',
@@ -768,7 +768,8 @@ const handleRegister = async () => {
 
   try {
     // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+
+console.log(registerData.value);
 
     // If using auth store, call register method
     if (authStore && typeof authStore.register === 'function') {
