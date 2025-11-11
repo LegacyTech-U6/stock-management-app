@@ -52,7 +52,7 @@ exports.register = async (req, res) => {
     const activationLink = `${process.env.FRONTEND_URL}/verify/${activationToken}`;
 
     // 6️⃣ Préparer le mail
-    const site = await Setting.findOne({ where: { key: "site" } });
+    
     const htmlContent = `
       <h2>Bienvenue, ${username} 👋</h2>
       <p>Merci de vous être inscrit sur <strong>Stockly</strong>.</p>

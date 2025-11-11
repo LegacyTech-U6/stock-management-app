@@ -6,3 +6,8 @@
             transform="matrix(1,0,0,1,0,0)"></image>
     </svg>
 </template>
+<style scoped>
+    svg {
+        @apply w-full h-full;
+    }
+</style>

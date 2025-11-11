@@ -14,7 +14,7 @@
     <div class="grid lg:grid-cols-2 gap-10 max-w-6xl w-full items-center relative z-10">
       <!-- 🖼️ Section image -->
       <div class="hidden lg:flex justify-center">
-        <TechIcon />
+        <TechIcon class="w-48 h-48 lg:w-64 lg:h-64" />
       </div>
 
       <!-- 📝 Section texte -->

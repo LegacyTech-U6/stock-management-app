@@ -9,39 +9,39 @@ gsap.registerPlugin(ScrollTrigger)
 const features = [
   {
     icon: Package,
-    title: 'Gestion complète des stocks',
+    title: 'Complete Inventory Management',
     description:
-      'Suivi en temps réel, alertes automatiques de stock faible, catégorisation intelligente et historique complet des mouvements.',
+      'Real-time tracking, automatic low stock alerts, smart categorization, and complete movement history.',
   },
   {
     icon: ShoppingCart,
-    title: 'Point de vente intégré',
+    title: 'Integrated Point of Sale',
     description:
-      'Création rapide de factures, calcul automatique TVA et remises, modes de paiement multiples, génération instantanée.',
+      'Quick invoice creation, automatic VAT and discount calculation, multiple payment methods, instant generation.',
   },
   {
     icon: Users,
-    title: 'Base clients et fournisseurs',
+    title: 'Customer & Supplier Database',
     description:
-      "Historique d'achats, coordonnées centralisées, commandes automatiques aux fournisseurs, communication simplifiée.",
+      'Purchase history, centralized contacts, automatic supplier orders, simplified communication.',
   },
   {
     icon: TrendingUp,
-    title: 'Analyses en temps réel',
+    title: 'Real-time Analytics',
     description:
-      'Rapports de vente quotidiens, top produits, statistiques par catégorie, indicateurs de performance (KPI).',
+      'Daily sales reports, top products, category statistics, performance indicators (KPIs).',
   },
   {
     icon: FileText,
-    title: 'Multi-entreprises',
+    title: 'Multi-Company Management',
     description:
-      'Gérez plusieurs entreprises depuis un compte, isolation des données, personnalisation par entreprise.',
+      'Manage multiple companies from one account, data isolation, per-company customization.',
   },
   {
     icon: Bell,
-    title: 'Notifications intelligentes',
+    title: 'Smart Notifications',
     description:
-      "Alertes de rupture de stock, notifications de commandes, rappels personnalisables, journal d'activités complet.",
+      'Stock outage alerts, order notifications, customizable reminders, complete activity log.',
   },
 ]
 
@@ -181,11 +181,10 @@ const handleLeave = (element: HTMLElement) => {
     <div class="max-w-6xl mx-auto col-span-1 lg:col-span-3 px-6">
       <div class="max-w-2xl mb-20">
         <h2 ref="headerRef" class="text-4xl md:text-5xl font-light text-gray-900 mb-6">
-          Tout ce dont vous avez besoin
+          Everything You Need
         </h2>
         <p ref="subtitleRef" class="text-lg text-gray-600 font-light leading-relaxed">
-          Une solution complète pour digitaliser et automatiser l'ensemble de vos processus
-          commerciaux.
+          A complete solution to digitize and automate all your business processes.
         </p>
       </div>
 
