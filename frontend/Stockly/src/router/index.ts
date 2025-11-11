@@ -214,7 +214,7 @@ router.beforeEach(async (to, from, next) => {
 
   // Vérification des permissions
   const requiredPermission = to.meta.permission as string
-  if (requiredPermission && !auth.$getters.can('canViewDashboard') ) {
+  if (requiredPermission && !auth.can('canViewDashboard') ) {
     console.warn(`❌ Accès refusé à ${to.fullPath}, permission manquante: ${requiredPermission}`)
     // Redirection selon le rôle
     if (auth.user?.type === 'admin') next('/ad/admin')
