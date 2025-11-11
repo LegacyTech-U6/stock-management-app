@@ -48,7 +48,7 @@ app.get('/convert', async (req, res) => {
         res.status(500).json({ error: err.message })
     }
 })
-testMailjetConnection();
+
 // 🔹 Rôles prédéfinis
 const predefinedRoles = [
   {
