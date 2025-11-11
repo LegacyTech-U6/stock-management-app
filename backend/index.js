@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const app = express();
-const  dotenv = require("dotenv");
+const dotenv = require("dotenv");
 const db = require("./src/config/db");
 // 🕐 Charger le cron des rapports journaliers
 require("./src/crons/dailyReports");
@@ -24,9 +24,9 @@ const workers = require("./src/routes/workers.routes");
 const rolesRoutes = require("./src/routes/roles.routes");
 const activityRoutes = require("./src/routes/activity.routes");
 const cleanupInactiveUsers = require("./src/utils/cleanupInactiveUsers");
-const notificationRoutes = require('./src/routes/notification.routes');
-const DemoDataGenerator = require('./src/utils/demo-data-generator');
-const {startCurrencyCron,getRates} = require('./src/utils/currency.service');
+const notificationRoutes = require("./src/routes/notification.routes");
+const DemoDataGenerator = require("./src/utils/demo-data-generator");
+const { startCurrencyCron, getRates } = require("./src/utils/currency.service");
 // Database
 // ton index.js Sequelize
 
@@ -34,22 +34,21 @@ cron.schedule("0 */2 * * *", async () => {
   try {
     console.log("⏰ Running scheduled cleanup of inactive users...");
     await cleanupInactiveUsers();
-    
+
     console.log("✅ Cleanup completed successfully!");
   } catch (error) {
     console.error("❌ Error during cleanup:", error);
   }
 });
 
-app.get('/convert', async (req, res) => {
-    
-    try {
-        const converted = await getRates()
-        res.json({  converted })
-    } catch (err) {
-        res.status(500).json({ error: err.message })
-    }
-})
+app.get("/convert", async (req, res) => {
+  try {
+    const converted = await getRates();
+    res.json({ converted });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // 🔹 Rôles prédéfinis
 const predefinedRoles = [
@@ -99,9 +98,7 @@ app.use((req, res, next) => {
 });
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || 
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    origin: process.env.FRONTEND_URL || "https://stockly-psi.vercel.app",
     credentials: true,
   })
 );
@@ -125,6 +122,6 @@ app.use("/api/auth", user);
 app.use("/api/entreprises", entreprise);
 app.use("/api/workers", workers);
 app.use("/api/roles", rolesRoutes);
-app.use('/api/notifications', notificationRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 module.exports = app;
