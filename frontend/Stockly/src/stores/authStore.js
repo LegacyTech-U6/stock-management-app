@@ -48,7 +48,7 @@ export const useAuthStore = defineStore('auth', {
     isLoading: false,
     error: null,
     successMessage: null,
-     API_URL : import.meta.env.API_URL || "http://localhost:5000/api"
+     API_URL : import.meta.env.API_URL || "https://stock-management-app-jq0h.onrender.com/api"
   }),
   
 
@@ -81,7 +81,7 @@ export const useAuthStore = defineStore('auth', {
       this.successMessage = null
 
       try {
-        const res = await axios.post(`${API_URL}/auth/register`, {
+        const res = await axios.post(`${this.API_URL}/auth/register`, {
           username,
           Last_name,
           email,
@@ -106,7 +106,7 @@ export const useAuthStore = defineStore('auth', {
       this.error = null
 
       try {
-        const res = await axios.post(`${API_URL}/auth/login`, { email, password })
+        const res = await axios.post(`${this.API_URL}/auth/login`, { email, password })
         this.token = res.data.token
         localStorage.setItem('token', this.token)
 
@@ -127,7 +127,7 @@ export const useAuthStore = defineStore('auth', {
       if (!this.token) return
 
       try {
-        const res = await axios.get(`${API_URL}/auth/profile`, {
+        const res = await axios.get(`${this.API_URL}/auth/profile`, {
           headers: { Authorization: `Bearer ${this.token}` },
         })
         this.user = res.data
@@ -193,7 +193,7 @@ logout(mode = 'default') {
       this.successMessage = null
 
       try {
-        const res = await axios.post(`${API_URL}/auth/forgot-password`, { email })
+        const res = await axios.post(`${this.API_URL}/auth/forgot-password`, { email })
         this.successMessage = res.data.message || 'Lien envoyé 📩'
       } catch (err) {
         this.error = err.response?.data?.message || 'Erreur lors de la demande ❌'
@@ -210,7 +210,7 @@ logout(mode = 'default') {
       this.error = null
 
       try {
-        const res = await axios.post(`${API_URL}/auth/reset-password`, {
+        const res = await axios.post(`${this.API_URL}/auth/reset-password`, {
           token,
           newPassword,
         })
@@ -231,7 +231,7 @@ logout(mode = 'default') {
 
       try {
         const res = await axios.post(
-          `${API_URL}/auth/change-password`,
+          `${this.API_URL}/auth/change-password`,
           { oldPassword, newPassword },
           { headers: { Authorization: `Bearer ${this.token}` } },
         )
@@ -251,7 +251,7 @@ logout(mode = 'default') {
       this.successMessage = null
 
       try {
-        const res = await axios.get(`${API_URL}/auth/activate/${token}`)
+        const res = await axios.get(`${this.API_URL}/auth/activate/${token}`)
         this.successMessage = res.data.message || 'Compte activé avec succès 🎉'
       } catch (err) {
         this.error = err.response?.data?.message || 'Lien invalide ou expiré ❌'
@@ -266,7 +266,7 @@ logout(mode = 'default') {
       this.successMessage = null
 
       try {
-        const res = await axios.put(`${API_URL}/auth/update-profile`, updatedData, {
+        const res = await axios.put(`${this.API_URL}/auth/update-profile`, updatedData, {
           headers: { Authorization: `Bearer ${this.token}` },
         })
 
