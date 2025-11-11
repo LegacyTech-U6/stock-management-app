@@ -2,10 +2,12 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const app = express();
+const  dotenv = require("dotenv");
 const db = require("./src/config/db");
 // 🕐 Charger le cron des rapports journaliers
 require("./src/crons/dailyReports");
 const cron = require("node-cron");
+dotenv.config();
 const { testMailjetConnection } = require("./src/config/mail.config");
 const createAllUsersView = require("./src/config/createAllUsersView");
 const purchaseRoutes = require("./src/routes/purchase.route");
@@ -98,10 +100,17 @@ app.use((req, res, next) => {
 app.use(
   cors({
     origin: process.env.FRONTEND_URL || "https://stockly-psi.vercel.app",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
 
+// Optionnel : log pour debug CORS
+app.options("*", (req, res) => {
+  console.log("Preflight OPTIONS reçu depuis:", req.headers.origin);
+  res.sendStatus(204);
+});
 app.use("/api/activities", activityRoutes);
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use("/purchase", purchaseRoutes);
