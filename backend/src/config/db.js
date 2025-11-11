@@ -1,89 +1,45 @@
-const mysql = require("mysql2");
-const dotenv = require("dotenv");
+const dns = require("dns");
+dns.setDefaultResultOrder("ipv4first");
 
-dotenv.config();
-
-// const pool = mysql
-//   .createPool({
-//     host: process.env.MYSQL_HOST,
-//     user: process.env.MYSQL_USER,
-//     password: process.env.MYSQL_PASSWORD,
-//     database: process.env.MYSQL_DATABASE,
-//     waitForConnections: true,
-//     connectionLimit: 10,
-//     queueLimit: 0,
-//   })
-//   .promise();
-
-// console.log("✅ Connecté à MySQL !");
-
-// module.exports = { pool };
-// backend/models/index.js
 const { Sequelize, DataTypes } = require("sequelize");
 require("dotenv").config();
 
-// Déterminer l'environnement actuel : development, test ou production
 const env = process.env.NODE_ENV || "development";
+console.log("Environnement courant :", env);
 
-// Configurations par environnement
-const config = {
-  development: {
-    username: process.env.MYSQL_USER_local || "root",
-    password: process.env.MYSQL_PASSWORD_local || "",
-    database: process.env.MYSQL_DATABASE_local || "dev_db",
-    host: process.env.MYSQL_HOST_local || "127.0.0.1",
-    dialect: "mysql",
-    logging: console.log,
-  },
-  test: {
-    username: process.env.MYSQL_USER_test || "root",
-    password: process.env.MYSQL_PASSWORD_test || "",
-    database: process.env.MYSQL_DATABASE_test || "test_db",
-    host: process.env.MYSQL_HOST_test || "127.0.0.1",
-    dialect: "mysql",
-    logging: false,
-  },
-  production: {
-    username: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQL_DATABASE,
-    host: process.env.MYSQL_HOST,
-    port: process.env.MYSQL_PORT || 3306,
-    dialect: "mysql",
+let sequelize;
+
+if (env === "production") {
+  // Supabase
+  sequelize = new Sequelize(process.env.DATABASE_URL, {
+    dialect: "postgres",
+    protocol: "postgres",
     logging: false,
     dialectOptions: {
-      ssl: {
-        rejectUnauthorized: false, // nécessaire pour certains providers (Railway, PlanetScale, etc.)
-      },
+      ssl: { rejectUnauthorized: false },
     },
-  },
-};
-const env1 = process.env.NODE_ENV || "development";
-console.log("Environnement courant :", env1);
+  });
+} else {
+  // Local (PostgreSQL ou MySQL)
+  sequelize = new Sequelize(
+    process.env.DB_NAME || "dev_db",
+    process.env.DB_USER || "postgres",
+    process.env.DB_PASSWORD || "",
+    {
+      host: process.env.DB_HOST || "127.0.0.1",
+      dialect: process.env.DB_DIALECT || "postgres", // ou "mysql"
+      logging: console.log,
+    }
+  );
+}
 
-const sequelize = new Sequelize(
-  process.env.MYSQL_DATABASE_local,
-  process.env.MYSQL_USER_local,
-  process.env.MYSQL_PASSWORD_local,
-  {
-    host: process.env.MYSQL_HOST_local,
-    dialect: "mysql",
-    logging: false,
-  }
-);
-// Créer la connexion Sequelize avec la config appropriée
-// const sequelize = new Sequelize(
-//   config[env].database,
-//   config[env].username,
-//   config[env].password,
-//   config[env]
-// );
-
-// Tester la connexion
 sequelize
   .authenticate()
-  .then(() => console.log(`✅ Connecté à MySQL en ${env} !`))
-  .catch((err) => console.error(`❌ Erreur de connexion à MySQL en ${env} :`, err));
+  .then(() => console.log("✅ Connexion DB réussie !"))
+  .catch(err => console.error("❌ Impossible de se connecter :", err));
+
+
+
 
 // Exporter pour utilisation dans les modèles et le serveur
 const db = {};

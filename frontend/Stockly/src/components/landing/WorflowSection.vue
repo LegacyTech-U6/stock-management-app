@@ -104,7 +104,13 @@ onMounted(() => {
 </script>
 
 <template>
-  <section ref="sectionRef" class="h-screen overflow-hidden bg-gray-500">
+  <section class="grid grid-cols-10">
+
+  
+  <section class="col-span-2">
+to bto
+  </section>
+  <section ref="sectionRef" class="h-screen col-span-8 overflow-hidden bg-gray-500">
     <div class="h-full flex items-center">
       <div
         ref="horizontalContainerRef"
@@ -177,6 +183,7 @@ onMounted(() => {
         </div>
       </div>
     </div>
+  </section>
   </section>
 </template>
 

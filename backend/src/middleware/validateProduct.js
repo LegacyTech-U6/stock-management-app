@@ -1,8 +1,6 @@
 // middlewares/validateProduct.js
 const { body, validationResult } = require('express-validator');
- console.log('===================================='),
-  console.log("validate product called"),
-  console.log('====================================');
+
 const validateProduct = [
  
   body('Prod_name')
