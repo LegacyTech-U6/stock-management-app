@@ -13,9 +13,17 @@ const JWT_SECRET = process.env.JWT_SECRET;
 // ===============================
 exports.register = async (req, res) => {
   try {
-    const { username, Last_name, email, telephone, password } = req.body;
-console.log("Payload register:", req.body);
-    // 1️⃣ Vérifier si l'email existe déjà
+    // Gérer les deux formats de payload
+    let userData = req.body;
+    
+    // Si les données sont imbriquées dans une clé 'username'
+    if (req.body.username && typeof req.body.username === 'object') {
+      userData = req.body.username;
+    }
+
+    const { username, Last_name, email, telephone, password } = userData;
+    
+    console.log("Payload register traité:", userData);
     const existing = await User.findOne({ where: { email } });
     if (existing)
       return res.status(400).json({ message: "Email déjà utilisé" });
