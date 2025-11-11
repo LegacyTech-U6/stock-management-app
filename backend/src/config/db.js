@@ -18,7 +18,7 @@ let sequelize;
       ssl: { rejectUnauthorized: false },
     },
   });
-}
+
 
 sequelize
   .authenticate()
