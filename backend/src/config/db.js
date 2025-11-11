@@ -4,12 +4,11 @@ dns.setDefaultResultOrder("ipv4first");
 const { Sequelize, DataTypes } = require("sequelize");
 require("dotenv").config();
 
-const env = process.env.NODE_ENV || "production";
-console.log("Environnement courant :", env);
+
 
 let sequelize;
 
-if (env === "production") {
+
   // Supabase
   sequelize = new Sequelize(process.env.DATABASE_URL, {
     dialect: "postgres",
@@ -19,18 +18,6 @@ if (env === "production") {
       ssl: { rejectUnauthorized: false },
     },
   });
-} else {
-  // Local (PostgreSQL ou MySQL)
-  sequelize = new Sequelize(
-    process.env.DB_NAME || "dev_db",
-    process.env.DB_USER || "postgres",
-    process.env.DB_PASSWORD || "",
-    {
-      host: process.env.DB_HOST || "127.0.0.1",
-      dialect: process.env.DB_DIALECT || "postgres", // ou "mysql"
-      logging: console.log,
-    }
-  );
 }
 
 sequelize
