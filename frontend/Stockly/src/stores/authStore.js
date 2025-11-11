@@ -3,7 +3,7 @@ import axios from 'axios'
 import router from '@/router'
 import { useEntrepriseStore } from './entrepriseStore'
 
-const API_URL = process.env.API_URL || "http://localhost:5000/api"
+const API_URL = import.meta.env.API_URL || "http://localhost:5000/api"
 
 // Définition centralisée des permissions
 const ROLE_PERMISSIONS = {
