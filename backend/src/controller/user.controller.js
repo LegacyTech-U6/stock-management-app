@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const db = require("../config/db"); // Import des modèles Sequelize
 const User = db.User;
-const sendMail = require("../utils/mailer");
+const {sendMail }= require("../utils/mailer");
 require("dotenv").config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -65,17 +65,18 @@ exports.register = async (req, res) => {
     `;
 
     // 7️⃣ Envoi du mail via Resend + logs détaillés
-    const mailResult = await sendMail({
-      userId: newUser.id, // facultatif si tu veux récupérer l'email depuis la DB
-      subject: "Activez votre compte Stockly",
-      html: htmlContent,
-      to: email, // facultatif si userId fourni
-    });
+   // 7️⃣ Envoi du mail via Mailjet
+const mailResult = await sendMail({
+  to: email,
+  subject: "Activez votre compte Stockly", 
+  html: htmlContent
+});
 
-    if (!mailResult.success) {
-      console.error("⚠️ L’email d’activation n’a pas pu être envoyé.");
-    }
+console.log("Résultat envoi mail:", mailResult);
 
+if (!mailResult.success) {
+  console.error("⚠️ L'email d'activation n'a pas pu être envoyé:", mailResult.error);
+}
     // 8️⃣ Réponse API
     res.status(201).json({
       message: "Utilisateur créé. Un email d’activation a été envoyé (voir logs pour debug).",
