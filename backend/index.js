@@ -103,11 +103,7 @@ app.use(
   })
 );
 
-// Optionnel : log pour debug CORS
-app.options("*", (req, res) => {
-  console.log("Preflight OPTIONS reçu depuis:", req.headers.origin);
-  res.sendStatus(204);
-});
+
 app.use("/api/activities", activityRoutes);
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use("/purchase", purchaseRoutes);

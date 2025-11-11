@@ -3,7 +3,7 @@ import { ArrowRight } from 'lucide-vue-next'
 </script>
 
 <template>
-  <section class="py-32 h-screen p-40 px-6 bg-white">
+  <section class="py-32 h-screen p-40 px-6 bg-gradient-to-br from-green-50 to-white">
     <div class="p-2">
       <img src="@/assets/image/image (9).png" alt="" />
     </div>

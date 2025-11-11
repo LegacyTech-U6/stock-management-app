@@ -1,23 +1,53 @@
 <template>
- <section class=" flex justify-center items-center h-100">
-  <div class=" grid lg:grid-cols-2 max-w-6xl items-center space-y-4 justify-center " >
-    <div class="hidden lg:block">
-      <p>this will be the image section</p>
-    </div>
-    <div class="p-2 space-y-3">
-      <h1 class="text-4xl max-w-xl ">
-        Serve your <span>customer</span> as they deserve
-      </h1>
-      <p>When stockly fulfils a missing item on your store a commande is automatically generated and send to the supplier
-        this ensure the continue movement of your store with no interuption due to shortage
-      </p>
-      <button class="bg-white border border-green-300 p-3 rounded-xl hover:bg-green-300 hover:text-white transition-all  duration-50ms ease-in"> Serve your Customer</button>
-    </div>
-  </div>
- </section>
+  <section class="flex justify-center items-center min-h-screen bg-gradient-to-br from-green-50 to-white px-6 py-12">
+    <div class="grid lg:grid-cols-2 gap-10 max-w-6xl w-full items-center">
+      
+      <!-- 🖼️ Section image -->
+      <div class="hidden lg:flex justify-center">
+        
+      </div>
 
+      <!-- 📝 Section texte -->
+      <div class="space-y-6">
+        <h1 class="text-5xl font-extrabold text-gray-800 leading-tight">
+          Serve your <span class="text-green-600">customers</span> as they deserve
+        </h1>
+
+        <p class="text-gray-600 text-lg leading-relaxed">
+          When <strong>Stockly</strong> detects a missing item in your inventory, 
+          a new order is automatically generated and sent to your supplier.
+          <br />
+          This ensures smooth store operations and prevents interruptions caused by shortages.
+        </p>
+
+        <div class="pt-4">
+          <button
+            class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out"
+          >
+             Serve your Customers
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
 </template>
+
 <script setup>
-
-
+// No logic for now, purely visual
 </script>
+
+<style scoped>
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fadeInUp {
+  animation: fadeInUp 1s ease-out;
+}
+</style>
