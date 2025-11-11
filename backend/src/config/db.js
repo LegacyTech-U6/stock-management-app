@@ -4,7 +4,7 @@ dns.setDefaultResultOrder("ipv4first");
 const { Sequelize, DataTypes } = require("sequelize");
 require("dotenv").config();
 
-const env = process.env.NODE_ENV || "development";
+const env = process.env.NODE_ENV || "production";
 console.log("Environnement courant :", env);
 
 let sequelize;
