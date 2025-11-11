@@ -1,4 +1,4 @@
-const db = require('../config/db');
+const db = require('../config/db'); // ton instance Sequelize
 
 async function createAllUsersView() {
   try {
@@ -10,7 +10,7 @@ async function createAllUsersView() {
       SELECT id, email, password_hash, 'worker' AS type
       FROM "Workers";
     `);
-    console.log("✅ Vue all_users créée ou mise à jour");
+    console.log("✅ Vue all_users créée ou mise à jour sans SECURITY DEFINER");
   } catch (err) {
     console.error("❌ Erreur création vue all_users:", err);
   }
