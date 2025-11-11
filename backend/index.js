@@ -98,7 +98,7 @@ app.use((req, res, next) => {
 });
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "https://stockly-psi.vercel.app",
+    origin: "http://localhost:5175",
     credentials: true,
   })
 );

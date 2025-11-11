@@ -48,7 +48,7 @@ export const useAuthStore = defineStore('auth', {
     isLoading: false,
     error: null,
     successMessage: null,
-     API_URL : "http://localhost:5175"
+     API_URL : import.meta.env.API_URL || "https://stock-management-app-jq0h.onrender.com/api"
   }),
   
 
