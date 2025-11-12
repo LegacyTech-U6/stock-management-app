@@ -2,7 +2,7 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  const Client = sequelize.define('Client', {
+  const Client = sequelize.define('Clients', {
     client_name: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -28,7 +28,7 @@ module.exports = (sequelize) => {
       type:DataTypes.STRING,
       allowNull: true,
     },
-    tableName: 'Client',   // 👈 Forcer la majuscule dans la BDD
+    tableName: 'Clients',   // 👈 Forcer la majuscule dans la BDD
     freezeTableName: true,   // 👈 Empêche Sequelize de changer le nom automatiquement
     timestamps: true,        // 👈 Active createdAt / updatedAt
   });
