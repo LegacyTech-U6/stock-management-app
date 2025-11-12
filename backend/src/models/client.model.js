@@ -35,5 +35,5 @@ module.exports = (sequelize) => {
   });
 
 
-  return Clients;
+  return Client;
 };
