@@ -11,6 +11,10 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+  },{
+    tableName: 'StockMovement',   // 👈 Forcer la majuscule dans la BDD
+    freezeTableName: true,   // 👈 Empêche Sequelize de changer le nom automatiquement
+    timestamps: true,        // 👈 Active createdAt / updatedAt
   });
 
   

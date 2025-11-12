@@ -27,7 +27,10 @@ module.exports = (sequelize) => {
     image:{
       type:DataTypes.STRING,
       allowNull: true,
-    }
+    },
+    tableName: 'Client',   // 👈 Forcer la majuscule dans la BDD
+    freezeTableName: true,   // 👈 Empêche Sequelize de changer le nom automatiquement
+    timestamps: true,        // 👈 Active createdAt / updatedAt
   });
 
 

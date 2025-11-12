@@ -27,7 +27,8 @@ module.exports = (sequelize) => {
       phone_number: DataTypes.STRING,
       address: DataTypes.STRING,
     },
-    {
+    { 
+      tableName: 'Worker',   // 👈 Forcer la majuscule dans la BDD
       timestamps: true,
       createdAt: "created_at",
     }

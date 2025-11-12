@@ -18,7 +18,12 @@ module.exports = (sequelize) => {
       type: DataTypes.TEXT,
       allowNull: true,
     },
+  },{
+    tableName: 'Purchase',   // 👈 Forcer la majuscule dans la BDD
+    freezeTableName: true,   // 👈 Empêche Sequelize de changer le nom automatiquement
+    timestamps: true,        // 👈 Active createdAt / updatedAt
   });
+  
 
   return Purchase;
 };

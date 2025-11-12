@@ -15,6 +15,10 @@ module.exports = (sequelize) => {
       type: DataTypes.ENUM('email', 'whatsapp', 'phone'),
       defaultValue: 'email',
     },
+  },  {
+    tableName: 'Supplier',   // 👈 Forcer la majuscule dans la BDD
+    freezeTableName: true,   // 👈 Empêche Sequelize de changer le nom automatiquement
+    timestamps: true,        // 👈 Active createdAt / updatedAt
   });
 
 

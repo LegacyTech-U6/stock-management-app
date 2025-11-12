@@ -28,6 +28,10 @@ module.exports = (sequelize) => {
         return (q * u * (1 + t / 100)) - d;
       },
     },
+  },{
+    tableName: 'PurchaseItem',   // 👈 Forcer la majuscule dans la BDD
+    freezeTableName: true,   // 👈 Empêche Sequelize de changer le nom automatiquement
+    timestamps: true,        // 👈 Active createdAt / updatedAt
   });
 
   return PurchaseItem;
