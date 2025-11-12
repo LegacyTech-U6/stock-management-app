@@ -11,7 +11,7 @@ module.exports = (sequelize) => {
       defaultValue: 'espece',
     },
     total: {
-      type: DataTypes.INTEGER,
+     type: DataTypes.DECIMAL(10, 3), // ✅ pour 2 chiffres après la virgule
       allowNull: false,
     },
     notes: {

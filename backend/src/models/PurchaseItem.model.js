@@ -7,7 +7,7 @@ module.exports = (sequelize) => {
       allowNull: false,
     },
     unit_cost: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DECIMAL(10, 3), // ✅ pour 2 chiffres après la virgule
       allowNull: false,
     },
     tva: {

@@ -15,10 +15,12 @@ module.exports = (sequelize) => {
       defaultValue: 0,
     },
     cost_price: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DECIMAL(10, 3), // ✅ pour 2 chiffres après la virgule
+      allowNull: false,
     },
     selling_price: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DECIMAL(10, 3), // ✅ idem ici
+      allowNull: false,
     },
     Prod_Description: {
       type: DataTypes.TEXT,
