@@ -21,19 +21,16 @@ exports.getAllCategories = async (req, res) => {
         include: [
           [
             db.sequelize.literal(`(
-          SELECT COUNT(*)
-          FROM Products AS p
-          WHERE p.category_id = Category.id
-        )`),
+              SELECT COUNT(*)
+              FROM "Products" AS p
+              WHERE p.category_id = "Category".id
+            )`),
             "productCount",
           ],
         ],
       },
       ...query,
     });
-    
-
-    
 
     const count = await Category.count({
       where: query.where,
@@ -47,7 +44,7 @@ exports.getAllCategories = async (req, res) => {
 };
 
 // 🔹 Récupérer une catégorie par ID
-(exports.getCategoryById = async (req, res) => {
+exports.getCategoryById = async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -73,7 +70,8 @@ exports.getAllCategories = async (req, res) => {
     console.error(err);
     res.status(500).json({ message: err.message });
   }
-}),
+};
+
 // 🔹 Créer une catégorie
 exports.createCategory = async (req, res) => {
   try {
@@ -128,7 +126,7 @@ exports.updateCategory = async (req, res) => {
     // ✅ Envoyer notification
     await sendNotification({
       type: 'category',
-      message: `Catégory updated : ${name}`,
+      message: `Category updated : ${name}`,
       user_id: req.user?.id,
     });
 
@@ -153,7 +151,7 @@ exports.deleteCategory = async (req, res) => {
     // ✅ Envoyer notification
     await sendNotification({
       type: 'category',
-      message: `Catégory deleted (ID: ${id})`,
+      message: `Category deleted (ID: ${id})`,
       user_id: req.user?.id,
     });
 
