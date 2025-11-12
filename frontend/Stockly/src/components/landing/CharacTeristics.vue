@@ -1,15 +1,6 @@
 <template>
   <section class="relative flex justify-center items-center max-h-150 px-6 py-12 overflow-hidden">
-    <!-- Background avec formes géométriques colorées -->
-    <div class="absolute inset-0 z-10">
-      <!-- Fond de base -->
-      <div class="absolute inset-0 bg-gradient-to-br from-green-50 via-white h-20 to-blue-500"></div>
-      <div class="absolute inset-0 top-20 bg-gradient-to-tr from-green-50 via-white h-20 to-blue-500"></div>
-<div class="bg"></div>
-      
-      <!-- Formes géométriques colorées -->
-    </div>
-
+ 
     <div class="grid lg:grid-cols-2 gap-10 max-w-6xl w-full items-center relative z-10">
       <!-- 🖼️ Section image -->
       <div class="hidden lg:flex justify-center">
@@ -19,7 +10,7 @@
       <!-- 📝 Section texte -->
       <div class="space-y-6 animate-fadeInUp">
         <h1 class="text-5xl font-extrabold text-gray-800 leading-tight">
-          INCLUDED <span class="text-green-600">CAPABILITIES</span>
+          Included <span class="text-green-600">Capabilities</span>
         </h1>
 
         <p class="text-gray-600 text-lg leading-relaxed">

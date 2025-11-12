@@ -165,10 +165,12 @@ const handleLeave = (element: HTMLElement) => {
 </script>
 
 <template>
+
   <section
   ref="sectionRef"
   class="pt-32 grid grid-cols-1 lg:grid-cols-4 overflow-hidden bg-cover bg-center"
   >
+  
     <div class="lg:grid lg:gap-6 items-center p-4">
       <!-- Image: visible on large screens only -->
       <div class="hidden w-full lg:block">
@@ -178,14 +180,24 @@ const handleLeave = (element: HTMLElement) => {
       <!-- Content: always visible -->
     </div>
     <div class="max-w-6xl mx-auto col-span-1 lg:col-span-3 px-6">
-      <div class="max-w-2xl mb-20">
-        <h2 ref="headerRef" class="text-4xl md:text-5xl font-light text-gray-900 mb-6">
-          Everything You Need
-        </h2>
-        <p ref="subtitleRef" class="text-lg text-gray-600 font-light leading-relaxed">
-          A complete solution to digitize and automate all your business processes.
-        </p>
-      </div>
+    <div class="max-w-2xl mb-20 relative">
+    <h2 ref="headerRef" class="text-4xl md:text-5xl font-light text-gray-900 mb-6 inline-block relative">
+      Everything You Need
+      <!-- Thick brush stroke underline -->
+      <svg class="absolute -bottom-3 left-0 w-full h-10" viewBox="0 0 300 40" xmlns="http://www.w3.org/2000/svg">
+        <path 
+          d="M0 20 C30 35, 60 5, 90 25 C120 40, 150 10, 180 30 C210 40, 240 15, 270 25 C300 20, 300 20, 300 20" 
+          stroke="#10B981" 
+          stroke-width="8" 
+          fill="none" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"/>
+      </svg>
+    </h2>
+    <p ref="subtitleRef" class="text-lg text-gray-600 font-light leading-relaxed">
+      A complete solution to digitize and automate all your business processes.
+    </p>
+  </div>
 
       <div class="features-grid grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-gray-200">
         <div
@@ -193,7 +205,7 @@ const handleLeave = (element: HTMLElement) => {
           :key="feature.title"
           @mouseenter="(e) => handleHover(index, e.currentTarget as HTMLElement)"
           @mouseleave="(e) => handleLeave(e.currentTarget as HTMLElement)"
-          class="feature-card bg-white p-10 transition-colors hover:bg-gray-900 hover:text-white group cursor-pointer relative overflow-hidden"
+          class="feature-card bg-white p-10 transition-colors hover:bg-green-600 hover:text-white group cursor-pointer relative overflow-hidden"
         >
           <!-- Background pulse effect on hover -->
           <div

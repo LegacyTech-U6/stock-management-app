@@ -185,7 +185,7 @@ const setupMobileAnimations = () => {
 <template>
   <section 
     ref="sectionRef" 
-    class="workflow-section lg:pl-50 item-center flex justify-center relative min-h-screen bg-gradient-to-br from-green-50 to-white"
+    class="workflow-section lg:pl-50 item-center flex justify-center relative min-h-screen "
   >
     <!-- Desktop Layout -->
     <div v-if="!isMobile" class="grid grid-cols-12 h-screen max-w-7.5xl">
@@ -264,8 +264,8 @@ const setupMobileAnimations = () => {
             <div class="flex items-start gap-6">
               <!-- Icône et connecteur -->
               <div class="flex flex-col items-center pt-2">
-                <div class="step-icon relative w-20 h-20 bg-gradient-to-br from-green-300 to-green-400 rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-500/50">
-                  <div class="absolute -top-2 -right-2 w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center text-slate-900 font-bold text-sm shadow-lg">
+                <div class="step-icon relative w-20 h-20 bg-green-800 rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-500/50">
+                  <div class="absolute -top-2 -right-2 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg">
                     {{ index + 1 }}
                   </div>
                   <component :is="step.icon" :size="32" :stroke-width="2" class="text-white" />
@@ -312,7 +312,7 @@ const setupMobileAnimations = () => {
       <div class="w-full mx-auto space-y-12">
         <!-- Header mobile -->
         <div class="text-center mb-16">
-          <h2 class="text-3xl font-bold text-white mb-4">Processus Stockly</h2>
+          <h2 class="text-3xl font-bold text-black mb-4">Processus Stockly</h2>
           <p class="text-gray-400 text-lg">
             De la sélection du produit à la mise à jour du stock, tout est automatisé.
           </p>
