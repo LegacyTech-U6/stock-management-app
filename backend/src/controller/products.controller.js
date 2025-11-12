@@ -92,13 +92,23 @@ exports.getProductById = async (req, res) => {
 
 
 // ===============================
-// 🔹 Create a product (with image)
+// 🔹 Create a product (with image & category check)
 // ===============================
 exports.createProduct = async (req, res) => {
   try {
     const entreprise_id = req.entrepriseId;
+    const { category_id } = req.body;
 
-    // ✅ If an image was uploaded, generate public URL
+    // 🔹 Vérifier que la catégorie existe pour cette entreprise
+    const category = await Product.sequelize.models.Categories.findOne({
+      where: { id: category_id, entreprise_id },
+    });
+
+    if (!category) {
+      return res.status(400).json({ message: "La catégorie n'existe pas pour cette entreprise." });
+    }
+
+    // ✅ Si une image est uploadée, générer l'URL publique
     let imagePath = null;
     if (req.file) {
       imagePath = `/uploads/${req.file.filename}`;
