@@ -17,11 +17,11 @@ module.exports = (sequelize) => {
         defaultValue: 0,
       },
       selling_price: {
-        type: DataTypes.FLOAT, // ✅ ou DECIMAL(10,2)
+        type: DataTypes.FLOAT, 
         allowNull: false,
       },
       cost_price: {
-        type: DataTypes.FLOAT, // ✅
+        type: DataTypes.FLOAT, 
         allowNull: false,
       },
 
