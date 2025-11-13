@@ -241,17 +241,29 @@
 import { computed } from 'vue'
 import {
   Chart as ChartJS,
-  Title,
-  Tooltip,
-  Legend,
   ArcElement,
+  BarElement,
+  BarController,
   CategoryScale,
   LinearScale,
-  BarElement,
-} from 'chart.js'
+  Tooltip,
+  Legend,
+  Title,
+} from 'chart.js';
+
+ChartJS.register(
+  ArcElement,        // pour les pie/doughnut
+  BarElement,        // pour les barres
+  BarController,     // pour le type 'bar'
+  CategoryScale,     // axe X
+  LinearScale,       // axe Y
+  Tooltip,
+  Legend,
+  Title
+);
+
 import { Chart } from 'vue-chartjs'
 
-ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale, BarElement)
 
 const props = defineProps({
   report: { type: Object, required: true },
