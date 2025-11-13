@@ -1,6 +1,8 @@
-const { getIo } = require("../config/socket"); // make sure you export io from server.js
+// src/notifications/notification.js
+const { getIo } = require("../config/socket");
 const db = require("../config/db");
 const Notification = db.Notification;
+
 /**
  * Send a notification to all connected clients
  * and optionally save it in the DB.
@@ -22,8 +24,8 @@ async function sendNotification({
       });
     }
 
-    // 2️⃣ Emit via Socket.io
-    getIo.emit("new-notification", {
+    // 2️⃣ Emit via Socket.io (✅ ici on appelle la fonction getIo())
+    getIo().emit("new-notification", {
       id: notificationRecord?.id,
       type,
       message,
