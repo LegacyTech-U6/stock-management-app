@@ -16,7 +16,7 @@
         <p class="text-gray-600 text-lg leading-relaxed">
           <strong>Features designed for you</strong>
           <br />
-          When <strong>Stockly</strong> detects a missing item in your inventory, 
+          When <strong>Iventello</strong> detects a missing item in your inventory, 
           a new order is automatically generated and sent to your supplier.
           This ensures smooth store operations and prevents interruptions caused by shortages.
         </p>

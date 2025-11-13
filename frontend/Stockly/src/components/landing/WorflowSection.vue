@@ -312,7 +312,7 @@ const setupMobileAnimations = () => {
       <div class="w-full mx-auto space-y-12">
         <!-- Header mobile -->
         <div class="text-center mb-16">
-          <h2 class="text-3xl font-bold text-black mb-4">Processus Stockly</h2>
+          <h2 class="text-3xl font-bold text-black mb-4">Processus Iventello</h2>
           <p class="text-gray-400 text-lg">
             De la sélection du produit à la mise à jour du stock, tout est automatisé.
           </p>

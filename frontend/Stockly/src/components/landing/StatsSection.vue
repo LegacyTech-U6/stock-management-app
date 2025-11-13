@@ -75,7 +75,7 @@ onMounted(() => {
           Des résultats mesurables
         </h2>
         <p class="text-lg text-indigo-200 font-light">
-          Rejoignez les entreprises qui ont transformé leur gestion avec Stockly
+          Rejoignez les entreprises qui ont transformé leur gestion avec Inventello
         </p>
       </div>
 

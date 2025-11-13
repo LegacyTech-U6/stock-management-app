@@ -151,7 +151,7 @@
           <span class="text-sm text-gray-600 ml-4">Entries</span>
         </div>
 
-        <div class="text-sm text-gray-500">2025 © Stockly. All Right Reserved</div>
+        <div class="text-sm text-gray-500">2025 © Iventello. All Right Reserved</div>
 
         <div class="flex items-center gap-2">
           <button @click="prevPage" :disabled="currentPage === 1"

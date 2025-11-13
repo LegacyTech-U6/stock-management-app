@@ -5,7 +5,7 @@
       class="hidden lg:flex lg:flex-1 flex-col lg:items-center lg:justify-center bg-gradient-to-br from-primary/10 to-accent/10"
     >
       <div class="max-w-md text-center space-y-6 p-8">
-        <h1 class="text-4xl font-bold text-gray-900">Join Stockly</h1>
+        <h1 class="text-4xl font-bold text-gray-900">Join Iventello</h1>
         <p class="text-lg text-gray-600">Manage your inventory and sales like never before</p>
       </div>
 
@@ -57,14 +57,14 @@
 
         <!-- Branding -->
         <div class="hidden lg:block text-center space-y-2">
-          <h1 class="text-3xl font-bold text-primary">Stockly</h1>
+          <h1 class="text-3xl font-bold text-primary">Iventello</h1>
           <h1 class="text-3xl font-bold text-gray-900">Create Account</h1>
           <p class="text-gray-600 text-sm">Start your free trial today</p>
         </div>
 
         <!-- Mobile Branding -->
         <div class="lg:hidden space-y-1 mb-4">
-          <h1 class="text-2xl font-bold text-primary">Stockly</h1>
+          <h1 class="text-2xl font-bold text-primary">Iventello</h1>
           <h1 class="text-2xl font-bold text-gray-900">Create Account</h1>
           <p class="text-gray-600 text-xs">Start your free trial today</p>
         </div>

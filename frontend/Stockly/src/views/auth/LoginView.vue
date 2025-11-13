@@ -10,13 +10,13 @@
     >
       <!-- Login Content -->
       <div v-if="isLogin" class="text-center space-y-4">
-        <h1 class="text-4xl font-bold text-gray-900">Welcome Back to Stockly</h1>
+        <h1 class="text-4xl font-bold text-gray-900">Welcome Back to Iventello</h1>
         <p class="text-lg text-gray-600">Your Inventory Management Solution</p>
       </div>
 
       <!-- Register Content -->
       <div v-else class="text-center space-y-4">
-        <h1 class="text-4xl font-bold text-gray-900">Join Stockly</h1>
+        <h1 class="text-4xl font-bold text-gray-900">Join Iventello</h1>
         <p class="text-lg text-gray-600">Manage your inventory and sales like never before</p>
       </div>
 
@@ -75,7 +75,7 @@
 
         <!-- Dynamic Branding -->
         <div class="hidden lg:block text-center space-y-2">
-          <h1 class="text-3xl font-bold text-indigo-600">Stockly</h1>
+          <h1 class="text-3xl font-bold text-indigo-600">Iventello</h1>
           <h1 class="text-3xl font-bold text-gray-900">
             {{ isLogin ? 'Welcome Back' : 'Create Account' }}
           </h1>
@@ -86,7 +86,7 @@
 
         <!-- Mobile Branding -->
         <div class="lg:hidden space-y-1 mb-4">
-          <h1 class="text-2xl font-bold text-indigo-600">Stockly</h1>
+          <h1 class="text-2xl font-bold text-indigo-600">Iventello</h1>
           <h1 class="text-2xl font-bold text-gray-900">
             {{ isLogin ? 'Welcome Back' : 'Create Account' }}
           </h1>
@@ -787,7 +787,7 @@ console.log(registerData.value);
 
 // Demo account login
 const useDemoAccount = () => {
-  loginData.value.email = 'demo@stockly.com'
+  loginData.value.email = 'demo@Iventello.com'
   loginData.value.password = 'demo123'
   handleLogin()
 }

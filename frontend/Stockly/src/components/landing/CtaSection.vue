@@ -11,7 +11,7 @@ import bgImg from '@/assets/image/bg.jpeg'
           Ready to transform your inventory management?
         </h2>
         <p class="text-xl text-gray-400 font-light max-w-2xl mx-auto">
-          Join hundreds of companies who have modernized their management with Stockly.
+          Join hundreds of companies who have modernized their management with Iventello.
         </p>
       </div>
 
@@ -27,14 +27,14 @@ import bgImg from '@/assets/image/bg.jpeg'
       </div>
 
       <p class="text-sm text-gray-500 font-light">
-        Questions? Contact us at support@stockly.com
+        Questions? Contact us at support@Iventello.com
       </p>
     </div>
 
     <div class="max-w-7xl mx-auto h-60 flex items-center justify-center px-6 py-3">
       <div class="lg:grid grid-cols-1 w-full lg:space-y-1 space-y-5 gap-5">
         <div class="justify-start">
-          <div class="font-bold text-lg">StockLy</div>
+          <div class="font-bold text-lg">Iventello</div>
           <p class="text-sm text-white">
             Modern stock management platform designed for growing businesses.
           </p>
@@ -42,7 +42,7 @@ import bgImg from '@/assets/image/bg.jpeg'
         <div class="flex justify-between text-sm text-gray-600">
           <div>
             <i class="fa fa-copyright"></i>
-            2025 Stockly. All rights reserved
+            2025 Iventello. All rights reserved
           </div>
         </div>
       </div>

@@ -38,7 +38,7 @@ const navItems = ['Features', 'Tarifs', 'Documentation']
         <div class="w-8 h-8 bg-gray-900 flex items-center justify-center text-white text-sm font-medium rounded">
           S
         </div>
-        <span class="text-lg font-semibold tracking-tight">Stockly</span>
+        <span class="text-lg font-semibold tracking-tight">Iventello</span>
       </div>
 
       <!-- Navigation Desktop -->
