@@ -8,7 +8,7 @@ async function createAllUsersView() {
       FROM "Users"
       UNION ALL
       SELECT id, email, password_hash, 'worker' AS type
-      FROM "Workers";
+      FROM "Worker";
     `);
     console.log("✅ Vue all_users créée ou mise à jour sans SECURITY DEFINER");
   } catch (err) {
