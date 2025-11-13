@@ -18,7 +18,7 @@
           <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-sm">
             <span class="text-white font-bold text-sm">I</span>
           </div>
-          <h1 class="font-semibold text-gray-900">Inventelo</h1>
+          <h1 class="font-semibold text-gray-900">Iventelo</h1>
         </div>
 
         <!-- Notification Button -->
@@ -63,7 +63,7 @@
               <span class="text-white font-bold">I</span>
             </div>
             <div>
-              <h1 class="font-semibold text-gray-900 text-lg tracking-tight">Inventelo</h1>
+              <h1 class="font-semibold text-gray-900 text-lg tracking-tight">Iventelo</h1>
               <p class="text-xs text-gray-500">Gestion d'inventaire</p>
             </div>
           </div>
@@ -324,7 +324,7 @@ const pageTitle = computed(() => {
     lowStock: 'Stock faible',
     AuditTrail: 'Audit Trail'
   }
-  return titles[routeName] || 'Inventelo'
+  return titles[routeName] || 'Iventelo'
 })
 
 // Dynamic routes
