@@ -13,7 +13,7 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING, // 'admin' ou 'worker'
     },
     {
-      tableName: "all_users",
+      tableName: "AllUser", // 👈 Forcer la majuscule dans la BDD
       timestamps: false,
       freezeTableName: true,
     }
