@@ -17,7 +17,7 @@ module.exports = (sequelize)=>{
 
         },
         total:{
-            type:DataTypes.INTEGER,
+            type:DataTypes.FLOAT,
             allowNull:false
         },
         reduction_type:{
@@ -25,17 +25,17 @@ module.exports = (sequelize)=>{
             defaultValue:'percentage'
         },
         discount:{
-            type:DataTypes.INTEGER,
+            type:DataTypes.FLOAT,
             allowNull:true,
             defaultValue:0
         },
         tax:{
-            type:DataTypes.INTEGER,
+            type:DataTypes.FLOAT,
             allowNull:true,
             defaultValue:0
         },
         general_total:{
-             type:DataTypes.INTEGER,
+             type:DataTypes.FLOAT,
             allowNull:false
         },
         notes:{
