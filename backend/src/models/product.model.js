@@ -44,12 +44,6 @@ module.exports = (sequelize) => {
       max_stock_level: {
         type: DataTypes.INTEGER,
       },
-      entreprise_id: {
-        type: DataTypes.UUID,
-      },
-      category_id: {
-        type: DataTypes.UUID,
-      },
     },
     {
       tableName: "Products", // 👈 Forcer la majuscule dans la BDD
