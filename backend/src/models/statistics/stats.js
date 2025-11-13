@@ -241,7 +241,7 @@ async function getRevenueByCategory({ userId, enterpriseId, period = 'month' }) 
         COUNT(DISTINCT p.id) AS product_count
       FROM "Products" p
       LEFT JOIN "Sales" s ON p.id = s.product_id
-      LEFT JOIN "Categories" c ON p.category_id = c.id
+      LEFT JOIN "Category" c ON p.category_id = c.id
       WHERE p.entreprise_id IN (:entrepriseIds)
         AND (s.sale_date BETWEEN :start AND :end OR s.sale_date IS NULL)
       GROUP BY c.name
