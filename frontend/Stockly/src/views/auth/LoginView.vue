@@ -32,10 +32,10 @@
       </div>
 
       <div class="space-y-2 text-center max-w-sm">
-        <h2 class="text-2xl font-bold text-indigo-600">
+        <h2 class="text-2xl font-bold text-green-600">
           {{ isLogin ? 'Manage with Confidence' : 'Professional Stock Management' }}
         </h2>
-        <p class="text-gray-600">
+        <p class="text-blue-400">
           {{
             isLogin
               ? 'Track inventory, manage clients, and generate professional invoices all in one place. Built for modern businesses.'
