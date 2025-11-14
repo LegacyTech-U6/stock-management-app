@@ -2,14 +2,15 @@
 import { ref, onMounted } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import il3Image from '@/assets/image/il-3.png'
 
 gsap.registerPlugin(ScrollTrigger)
 
 const stats = [
-  { value: '40%', label: 'Réduction des coûts de stockage' },
-  { value: '3x', label: 'Traitement des commandes plus rapide' },
-  { value: '99.9%', label: 'Disponibilité garantie' },
-  { value: '24/7', label: 'Mises à jour en temps réel' },
+  { value: '40%', label: 'Reduction of storage costs' },
+  { value: '3x', label: 'Faster order processing' },
+  { value: '99.9%', label: 'Guaranteed availability' },
+  { value: '24/7', label: 'Real-time updates' },
 ]
 
 const sectionRef = ref<HTMLElement | null>(null)
@@ -27,7 +28,6 @@ onMounted(() => {
 
     gsap.to(statsGridRef.value, {
       x: () => (isMobile.value ? 0 : -gridWidth),
-      y: () => (isMobile.value ? -gridWidth : 0),
       ease: 'none',
       scrollTrigger: {
         trigger: sectionRef.value,
@@ -59,43 +59,38 @@ onMounted(() => {
 </script>
 
 <template>
-  <section
-    ref="sectionRef"
-    class="relative py-32 px-6 overflow-hidden"
-    style="background: radial-gradient(circle, #1e3a8a 0%, #0f172a 100%);"
-  >
-    <!-- Background étoilé -->
-    <div class="absolute inset-0">
-      <div class="star" v-for="n in 30" :key="n"></div>
-    </div>
-
-    <div class="relative max-w-6xl mx-auto">
-      <div class="max-w-2xl mb-20 text-center mx-auto z-10 relative">
-        <h2 class="text-4xl md:text-5xl font-light text-white mb-6">
-          Des résultats mesurables
-        </h2>
-        <p class="text-lg text-indigo-200 font-light">
-          Rejoignez les entreprises qui ont transformé leur gestion avec Iventello
-        </p>
+  <section ref="sectionRef" class="relative py-20 px-6 bg-[#0C333B] h-2/3 overflow-hidden">
+    <div class="relative max-w-7xl mx-auto z-10 flex flex-col md:flex-row items-center gap-16">
+      <div class="flex-none relative md:w-1/2 lg:w-1/5">
+        <img :src="il3Image" alt="decorative"
+          class="w-full h-auto object-contain scale-[1.1] relative -translate-x-8 md:-translate-x-16" />
       </div>
+      <!-- Texte principal + stats -->
+      <div class="flex-1 text-white relative z-10">
+        <h2 class="text-3xl sm:text-4xl text-white md:text-5xl font-light mb-4 sm:mb-6">
+          Measurable <span class="text-green-500 font-semibold">Results</span>
+        </h2>
+        <p class="text-base sm:text-lg md:text-xl font-light mb-8 sm:mb-12">
+          Join the companies that have <span class="text-green-500 font-medium">transformed</span> their management with
+          <span class="text-green-500 font-semibold">Iventello</span>
+        </p>
 
-      <div
-        ref="statsGridRef"
-        class="flex gap-6 pb-8 z-10 relative"
-        :class="{'flex-col': isMobile, 'flex-row': !isMobile}"
-        style="width: max-content"
-      >
-        <div
-          v-for="stat in stats"
-          :key="stat.label"
-          class="bg-white/20 backdrop-blur-md p-12 text-center min-w-80 flex-shrink-0 rounded-xl shadow-lg border border-white/30"
-        >
-          <div class="stat-value text-5xl font-extrabold text-white mb-3">
-            {{ stat.value }}
+        <!-- Stats sur une seule ligne -->
+        <div ref="statsGridRef" class="flex flex-row gap-3 sm:gap-4 overflow-x-auto pb-3 sm:pb-4">
+          <div v-for="stat in stats" :key="stat.label"
+            class="bg-gray-50 p-4 sm:p-6 text-center flex-shrink-0 rounded-xl shadow border border-gray-200 min-w-[110px] sm:min-w-[140px]">
+            <div class="stat-value text-2xl sm:text-3xl md:text-4xl font-light mb-1 text-green-500">
+              {{ stat.value }}
+            </div>
+            <div class="text-xs sm:text-sm font-light text-gray-700">{{ stat.label }}</div>
           </div>
-          <div class="text-sm text-white/80 font-light">{{ stat.label }}</div>
         </div>
       </div>
+
+
+      <!-- Image décorative agrandie -->
+
+
     </div>
   </section>
 </template>
@@ -103,29 +98,5 @@ onMounted(() => {
 <style scoped>
 .stat-value {
   will-change: transform;
-}
-
-/* Etoiles dans le background */
-.star {
-  position: absolute;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: linear-gradient(45deg, #3b82f6, #f59e0b);
-  animation: twinkle 3s infinite alternate;
-  top: calc(var(--random-top) * 1%);
-  left: calc(var(--random-left) * 1%);
-  opacity: 0.8;
-}
-
-.star:nth-child(1) { --random-top: 10; --random-left: 5; }
-.star:nth-child(2) { --random-top: 20; --random-left: 80; }
-.star:nth-child(3) { --random-top: 50; --random-left: 40; }
-/* ... répéter pour tous les 30 éléments ou générer dynamiquement */
-
-@keyframes twinkle {
-  0% { transform: scale(0.5); opacity: 0.4; }
-  50% { transform: scale(1.2); opacity: 1; }
-  100% { transform: scale(0.7); opacity: 0.6; }
 }
 </style>

@@ -3,6 +3,9 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Scan, Calculator, FileCheck, Database, CheckCircle } from 'lucide-vue-next'
+import img49 from '@/assets/image/49.png'
+import imgD8 from '@/assets/image/d8.png'
+import imgIl1 from '@/assets/image/il-1.png'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -33,15 +36,13 @@ const steps = [
   },
 ]
 
-const sectionRef = ref(null)
-const horizontalContainerRef = ref(null)
-const leftContentRef = ref(null)
+const sectionRef = ref<HTMLElement | null>(null)
+const horizontalContainerRef = ref<HTMLElement | null>(null)
+const leftContentRef = ref<HTMLElement | null>(null)
 const activeStepIndex = ref(0)
 const isMobile = ref(false)
 
-const checkMobile = () => {
-  isMobile.value = window.innerWidth < 768
-}
+const checkMobile = () => isMobile.value = window.innerWidth < 768
 
 onMounted(() => {
   checkMobile()
@@ -63,55 +64,22 @@ const setupDesktopAnimations = () => {
   const horizontalSection = horizontalContainerRef.value
   if (!horizontalSection) return
 
-  // Ajouter plus d'espace pour que le dernier élément arrive au milieu
-  const extraScroll = window.innerWidth * 0.4
+  const extraScroll = window.innerWidth * 0.3
   const scrollDistance = horizontalSection.scrollWidth - horizontalSection.parentElement.clientWidth + extraScroll
 
-  // Animation de scroll horizontal
-  const mainTimeline = gsap.timeline({
+  gsap.to(horizontalSection, {
+    x: () => -scrollDistance,
+    ease: 'none',
     scrollTrigger: {
       trigger: sectionRef.value,
       start: 'top top',
       end: `+=${scrollDistance}`,
-      scrub: 0.5, // Réduit pour plus de fluidité
+      scrub: 0.5,
       pin: true,
       anticipatePin: 1,
-      invalidateOnRefresh: true,
-      onUpdate: (self) => {
-        // Calculer l'étape active basée sur la progression avec interpolation fluide
-        const progress = self.progress
-        const exactStep = progress * (steps.length - 1)
-        const stepIndex = Math.round(exactStep)
-        
-        if (activeStepIndex.value !== stepIndex) {
-          activeStepIndex.value = stepIndex
-        }
-      },
     },
   })
 
-  mainTimeline.to(horizontalSection, {
-    x: () => -(horizontalSection.scrollWidth - horizontalSection.parentElement.clientWidth + extraScroll),
-    ease: 'none',
-  })
-
-  // Animation du contenu gauche plus fluide avec stagger
-  const leftElements = leftContentRef.value?.querySelectorAll('.left-animated')
-  if (leftElements) {
-    gsap.to(leftElements, {
-      y: -30,
-      opacity: 0.9,
-      stagger: 0.1,
-      scrollTrigger: {
-        trigger: sectionRef.value,
-        start: 'top top',
-        end: `+=${scrollDistance}`,
-        scrub: 0.5,
-      },
-    })
-  }
-
-  // Animations des étapes
   const stepElements = gsap.utils.toArray('.workflow-step')
   stepElements.forEach((step: any, index) => {
     const tl = gsap.timeline({
@@ -119,37 +87,18 @@ const setupDesktopAnimations = () => {
         trigger: step,
         start: 'left 80%',
         end: 'left 40%',
-        containerAnimation: mainTimeline.scrollTrigger?.animation,
+        containerAnimation: gsap.getProperty(horizontalSection, 'x'),
         toggleActions: 'play none none reverse',
       },
     })
-
-    // Ligne de connexion
-    if (index < steps.length - 1) {
-      const connector = step.querySelector('.step-connector')
-      tl.from(connector, { scaleX: 0, duration: 0.8, ease: 'power2.out' }, 0)
-    }
-
-    // Icône
-    tl.from(
-      step.querySelector('.step-icon'),
-      { scale: 0, rotation: -180, duration: 0.8, ease: 'back.out(1.7)' },
-      0.2
-    )
-
-    // Contenu
-    tl.from(
-      step.querySelector('.step-content'),
-      { y: 40, opacity: 0, duration: 0.6, ease: 'power3.out' },
-      0.4
-    )
+    const icon = step.querySelector('.step-icon')
+    tl.from(icon, { scale: 0, rotation: -180, duration: 0.6, ease: 'back.out(1.7)' }, 0.2)
   })
 }
 
 const setupMobileAnimations = () => {
   const stepElements = gsap.utils.toArray('.workflow-step')
-  
-  stepElements.forEach((step: any, index) => {
+  stepElements.forEach((step: any) => {
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: step,
@@ -158,245 +107,70 @@ const setupMobileAnimations = () => {
         toggleActions: 'play none none reverse',
       },
     })
-
-    // Ligne de connexion
-    if (index < steps.length - 1) {
-      const connector = step.querySelector('.step-connector')
-      tl.from(connector, { scaleY: 0, duration: 0.8, ease: 'power2.out' }, 0)
-    }
-
-    // Icône
-    tl.from(
-      step.querySelector('.step-icon'),
-      { scale: 0, rotation: -180, duration: 0.8, ease: 'back.out(1.7)' },
-      0.2
-    )
-
-    // Contenu
-    tl.from(
-      step.querySelector('.step-content'),
-      { y: 40, opacity: 0, duration: 0.6, ease: 'power3.out' },
-      0.4
-    )
+    const icon = step.querySelector('.step-icon')
+    tl.from(icon, { scale: 0, rotation: -180, duration: 0.6, ease: 'back.out(1.7)' }, 0.2)
   })
 }
 </script>
 
 <template>
-  <section 
-    ref="sectionRef" 
-    class="workflow-section lg:pl-50 item-center flex justify-center relative min-h-screen "
-  >
-    <!-- Desktop Layout -->
-    <div v-if="!isMobile" class="grid grid-cols-12 h-screen max-w-7.5xl">
-      <!-- Colonne gauche sticky -->
-      <div class="col-span-3 h-screen flex items-center px-8 lg:px-12">
-        <div ref="leftContentRef" class="space-y-6 w-full">
-          <div class="left-animated inline-block px-4 py-2 bg-green-500/10 rounded-full border border-green-400/30 mb-4 transition-all duration-700 ease-out">
-            <span class="text-green-700 text-sm font-medium">Étape {{ activeStepIndex + 1 }}/{{ steps.length }}</span>
-          </div>
-          
-          <div class="relative overflow-hidden">
-            <Transition 
-              mode="out-in"
-              enter-active-class="transition-all duration-500 ease-out"
-              enter-from-class="opacity-0 translate-y-8"
-              enter-to-class="opacity-100 translate-y-0"
-              leave-active-class="transition-all duration-300 ease-in absolute inset-0"
-              leave-from-class="opacity-100 translate-y-0"
-              leave-to-class="opacity-0 -translate-y-8"
-            >
-              <h2 
-                :key="activeStepIndex" 
-                class="left-animated text-4xl lg:text-5xl font-bold text-gray-900 leading-tight"
-              >
-                {{ steps[activeStepIndex].title }}
-              </h2>
-            </Transition>
-          </div>
-          
-          <div class="relative overflow-hidden min-h-[100px]">
-            <Transition 
-              mode="out-in"
-              enter-active-class="transition-all duration-600 ease-out delay-100"
-              enter-from-class="opacity-0 translate-y-6"
-              enter-to-class="opacity-100 translate-y-0"
-              leave-active-class="transition-all duration-250 ease-in absolute inset-0"
-              leave-from-class="opacity-100 translate-y-0"
-              leave-to-class="opacity-0 -translate-y-6"
-            >
-              <p 
-                :key="activeStepIndex" 
-                class="left-animated text-gray-600 text-lg leading-relaxed"
-              >
-                {{ steps[activeStepIndex].detail }}
-              </p>
-            </Transition>
-          </div>
-          
-          <!-- Indicateurs de progression -->
-          <div class="left-animated flex gap-2 pt-4">
-            <div
-              v-for="(step, index) in steps"
-              :key="index"
-              class="h-1 rounded-full transition-all duration-700 ease-out"
-              :class="[
-                index === activeStepIndex ? 'w-12 bg-green-500' : 'w-8 bg-gray-300',
-              ]"
-            ></div>
-          </div>
+<section ref="sectionRef" class="workflow-section relative flex justify-center items-center overflow-hidden bg-white px-6 py-16 lg:py-24 min-h-[65vh]">
+
+  <!-- Images décoratives -->
+  <img :src="img49" alt="img-right" class="absolute right-0 top-1/4 w-1/4 pointer-events-none select-none"/>
+  <img :src="imgD8" alt="img-small" class="absolute left-1/4 bottom-8 w-16 pointer-events-none select-none"/>
+  <img :src="imgIl1" alt="img-back" class="absolute right-1/2 bottom-12 w-32 pointer-events-none select-none"/>
+
+  <div v-if="!isMobile" class="grid grid-cols-12 max-w-8xl w-full relative z-10 gap-3">
+    <!-- Colonne gauche sticky -->
+    <div class="col-span-3 h-full flex items-center px-6 lg:px-12">
+      <div ref="leftContentRef" class="space-y-4 w-full">
+        <div class="left-animated inline-block px-4 py-2 bg-green-500/10 rounded-full border border-green-400/30">
+          <span class="text-green-700 text-sm font-medium">Étape {{ activeStepIndex + 1 }}/{{ steps.length }}</span>
         </div>
+        <h2 :key="activeStepIndex" class="left-animated text-3xl md:text-4xl font-bold text-gray-900">
+          {{ steps[activeStepIndex].title }}
+        </h2>
+        <p :key="activeStepIndex" class="left-animated text-gray-700 text-sm md:text-base leading-relaxed">
+          {{ steps[activeStepIndex].detail }}
+        </p>
       </div>
-
-      <!-- Colonne droite avec scroll horizontal -->
-      <div class="col-span-9 h-screen overflow-hidden">
-        <div
-          ref="horizontalContainerRef"
-          class="horizontal-container flex items-center h-full px-12 gap-24"
-          style="will-change: transform"
-        >
-          <!-- Étapes du workflow -->
-          <div
-            v-for="(step, index) in steps"
-            :key="step.title"
-            class="workflow-step flex-shrink-0 w-[400px]"
-          >
-            <div class="flex items-start gap-6">
-              <!-- Icône et connecteur -->
-              <div class="flex flex-col items-center pt-2">
-                <div class="step-icon relative w-20 h-20 bg-green-800 rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-500/50">
-                  <div class="absolute -top-2 -right-2 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg">
-                    {{ index + 1 }}
-                  </div>
-                  <component :is="step.icon" :size="32" :stroke-width="2" class="text-white" />
-                </div>
-                
-                <div
-                  v-if="index < steps.length - 1"
-                  class="step-connector w-1 h-32 bg-gradient-to-b from-blue-500/50 to-transparent rounded-full mt-4"
-                  style="transform-origin: top center"
-                ></div>
-              </div>
-
-              <!-- Contenu -->
-              <div class="step-content flex-1 pt-2">
-                <h3 class="text-2xl font-bold text-black mb-3">
-                  {{ step.title }}
-                </h3>
-                <p class="text-gray-400 leading-relaxed text-base">
-                  {{ step.description }}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Section finale -->
-          <div class="flex-shrink-0 w-[400px] bg-white/5 backdrop-blur-sm border border-white/10 rounded-3xl p-8 shadow-2xl">
-            <div class="text-center">
-              <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-green-500/50">
-                <CheckCircle :size="32" :stroke-width="2" class="text-white" />
-              </div>
-              <h3 class="text-2xl font-bold text-black mb-4">Processus complet</h3>
-              <p class="text-gray-400 leading-relaxed">
-                Un workflow optimisé de bout en bout pour maximiser votre productivité.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
     </div>
 
-    <!-- Mobile Layout -->
-    <div v-else class="py-16 w-full px-6">
-      <div class="w-full mx-auto space-y-12">
-        <!-- Header mobile -->
-        <div class="text-center mb-16">
-          <h2 class="text-3xl font-bold text-black mb-4">Processus Iventello</h2>
-          <p class="text-gray-400 text-lg">
-            De la sélection du produit à la mise à jour du stock, tout est automatisé.
-          </p>
-        </div>
-
-        <!-- Étapes verticales -->
-        <div
-          v-for="(step, index) in steps"
-          :key="step.title"
-          class="workflow-step"
-        >
-          <div class="flex items-start gap-6">
-            <!-- Icône et ligne -->
+    <!-- Scroll horizontal -->
+    <div class="col-span-9 h-full overflow-hidden">
+      <div ref="horizontalContainerRef" class="horizontal-container flex items-center h-full gap-16 px-8">
+        <div v-for="(step, index) in steps" :key="index" class="workflow-step flex-shrink-0 w-[320px] md:w-[400px]">
+          <div class="flex items-start gap-4 md:gap-6">
             <div class="flex flex-col items-center">
-              <div class="step-icon relative w-16 h-16 bg-gradient-to-br from-blue-300 to-blue-400 rounded-xl flex items-center justify-center shadow-xl shadow-blue-500/50">
-                <div class="absolute -top-2 -right-2 w-7 h-7 bg-yellow-400 rounded-full flex items-center justify-center text-slate-900 font-bold text-xs shadow-lg">
-                  {{ index + 1 }}
-                </div>
-                <component :is="step.icon" :size="28" :stroke-width="2" class="text-white" />
+              <div class="step-icon relative w-16 md:w-20 h-16 md:h-20 bg-green-800 rounded-xl flex items-center justify-center shadow-lg shadow-green-500/50">
+                <component :is="step.icon" :size="24" :stroke-width="2" class="text-white"/>
               </div>
-              
-              <div
-                v-if="index < steps.length - 1"
-                class="step-connector w-0.5 h-24 bg-gradient-to-b from-blue-500/50 to-transparent rounded-full mt-4"
-                style="transform-origin: top center"
-              ></div>
             </div>
-
-            <!-- Contenu -->
             <div class="step-content flex-1 pt-1">
-              <h3 class="text-xl font-bold text-green-500 mb-2">
-                {{ step.title }}
-              </h3>
-              <p class="text-gray-400 leading-relaxed text-sm mb-3">
-                {{ step.description }}
-              </p>
-              <p class="text-gray-500 text-sm leading-relaxed">
-                {{ step.detail }}
-              </p>
+              <h3 class="text-lg md:text-xl font-bold text-black mb-1">{{ step.title }}</h3>
+              <p class="text-gray-500 text-sm md:text-base leading-relaxed">{{ step.description }}</p>
             </div>
           </div>
         </div>
-
-        <!-- Section finale mobile -->
-        <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 text-center mt-12">
-          <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-green-500/50">
-            <CheckCircle :size="28" :stroke-width="2" class="text-white" />
+        <div class="flex-shrink-0 w-[320px] md:w-[400px] bg-white/20 rounded-2xl p-6 md:p-8 shadow-lg border border-white/30 text-center">
+          <div class="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-green-500/50">
+            <CheckCircle :size="24" :stroke-width="2" class="text-white" />
           </div>
-          <h3 class="text-xl font-bold text-white mb-3">Processus complet</h3>
-          <p class="text-gray-400 text-sm leading-relaxed">
+          <h3 class="text-lg md:text-xl font-bold text-black mb-2">Processus complet</h3>
+          <p class="text-gray-500 text-sm md:text-base leading-relaxed">
             Un workflow optimisé de bout en bout pour maximiser votre productivité.
           </p>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 </template>
 
 <style scoped>
-.workflow-section {
-  position: relative;
-  overflow: hidden;
-}
-
-.horizontal-container {
-  will-change: transform;
-}
-
-.workflow-step {
-  will-change: transform, opacity;
-}
-
-.step-connector {
-  will-change: transform;
-}
-
-.step-icon {
-  will-change: transform;
-}
-
-/* Smooth scrolling */
-@media (prefers-reduced-motion: no-preference) {
-  * {
-    scroll-behavior: smooth;
-  }
-}
+.workflow-section { position: relative; overflow: hidden; }
+.horizontal-container { will-change: transform; display: flex; }
+.workflow-step { will-change: transform, opacity; }
+.step-icon { will-change: transform; }
 </style>

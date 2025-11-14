@@ -1,239 +1,141 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick, computed } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { Package, ShoppingCart, Users, TrendingUp, FileText, Bell } from 'lucide-vue-next'
+
+import { 
+  Package, 
+  ShoppingCart, 
+  Users, 
+  TrendingUp, 
+  FileText, 
+  Bell 
+} from 'lucide-vue-next'
+
 gsap.registerPlugin(ScrollTrigger)
 
-const features = [
+const features = computed(() => [
   {
     icon: Package,
     title: 'Complete Inventory Management',
     description:
-      'Real-time tracking, automatic low stock alerts, smart categorization, and complete movement history.',
+      'Track your stock levels in real time, monitor incoming and outgoing product movements, and receive automatic alerts when items reach low or critical levels. Enjoy advanced categorization, batch and expiry tracking, and full product history for complete control over your inventory.',
   },
   {
     icon: ShoppingCart,
     title: 'Integrated Point of Sale',
     description:
-      'Quick invoice creation, automatic VAT and discount calculation, multiple payment methods, instant generation.',
+      'Generate sales instantly with an intuitive POS interface that supports VAT automation, discounts, refunds, and multiple payment methods. Print professional receipts, create invoices on the fly, and sync all transactions directly with your inventory in real time.',
   },
   {
     icon: Users,
-    title: 'Customer & Supplier Database',
+    title: 'Customer & Supplier Management',
     description:
-      'Purchase history, centralized contacts, automatic supplier orders, simplified communication.',
+      'Centralize all your business contacts in one place. Access detailed purchase histories, manage supplier relationships, automate purchase orders, and personalize communication based on customer behavior and previous interactions.',
   },
   {
     icon: TrendingUp,
-    title: 'Real-time Analytics',
+    title: 'Advanced Analytics & Reporting',
     description:
-      'Daily sales reports, top products, category statistics, performance indicators (KPIs).',
+      'Analyze your business performance with detailed dashboards and KPIs. Identify your best-selling products, monitor sales trends, compare categories, and access daily, weekly, and monthly performance insights to make better, data-driven decisions.',
   },
   {
     icon: FileText,
     title: 'Multi-Company Management',
     description:
-      'Manage multiple companies from one account, data isolation, per-company customization.',
+      'Manage multiple businesses from a single account while ensuring complete data isolation between companies. Customize configurations, products, user roles, and dashboards independently for each business, all under one secure interface.',
   },
   {
     icon: Bell,
-    title: 'Smart Notifications',
+    title: 'Smart & Automated Notifications',
     description:
-      'Stock outage alerts, order notifications, customizable reminders, complete activity log.',
+      'Receive real-time alerts for low stock levels, upcoming supplier orders, pending tasks, employee activity, and critical system events. Customize your notification settings to stay informed and never miss an important update.',
   },
-]
+])
 
-const activeFeature = ref(0)
+
 const sectionRef = ref(null)
 const headerRef = ref(null)
 const subtitleRef = ref(null)
 
 onMounted(() => {
-  // Header animation on scroll
-  gsap.from(headerRef.value, {
-    scrollTrigger: {
-      trigger: sectionRef.value,
-      start: 'top 80%',
-      end: 'top 20%',
-      toggleActions: 'play none none reverse',
-    },
+  gsap.from([headerRef.value, subtitleRef.value], {
+    scrollTrigger: { trigger: sectionRef.value, start: 'top 80%' },
     opacity: 0,
-    y: 50,
-    duration: 1,
+    y: 40,
+    stagger: 0.15,
+    duration: 1.1,
     ease: 'power3.out',
   })
 
-  gsap.from(subtitleRef.value, {
-    scrollTrigger: {
-      trigger: sectionRef.value,
-      start: 'top 80%',
-      end: 'top 20%',
-      toggleActions: 'play none none reverse',
-    },
-    opacity: 0,
-    y: 30,
-    duration: 1,
-    delay: 0.2,
-    ease: 'power3.out',
-  })
-
-  // Staggered card animation
-  gsap.from('.feature-card', {
-    scrollTrigger: {
-      trigger: '.features-grid',
-      start: 'top 75%',
-      end: 'top 25%',
-      toggleActions: 'play none none reverse',
-    },
-    opacity: 0,
-    y: 60,
-    scale: 0.95,
-    duration: 0.8,
-    stagger: {
-      amount: 0.6,
-      from: 'start',
-      ease: 'power2.out',
-    },
-    ease: 'power3.out',
-  })
-
-  // Icon rotation on scroll
-  gsap.utils.toArray('.feature-icon').forEach((icon: any) => {
-    gsap.from(icon, {
-      scrollTrigger: {
-        trigger: icon,
-        start: 'top 85%',
-        toggleActions: 'play none none reverse',
-      },
-      rotation: -180,
-      scale: 0,
-      duration: 1,
-      ease: 'back.out(1.7)',
+  nextTick(() => {
+    gsap.utils.toArray('.feature-item').forEach((card: any, i) => {
+      gsap.from(card, {
+        scrollTrigger: { trigger: card, start: 'top 85%' },
+        opacity: 0,
+        y: 60,
+        duration: 1,
+        delay: i * 0.1,
+        ease: 'power3.out',
+      })
     })
   })
 })
-
-const handleHover = (index: number, element: HTMLElement) => {
-  activeFeature.value = index
-
-  const icon = element.querySelector('.feature-icon')
-  const title = element.querySelector('.feature-title')
-  const description = element.querySelector('.feature-description')
-
-  // Animate icon on hover
-  gsap.to(icon, {
-    scale: 1.1,
-    rotation: 5,
-    duration: 0.4,
-    ease: 'power2.out',
-  })
-
-  // Subtle title animation
-  gsap.to(title, {
-    x: 5,
-    duration: 0.3,
-    ease: 'power2.out',
-  })
-
-  // Description fade
-  gsap.to(description, {
-    opacity: 1,
-    y: 0,
-    duration: 0.3,
-    ease: 'power2.out',
-  })
-}
-
-const handleLeave = (element: HTMLElement) => {
-  const icon = element.querySelector('.feature-icon')
-  const title = element.querySelector('.feature-title')
-
-  gsap.to(icon, {
-    scale: 1,
-    rotation: 0,
-    duration: 0.4,
-    ease: 'power2.out',
-  })
-
-  gsap.to(title, {
-    x: 0,
-    duration: 0.3,
-    ease: 'power2.out',
-  })
-}
 </script>
 
-<template>
 
-  <section
-  ref="sectionRef"
-  class="pt-32 grid grid-cols-1 lg:grid-cols-4 overflow-hidden bg-cover bg-center"
-  >
-  
-    <div class="lg:grid lg:gap-6 items-center p-4">
-      <!-- Image: visible on large screens only -->
-      <div class="hidden w-full lg:block">
-        <img src="@/assets/image/handStockly.png" alt="Hand Stockly" class="w-full h-auto" />
+<template>
+  <section ref="sectionRef" class="bg-gray-50 py-20 px-6">
+    <div class="max-w-7xl mx-auto">
+
+      <!-- HEADER -->
+      <div class="text-center mb-20">
+        <p class="text-sm uppercase tracking-wider text-gray-500 mb-3">
+          THE ULTIMATE STOCK MANAGEMENT SOLUTION
+        </p>
+
+        <h2
+          ref="headerRef"
+          class="text-3xl md:text-4xl font-light text-gray-900 inline-block relative pb-4"
+        >
+          Everything You Need to Manage Your Business
+          <svg class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-40 h-8"
+               viewBox="0 0 300 40" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M0 20 C30 35, 60 5, 90 25 C120 40, 150 10, 180 30 C210 40, 240 15, 270 25 C300 20, 300 20, 300 20"
+              stroke="#10B981"
+              stroke-width="10"
+              fill="none"
+              stroke-linecap="round"
+            />
+          </svg>
+        </h2>
+
+        <p ref="subtitleRef" class="text-gray-600 mt-6 text-lg max-w-2xl mx-auto font-light">
+          A complete solution to digitize and automate your stock, sales, suppliers, notifications and analytics.
+        </p>
       </div>
 
-      <!-- Content: always visible -->
-    </div>
-    <div class="max-w-6xl mx-auto col-span-1 lg:col-span-3 px-6">
-    <div class="max-w-2xl mb-20 relative">
-    <h2 ref="headerRef" class="text-4xl md:text-5xl font-light text-gray-900 mb-6 inline-block relative">
-      Everything You Need
-      <!-- Thick brush stroke underline -->
-      <svg class="absolute -bottom-3 left-0 w-full h-10" viewBox="0 0 300 40" xmlns="http://www.w3.org/2000/svg">
-        <path 
-          d="M0 20 C30 35, 60 5, 90 25 C120 40, 150 10, 180 30 C210 40, 240 15, 270 25 C300 20, 300 20, 300 20" 
-          stroke="#10B981" 
-          stroke-width="8" 
-          fill="none" 
-          stroke-linecap="round" 
-          stroke-linejoin="round"/>
-      </svg>
-    </h2>
-    <p ref="subtitleRef" class="text-lg text-gray-600 font-light leading-relaxed">
-      A complete solution to digitize and automate all your business processes.
-    </p>
-  </div>
-
-      <div class="features-grid grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-gray-200">
+      <!-- GRID -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-x-16 gap-y-24">
         <div
-          v-for="(feature, index) in features"
+          v-for="feature in features"
           :key="feature.title"
-          @mouseenter="(e) => handleHover(index, e.currentTarget as HTMLElement)"
-          @mouseleave="(e) => handleLeave(e.currentTarget as HTMLElement)"
-          class="feature-card bg-white p-10 transition-colors hover:bg-green-600 hover:text-white group cursor-pointer relative overflow-hidden"
+          class="feature-item"
         >
-          <!-- Background pulse effect on hover -->
-          <div
-            class="absolute inset-0 bg-gradient-to-br from-indigo-500/0 to-purple-500/0 group-hover:from-indigo-500/10 group-hover:to-purple-500/10 transition-all duration-500"
-          ></div>
+          <component
+            :is="feature.icon"
+            :size="30"
+            class="text-gray-800 mb-6"
+          />
 
-          <div class="relative z-10">
-            <component
-              :is="feature.icon"
-              :size="32"
-              :stroke-width="1.5"
-              class="feature-icon mb-6 text-gray-900 group-hover:text-white transition-colors"
-            />
-            <h3 class="feature-title text-lg leading-relaxed  mb-3">
-              {{ feature.title }}
-            </h3>
-            <p
-              class="feature-description text-sm text-gray-600 group-hover:text-gray-300 font-light leading-relaxed"
-            >
-              {{ feature.description }}
-            </p>
-          </div>
+          <h3 class="text-2xl font-light text-gray-900 mb-4">
+            {{ feature.title }}
+          </h3>
 
-          <!-- Active indicator -->
-          <div
-            v-if="activeFeature === index"
-            class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 to-purple-500"
-          ></div>
+          <p class="text-gray-600 leading-relaxed">
+            {{ feature.description }}
+          </p>
         </div>
       </div>
     </div>
@@ -242,10 +144,6 @@ const handleLeave = (element: HTMLElement) => {
 
 <style scoped>
 .feature-card {
-  will-change: transform;
-}
-
-.feature-icon {
-  will-change: transform, rotate;
+  will-change: transform, opacity;
 }
 </style>

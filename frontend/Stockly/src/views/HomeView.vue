@@ -14,7 +14,7 @@ import WorflowSection from '@/components/landing/WorflowSection.vue'
   <CharacTeristics />
   <WorflowSection />
   <StatsSection />
- 
+ <PricingSection />
   <CtaSection />
 </template>
 

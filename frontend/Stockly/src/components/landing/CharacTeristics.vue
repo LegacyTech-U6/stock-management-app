@@ -10,7 +10,7 @@
       <!-- 📝 Section texte -->
       <div class="space-y-6 animate-fadeInUp">
         <h1 class="text-5xl font-extrabold text-gray-800 leading-tight">
-          Included <span class="text-green-600">Capabilities</span>
+          Included <span class="text-[#0C333B]-600">Capabilities</span>
         </h1>
 
         <p class="text-gray-600 text-lg leading-relaxed">
@@ -39,7 +39,7 @@
 
         <div class="pt-4">
           <button
-            class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out"
+            class="bg-[#0C333B] hover:bg-green-600 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out"
           >
             Discover Features
           </button>
