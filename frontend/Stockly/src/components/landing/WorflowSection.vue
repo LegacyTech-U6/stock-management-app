@@ -60,6 +60,8 @@ onUnmounted(() => {
   ScrollTrigger.getAll().forEach(trigger => trigger.kill())
 })
 
+let horizontalAnim: gsap.core.Tween | null = null
+
 const setupDesktopAnimations = () => {
   const horizontalSection = horizontalContainerRef.value
   if (!horizontalSection) return
@@ -67,7 +69,7 @@ const setupDesktopAnimations = () => {
   const extraScroll = window.innerWidth * 0.3
   const scrollDistance = horizontalSection.scrollWidth - horizontalSection.parentElement.clientWidth + extraScroll
 
-  gsap.to(horizontalSection, {
+  horizontalAnim = gsap.to(horizontalSection, {
     x: () => -scrollDistance,
     ease: 'none',
     scrollTrigger: {
@@ -82,19 +84,23 @@ const setupDesktopAnimations = () => {
 
   const stepElements = gsap.utils.toArray('.workflow-step')
   stepElements.forEach((step: any, index) => {
-    const tl = gsap.timeline({
+    gsap.timeline({
       scrollTrigger: {
         trigger: step,
         start: 'left 80%',
         end: 'left 40%',
-        containerAnimation: gsap.getProperty(horizontalSection, 'x'),
+        containerAnimation: horizontalAnim!, // <-- FIX ICI
         toggleActions: 'play none none reverse',
       },
+    }).from(step.querySelector('.step-icon'), {
+      scale: 0,
+      rotation: -180,
+      duration: 0.6,
+      ease: 'back.out(1.7)',
     })
-    const icon = step.querySelector('.step-icon')
-    tl.from(icon, { scale: 0, rotation: -180, duration: 0.6, ease: 'back.out(1.7)' }, 0.2)
   })
 }
+
 
 const setupMobileAnimations = () => {
   const stepElements = gsap.utils.toArray('.workflow-step')
