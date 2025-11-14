@@ -11,7 +11,7 @@ import img49 from '@/assets/image/2-2.png'
 gsap.registerPlugin(TextPlugin)
 
 const benefits = [
- 
+
   'Multi-warehouse support – manage all locations',
   'Real-time inventory tracking – avoid stockouts',
   'Detailed sales analytics – make data-driven decisions'
@@ -69,13 +69,13 @@ const handleRegister = () => {
 </script>
 
 <template>
-  <section class="relative text-white min-h-screen flex flex-col justify-center items-center overflow-hidden">
+  <section class="relative text-white min-h-90vh flex flex-col justify-center items-center overflow-hidden">
     <!-- 🌈 Fond fluide animé -->
     <div class="absolute inset-0 animated-bg"></div>
 
     <!-- ⚡ Zigzag animé en bas à gauche -->
-    <svg class="absolute bottom-0 left-0 w-48 h-48 text-blue-400 opacity-40 animate-zigzag" 
-         viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg class="absolute bottom-0 left-0 w-48 h-48 text-blue-400 opacity-40 animate-zigzag" viewBox="0 0 200 200"
+      fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M0 100 C50 0, 150 200, 200 100" stroke="currentColor" stroke-width="3" fill="none" />
     </svg>
 
@@ -92,7 +92,7 @@ const handleRegister = () => {
     <img :src="img49" alt="decor" class="absolute bottom-0 right-10 w-32 opacity-80" />
 
     <!-- 💬 Contenu du Hero -->
-    <div class="relative z-10 text-center px-6 space-y-8">
+    <div class="relative z-10 text-center  pt-20 px-6 space-y-8">
       <h1 class="text-5xl md:text-7xl font-light leading-tight">
         Modern & Smart
         <span class="block font-medium mt-2 text-teal-400 dynamic-word">
@@ -101,26 +101,26 @@ const handleRegister = () => {
       </h1>
 
       <p class="text-lg md:text-xl text-gray-100 max-w-2xl mx-auto">
-  Automate your inventory, sales, and customer management with an all-in-one platform. 
-  Track stock levels in real-time, manage multiple warehouses, and streamline your order fulfillment process.
-</p>
+        Automate your inventory, sales, and customer management with an all-in-one platform.
+        Track stock levels in real-time, manage multiple warehouses, and streamline your order fulfillment process.
+      </p>
 
-<div class="flex flex-col sm:flex-row gap-4 justify-center">
-  <button @click="handleRegister"
-    class="px-8 py-4 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-all">
-    Start Free Trial
-  </button>
-  <button class="px-8 py-4 border border-teal-600 rounded-lg hover:bg-teal-50 hover:text-teal-600 transition-all">
-    Watch Demo
-  </button>
-</div>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <button @click="handleRegister"
+          class="px-8 py-4 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-all">
+          Start Free Trial
+        </button>
+        <button class="px-8 py-4 border border-teal-600 rounded-lg hover:bg-teal-50 hover:text-teal-600 transition-all">
+          Watch Demo
+        </button>
+      </div>
 
-<div class="flex flex-wrap items-center  justify-center h-100 gap-6 pt-4 text-gray-300">
-  <div v-for="benefit in benefits" :key="benefit" class="flex items-center gap-2">
-    <i class="fas fa-check text-teal-400"></i>
-    <span>{{ benefit }}</span>
-  </div>
-</div>
+      <div class="flex flex-wrap items-center  justify-center h-100 gap-6 pt-4 text-gray-300">
+        <div v-for="benefit in benefits" :key="benefit" class="flex items-center gap-2">
+          <i class="fas fa-check text-teal-400"></i>
+          <span>{{ benefit }}</span>
+        </div>
+      </div>
 
     </div>
   </section>
@@ -136,15 +136,32 @@ const handleRegister = () => {
 }
 
 @keyframes gradientFlow {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 /* ⚡ Animation du zigzag */
 @keyframes zigzagMove {
-  0%, 100% { transform: translateY(0); opacity: 0.4; }
-  50% { transform: translateY(-10px); opacity: 0.7; }
+
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+
+  50% {
+    transform: translateY(-10px);
+    opacity: 0.7;
+  }
 }
 
 .animate-zigzag {

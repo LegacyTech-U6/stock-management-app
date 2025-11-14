@@ -9,7 +9,7 @@
 
       <!-- 📝 Section texte -->
       <div class="space-y-6 animate-fadeInUp">
-        <h1 class="text-5xl font-extrabold text-gray-800 leading-tight">
+        <h1 class="text-5xl font-light text-gray-800 leading-tight">
           Included <span class="text-[#0C333B]-600">Capabilities</span>
         </h1>
 
