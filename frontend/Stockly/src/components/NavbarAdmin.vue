@@ -35,7 +35,7 @@
             <Building2 class="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 class="font-semibold text-gray-900 text-lg">StockFlow</h1>
+            <h1 class="font-semibold text-gray-900 text-lg">Iventello</h1>
             <p class="text-xs text-gray-500 font-medium">Enterprise Manager</p>
           </div>
         </div>
