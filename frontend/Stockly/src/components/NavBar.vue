@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import { Menu, X } from 'lucide-vue-next'
-
+import Iventello from '@/assets/icon svg/Iventello.vue'
 const isScrolled = ref(false)
 const isOpen = ref(false)
 
@@ -35,9 +35,7 @@ const navItems = ['Features', 'Tarifs', 'Documentation']
     <div class="px-6 max-w-7xl w-full mx-auto py-4 flex items-center justify-between relative z-10">
       <!-- Logo -->
       <div class="flex items-center gap-2">
-        <div class="w-8 h-8 bg-gray-900 flex items-center justify-center text-white text-sm font-medium rounded">
-          S
-        </div>
+       
         <span class="text-lg font-semibold tracking-tight">Iventello</span>
       </div>
 
