@@ -137,7 +137,7 @@ export const useProductStore = defineStore('product', {
       this.loading = true
       try {
         const data = await LowStock()
-        this.lowProducts = data.products
+        this.lowProducts = data.data
         this.error = null
         console.log('✅ Low products loaded:', data)
       } catch (err) {

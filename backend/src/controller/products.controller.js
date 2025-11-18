@@ -487,7 +487,7 @@ exports.getLowStockProducts = async (req, res) => {
     console.log('====================================');
     console.log(data);
     console.log('====================================');
-    res.json({ threshold, products: data });
+    res.json({ threshold, data });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -517,7 +517,7 @@ exports.getOutOfStockProducts = async (req, res) => {
       return prodJSON;
     });
 
-    res.json(products:data);
+    res.json( data);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
