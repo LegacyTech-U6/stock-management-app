@@ -3,7 +3,7 @@ const sequelizeQuery = require("sequelize-query");
 const db = require("../config/db");
 const Entreprise = db.Entreprise;
 const queryParser = sequelizeQuery(db);
-const supabase = require("../supabase"); // ton client Supabase
+const {supabase} = require('../middleware/supabase')
 
 // ===============================
 // 🔹 Récupérer toutes les entreprises d’un utilisateur
