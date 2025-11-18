@@ -85,7 +85,7 @@ const routes: RouteRecordRaw[] = [
     name: 'real',
     component: () => import('../views/LayoutPage.vue'),
     meta: { showNavbarAndFooter: false, requiresAuth: true },
-    redirect: '/real/sales',
+    redirect: (to) => `/${to.params.uuid}/sales`,
     children: [
       {
         path: 'dashboard',
@@ -152,7 +152,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'categories',
         name: 'categories',
-        component: () => import('@/views/CategoryView .vue'),
+        component: () => import('@/views/CategoryView.vue'),
         meta: { permission: 'canManageStock' },
       },
       {
