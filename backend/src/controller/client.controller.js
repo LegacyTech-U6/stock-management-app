@@ -1,7 +1,7 @@
 const sequelizeQuery = require("sequelize-query");
 const db = require("../config/db");
 const { sendNotification } = require('../utils/notification');
-const supabase = require("../supabase");
+const {supabase} = require('../middleware/supabase')
 
 const Client = db.Client;
 const queryParser = sequelizeQuery(db);
