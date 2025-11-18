@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import { Menu, X } from 'lucide-vue-next'
-import Iventello from '@/assets/icon svg/Iventello.vue'
 const isScrolled = ref(false)
 const isOpen = ref(false)
 
