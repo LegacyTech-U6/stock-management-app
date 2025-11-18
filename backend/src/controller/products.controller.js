@@ -41,7 +41,7 @@ exports.getAllProducts = async (req, res) => {
       const prodJSON = p.toJSON();
       if (prodJSON.Prod_image) {
         // Ajouter l'URL complète publique de Supabase
-        prodJSON.Prod_image = `${process.env.SUPABASE_URL}/storage/v1/object/public/images/${prodJSON.Prod_image}`;
+        prodJSON.Prod_image = `${prodJSON.Prod_image}`;
       }
       return prodJSON;
     });
@@ -75,7 +75,7 @@ exports.getProductById = async (req, res) => {
     const product = data.toJSON();
     if (product.Prod_image) {
       // URL publique Supabase
-      product.Prod_image = `${process.env.SUPABASE_URL}/storage/v1/object/public/images/${product.Prod_image}`;
+      product.Prod_image = `${product.Prod_image}`;
     }
 
     res.status(200).json(product);
@@ -479,7 +479,7 @@ exports.getLowStockProducts = async (req, res) => {
     const data = products.map((p) => {
       const prodJSON = p.toJSON();
       if (prodJSON.Prod_image) {
-        prodJSON.Prod_image = `${process.env.SUPABASE_URL}/storage/v1/object/public/images/${prodJSON.Prod_image}`;
+        prodJSON.Prod_image = `${prodJSON.Prod_image}`;
       }
       return prodJSON;
     });
@@ -512,7 +512,7 @@ exports.getOutOfStockProducts = async (req, res) => {
     const data = products.map((p) => {
       const prodJSON = p.toJSON();
       if (prodJSON.Prod_image) {
-        prodJSON.Prod_image = `${process.env.SUPABASE_URL}/storage/v1/object/public/images/${prodJSON.Prod_image}`;
+        prodJSON.Prod_image = `${prodJSON.Prod_image}`;
       }
       return prodJSON;
     });
@@ -565,7 +565,7 @@ exports.getProductsByCategory = async (req, res) => {
     const products = products.map((p) => {
       const prodJSON = p.toJSON();
       if (prodJSON.Prod_image) {
-        prodJSON.Prod_image = `${process.env.SUPABASE_URL}/storage/v1/object/public/images/${prodJSON.Prod_image}`;
+        prodJSON.Prod_image = `${prodJSON.Prod_image}`;
       }
       return prodJSON;
     });
