@@ -14,7 +14,7 @@ const queryParser = sequelizeQuery(db);
 const BASE_URL = process.env.BASE_URL;
 const logActivity = require("../utils/activityLogger");
 const { sendNotification } = require('../utils/notification');
-const {supabase} = require('../middleware/supabse')
+const {supabase} = require('../middleware/supabase')
 
 // ===============================
 // 🔹 Récupérer tous les produits
