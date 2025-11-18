@@ -10,7 +10,7 @@ const supabase = createClient(
 // Debug: Vérifier la connexion
 console.log("✅ Supabase connected:", {
     url: process.env.SUPABASE_URL ? "configured" : "missing",
-    key: process.env.SUPABASE_Key ? "configured" : "missing"
+    key: process.env.SUPABASE_KEY ? "configured" : "missing"
 });
 
 module.exports = {supabase};
