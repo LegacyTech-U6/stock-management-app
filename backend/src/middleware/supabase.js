@@ -4,7 +4,7 @@ require("dotenv").config();
 // ⚡ Connexion Supabase
 const supabase = createClient(
     process.env.SUPABASE_URL,
-    process.env.SUPABASE_Key // clé Service Role pour upload côté serveur
+    process.env.SUPABASE_KEY// clé Service Role pour upload côté serveur
 );
 
 // Debug: Vérifier la connexion
