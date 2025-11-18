@@ -10,6 +10,9 @@ import viteCompression from 'vite-plugin-compression'
 import Components from 'unplugin-vue-components/vite'
 import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 
+// PWA
+import { VitePWA } from 'vite-plugin-pwa'
+
 // Optimisation images
 
 export default defineConfig({
@@ -26,7 +29,49 @@ export default defineConfig({
     // Auto-import Naive UI
     Components({ resolvers: [NaiveUiResolver()] }),
 
-
+    // PWA
+    VitePWA({
+      registerType: 'autoUpdate',
+      manifest: {
+        name: 'Iventello',
+        short_name: 'Iv',
+        description: 'App de gestion de stock multi-entreprise',
+        start_url: '/',
+        display: 'standalone',
+        background_color: '#ffffff',
+        theme_color: '#0d6efd',
+        icons: []
+      },
+      workbox: {
+        runtimeCaching: [
+          {
+            urlPattern: ({ request }) =>
+              request.destination === 'document' ||
+              request.destination === 'script' ||
+              request.destination === 'style',
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'static-resources',
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 24 * 60 * 60 // 1 jour
+              }
+            }
+          },
+          {
+            urlPattern: ({ request }) => request.destination === 'image',
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'images',
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 7 * 24 * 60 * 60 // 7 jours
+              }
+            }
+          }
+        ]
+      }
+    })
   ],
 
   resolve: {
