@@ -27,17 +27,9 @@
       ]"
     >
       <!-- Logo -->
-      <div class="px-6 py-6 border-b border-gray-200/50">
+      <div class=" border-b border-gray-200/50">
         <div class="flex items-center gap-3">
-          <div
-            class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-sm"
-          >
-            <Building2 class="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <h1 class="font-semibold text-gray-900 text-lg">Iventello</h1>
-            <p class="text-xs text-gray-500 font-medium">Enterprise Manager</p>
-          </div>
+          <Iventello  class="w-64"/>
         </div>
       </div>
 
@@ -227,6 +219,7 @@ import {
 } from 'lucide-vue-next'
 import NavLink from '@/components/NavLink.vue'
 import { useAuthStore } from '@/stores/authStore.js'
+import Iventello from '@/assets/Iventello.vue'
 
 const authStore = useAuthStore()
 

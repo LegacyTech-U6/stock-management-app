@@ -1,12 +1,10 @@
-// backend/controllers/entreprise.controller.js
 require("dotenv").config();
 const sequelizeQuery = require("sequelize-query");
-const db = require("../config/db"); // ton index.js avec tous tes modèles
-const Entreprise = db.Entreprise; // Sequelize model si tu l'as défini, sinon tu peux adapter
-const fs = require("fs");
-const path = require("path");
+const db = require("../config/db");
+const Entreprise = db.Entreprise;
 const queryParser = sequelizeQuery(db);
-const BASE_URL = process.env.BASE_URL;
+const supabase = require("../supabase"); // ton client Supabase
+
 // ===============================
 // 🔹 Récupérer toutes les entreprises d’un utilisateur
 // ===============================
@@ -18,23 +16,21 @@ exports.getAllEntreprises = async (req, res) => {
       query.where = { ...query.where, user_id: req.user.id };
     }
 
-    const entreprise = await Entreprise.findAll({
+    const entreprises = await Entreprise.findAll({
       ...query,
       attributes: { exclude: [] },
     });
-    const data = entreprise.map((p) => {
+
+    const data = entreprises.map((p) => {
       const EntJSON = p.toJSON();
       if (EntJSON.logo_url) {
-        EntJSON.logo_url = `${BASE_URL}${EntJSON.logo_url}`;
+        // URL publique Supabase
+        EntJSON.logo_url = `${process.env.SUPABASE_URL}/storage/v1/object/public/images/${EntJSON.logo_url}`;
       }
       return EntJSON;
     });
-    console.log(data);
-    
 
-    const count = await Entreprise.count({
-      where: query.where,
-    });
+    const count = await Entreprise.count({ where: query.where });
 
     res.status(200).json({ count, data });
   } catch (err) {
@@ -49,14 +45,16 @@ exports.getEntrepriseByUuid = async (req, res) => {
   try {
     const { uuid } = req.params;
 
-    const entreprise = await Entreprise.findOne({
-      where: { uuid },
-    });
-
+    const entreprise = await Entreprise.findOne({ where: { uuid } });
     if (!entreprise)
       return res.status(404).json({ message: "Entreprise non trouvée" });
 
-    res.status(200).json(entreprise);
+    const entJSON = entreprise.toJSON();
+    if (entJSON.logo_url) {
+      entJSON.logo_url = `${process.env.SUPABASE_URL}/storage/v1/object/public/images/${entJSON.logo_url}`;
+    }
+
+    res.status(200).json(entJSON);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -67,22 +65,38 @@ exports.getEntrepriseByUuid = async (req, res) => {
 // ===============================
 exports.createEntreprise = async (req, res) => {
   try {
-    const user_id = req.user.id; // l'utilisateur connecté
-    console.log(req.body,req.user)
-  
-    // ✅ Si une image a été uploadée, on génère son URL publique
-    let imagePath = null;
+    const user_id = req.user.id;
+
+    let logoFileName = null;
     if (req.file) {
-      imagePath = `/uploads/${req.file.filename}`;
+      const fileName = Date.now() + "-" + req.file.originalname;
+
+      const { error } = await supabase.storage
+        .from("images") // bucket public
+        .upload(fileName, req.file.buffer, {
+          cacheControl: "3600",
+          upsert: false,
+          contentType: req.file.mimetype,
+        });
+
+      if (error) throw error;
+
+      logoFileName = fileName;
     }
-    const data = {
+
+    const entreprise = await Entreprise.create({
       ...req.body,
       user_id,
-      logo_url: imagePath,
-    };
-    const entreprise = await Entreprise.create(data);
+      logo_url: logoFileName,
+    });
 
-    res.status(201).json(entreprise);
+    // Générer l'URL publique avant d'envoyer la réponse
+    const entJSON = entreprise.toJSON();
+    if (logoFileName) {
+      entJSON.logo_url = `${process.env.SUPABASE_URL}/storage/v1/object/public/images/${logoFileName}`;
+    }
+
+    res.status(201).json(entJSON);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -95,14 +109,39 @@ exports.updateEntreprise = async (req, res) => {
   try {
     const { uuid } = req.params;
 
-    const [updated] = await Entreprise.update(req.body, {
-      where: { uuid },
-    });
-
-    if (!updated)
+    const entreprise = await Entreprise.findOne({ where: { uuid } });
+    if (!entreprise)
       return res.status(404).json({ message: "Entreprise non trouvée" });
 
-    res.status(200).json({ message: "Entreprise mise à jour avec succès" });
+    // 🔹 Si une nouvelle image est uploadée
+    if (req.file) {
+      const fileName = Date.now() + "-" + req.file.originalname;
+
+      const { error } = await supabase.storage
+        .from("images")
+        .upload(fileName, req.file.buffer, {
+          cacheControl: "3600",
+          upsert: false,
+          contentType: req.file.mimetype,
+        });
+      if (error) throw error;
+
+      // Supprimer l'ancienne image si elle existe
+      if (entreprise.logo_url) {
+        await supabase.storage.from("images").remove([entreprise.logo_url]);
+      }
+
+      req.body.logo_url = fileName;
+    }
+
+    await entreprise.update(req.body);
+
+    const entJSON = entreprise.toJSON();
+    if (entJSON.logo_url) {
+      entJSON.logo_url = `${process.env.SUPABASE_URL}/storage/v1/object/public/images/${entJSON.logo_url}`;
+    }
+
+    res.status(200).json({ message: "Entreprise mise à jour avec succès", entreprise: entJSON });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -115,12 +154,16 @@ exports.deleteEntreprise = async (req, res) => {
   try {
     const { uuid } = req.params;
 
-    const deleted = await Entreprise.destroy({
-      where: { uuid },
-    });
-
-    if (!deleted)
+    const entreprise = await Entreprise.findOne({ where: { uuid } });
+    if (!entreprise)
       return res.status(404).json({ message: "Entreprise non trouvée" });
+
+    // Supprimer le logo dans Supabase
+    if (entreprise.logo_url) {
+      await supabase.storage.from("images").remove([entreprise.logo_url]);
+    }
+
+    await entreprise.destroy();
 
     res.status(200).json({ message: "Entreprise supprimée avec succès" });
   } catch (err) {

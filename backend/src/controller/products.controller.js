@@ -14,6 +14,7 @@ const queryParser = sequelizeQuery(db);
 const BASE_URL = process.env.BASE_URL;
 const logActivity = require("../utils/activityLogger");
 const { sendNotification } = require('../utils/notification');
+const {supabase} = require('../middleware/supabse')
 
 // ===============================
 // 🔹 Récupérer tous les produits
@@ -32,19 +33,15 @@ exports.getAllProducts = async (req, res) => {
       ...query,
       include: [
         { model: Category, as: "category", attributes: ["id", "name"] },
-        {
-          model: Supplier,
-          as: "supplierInfo",
-          attributes: ["id", "supplier_name"],
-        },
+        { model: Supplier, as: "supplierInfo", attributes: ["id", "supplier_name"] },
       ],
     });
 
-    // Transformer le chemin des images pour renvoyer l'URL complète
     const data = products.map((p) => {
       const prodJSON = p.toJSON();
       if (prodJSON.Prod_image) {
-        prodJSON.Prod_image = `${BASE_URL}${prodJSON.Prod_image}`;
+        // Ajouter l'URL complète publique de Supabase
+        prodJSON.Prod_image = `${process.env.SUPABASE_URL}/storage/v1/object/public/images/${prodJSON.Prod_image}`;
       }
       return prodJSON;
     });
@@ -53,10 +50,11 @@ exports.getAllProducts = async (req, res) => {
 
     res.status(200).json({ count, data });
   } catch (err) {
-     console.error(err);
+    console.error(err);
     res.status(500).json({ message: err.message });
   }
 };
+
 
 // ===============================
 // 🔹 Récupérer un produit par ID
@@ -68,11 +66,7 @@ exports.getProductById = async (req, res) => {
       where: { id, entreprise_id: req.entrepriseId },
       include: [
         { model: Category, as: "category", attributes: ["id", "name"] },
-        {
-          model: Supplier,
-          as: "supplierInfo",
-          attributes: ["id", "supplier_name"],
-        },
+        { model: Supplier, as: "supplierInfo", attributes: ["id", "supplier_name"] },
       ],
     });
 
@@ -80,7 +74,8 @@ exports.getProductById = async (req, res) => {
 
     const product = data.toJSON();
     if (product.Prod_image) {
-      product.Prod_image = `${BASE_URL}${product.Prod_image}`;
+      // URL publique Supabase
+      product.Prod_image = `${process.env.SUPABASE_URL}/storage/v1/object/public/images/${product.Prod_image}`;
     }
 
     res.status(200).json(product);
@@ -98,31 +93,43 @@ exports.createProduct = async (req, res) => {
   try {
     const entreprise_id = req.entrepriseId;
     const { category_id } = req.body;
+    const Category = db.Category;
 
-    const Category = db.Category; // ✅ Import correct du modèle
-
-    // 🔹 Vérifier que la catégorie existe pour cette entreprise
+    // 🔹 Vérifier la catégorie
     if (category_id) {
       const category = await Category.findOne({
         where: { id: category_id, entreprise_id },
       });
-
       if (!category) {
         return res.status(400).json({
           message: "La catégorie spécifiée n'existe pas pour cette entreprise.",
         });
       }
     }
-    // ✅ Si une image est uploadée, générer l'URL publique
-    let imagePath = null;
+
+    // 🔹 Si une image est uploadée, envoyer vers Supabase
+    let imageUrl = null;
     if (req.file) {
-      imagePath = `/uploads/${req.file.filename}`;
+      const fileName = Date.now() + "-" + req.file.originalname;
+
+      const { error: uploadError } = await supabase.storage
+        .from("images") // nom du bucket
+        .upload(fileName, req.file.buffer, {
+          cacheControl: "3600",
+          upsert: false,
+          contentType: req.file.mimetype,
+        });
+
+      if (uploadError) throw uploadError;
+
+      imageUrl = supabase.storage.from("images").getPublicUrl(fileName).data.publicUrl;
     }
 
+    // 🔹 Créer le produit
     const productData = {
       ...req.body,
       entreprise_id,
-      Prod_image: imagePath,
+      Prod_image: imageUrl,
     };
 
     const product = await Product.create(productData);
@@ -143,7 +150,7 @@ exports.createProduct = async (req, res) => {
       entreprise_id,
     });
 
-    // ✅ Send notification
+    // 🔹 Send notification
     await sendNotification({
       type: 'product',
       message: `New product created: "${product.Prod_name}"`,
@@ -161,6 +168,7 @@ exports.createProduct = async (req, res) => {
 // ===============================
 // 🔹 Update a product
 // ===============================
+
 exports.updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
@@ -175,11 +183,26 @@ exports.updateProduct = async (req, res) => {
     }
 
     if (req.file) {
+      // 🔹 Upload nouvelle image vers Supabase
+      const fileName = Date.now() + "-" + req.file.originalname;
+
+      const { error: uploadError } = await supabase.storage
+        .from("images")
+        .upload(fileName, req.file.buffer, {
+          cacheControl: "3600",
+          upsert: false,
+          contentType: req.file.mimetype,
+        });
+
+      if (uploadError) throw uploadError;
+
+      // 🔹 Mettre à jour le nom du fichier dans la DB
+      req.body.Prod_image = fileName;
+
+      // 🔹 Supprimer l'ancienne image dans Supabase si elle existe
       if (product.Prod_image) {
-        const oldPath = path.join(process.cwd(), product.Prod_image);
-        if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+        await supabase.storage.from("images").remove([product.Prod_image]);
       }
-      req.body.Prod_image = `/uploads/${req.file.filename}`;
     }
 
     await product.update(req.body);
@@ -200,6 +223,7 @@ exports.updateProduct = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
 
 // ===============================
 // 🔹 Delete a product
@@ -446,18 +470,21 @@ exports.getLowStockProducts = async (req, res) => {
     const products = await Product.findAll({
       where: { entreprise_id: entrepriseId, quantity: { [Op.lte]: threshold } },
       include: [
-        { model: Category,as: "category" ,attributes: ["id", "name"] },
-        { model: Supplier,as: "supplierInfo", attributes: ["id", "supplier_name"] },
+        { model: Category, as: "category", attributes: ["id", "name"] },
+        { model: Supplier, as: "supplierInfo", attributes: ["id", "supplier_name"] },
       ],
     });
-      const data = products.map((p) => {
+
+    // Transformer le nom du fichier en URL publique Supabase
+    const data = products.map((p) => {
       const prodJSON = p.toJSON();
       if (prodJSON.Prod_image) {
-        prodJSON.Prod_image = `${BASE_URL}${prodJSON.Prod_image}`;
+        prodJSON.Prod_image = `${process.env.SUPABASE_URL}/storage/v1/object/public/images/${prodJSON.Prod_image}`;
       }
       return prodJSON;
     });
-  console.log('====================================');
+
+    console.log('====================================');
     console.log(data);
     console.log('====================================');
     res.json({ threshold, products: data });
@@ -465,6 +492,7 @@ exports.getLowStockProducts = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
 
 // ===============================
 // 🔹 Produits en rupture de stock
@@ -480,8 +508,16 @@ exports.getOutOfStockProducts = async (req, res) => {
         { model: Supplier, attributes: ["id", "supplier_name"] },
       ],
     });
+    // Transformer le nom du fichier en URL publique Supabase
+    const data = products.map((p) => {
+      const prodJSON = p.toJSON();
+      if (prodJSON.Prod_image) {
+        prodJSON.Prod_image = `${process.env.SUPABASE_URL}/storage/v1/object/public/images/${prodJSON.Prod_image}`;
+      }
+      return prodJSON;
+    });
 
-    res.json(products);
+    res.json(products:data);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -525,11 +561,11 @@ exports.getProductsByCategory = async (req, res) => {
         entreprise_id: req.entrepriseId,
       },
     });
-     // Transformer le chemin des images pour renvoyer l'URL complète
-    const products = data.map((p) => {
+   // Transformer le nom du fichier en URL publique Supabase
+    const products = products.map((p) => {
       const prodJSON = p.toJSON();
       if (prodJSON.Prod_image) {
-        prodJSON.Prod_image = `${BASE_URL}${prodJSON.Prod_image}`;
+        prodJSON.Prod_image = `${process.env.SUPABASE_URL}/storage/v1/object/public/images/${prodJSON.Prod_image}`;
       }
       return prodJSON;
     });
