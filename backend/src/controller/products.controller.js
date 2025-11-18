@@ -476,33 +476,7 @@ exports.getLowStockProducts = async (req, res) => {
     });
 
     // Transformer le nom du fichier en URL publique Supabase
-    const data = prod[dotenv@17.2.1] injecting env (0) from .env -- tip: 📡 observe env with Radar: https://dotenvx.com/radar
-[dotenv@17.2.1] injecting env (0) from .env -- tip: 📡 observe env with Radar: https://dotenvx.com/radar
-[dotenv@17.2.1] injecting env (0) from .env -- tip: 📡 auto-backup env with Radar: https://dotenvx.com/radar
-[dotenv@17.2.1] injecting env (0) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
-[dotenv@17.2.1] injecting env (0) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
-[dotenv@17.2.1] injecting env (0) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
-/opt/render/project/src/backend/node_modules/@supabase/supabase-js/dist/main/SupabaseClient.js:36
-            throw new Error('supabaseKey is required.');
-            ^
-Error: supabaseKey is required.
-    at new SupabaseClient (/opt/render/project/src/backend/node_modules/@supabase/supabase-js/dist/main/SupabaseClient.js:36:19)
-    at createClient (/opt/render/project/src/backend/node_modules/@supabase/supabase-js/dist/main/index.js:38:12)
-    at Object.<anonymous> (/opt/render/project/src/backend/src/middleware/supabase.js:5:18)
-    at Module._compile (node:internal/modules/cjs/loader:1730:14)
-    at Object..js (node:internal/modules/cjs/loader:1895:10)
-    at Module.load (node:internal/modules/cjs/loader:1465:32)
-    at Function._load (node:internal/modules/cjs/loader:1282:12)
-    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
-    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
-    at Module.require (node:internal/modules/cjs/loader:1487:12)
-    at require (node:internal/modules/helpers:135:16)
-    at Object.<anonymous> (/opt/render/project/src/backend/src/controller/products.controller.js:17:20)
-    at Module._compile (node:internal/modules/cjs/loader:1730:14)
-    at Object..js (node:internal/modules/cjs/loader:1895:10)
-    at Module.load (node:internal/modules/cjs/loader:1465:32)
-    at Function._load (node:internal/modules/cjs/loader:1282:12)
-Node.js v22.16.0ucts.map((p) => {
+    const data = products.map((p) => {
       const prodJSON = p.toJSON();
       if (prodJSON.Prod_image) {
         prodJSON.Prod_image = `${process.env.SUPABASE_URL}/storage/v1/object/public/images/${prodJSON.Prod_image}`;
