@@ -1,30 +1,30 @@
-const { DataTypes } = require("sequelize");
-
-module.exports = (sequelize) => {
+module.exports = (sequelize, DataTypes) => {
   const Product = sequelize.define(
     "Product",
     {
       Prod_name: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
         validate: {
           notEmpty: true,
         },
+      },
+      entreprise_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
       },
       quantity: {
         type: DataTypes.INTEGER,
         defaultValue: 0,
       },
       selling_price: {
-        type: DataTypes.FLOAT, 
+        type: DataTypes.FLOAT,
         allowNull: false,
       },
       cost_price: {
-        type: DataTypes.FLOAT, 
+        type: DataTypes.FLOAT,
         allowNull: false,
       },
-
       Prod_Description: {
         type: DataTypes.TEXT,
       },
@@ -46,9 +46,15 @@ module.exports = (sequelize) => {
       },
     },
     {
-      tableName: "Products", // 👈 Forcer la majuscule dans la BDD
-      freezeTableName: true, // 👈 Empêche Sequelize de changer le nom automatiquement
-      timestamps: true, // 👈 Active createdAt / updatedAt
+      tableName: "Products",
+      freezeTableName: true,
+      timestamps: true,
+      indexes: [
+        {
+          unique: true,
+          fields: ['Prod_name', 'entreprise_id'],
+        },
+      ],
     }
   );
 

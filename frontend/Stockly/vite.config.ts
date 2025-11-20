@@ -31,7 +31,7 @@ export default defineConfig({
       },
       manifest: {
         name: 'Iventello',
-        short_name: 'Iven',
+        short_name: 'Iventello',
         description: 'Modern multi enterprise stock magement app',
         theme_color: '#4DBA87',
         background_color: '#ffffff',
