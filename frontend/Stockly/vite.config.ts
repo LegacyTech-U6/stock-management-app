@@ -28,6 +28,28 @@ export default defineConfig({
       registerType: 'autoUpdate',
       workbox: {
         maximumFileSizeToCacheInBytes: 6 * 1024 * 1024, // 6MB
+      },
+      manifest: {
+        name: 'Iventello',
+        short_name: 'Iven',
+        description: 'Modern multi enterprise stock magement app',
+        theme_color: '#4DBA87',
+        background_color: '#ffffff',
+        display: 'standalone', // plein écran
+        scope: '/',
+        start_url: '/',
+        icons: [
+          {
+            src: '/iventello.png',
+            sizes: '192x192',
+            type: 'image/png'
+          },
+          {
+            src: '/iventello.png',
+            sizes: '512x512',
+            type: 'image/png'
+          }
+        ]
       }
     })
   ],
