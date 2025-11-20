@@ -8,7 +8,7 @@
       <div class="w-full max-w-lg space-y-8">
         <div class="text-start space-y-6">
           <router-link to="/">
-            <Iventello class="w-64" />
+            <img :src=Iventello alt="">
           </router-link>
 
           <h1 class="text-4xl font-extrabold text-gray-900">
@@ -147,9 +147,9 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
 import { useRouter } from 'vue-router'
 import { Eye, EyeOff,Check } from "lucide-vue-next"
-import Iventello from "@/assets/Iventello.vue";
+import Iventello from "@/assets/iventello.png";
 
-import image from "@/assets/image/Iventello Platform Illustration Corrected (1).png"
+import image from "@/assets/image/IventelloPlatform.png"
 import ValidationButton from '@/components/ui/buttons/ValidationButton.vue';
 
 const router = useRouter()

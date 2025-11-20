@@ -11,7 +11,7 @@
       <div class="w-full max-w-lg space-y-10">
         <div class="text-start space-y-6">
           <router-link to="/">
-            <Iventello class=" w-62" />
+            <img :src=Iventello alt="">
           </router-link>
 
           <h1 class="text-4xl font-extrabold text-gray-900">
@@ -80,10 +80,10 @@
 <script setup>
 import { ref } from "vue";
 import { useAuthStore } from "@/stores/authStore";
-import Iventello from "@/assets/Iventello.vue";
-import IventelloPlatform from "@/assets/image/IventelloPlatform.vue";
+import Iventello from "@/assets/iventello.png";
+import IventelloPlatform from "@/assets/image/IventelloPlatform.png";
 import { Eye, EyeOff } from "lucide-vue-next"
-import image from "@/assets/image/Iventello Platform Illustration Corrected (1).png"
+import image from "@/assets/image/IventelloPlatform.png"
 const authStore = useAuthStore();
 const showPassword = ref(false);
 const loginError = ref('');
