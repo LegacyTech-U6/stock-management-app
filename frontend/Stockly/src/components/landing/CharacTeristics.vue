@@ -4,7 +4,7 @@
     <div class="grid lg:grid-cols-2 gap-10 max-w-6xl w-full items-center relative z-10">
       <!-- 🖼️ Section image -->
       <div class="hidden lg:flex justify-center">
-        <TechIcon class="w-48 h-48 lg:w-64 lg:h-64" />
+        <TechIcon class="w-78 h-78 lg:w-94 lg:h-94" />
       </div>
 
       <!-- 📝 Section texte -->
