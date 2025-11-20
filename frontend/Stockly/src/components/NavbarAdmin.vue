@@ -29,7 +29,7 @@
       <!-- Logo -->
       <div class=" border-b border-gray-200/50">
         <div class="flex items-center gap-3">
-          <Iventello  class="w-64"/>
+          <img :src=Iventello alt="">
         </div>
       </div>
 
@@ -219,7 +219,7 @@ import {
 } from 'lucide-vue-next'
 import NavLink from '@/components/NavLink.vue'
 import { useAuthStore } from '@/stores/authStore.js'
-import Iventello from '@/assets/Iventello.vue'
+import Iventello from '@/assets/iventello.png'
 
 const authStore = useAuthStore()
 
