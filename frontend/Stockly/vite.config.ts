@@ -13,7 +13,7 @@ export default defineConfig({
   plugins: [
     vue(),
     vueJsx(),
-    vueDevTools(),
+   process.env.STORYBOOK ? null : vueDevTools(),
     tailwindcss(),
 
     // gzip + brotli

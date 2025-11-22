@@ -15,7 +15,7 @@
           </router-link>
 
           <h1 class="text-4xl font-extrabold text-gray-900">
-          Sign in
+            Sign in
           </h1>
         </div>
 
@@ -41,7 +41,7 @@
               class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">
               <Eye v-if="!showPassword" class="w-5 h-5" />
               <EyeOff v-else class="w-5 h-5" />
-              </button>
+            </button>
 
           </div>
 
@@ -56,13 +56,12 @@
         <div v-if="loginError" class="p-3 bg-red-50 text-red-700 border border-red-200 rounded-lg">
           {{ loginError }}
         </div>
-
-        <!-- Button -->
-        <button @click="handleLogin" :disabled="isLoading"
-          class="w-full py-3 bg-[#0C333B] text-white font-semibold rounded-full hover:bg-emerald-600 transition disabled:opacity-50">
-          Sign in
-        </button>
-
+        <div class=" justify-center">
+          <ValidationButton
+            
+            text="Sign in" width="450px"  loadingText="Signing in" color="#0C333B" variant="flat" :icon="Check" size="large" :asyncClick="handleLogin"
+            :loading="isLoading" />
+        </div>
         <!-- Links -->
         <p class="text-center text-sm text-gray-700">
           You don't have an account?
@@ -82,8 +81,9 @@ import { ref } from "vue";
 import { useAuthStore } from "@/stores/authStore";
 import Iventello from "@/assets/iventello.png";
 import IventelloPlatform from "@/assets/image/IventelloPlatform.png";
-import { Eye, EyeOff } from "lucide-vue-next"
+import { Eye, EyeOff, Check } from "lucide-vue-next"
 import image from "@/assets/image/IventelloPlatform.png"
+import ValidationButton from "@/components/ui/buttons/ValidationButton.vue";
 const authStore = useAuthStore();
 const showPassword = ref(false);
 const loginError = ref('');

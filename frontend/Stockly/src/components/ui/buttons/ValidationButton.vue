@@ -1,50 +1,69 @@
 <template>
-  <v-btn
-    :disabled="loading || disabled"
-    :loading="loading"
-    :color="color"
-    :size="size"
-    :variant="variant"
+  <n-button
     :block="block"
-    class="text-none"
+    :disabled="loading || disabled"
+    :size="size"
     @click="handleClick"
+    v-bind="$attrs"
+    :type="!isHexColor ? colorType : 'default'"
+    :style="computedStyle"
   >
-    <!-- Icône gauche si défini et pas en loading -->
-    <template v-if="icon && !loading">
-      <component :is="icon" class="h-5 w-5 mr-2" />
+    <!-- Icône gauche si définie et pas en loading -->
+    <template #icon>
+      <n-icon v-if="icon && !loading">
+        <component :is="icon" />
+      </n-icon>
     </template>
-    
-    <!-- Texte du bouton -->
-    <span>{{ text }}</span>
-  </v-btn>
+
+    <!-- Texte et spinner -->
+    <span class="flex items-center justify-center gap-2">
+      <span>{{ loading ? loadingText : text }}</span>
+      <n-spin v-if="loading" size="small" />
+    </span>
+  </n-button>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { NButton, NIcon, NSpin } from 'naive-ui'
 
 const props = defineProps({
   text: { type: String, default: 'Submit' },
-  color: { type: String, default: 'indigo-darken-3' },
-  size: { type: String, default: 'x-large' }, // small, medium, large, x-large
-  variant: { type: String, default: 'flat' }, // flat, outlined, contained
-  icon: { type: [String, Object], default: null }, // Vuetify icon (string) ou Lucide Vue component
-  block: { type: Boolean, default: true },
+  loadingText: { type: String, default: 'Chargement...' },
+  color: { type: String, default: 'primary' }, 
+  size: { type: String, default: 'medium' },   
+  icon: { type: [Object, Function], default: null },
+  block: { type: Boolean, default: false },
   disabled: { type: Boolean, default: false },
-  asyncClick: { type: Function, default: null }, // fonction async
+  asyncClick: { type: Function, default: null },
+  loading: { type: Boolean, default: false },  
+  width: { type: String, default: null }       
 })
 
-const loading = ref(false)
+const internalLoading = ref(false)
+const loading = computed(() => props.loading || internalLoading.value)
+const isHexColor = computed(() => props.color.startsWith('#'))
+const colorType = computed(() => {
+  return ['primary','success','warning','error','info'].includes(props.color) ? props.color : 'default'
+})
 
 const handleClick = async () => {
   if (!props.asyncClick) return
-
   try {
-    loading.value = true
+    internalLoading.value = true
     await props.asyncClick()
   } catch (err) {
     console.error(err)
   } finally {
-    loading.value = false
+    internalLoading.value = false
   }
 }
+
+// computedStyle uniquement pour hex et width
+const computedStyle = computed(() => {
+  const style = {}
+  if (isHexColor.value) style.backgroundColor = props.color, style.color = 'white'  , style.border = 'none' 
+  if (props.width) style.width = props.width
+  return style
+})
 </script>
