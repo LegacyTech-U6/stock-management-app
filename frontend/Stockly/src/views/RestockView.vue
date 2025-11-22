@@ -393,34 +393,98 @@
 </template>
 
 <script setup>
+/**
+ * RestockView.vue - Script Setup
+ * 
+ * Gère le processus de réapprovisionnement des produits
+ * Permet aux utilisateurs de:
+ * - Augmenter la quantité en stock
+ * - Enregistrer le coût d'achat
+ * - Noter la raison du réapprovisionnement
+ * - Confirmer et sauvegarder l'opération
+ */
+
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getOneProduct as fetchProductById } from '@/service/api'
 import { useProductStore } from '@/stores/productStore'
 import { useActionMessage } from '@/composable/useActionMessage'
 import { useGlobalModal } from '@/composable/useValidation'
+
+// ========================================
+// COMPOSABLES ET STORES
+// ========================================
+
+/** Composable pour afficher les confirmations modales */
 const { show } = useGlobalModal()
+
+/** Composable pour les notifications (succès/erreur) */
 const { showSuccess, showError } = useActionMessage()
+
+/** Store pour la gestion des produits */
+const productStore = useProductStore()
+
+/** Router Vue pour la navigation */
+const router = useRouter()
+
+/** Route actuelle (contient l'ID du produit en param) */
+const route = useRoute()
+
+// ========================================
+// DONNÉES RÉACTIVES
+// ========================================
+
+/** Quantité d'unités à ajouter au stock */
 const quantity = ref(1)
+
+/** Coût unitaire du produit */
 const unitCost = ref(0)
+
+/** Fournisseur par défaut */
 const supplier = ref('Peripheral Plus')
+
+/** Notes supplémentaires sur le réapprovisionnement */
 const notes = ref('')
+
+/** Raison du réapprovisionnement (Out of Stock, Low Stock, etc.) */
 const restockReason = ref('Out of Stock')
+
+/** Message d'erreur à afficher (s'il existe) */
 const submitError = ref('')
 
-const router = useRouter()
-const route = useRoute()
-const productStore = useProductStore()
+/** L'objet produit récupéré depuis l'API */
 const product = ref(null)
 
+/** Variable stockant la vraie quantité réelle calculée */
 let realqty = null
+
+/** ID du réapprovisionnement extrait des paramètres de route */
 const reStockId = route.params.reStockId
+
+// ========================================
+// LIFECYCLE HOOKS
+// ========================================
+
+/**
+ * Hook du cycle de vie: Exécuté au montage du composant
+ * 
+ * Actions:
+ * 1. Extrait l'ID du produit des paramètres de route
+ * 2. Appelle l'API pour récupérer les détails du produit
+ * 3. Gère les différents formats de réponse (array ou object)
+ * 4. Affiche une erreur si le produit n'est pas trouvé
+ */
 onMounted(async () => {
   const id = route.params.reStockId
+  
+  // Vérifie que l'ID du produit existe
   if (!reStockId) return console.error('No product ID found in route')
 
   try {
+    // Récupère le produit depuis l'API
     const response = await fetchProductById(id)
+    
+    // Gère les différents formats de réponse
     if (response?.data) {
       product.value = Array.isArray(response.data) ? response.data[0] : response.data
     } else if (Array.isArray(response)) {
@@ -434,14 +498,38 @@ onMounted(async () => {
   }
 })
 
+// ========================================
+// PROPRIÉTÉS CALCULÉES (computed)
+// ========================================
+
+/**
+ * Calcule le nouveau niveau de stock après réapprovisionnement
+ * 
+ * Formule: Stock actuel + Quantité à ajouter
+ * Stocke aussi la valeur dans la variable realqty pour utilisation ultérieure
+ * 
+ * @returns {number} Le nouveau niveau de stock
+ */
 const newStockLevel = computed(() => {
   if (!product.value) return quantity.value
   const qty = Number(product.value.quantity || 0)
   realqty = qty + quantity.value
   return realqty
 })
+
+/** Quantité actuelle du produit (avant réapprovisionnement) */
 const quantitytoBeAdded = computed(() => Number(product.value.quantity || 0))
 
+/**
+ * Détermine le statut ACTUEL du stock
+ * 
+ * Statuts possibles:
+ * - 'Out of Stock': quantité = 0
+ * - 'Low Stock': quantité < niveau minimum
+ * - 'In Stock': quantité normale
+ * 
+ * @returns {string} Le statut actuel du produit
+ */
 const currentStatus = computed(() => {
   if (!product.value) return 'Loading...'
   const stock = Number(product.value.quantity || 0)
@@ -450,6 +538,14 @@ const currentStatus = computed(() => {
   return 'In Stock'
 })
 
+/**
+ * Détermine le statut FUTUR du stock (après réapprovisionnement)
+ * 
+ * Utilise le même système de statuts que currentStatus
+ * Permet de montrer à l'utilisateur le résultat avant confirmation
+ * 
+ * @returns {string} Le statut après réapprovisionnement
+ */
 const newStatus = computed(() => {
   if (!product.value) return 'Loading...'
   const total = newStockLevel.value
@@ -458,14 +554,37 @@ const newStatus = computed(() => {
   return 'In Stock'
 })
 
+// ========================================
+// MÉTHODES - CONTRÔLES DE QUANTITÉ
+// ========================================
+
+/**
+ * Augmente la quantité d'une unité
+ * Appelé par le bouton "+" de l'interface
+ */
 const handleIncrement = () => {
   quantity.value++
 }
 
+/**
+ * Diminue la quantité d'une unité
+ * Minimum: 1 unité (ne peut pas être négatif)
+ * Appelé par le bouton "-" de l'interface
+ */
 const handleDecrement = () => {
   quantity.value = Math.max(1, quantity.value - 1)
 }
 
+/**
+ * Valide et corrige la saisie manuelle de quantité
+ * 
+ * Vérifie:
+ * - Que la valeur est un nombre valide
+ * - Que la valeur est >= 1
+ * - Remet à 1 par défaut si invalide
+ * 
+ * @param {Event} e - Événement de changement du champ input
+ */
 const validateQuantity = (e) => {
   const value = parseInt(e.target.value)
   if (isNaN(value) || value < 1) {
@@ -473,6 +592,22 @@ const validateQuantity = (e) => {
   }
 }
 
+// ========================================
+// MÉTHODES - UTILITAIRES DE COULEUR
+// ========================================
+
+/**
+ * Retourne la couleur de texte basée sur le statut du stock
+ * 
+ * Mapping:
+ * - 'In Stock' → vert (#16a34a)
+ * - 'Low Stock' → orange (#ea580c)
+ * - 'Out of Stock' → rouge (#dc2626)
+ * - Défaut → gris
+ * 
+ * @param {string} status - Le statut du stock
+ * @returns {string} Classe Tailwind de couleur
+ */
 const getStatusColor = (status) => {
   switch (status) {
     case 'In Stock':
@@ -486,6 +621,18 @@ const getStatusColor = (status) => {
   }
 }
 
+/**
+ * Retourne le style de badge basé sur le statut du stock
+ * 
+ * Mapping:
+ * - 'In Stock' → fond vert + texte vert
+ * - 'Low Stock' → fond orange + texte orange
+ * - 'Out of Stock' → fond rouge + texte rouge
+ * - Défaut → fond gris + texte gris
+ * 
+ * @param {string} status - Le statut du stock
+ * @returns {string} Classes Tailwind de style du badge
+ */
 const getStatusBadge = (status) => {
   switch (status) {
     case 'In Stock':

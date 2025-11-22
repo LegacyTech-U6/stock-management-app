@@ -1,15 +1,27 @@
+<!-- 
+  SalesInterface.vue
+  ===================
+  Interface de point de vente (POS)
+  - Permet créer une nouvelle vente/facture
+  - Sélection du client
+  - Ajout de produits au panier
+  - Calcul du total et paiement
+  - Gestion du panier (mobile et desktop)
+-->
 <template>
   <div class="sales-interface min-h-screen bg-gray-50">
-    <!-- Header -->
+    <!-- En-tête -->
     <div class="bg-white border-b border-gray-200">
       <div class="p-4 lg:p-6">
         <div class="flex justify-between items-start">
           <div class="flex gap-2">
+            <!-- Bouton panier (mobile only) -->
             <button
               @click="showCartModal = true"
               class="lg:hidden relative bg-gray-900 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-gray-800 transition-colors"
             >
               <span>Cart</span>
+              <!-- Badge avec le nombre d'articles -->
               <span
                 v-if="saleItems.length > 0"
                 class="absolute -top-2 -right-2 bg-blue-600 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center font-medium"
@@ -24,14 +36,15 @@
 
     <div class="p-4 lg:p-6">
       <div class="lg:grid grid-cols-12 gap-6">
-        <!-- Left Section: Client & Products -->
+        <!-- Section gauche: Sélection client et produits -->
         <div class="lg:col-span-8 space-y-4">
-          <!-- Client Selector -->
+          <!-- Sélecteur de client -->
 
-          <!-- Products Section -->
+          <!-- Section produits -->
           <div class="bg-white border border-gray-200 rounded-lg p-4 lg:p-5">
             <div class="flex justify-between items-center mb-4">
               <h2 class="text-lg font-semibold text-gray-900">Products</h2>
+              <!-- Bouton parcourir tous les produits (mobile) -->
               <button
                 @click="showProductModal = true"
                 class="lg:hidden bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors"
@@ -40,12 +53,12 @@
               </button>
             </div>
 
-            <!-- Desktop: Products visible -->
+            <!-- Affichage desktop: liste des produits visible -->
             <div class="hidden lg:block">
               <ProductSelector :products="products" @add-to-sale="addToSale" />
             </div>
 
-            <!-- Mobile: Product count info -->
+            <!-- Affichage mobile: info sur le nombre de produits -->
             <div class="lg:hidden text-sm text-gray-600">
               {{ products.length }} products available
             </div>

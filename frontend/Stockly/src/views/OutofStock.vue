@@ -225,63 +225,169 @@
 </template>
 
 <script setup>
+/**
+ * OutofStock.vue - Script Setup
+ * 
+ * Affiche et gère tous les produits en rupture de stock
+ * Permet aux utilisateurs de:
+ * - Voir les produits avec quantité = 0
+ * - Analyser les revenus perdus
+ * - Trier et filtrer les produits en rupture
+ * - Initier le réapprovisionnement
+ */
+
 import { ref, computed, onMounted } from 'vue'
 import { OutOfStock } from '@/service/api'
 import { useRoute, useRouter } from 'vue-router'
 import { useActionMessage } from '@/composable/useActionMessage'
+
+// ========================================
+// COMPOSABLES ET ROUTER
+// ========================================
+
+/** Composable pour les notifications */
 const { showSuccess, showError } = useActionMessage()
-const finishedProducts = ref([]) // ✅ Start as an empty array
-const message = ref('')
-const orders = ref([])
+
+/** Router Vue pour la navigation */
 const router = useRouter()
+
+// ========================================
+// DONNÉES RÉACTIVES
+// ========================================
+
+/** 
+ * Liste des produits en rupture de stock
+ * Tableau vide au départ (rempli par fetchFinishedProducts)
+ */
+const finishedProducts = ref([])
+
+/** Message retourné par l'API */
+const message = ref('')
+
+/** Commandes de réapprovisionnement */
+const orders = ref([])
+
+/** Terme de recherche pour filtrer les produits */
 const searchQuery = ref('')
+
+/** Catégorie sélectionnée pour filtrer ('all' = sans filtre) */
 const selectedCategory = ref('all')
+
+/** Champ de tri sélectionné: 'daysEmpty', 'lostRevenue', 'unitPrice' */
 const sortBy = ref('daysEmpty')
+
+/** Compteur de produits haute valeur (prix de vente élevé) */
 const highValueCount = ref(0)
+
+/** Liste de toutes les catégories disponibles */
 const categories = ref([])
+
+/** Alias pour finishedProducts (pour la compatibilité) */
 const outOfStockProducts = ref([])
+
+/** Revenu total perdu à cause des ruptures de stock */
 const totalLostRevenue = ref(0)
+
+/** Nombre moyen de jours depuis la rupture */
 const averageDaysEmpty = ref(0)
+
+// ========================================
+// LIFECYCLE HOOKS
+// ========================================
+
+/**
+ * Hook du cycle de vie: Exécuté au montage du composant
+ * 
+ * Appel à fetchFinishedProducts pour charger les données initiales
+ */
 onMounted(async () => {
   await fetchFinishedProducts()
 })
 
+// ========================================
+// MÉTHODES - RÉCUPÉRATION DES DONNÉES
+// ========================================
+
+/**
+ * Récupère la liste des produits en rupture de stock depuis l'API
+ * 
+ * Actions:
+ * 1. Appelle l'API OutOfStock()
+ * 2. Stocke le message et les commandes
+ * 3. Remplit finishedProducts avec les produits retournés
+ * 4. Gère les erreurs de connexion
+ * 
+ * Structure de la réponse API attendue:
+ * {
+ *   message: string,
+ *   orders: Array,
+ *   products: Array<{id, Prod_name, category, selling_price, cost_price, lostRevenue, daysEmpty}>
+ * }
+ */
 async function fetchFinishedProducts() {
   try {
     const data = await OutOfStock()
     console.log('✅ API Response:', data)
 
-    // ✅ Store data properly
+    // Stocke les données de la réponse API
     message.value = data.message
     orders.value = data.orders
-    finishedProducts.value = data.products || [] // Important
+    finishedProducts.value = data.products || [] // Initialise avec un tableau vide si pas de produits
   } catch (err) {
     showError('Failed to fetch out-of-stock products')
     console.error('❌ Error fetching out-of-stock products:', err)
   }
 }
 
-// 🧠 Filtering logic
+// ========================================
+// PROPRIÉTÉS CALCULÉES (COMPUTED)
+// ========================================
+
+/**
+ * Filtre et trie les produits selon les critères sélectionnés
+ * 
+ * Applique 3 niveaux de traitement:
+ * 1. COPIE: Crée une copie du tableau pour ne pas modifier l'original
+ * 2. FILTRAGE:
+ *    - Recherche: par nom de produit
+ *    - Catégorie: si une catégorie est sélectionnée
+ * 3. TRI:
+ *    - 'daysEmpty': Jours depuis la rupture (ordre décroissant)
+ *    - 'lostRevenue': Revenu perdu (ordre décroissant)
+ *    - 'unitPrice': Prix de vente (ordre décroissant)
+ * 
+ * @returns {Array} Tableau filtré et trié de produits
+ */
 const filteredProducts = computed(() => {
+  // Crée une copie pour éviter de modifier finishedProducts
   let filtered = [...finishedProducts.value]
 
+  // FILTRAGE 1: Recherche par nom
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
     filtered = filtered.filter((p) => p.Prod_name.toLowerCase().includes(query))
   }
 
+  // FILTRAGE 2: Catégorie
   if (selectedCategory.value !== 'all') {
     filtered = filtered.filter((p) => p.category === selectedCategory.value)
   }
 
+  // TRI: Applique le tri selon le champ sélectionné
   filtered.sort((a, b) => {
     switch (sortBy.value) {
       case 'daysEmpty':
+        // Trie par nombre de jours (du plus ancien au plus récent)
         return (b.daysEmpty || 0) - (a.daysEmpty || 0)
+      
       case 'lostRevenue':
+        // Trie par revenu perdu (du plus important au moins important)
         return (b.lostRevenue || 0) - (a.lostRevenue || 0)
+      
       case 'unitPrice':
+        // Trie par prix de vente (du plus cher au moins cher)
         return (b.selling_price || 0) - (a.selling_price || 0)
+      
       default:
         return 0
     }
@@ -290,7 +396,18 @@ const filteredProducts = computed(() => {
   return filtered
 })
 
-// 💰 Formatting
+// ========================================
+// MÉTHODES - UTILITAIRES
+// ========================================
+
+/**
+ * Formate un nombre en devise USD avec 2 décimales
+ * 
+ * Exemple: 1234.567 → "1,234.57"
+ * 
+ * @param {number} num - Le nombre à formater
+ * @returns {string} Nombre formaté en devise
+ */
 const formatNumber = (num) => {
   return new Intl.NumberFormat('en-US', {
     minimumFractionDigits: 2,
@@ -298,6 +415,20 @@ const formatNumber = (num) => {
   }).format(num)
 }
 
+// ========================================
+// MÉTHODES - ACTIONS
+// ========================================
+
+/**
+ * Navigue vers la page de réapprovisionnement
+ * 
+ * Actions:
+ * 1. Vérifie que le produit est valide
+ * 2. Navigue vers la route 'restock' avec l'ID du produit
+ * 3. Affiche l'ID du produit en log pour déboggage
+ * 
+ * @param {Object} finishedProduct - Le produit en rupture à réapprovisionner
+ */
 const handleRestock = (finishedProduct) => {
   if (!finishedProduct) return console.error('❌ No product loaded')
 

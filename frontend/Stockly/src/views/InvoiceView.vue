@@ -1,25 +1,34 @@
+<!-- 
+  InvoiceView.vue
+  ================
+  Gestionnaire de factures/invoices
+  - Affiche la liste des factures
+  - Filtrage par client, statut et tri
+  - Recherche en temps réel
+  - Actions sur les factures (vue, édition, export)
+-->
 <template>
   <div class="min-h-screen bg-gray-50 p-6">
-    <!-- Header Section -->
+    <!-- En-tête -->
     <div class="mb-6">
       <h1 class="text-2xl font-semibold text-gray-900">Invoices</h1>
       <p class="text-sm text-gray-500 mt-1">Manage your stock invoices</p>
     </div>
 
-    <!-- Main Content Card -->
+    <!-- Carte principale contenant la liste -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-      <!-- Toolbar -->
+      <!-- Barre d'outils: Recherche et filtres -->
       <div class="flex items-center justify-between p-4 border-b border-gray-100">
-        <!-- Search -->
+        <!-- Champ de recherche -->
         <div class="relative w-64">
           <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input v-model="searchQuery" type="text" placeholder="Search"
             class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none" />
         </div>
 
-        <!-- Filters and Actions -->
+        <!-- Filtres et actions -->
         <div class="flex items-center gap-3">
-          <!-- Customer Filter -->
+          <!-- Filtre client -->
           <select v-model="selectedCustomer"
             class="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none bg-white">
             <option :value="null">Customer</option>
@@ -28,7 +37,7 @@
             </option>
           </select>
 
-          <!-- Status Filter -->
+          <!-- Filtre statut -->
           <select v-model="selectedStatus"
             class="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none bg-white">
             <option :value="null">Status</option>
@@ -37,7 +46,7 @@
             </option>
           </select>
 
-          <!-- Sort By -->
+          <!-- Options de tri -->
           <select v-model="sortBy"
             class="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none bg-white">
             <option v-for="option in sortOptions" :key="option.value" :value="option.value">
@@ -45,8 +54,7 @@
             </option>
           </select>
 
-
-
+          <!-- Bouton rafraîchir -->
           <button
             class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-200 hover:bg-gray-50 transition-colors"
             title="Refresh" @click="refreshInvoices">
@@ -56,7 +64,7 @@
         </div>
       </div>
 
-      <!-- Loading State -->
+      <!-- État de chargement -->
       <div v-if="loadingClients" class="flex flex-col items-center justify-center py-16">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mb-4"></div>
         <p class="text-lg font-semibold text-gray-800">Loading invoices...</p>

@@ -1,6 +1,18 @@
-<!-- MainPage.vue -->
+<!-- 
+  MainPage.vue
+  =============
+  Gestionnaire d'entreprises / Dashboard multi-entreprise
+  - Affiche la liste de toutes les entreprises/sociétés
+  - Permet la création/modification d'entreprises
+  - Filtrage, recherche et multi-vues (grid/table)
+  - Statistiques résumées par entreprise
+-->
 <template>
   <div class="min-h-screen bg-gray-50">
+    <!-- 
+      SECTION CHARGEMENT
+      Affiche un spinner si les données se chargent encore
+    -->
     <div v-if="store.isLoading" class="max-w-7xl mx-auto">
       <LazyLoader :loading="loadingClients" :skeleton-count="6">
         <template #icon>
@@ -12,14 +24,18 @@
       </LazyLoader>
     </div>
 
+    <!-- 
+      SECTION PRINCIPALE
+      Affichée une fois les données chargées
+    -->
     <div v-else class="max-w-8xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
-      <!-- Header -->
+      <!-- Header: Titre et description -->
       <div class="mb-4 sm:mb-6">
         <h1 class="text-xl sm:text-2xl font-bold text-gray-900 mb-1">Companies</h1>
         <p class="text-sm text-gray-500">Manage your companies</p>
       </div>
 
-      <!-- Stats Grid Component -->
+      <!-- Statistiques: Cartes résumées en grille -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
         <GridCard
          v-for="(stat, idx) in stats ?? []"
@@ -32,9 +48,10 @@
         />
       </div>
       <div class="border rounded-xl border-gray-200">
-        <!-- Controls Bar -->
+        <!-- SECTION CONTRÔLES: Recherche, filtres, ajouter -->
         <div class="bg-white rounded-t-xl shadow-sm border border-gray-200 p-3 sm:p-4">
           <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <!-- Champ de recherche -->
             <div class="flex-1">
               <div class="relative">
                 <svg
@@ -58,7 +75,9 @@
                 />
               </div>
             </div>
+            <!-- Boutons de filtrage et ajout -->
             <div class="flex items-center gap-2">
+              <!-- Filtre par statut -->
               <button
                 class="px-3 py-2 text-sm bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-all flex items-center gap-2"
               >
@@ -73,6 +92,7 @@
                 </svg>
               </button>
 
+              <!-- Bouton paramètres (mobile only) -->
               <button
                 class="p-2 sm:hidden bg-white border border-gray-200 rounded-lg hover:bg-gray-50"
               >
@@ -90,6 +110,7 @@
                   />
                 </svg>
               </button>
+              <!-- Bouton créer/ajouter entreprise -->
               <button
                 @click="showCreateModal = true"
                 class="px-3 sm:px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-all text-sm font-medium flex items-center gap-2 whitespace-nowrap"
@@ -109,8 +130,9 @@
           </div>
         </div>
 
-        <!-- View Toggle - Mobile Only -->
+        <!-- Sélecteur de vue: Grid ou Table (mobile only) -->
         <div class="flex gap-2 mb-4 sm:hidden">
+          <!-- Bouton vue grille -->
           <button
             @click="viewMode = 'grid'"
             :class="[
@@ -122,6 +144,7 @@
           >
             Grid View
           </button>
+          <!-- Bouton vue tableau -->
           <button
             @click="viewMode = 'table'"
             :class="[
@@ -135,7 +158,7 @@
           </button>
         </div>
 
-        <!-- Table View (Desktop by default, toggleable on mobile) -->
+        <!-- Affichage tableau (défaut desktop, sélectionnable mobile) -->
         <EnterpriseTable
           v-if="viewMode === 'table' || !isMobile"
           :enterprises="filteredEntreprises"
@@ -143,7 +166,7 @@
           @edit="handleEditEnterprise"
         />
 
-        <!-- Grid View (Mobile only when selected) -->
+        <!-- Affichage grille (mobile seulement quand sélectionné) -->
         <EnterpriseGrid
           v-if="viewMode === 'grid' && isMobile"
           :enterprises="filteredEntreprises"
@@ -151,7 +174,7 @@
           @edit="handleEditEnterprise"
         />
 
-        <!-- Empty State -->
+        <!-- État vide: Aucune entreprise trouvée -->
         <div v-if="filteredEntreprises.length === 0" class="text-center py-12 sm:py-16">
           <div
             class="w-16 h-16 bg-gray-100 rounded-xl flex items-center justify-center mx-auto mb-4"
@@ -182,7 +205,7 @@
       </div>
     </div>
 
-    <!-- Create/Edit Modal -->
+    <!-- MODAL: Créer/Modifier une entreprise -->
     <div
       v-if="showCreateModal"
       class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4"
@@ -191,11 +214,13 @@
       <div
         class="bg-white rounded-xl p-6 max-w-md w-full mx-4 shadow-2xl max-h-[95vh] overflow-y-auto"
       >
+        <!-- Titre du modal (création ou édition) -->
         <h2 class="text-xl font-bold text-gray-900 mb-6">
           {{ isEditing ? 'Edit Company' : 'Add New Company' }}
         </h2>
 
         <div class="space-y-4">
+          <!-- Champ: Nom de l'entreprise -->
           <div>
             <label class="block text-xs font-medium text-gray-700 mb-1.5">Company Name *</label>
             <input
@@ -205,12 +230,15 @@
               class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all"
             />
           </div>
+          
+          <!-- Upload logo -->
           <ImageUploader
             v-model="entrepriseData.logo_url"
             label="Company Logo"
             :preview-size="80"
           />
 
+          <!-- Champ: Description -->
           <div>
             <label class="block text-xs font-medium text-gray-700 mb-1.5">Description</label>
             <textarea
@@ -221,6 +249,7 @@
             ></textarea>
           </div>
 
+          <!-- Champs: Ville et Code postal -->
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label class="block text-xs font-medium text-gray-700 mb-1.5">City</label>
@@ -242,6 +271,7 @@
             </div>
           </div>
 
+          <!-- Champ: Email -->
           <div>
             <label class="block text-xs font-medium text-gray-700 mb-1.5">Email</label>
             <input
@@ -252,6 +282,7 @@
             />
           </div>
 
+          <!-- Champ: Téléphone -->
           <div>
             <label class="block text-xs font-medium text-gray-700 mb-1.5">Phone</label>
             <input
@@ -261,6 +292,8 @@
               class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all"
             />
           </div>
+
+          <!-- Champ: Numéro fiscal -->
           <div>
             <label class="block text-xs font-medium text-gray-700 mb-1.5">Numero fiscal</label>
             <input
@@ -270,6 +303,8 @@
               class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all"
             />
           </div>
+
+          <!-- Champ: Informations bancaires -->
           <div>
             <label class="block text-xs font-medium text-gray-700 mb-1.5"
               >Information bancaire</label
@@ -281,6 +316,8 @@
               class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all"
             />
           </div>
+
+          <!-- Champ: Identifiant unique NUI -->
           <div>
             <label class="block text-xs font-medium text-gray-700 mb-1.5"
               >numero d'identifiant unique</label
@@ -293,6 +330,7 @@
             />
           </div>
 
+          <!-- Boutons d'action: Annuler et Sauvegarder -->
           <div class="flex gap-3 mt-6">
             <button
               @click="closeModal"
@@ -314,6 +352,11 @@
   </div>
 </template>
 
+<!-- 
+  Script Setup
+  ==============
+  Logique et état de la page MainPage
+-->
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import EnterpriseGrid from '@/components/Enterprise/EnterpriseGrid.vue'
@@ -327,19 +370,31 @@ import ImageUploader from '@/components/main/ImageUploader.vue'
 import GridCard from '@/components/ui/cards/GridCard.vue'
 import { Users, CheckCircle, XCircle, MapPin } from 'lucide-vue-next'
 
+// ========================================
+// COMPOSITION API - HOOKS ET STORES
+// ========================================
+
+// Action message: Affiche des notifications de succès/erreur
 const { showSuccess, showError } = useActionMessage()
-const store = useEntrepriseStore()
-const authStore = useAuthStore()
-const router = useRouter()
 
-const isSubmitting = ref(false)
-const isEditing = ref(false)
-const searchQuery = ref('')
-const showCreateModal = ref(false)
-const viewMode = ref('table')
-const loadingClients = ref(true)
-const isMobile = ref(window.innerWidth < 640)
+// Stores Pinia
+const store = useEntrepriseStore()        // Gère les entreprises
+const authStore = useAuthStore()          // Gère l'authentification
+const router = useRouter()                // Navigation
 
+// ========================================
+// DONNÉES RÉACTIVES
+// ========================================
+
+const isSubmitting = ref(false)           // Bouton désactivé pendant la soumission
+const isEditing = ref(false)              // Mode édition du modal
+const searchQuery = ref('')               // Terme de recherche
+const showCreateModal = ref(false)        // Affichage du modal create/edit
+const viewMode = ref('table')             // Vue: 'table' ou 'grid'
+const loadingClients = ref(true)          // État de chargement
+const isMobile = ref(window.innerWidth < 640)  // Détection mobile
+
+// Objet pour gérer les données du formulaire
 const entrepriseData = ref({
   name: '',
   description: '',
@@ -354,10 +409,20 @@ const entrepriseData = ref({
   informations_bancaires: '',
 })
 
+// ========================================
+// ÉVÉNEMENTS ET LISTENERS
+// ========================================
+
+// Détecte le changement de taille d'écran (responsive)
 const handleResize = () => {
   isMobile.value = window.innerWidth < 640
 }
 
+// ========================================
+// FONCTIONS UTILITAIRES
+// ========================================
+
+// Convertit la couleur de gradient en couleur hex pour les graphiques
 const getChartColor = (gradient) => {
   const colorMap = {
     'from-orange-400 to-orange-500': '#fb923c',
@@ -368,18 +433,30 @@ const getChartColor = (gradient) => {
   return colorMap[gradient] || '#fb923c'
 }
 
+// ========================================
+// LIFECYCLE HOOKS
+// ========================================
+
 onMounted(() => {
+  // Ajoute le listener de redimensionnement
   window.addEventListener('resize', handleResize)
 })
 
 onUnmounted(() => {
+  // Nettoie le listener lors de la destruction du composant
   window.removeEventListener('resize', handleResize)
 })
 
+// ========================================
+// PROPRIÉTÉS CALCULÉES (COMPUTED)
+// ========================================
+
+// Récupère le nom de l'utilisateur connecté
 const userName = computed(() => {
   return authStore.user?.username || 'User'
 })
 
+// Filtre les entreprises selon la recherche
 const filteredEntreprises = computed(() => {
   const entreprises = store.entreprises || []
   if (!searchQuery.value) return entreprises
@@ -390,7 +467,7 @@ const filteredEntreprises = computed(() => {
   )
 })
 
-
+// Génère les cartes de statistiques
 const stats = computed(() => {
   return [
     {
@@ -424,18 +501,24 @@ const stats = computed(() => {
   ]
 })
 
+// ========================================
+// MÉTHODES DE GESTION
+// ========================================
 
+// Ouvre le modal en mode édition
 const handleEditEnterprise = (enterprise) => {
   isEditing.value = true
   entrepriseData.value = { ...enterprise }
   showCreateModal.value = true
 }
 
+// Ouvre le dashboard de l'entreprise sélectionnée
 const handleOpenEnterprise = (enterprise) => {
   store.setActiveEntreprise(enterprise)
   router.push(`/${store.activeEntreprise.uuid}/dashboard`)
 }
 
+// Crée ou modifie une entreprise
 const createEntreprise = async () => {
   isSubmitting.value = true
   try {
@@ -462,6 +545,7 @@ const createEntreprise = async () => {
   }
 }
 
+// Ferme le modal et réinitialise les données
 const closeModal = () => {
   showCreateModal.value = false
   isEditing.value = false
@@ -480,9 +564,13 @@ const closeModal = () => {
   }
 }
 
+// ========================================
+// INITIALISATION
+// ========================================
+
 onMounted(async () => {
   loadingClients.value = true
-  await store.fetchEntreprises()
+  await store.fetchEntreprises()  // Récupère toutes les entreprises
   loadingClients.value = false
 })
 </script>

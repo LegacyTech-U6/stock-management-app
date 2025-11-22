@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen max-w-7xl mx-auto items-center grid grid-cols-1 gap-5 lg:grid-cols-2">
 
-  
+
 
     <!-- Section droite (formulaire) -->
     <div class="flex items-center justify-center p-8 lg:px-10 py-12">
@@ -102,16 +102,10 @@
           </div>
 
           <!-- Button -->
-  <ValidationButton
-    text="Verify and Continue"
-    color="green"
-    size="large"
-    variant="contained"
-    :icon="CheckIcon"
-    :asyncClick="handleVerify"
-  />
+          <ValidationButton text="Verify and Continue" color="green" size="large" variant="contained" :icon="CheckIcon"
+            :asyncClick="handleVerify" />
           <button type="submit" :disabled="loading"
-          class="w-full py-3 bg-[#0C333B] text-white font-semibold rounded-full hover:bg-emerald-600 transition disabled:opacity-50">
+            class="w-full py-3 bg-[#0C333B] text-white font-semibold rounded-full hover:bg-emerald-600 transition disabled:opacity-50">
             <span v-if="!loading">Create Account</span>
             <span v-else>Loading…</span>
           </button>
@@ -126,12 +120,12 @@
         </form>
       </div>
     </div>
-      <!-- Section gauche (texte + image) -->
+    <!-- Section gauche (texte + image) -->
     <div class="hidden lg:flex flex-col items-center justify-center  space-y-8">
       <!-- PARTIE GAUCHE (Logo + texte) -->
       <div class=" lg:flex flex-col bg-[#0C333B] hidden  rounded-xl h-[800px] p-10 items-center justify-center">
         <img :src="image" alt="">
-    
+
         <p class="text-white text-lg text-center max-w-sm">
           Join Iventello and manage your stock & sales with powerful tools.
         </p>
@@ -146,7 +140,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
 import { useRouter } from 'vue-router'
-import { Eye, EyeOff,Check } from "lucide-vue-next"
+import { Eye, EyeOff, Check } from "lucide-vue-next"
 import Iventello from "@/assets/iventello.png";
 
 import image from "@/assets/image/IventelloPlatform.png"

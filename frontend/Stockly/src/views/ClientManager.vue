@@ -1,20 +1,32 @@
+<!-- 
+  ClientManager.vue
+  ===================
+  Gestionnaire de clients/customers
+  - Affiche la liste de tous les clients
+  - Permet ajouter, modifier, supprimer des clients
+  - Recherche, filtrage par statut
+  - Actions en masse sur les clients
+-->
 <template>
   <div class="min-h-screen bg-gray-50">
-    <!-- Header Section -->
+    <!-- En-tête avec titre et boutons actions -->
     <div class="bg-white border-b border-gray-200 px-8 py-6 page-header">
       <div class="flex justify-between items-center max-w-[1600px] mx-auto header-content">
+        <!-- Titre et description -->
         <div class="flex flex-col gap-1">
           <h1 class="text-2xl font-semibold text-gray-900 header-title">Customers</h1>
           <p class="text-sm text-gray-500 header-subtitle">Manage your customers</p>
         </div>
+        <!-- Actions: Rafraîchir et Ajouter -->
         <div class="flex gap-3 items-center header-actions">
-          
+          <!-- Bouton rafraîchir -->
           <button
             @click="handleRefresh"
             class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors icon-button"
           >
             <RefreshCw :size="20" class="text-gray-700" />
           </button>
+          <!-- Bouton ajouter client -->
           <button
             @click="handleAddClient"
             class="h-10 px-5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg font-medium flex items-center gap-2 transition-colors add-button"
@@ -27,9 +39,10 @@
     </div>
 
     <div class="max-w-[1600px] mx-auto px-8 py-6 flex flex-col gap-4 content-wrapper">
-      <!-- Search and Filter Bar -->
+      <!-- Barre de recherche et filtres -->
       <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
         <div class="flex gap-4 items-center toolbar-content">
+          <!-- Champ de recherche -->
           <div class="flex-1 max-w-md relative search-input-wrapper">
             <Search :size="20" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
@@ -40,6 +53,7 @@
             />
           </div>
 
+          <!-- Filtre par statut -->
           <select
             v-model="statusFilter"
             class="w-52 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent status-select"
@@ -52,7 +66,7 @@
         </div>
       </div>
 
-      <!-- Loading State -->
+      <!-- État de chargement -->
       <div v-if="loadingClients" class="flex justify-center items-center min-h-[400px] bg-white rounded-lg border border-gray-200 shadow-sm">
         <div class="flex flex-col items-center gap-6">
           <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>

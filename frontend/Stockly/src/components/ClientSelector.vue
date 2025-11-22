@@ -1,6 +1,16 @@
+<!-- 
+  ClientSelector.vue
+  ===================
+  Sélecteur de client avec recherche
+  - Recherche en temps réel parmi les clients
+  - Navigation au clavier (flèches, Entrée)
+  - Option "Walk-in" pour client sans compte
+  - Bouton ajouter nouveau client
+-->
 <template>
+  <!-- Wrapper du sélecteur de client -->
   <div class="customer-selection relative">
-    <!-- Input pour chercher client -->
+    <!-- Champ de recherche client -->
     <input
       ref="searchInput"
       v-model="searchQuery"
@@ -11,6 +21,7 @@
       placeholder="Search clients or type 'walk-in'..."
       class="w-full px-4 py-2 border rounded-lg"
     />
+    <!-- Bouton ajouter nouveau client -->
     <button
       @click.stop="addNewClient"
       class="absolute right-2 top-1/2 -translate-y-1/2 bg-teal-600 text-white p-2 rounded-lg hover:bg-teal-700 focus:outline-none transition-colors"
@@ -19,12 +30,12 @@
       <UserPlusIcon class="w-5 h-5" />
     </button>
 
-    <!-- Mini Modal / Dropdown -->
+    <!-- Mini modal / Dropdown avec liste des clients -->
     <div
       v-if="showClientModal"
       class="absolute z-50 mt-2 w-full max-h-64 overflow-y-auto bg-white border border-gray-300 rounded shadow-lg p-2"
     >
-      <!-- Liste filtrée -->
+      <!-- Liste des clients filtrés -->
       <ul>
         <li
           v-for="(client, index) in filteredClients"
@@ -40,7 +51,7 @@
         </li>
       </ul>
 
-      <!-- Walk-in -->
+      <!-- Option client sans compte (Walk-in) -->
       <div
         :class="{ 'bg-teal-500 text-white': highlightedIndex === filteredClients.length }"
         class="mt-2 px-2 py-1 hover:bg-gray-100 cursor-pointer"

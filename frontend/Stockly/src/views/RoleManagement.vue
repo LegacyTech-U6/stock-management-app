@@ -1,6 +1,15 @@
+<!-- 
+  RoleManagement.vue
+  ===================
+  Gestionnaire de rôles et permissions
+  - Affiche la liste de tous les rôles
+  - Permet créer, modifier, supprimer des rôles
+  - Gestion des permissions associées à chaque rôle
+  - Recherche et statistiques
+-->
 <template>
   <div class="min-h-screen bg-gray-50 p-8">
-    <!-- Header Section -->
+    <!-- En-tête avec titre et bouton créer -->
     <div class="mb-8">
       <div class="flex justify-between items-start mb-2">
         <div>
@@ -9,6 +18,7 @@
             Organize your user roles with permissions • <span id="total-roles">0</span> roles total
           </p>
         </div>
+        <!-- Bouton créer nouveau rôle -->
         <button
           @click="openCreateForm"
           class="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 flex items-center gap-2 font-medium"
@@ -18,7 +28,7 @@
       </div>
     </div>
 
-    <!-- Search Bar -->
+    <!-- Barre de recherche -->
     <div class="mb-8">
       <div class="relative">
         <svg
@@ -43,7 +53,7 @@
       </div>
     </div>
 
-    <!-- Stats Cards -->
+    <!-- Cartes de statistiques -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
       <div class="bg-white p-6 rounded-lg border border-gray-200">
         <div class="flex items-center gap-3">
@@ -57,6 +67,7 @@
         </div>
       </div>
 
+      <!-- Autres cartes statistiques... -->
       <div class="bg-white p-6 rounded-lg border border-gray-200">
         <div class="flex items-center gap-3">
           <svg class="w-8 h-8 text-blue-400" fill="currentColor" viewBox="0 0 24 24">

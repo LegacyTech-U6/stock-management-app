@@ -1,44 +1,59 @@
+<!-- 
+  NavBar.vue
+  ===========
+  Barre de navigation de la page landing
+  - Logo et liens de navigation
+  - Responsive (menu hamburger sur mobile)
+  - Effet parallaxe au scroll
+  - Boutons de connexion/inscription
+-->
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import { Menu, X } from 'lucide-vue-next'
+
+// État du scroll
 const isScrolled = ref(false)
+// État du menu hamburger
 const isOpen = ref(false)
 
-// Détecter le scroll vertical
+// Détecte le scroll vertical pour changer le style de la navbar
 const handleScroll = () => {
   isScrolled.value = window.scrollY > 50
 }
 
+// Ajoute le listener de scroll au montage du composant
 onMounted(() => {
   window.addEventListener('scroll', handleScroll)
 })
 
+// Nettoie le listener à la destruction du composant
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll)
 })
 
+// Items du menu de navigation
 const navItems = ['Features', 'Tarifs', 'Documentation']
 </script>
 
 <template>
-  <!-- HEADER -->
+  <!-- HEADER / NAVBAR -->
   <header
     :class="[
       'fixed top-0 w-full z-50 transition-all ease-in duration-300 backdrop-blur',
       isScrolled ? 'shadow-md text-white' : 'text-white'
     ]"
   >
-    <!-- Fond animé identique au Hero -->
+    <!-- Fond animé dégradé identique au Hero -->
     <div class="absolute inset-0 bg-animated-gradient -z-10"></div>
 
     <div class="px-6 max-w-7xl w-full mx-auto py-4 flex items-center justify-between relative z-10">
-      <!-- Logo -->
+      <!-- Logo et nom du site -->
       <div class="flex items-center gap-2">
        
         <span class="text-lg font-semibold tracking-tight">Iventello</span>
       </div>
 
-      <!-- Navigation Desktop -->
+      <!-- Navigation Desktop (cachée sur mobile) -->
       <nav class="hidden md:flex items-center gap-8">
         <a
           v-for="item in navItems"

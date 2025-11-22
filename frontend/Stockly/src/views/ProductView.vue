@@ -285,6 +285,13 @@
 </template>
 
 <script setup>
+/**
+ * ProductView.vue - Script Setup
+ * 
+ * Cette section contient toute la logique réactive et les comportements du composant
+ * ProductView pour la gestion de l'inventaire des produits
+ */
+
 import { useRouter } from 'vue-router'
 import { Users, UserCheck, UserX, UserPlus } from 'lucide-vue-next'
 import { ref, computed, onMounted } from 'vue'
@@ -293,23 +300,70 @@ import ProductListItem from '@/components/Products/ProductListItem.vue'
 import { useEntrepriseStore } from '@/stores/entrepriseStore'
 import GridCard from '@/components/ui/cards/GridCard.vue'
 import ValidationModal from '@/components/ui/ValidationModal.vue'
+
+// ========================================
+// INITIALISATION DES STORES ET ROUTER
+// ========================================
+
+/** Store Pinia pour la gestion des produits */
 const productStore = useProductStore()
+
+/** Router Vue pour la navigation */
 const router = useRouter()
+
+/** Store pour gérer l'entreprise active */
 const entrepriseStore = useEntrepriseStore()
+
+/** UUID unique de l'entreprise actuellement sélectionnée */
 const Uuid = entrepriseStore.activeEntreprise.uuid
+
+// ========================================
+// DONNÉES RÉACTIVES (ref)
+// ========================================
+
+/** Terme de recherche utilisateur (par nom ou code-barres) */
 const searchQuery = ref('')
+
+/** ID de la catégorie sélectionnée pour filtrage */
 const selectedCategory = ref('')
+
+/** Filtre statut du stock (in-stock, low-stock, out-of-stock) */
 const selectedStock = ref('')
+
+/** Mode d'affichage: 'list' ou 'grid' */
 const viewMode = ref('list')
+
+/** État du chargement des données */
 const loading = ref(false)
+
+// ========================================
+// PROPRIÉTÉS CALCULÉES (computed)
+// ========================================
+
+/**
+ * Extrait toutes les catégories uniques des produits
+ * - Crée un Set pour éviter les doublons
+ * - Retourne un tableau des ID de catégories
+ */
 const categories = computed(() => {
   const cats = new Set(productStore.products.map((p) => p.category_id))
   return Array.from(cats).filter(Boolean)
 })
 
+/**
+ * Filtre les produits selon les critères sélectionnés
+ * 
+ * Applique 3 filtres en cascade:
+ * 1. Recherche: par nom de produit ou code-barres
+ * 2. Catégorie: si une catégorie est sélectionnée
+ * 3. Stock: filtrage par statut (en stock, peu de stock, rupture)
+ * 
+ * @returns {Array} Liste filtrée des produits
+ */
 const filteredProducts = computed(() => {
   let products = productStore.products
 
+  // Filtre 1: Recherche par texte
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
     products = products.filter(
@@ -317,16 +371,21 @@ const filteredProducts = computed(() => {
     )
   }
 
+  // Filtre 2: Catégorie
   if (selectedCategory.value) {
     products = products.filter((p) => p.category_id === selectedCategory.value)
   }
 
+  // Filtre 3: Statut du stock
   if (selectedStock.value) {
     products = products.filter((p) => {
+      // Conversion en nombre (la quantité peut être string ou number)
       const qty = typeof p.quantity === 'string' ? parseInt(p.quantity) : p.quantity
-      if (selectedStock.value === 'in-stock') return qty > 10
-      if (selectedStock.value === 'low-stock') return qty > 0 && qty <= 10
-      if (selectedStock.value === 'out-of-stock') return qty === 0
+      
+      // Logique de filtrage par statut
+      if (selectedStock.value === 'in-stock') return qty > 10        // Plus de 10 unités
+      if (selectedStock.value === 'low-stock') return qty > 0 && qty <= 10  // Entre 1 et 10
+      if (selectedStock.value === 'out-of-stock') return qty === 0   // 0 unités
       return true
     })
   }
@@ -334,6 +393,10 @@ const filteredProducts = computed(() => {
   return products
 })
 
+/**
+ * Compte le nombre de produits en stock (quantité > 10)
+ * Utilisé pour afficher la statistique "In Stock"
+ */
 const inStockCount = computed(() => {
   return productStore.products.filter((p) => {
     const qty = typeof p.quantity === 'string' ? parseInt(p.quantity) : p.quantity
@@ -341,6 +404,10 @@ const inStockCount = computed(() => {
   }).length
 })
 
+/**
+ * Compte le nombre de produits avec stock faible (1-10 unités)
+ * Utilisé pour afficher la statistique "Low Stock"
+ */
 const lowStockCount = computed(() => {
   return productStore.products.filter((p) => {
     const qty = typeof p.quantity === 'string' ? parseInt(p.quantity) : p.quantity
@@ -348,16 +415,32 @@ const lowStockCount = computed(() => {
   }).length
 })
 
+// ========================================
+// MÉTHODES (functions)
+// ========================================
+
+/**
+ * Réinitialise tous les filtres à leur valeur par défaut
+ * Affiche tous les produits sans aucun filtre
+ */
 const clearFilters = () => {
-  searchQuery.value = ''
-  selectedCategory.value = ''
-  selectedStock.value = ''
+  searchQuery.value = ''        // Efface la recherche
+  selectedCategory.value = ''   // Réinitialise la catégorie
+  selectedStock.value = ''      // Réinitialise le filtre de stock
 }
 
+/**
+ * Navigue vers la page de création de produit
+ * Utilise le composant Stepper pour un processus guidé
+ */
 const handleAddProduct = () => {
   router.push(`/${entrepriseStore.activeEntreprise.uuid}/stepper`)
 }
 
+/**
+ * Navigue vers la page de détail d'un produit
+ * @param {Object} product - Le produit sélectionné
+ */
 const handleViewProduct = (product) => {
   router.push({
     name: 'product-detail',
@@ -365,11 +448,24 @@ const handleViewProduct = (product) => {
   })
 }
 
+// ========================================
+// LIFECYCLE HOOKS
+// ========================================
+
+/**
+ * Hook du cycle de vie: Exécuté au montage du composant
+ * 
+ * Actions:
+ * 1. Affiche l'indicateur de chargement
+ * 2. Récupère tous les produits depuis l'API via le store
+ * 3. Masque l'indicateur de chargement
+ */
 onMounted(async () => {
   loading.value = true
-
+  
+  // Appel API pour récupérer la liste des produits
   await productStore.fetchProducts()
-
+  
   loading.value = false
 })
 </script>

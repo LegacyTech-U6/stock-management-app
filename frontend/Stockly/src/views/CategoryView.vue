@@ -1,18 +1,30 @@
+<!-- 
+  CategoryView.vue
+  =================
+  Gestionnaire de catégories de produits
+  - Affiche la liste de toutes les catégories
+  - Permet ajouter, modifier, supprimer des catégories
+  - Statistiques sur les catégories et produits
+  - Recherche et filtrage
+-->
 <template>
   <div class="p-8 max-w-[1400px] mx-auto bg-gray-50 min-h-screen">
-    <!-- Header Section -->
+    <!-- En-tête avec titre et actions -->
     <div class="flex flex-col md:flex-row justify-between items-start mb-8">
       <div class="flex-1">
         <h1 class="text-2xl font-bold text-gray-900 mb-1.5 tracking-tight">Category Management</h1>
         <p class="text-sm text-gray-500 font-normal">Manage your product categories</p>
       </div>
+      <!-- Boutons: Retour et Ajouter catégorie -->
       <div class="flex gap-3 mt-4 md:mt-0">
+        <!-- Bouton retour -->
         <button
           @click="$router.back()"
           class="bg-white text-gray-700 border border-gray-300 px-5 py-2.5 rounded-md text-sm font-medium hover:bg-gray-50 hover:border-gray-400 transition"
         >
           Back to Products
         </button>
+        <!-- Bouton ajouter catégorie -->
         <button
           @click="showAddCategory = true"
           class="bg-black text-white px-5 py-2.5 rounded-md text-sm font-medium hover:bg-gray-800 transition"
@@ -22,9 +34,9 @@
       </div>
     </div>
 
-    <!-- Stats Cards -->
+    <!-- Cartes de statistiques -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
-      <!-- Total Categories -->
+      <!-- Statistique: Total des catégories -->
       <div
         class="flex items-center gap-4 bg-white p-6 rounded-xl border border-gray-200 hover:shadow-md transition"
       >
@@ -46,7 +58,7 @@
         </div>
       </div>
 
-      <!-- Total Products -->
+      <!-- Statistique: Total des produits -->
       <div
         class="flex items-center gap-4 bg-white p-6 rounded-xl border border-gray-200 hover:shadow-md transition"
       >
