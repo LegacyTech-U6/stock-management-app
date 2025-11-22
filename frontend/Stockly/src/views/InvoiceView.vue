@@ -315,7 +315,7 @@ const deleteInvoice = (invoice) => {
 const confirmDelete = async () => {
   if (!invoiceToDelete.value) return
   try {
-    await invoiceStore.deleteInvoice(invoiceToDelete.value)
+   alert("invoiceToDelete")
   } catch (error) {
     console.error(error)
   } finally {
