@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://iventello.vercel.app/sitemap.xml
