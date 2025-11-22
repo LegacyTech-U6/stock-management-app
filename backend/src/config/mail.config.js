@@ -15,7 +15,7 @@ async function sendMail({ to, subject, html }) {
 
   try {
     const fromEmail = process.env.SITE_EMAIL || 'noreply@tondomaine.com';
-    const fromName = process.env.SITE_NAME || 'Stockly';
+    const fromName = process.env.SITE_NAME || 'Iventello';
 
     if (!to) throw new Error('Adresse email destinataire introuvable.');
 
