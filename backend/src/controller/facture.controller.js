@@ -81,7 +81,7 @@ const InvoiceController = {
         });
 
         const entreprise = await Entreprise.findByPk(entreprise_id);
-        const user_id = entreprise?.user_id || null;
+    const user_id = req.user?.id || null;
 
         // Log the sale activity
         await logActivity({

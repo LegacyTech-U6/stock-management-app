@@ -356,7 +356,7 @@ exports.addQuantity = async (req, res) => {
 
       // 🔹 3. Enregistrer le log d’activité hors transaction
       const entreprise = await db.Entreprise.findByPk(entrepriseId);
-      const user_id = req.user?.id || entreprise?.user_id || null;
+    const user_id = req.user?.id || null;
 
       await logActivity({
         user_id,
