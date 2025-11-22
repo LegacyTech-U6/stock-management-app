@@ -1,186 +1,109 @@
+<!-- ClientCard.vue -->
 <template>
-  <div
-    class="client-card border border-gray-200 rounded-lg p-4 bg-white text-black flex flex-col max-w-sm hover:shadow-md transition-shadow"
-  >
-    <!-- Top Section: Avatar, Name, Company, Status, Actions -->
-    <div class="flex items-start justify-between mb-4">
-      <div class="flex items-start gap-3 flex-1">
-        <!-- Avatar with Initials -->
-        <div
-          class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold text-white flex-shrink-0"
-          :style="{ backgroundColor: getAvatarColor(client.client_name) }"
-        >
-          {{ getInitials(client.client_name) }}
+  <div class="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow">
+    <!-- Header with name and actions -->
+    <div class="flex justify-between items-start mb-4">
+      <div class="flex-1">
+        <h3 class="text-lg font-semibold text-gray-900 mb-1">{{ client.client_name }}</h3>
+        <div class="flex items-center gap-2 text-sm text-gray-600 mb-1">
+          <Mail :size="14" />
+          <span>{{ client.email }}</span>
         </div>
-
-        <div class="flex-1 min-w-0">
-          <div class="font-semibold text-sm leading-tight mb-0.5">{{ client.client_name }}</div>
-          <div class="text-xs text-gray-500 mb-1.5">{{ client.company || 'No Company' }}</div>
-          <span
-            class="inline-block px-2 py-0.5 text-xs rounded-full font-medium"
-            :class="getStatusClass(client.status)"
-          >
-            {{ client.status || 'active' }}
-          </span>
+        <div class="flex items-center gap-2 text-sm text-gray-600 mb-1">
+          <Phone :size="14" />
+          <span>{{ client.client_PhoneNumber }}</span>
+        </div>
+        <div class="flex items-center gap-2 text-sm text-gray-600">
+          <MapPin :size="14" />
+          <span>{{ client.location }}</span>
         </div>
       </div>
-
-      <!-- Action Buttons -->
-      <div class="flex gap-1.5 ml-2">
+      
+      <div class="flex gap-1">
+      
         <button
           @click="$emit('edit', client)"
-          class="bg-white border border-gray-200 p-1.5 rounded hover:bg-gray-50 hover:border-gray-300 transition-colors flex items-center justify-center"
-          title="Edit client"
+          class="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-100 transition-colors"
         >
-          <WriteIcon class="w-4 h-4 text-gray-600" />
+          <Edit2 :size="16" class="text-gray-600" />
         </button>
         <button
           @click="$emit('delete', client)"
-          class="bg-white border border-gray-200 p-1.5 rounded hover:bg-red-50 hover:border-red-200 transition-colors flex items-center justify-center"
-          title="Delete client"
+          class="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-100 transition-colors"
         >
-          <DustbinIcon class="w-4 h-4 text-gray-600 hover:text-red-600" />
+          <Trash2 :size="16" class="text-red-500" />
         </button>
       </div>
     </div>
 
-    <!-- Contact Info -->
-    <div class="space-y-2 mb-4">
-      <div class="flex items-center gap-2 text-xs text-gray-600">
-        <MailIcon class="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
-        <span class="truncate">{{ client.email }}</span>
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-3 gap-4 pt-4 border-t border-gray-200">
+      <div class="bg-purple-50 rounded-lg p-3">
+        <div class="flex items-center gap-2 mb-1">
+          <FileText :size="14" class="text-purple-600" />
+          <span class="text-xs text-purple-700 font-medium">Invoices</span>
+        </div>
+        <p class="text-lg font-semibold text-purple-900">{{ invoiceCount }}</p>
       </div>
-      <div class="flex items-center gap-2 text-xs text-gray-600">
-        <PhoneIcon class="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
-        <span>{{ client.client_PhoneNumber }}</span>
+      
+      <div class="bg-green-100 rounded-lg p-3">
+        <div class="flex items-center gap-2 mb-1">
+          <DollarSign :size="14" class="text-green-600" />
+          <span class="text-xs text-green-500 font-medium">Total Spend</span>
+        </div>
+        <p class="text-lg font-semibold text-green-900">{{ formatAmount(totalSpend) }}</p>
       </div>
-      <div class="flex items-center gap-2 text-xs text-gray-600">
-        <LocationIcon class="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
-        <span class="truncate">{{ client.location }}</span>
+      
+      <div class="bg-amber-50 rounded-lg p-3">
+        <div class="flex items-center gap-2 mb-1">
+          <CheckCircle :size="14" class="text-amber-600" />
+          <span class="text-xs text-amber-700 font-medium">Status</span>
+        </div>
+        <span
+          :class="{
+            'text-emerald-700 bg-emerald-100 border border-emerald-200': client.status === 'active',
+            'text-gray-700 bg-gray-100 border border-gray-200': client.status === 'inactive',
+            'text-amber-700 bg-amber-100 border border-amber-200': client.status === 'pending',
+          }"
+          class="inline-flex items-center px-2 py-1 rounded text-xs font-semibold"
+        >
+          {{ client.status ? client.status.charAt(0).toUpperCase() + client.status.slice(1) : 'Active' }}
+        </span>
       </div>
     </div>
 
-    <hr class="border-gray-100 mb-4" />
-
-    <!-- Stats Section -->
-    <div class="grid grid-cols-2 gap-4 mb-2">
-      <div>
-        <div class="text-xs text-gray-500 mb-1">Total Orders</div>
-        <div class="font-bold text-lg">{{ client.totalOrders || 0 }}</div>
-      </div>
-      <div>
-        <div class="text-xs text-gray-500 mb-1">Total Spent</div>
-        <div class="font-bold text-lg">{{ formatCurrency(client.totalSpent || 0) }}</div>
-      </div>
+    <!-- Code badge -->
+    <div class="mt-4 pt-4 border-t border-gray-200">
+      <span class="inline-flex items-center px-2.5 py-1 rounded bg-gray-100 text-xs font-medium text-gray-700">
+        {{ client.client_signature }}
+      </span>
     </div>
-
-    <div class="text-xs text-gray-400">Last order: {{ formatDate(client.lastOrder) }}</div>
   </div>
 </template>
 
-<script setup lang="ts">
-import { defineProps, ref, defineEmits } from 'vue'
-import PhoneIcon from '@/assets/icon svg/PhoneIcon.vue'
-import WriteIcon from '@/assets/icon svg/WriteIcon.vue'
-import DustbinIcon from '@/assets/icon svg/DustbinIcon.vue'
-import MailIcon from '@/assets/icon svg/MailIcon.vue'
-import LocationIcon from '@/assets/icon svg/LocationIcon.vue'
-import LazyLoader from '@/components/ui/LazyLoader.vue'
+<script setup>
+import { computed } from 'vue'
+import { Mail, Phone, MapPin, Eye, Edit2, Trash2, FileText, DollarSign, CheckCircle } from 'lucide-vue-next'
 
-const props = defineProps<{
+const props = defineProps({
   client: {
-    id: number
-    client_signature: string
-    client_name: string
-    company?: string
-    client_PhoneNumber: string
-    location: string
-    email: string
-    status?: string
-    totalOrders?: number
-    totalSpent?: number
-    lastOrder?: string
+    type: Object,
+    required: true
   }
-}>()
+})
 
-const loadingClients = ref(true)
+defineEmits(['view', 'edit', 'delete'])
 
-const emit = defineEmits<{
-  edit: [client: typeof props.client]
-  delete: [client: typeof props.client]
-}>()
+// Mock data - À remplacer par les vraies données de votre API
+const invoiceCount = computed(() => Math.floor(Math.random() * 20) + 1)
+const totalSpend = computed(() => Math.floor(Math.random() * 50000) + 5000)
 
-// Generate initials from name
-const getInitials = (name: string): string => {
-  if (!name) return '?'
-  const parts = name.trim().split(' ')
-  if (parts.length >= 2) {
-    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
-  }
-  return name.substring(0, 2).toUpperCase()
-}
-
-// Generate consistent color based on name
-const getAvatarColor = (name: string): string => {
-  const colors = [
-    '#3B82F6', // blue
-    '#10B981', // green
-    '#F59E0B', // amber
-    '#EF4444', // red
-    '#8B5CF6', // purple
-    '#EC4899', // pink
-    '#14B8A6', // teal
-    '#F97316', // orange
-  ]
-  let hash = 0
-  for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash)
-  }
-  return colors[Math.abs(hash) % colors.length]
-}
-
-// Status badge styling
-const getStatusClass = (status?: string) => {
-  const statusLower = (status || 'active').toLowerCase()
-  switch (statusLower) {
-    case 'active':
-      return 'bg-black text-white'
-    case 'inactive':
-      return 'bg-gray-200 text-gray-700'
-    case 'pending':
-      return 'bg-yellow-100 text-yellow-700'
-    default:
-      return 'bg-black text-white'
-  }
-}
-
-// Format currency
-const formatCurrency = (amount: number): string => {
+const formatAmount = (amount) => {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
-    minimumFractionDigits: 2,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
   }).format(amount)
 }
-
-// Format date
-const formatDate = (date?: string): string => {
-  if (!date) return 'No orders yet'
-  try {
-    const d = new Date(date)
-    return d.toLocaleDateString('en-US', {
-      month: 'numeric',
-      day: 'numeric',
-      year: 'numeric',
-    })
-  } catch {
-    return date
-  }
-}
 </script>
-
-<style scoped>
-.client-card {
-  transition: all 0.2s ease;
-}
-</style>

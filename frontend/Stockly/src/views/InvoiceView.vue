@@ -1,260 +1,250 @@
-<!-- 
-  InvoiceView.vue
-  ================
-  Gestionnaire de factures/invoices
-  - Affiche la liste des factures
-  - Filtrage par client, statut et tri
-  - Recherche en temps réel
-  - Actions sur les factures (vue, édition, export)
--->
 <template>
-  <div class="min-h-screen bg-gray-50 p-6">
-    <!-- En-tête -->
-    <div class="mb-6">
-      <h1 class="text-2xl font-semibold text-gray-900">Invoices</h1>
-      <p class="text-sm text-gray-500 mt-1">Manage your stock invoices</p>
+  <div class="h-full bg-gray-50 p-1 md:px-8">
+    <!-- Header with Add Button -->
+    <div class="flex justify-between items-center mb-6">
+      <div>
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Invoice</h1>
+      </div>
+      <div class="flex items-center gap-3">
+        <n-button type="success" @click="addInvoice">
+          <template #icon>
+            <Plus :size="18" />
+          </template>
+          Add Invoice
+        </n-button>
+      </div>
     </div>
 
-    <!-- Carte principale contenant la liste -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-      <!-- Barre d'outils: Recherche et filtres -->
-      <div class="flex items-center justify-between p-4 border-b border-gray-100">
-        <!-- Champ de recherche -->
-        <div class="relative w-64">
-          <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <input v-model="searchQuery" type="text" placeholder="Search"
-            class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none" />
+    <!-- Filter Pills and Actions -->
+    <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+      <div class="flex flex-wrap items-center gap-3 mb-4">
+        <!-- Status Filter Pills -->
+<div class="flex gap-2 overflow-x-auto py-2">
+  <div
+    class="inline-flex items-center gap-2 cursor-pointer px-3 py-1.5 rounded-full transition-colors flex-shrink-0"
+    :class="selectedStatus === null ? 'bg-green-50' : 'bg-gray-100'"
+    @click="selectedStatus = null"
+  >
+    <span class="text-sm font-medium text-gray-700">All Invoice</span>
+    <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-green-500 text-white">
+      {{ invoices.length }}
+    </span>
+  </div>
+
+  <div
+    class="inline-flex items-center gap-2 cursor-pointer px-3 py-1.5 rounded-full transition-colors flex-shrink-0"
+    :class="selectedStatus === 'payée' ? 'bg-blue-50' : 'bg-gray-100'"
+    @click="selectedStatus = 'payée'"
+  >
+    <span class="text-sm font-medium text-gray-700">Paid</span>
+    <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-blue-500 text-white">
+      {{ paidCount }}
+    </span>
+  </div>
+
+  <div
+    class="inline-flex items-center gap-2 cursor-pointer px-3 py-1.5 rounded-full transition-colors flex-shrink-0"
+    :class="selectedStatus === 'en_attente' ? 'bg-cyan-50' : 'bg-gray-100'"
+    @click="selectedStatus = 'en_attente'"
+  >
+    <span class="text-sm font-medium text-gray-700">Pending</span>
+    <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-cyan-400 text-white">
+      {{ pendingCount }}
+    </span>
+  </div>
+
+  <div
+    class="inline-flex items-center gap-2 cursor-pointer px-3 py-1.5 rounded-full transition-colors flex-shrink-0"
+    :class="selectedStatus === 'overdue' ? 'bg-red-50' : 'bg-gray-100'"
+    @click="selectedStatus = 'overdue'"
+  >
+    <span class="text-sm font-medium text-gray-700">Overdue</span>
+    <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-red-500 text-white">
+      {{ overdueCount }}
+    </span>
+  </div>
+</div>
+
+
+        <div class="flex-1"></div>
+
+      
+
+        <n-input v-model:value="searchQuery" placeholder="Search by Email" size="small" style="width: 200px">
+          <template #prefix>
+            <Search :size="16" class="text-gray-400" />
+          </template>
+        </n-input>
+
+        <n-button text>
+          <Filter :size="18" />
+        </n-button>
+
+       
+      </div>
+    </div>
+
+    <!-- Table -->
+ <!-- Table avec loader et empty state -->
+<n-spin :show="loading" size="large" tip="Loading invoices...">
+  <div v-if="filteredInvoices.length === 0 && !loading" class="h-96 flex flex-col items-center justify-center">
+    <div class="text-center">
+      <div class="mb-4 flex justify-center">
+        <div class="w-64 h-64 flex items-center justify-center">
+          <InvoicePart />
         </div>
+      </div>
+      <p class="text-gray-500 mt-4">No invoices found.</p>
+    </div>
+    
+  </div>
 
-        <!-- Filtres et actions -->
-        <div class="flex items-center gap-3">
-          <!-- Filtre client -->
-          <select v-model="selectedCustomer"
-            class="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none bg-white">
-            <option :value="null">Customer</option>
-            <option v-for="option in customerOptions" :key="option.value" :value="option.value">
-              {{ option.label }}
-            </option>
-          </select>
+  <div v-else class="bg-white rounded-lg shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[1000px]">
+        <thead class="bg-gray-50 border-b">
+          <tr>
+            <th class="text-left px-6 py-3 text-xs font-semibold text-gray-600 uppercase">Invoice ID</th>
+            <th class="text-left px-6 py-3 text-xs font-semibold text-gray-600 uppercase">Name Client</th>
+            <th class="text-left px-6 py-3 text-xs font-semibold text-gray-600 uppercase">Email</th>
+            <th class="text-left px-6 py-3 text-xs font-semibold text-gray-600 uppercase">Start Date</th>
+            <th class="text-left px-6 py-3 text-xs font-semibold text-gray-600 uppercase">Due Date</th>
+            <th class="text-left px-6 py-3 text-xs font-semibold text-gray-600 uppercase">Invoice Amount</th>
+            <th class="text-left px-6 py-3 text-xs font-semibold text-gray-600 uppercase">Status</th>
+            <th class="text-center px-6 py-3 text-xs font-semibold text-gray-600 uppercase">Action</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          <tr v-for="invoice in paginatedInvoices" :key="invoice.id" class="hover:bg-gray-50 transition-colors">
+            <td class="px-6 py-4 text-sm text-gray-900">{{ invoice.id }}</td>
+            <td class="px-6 py-4 text-sm text-gray-900">{{ invoice.client.client_name || 'N/A' }}</td>
+            <td class="px-6 py-4 text-sm text-gray-600">{{ invoice.client.email || 'N/A' }}</td>
+            <td class="px-6 py-4 text-sm text-gray-600">{{ formatDate(invoice.createdAt) }}</td>
+            <td class="px-6 py-4 text-sm text-gray-600">{{ formatDate(invoice.dueDate || invoice.createdAt) }}</td>
+            <td class="px-6 py-4 text-sm font-medium text-gray-900">${{ invoice.total.toFixed(2) }}</td>
+            <td class="px-6 py-4">
+              <n-tag :type="getStatusType(invoice.status)" :bordered="false" size="small" round>
+                {{ getStatusLabel(invoice.status) }}
+              </n-tag>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center justify-center gap-2">
+                <n-button text @click="viewInvoice(invoice)">
+                  <ChevronRight :size="18" class="text-gray-600" />
+                </n-button>
+                <n-button text @click="editInvoice(invoice)">
+                  <Minus :size="18" class="text-gray-600" />
+                </n-button>
+                <n-button text @click="deleteInvoice(invoice)">
+                  <Trash2 :size="18" class="text-red-500" />
+                </n-button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-          <!-- Filtre statut -->
-          <select v-model="selectedStatus"
-            class="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none bg-white">
-            <option :value="null">Status</option>
-            <option v-for="option in statusOptions" :key="option.value" :value="option.value">
-              {{ option.label }}
-            </option>
-          </select>
-
-          <!-- Options de tri -->
-          <select v-model="sortBy"
-            class="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none bg-white">
-            <option v-for="option in sortOptions" :key="option.value" :value="option.value">
-              {{ option.label }}
-            </option>
-          </select>
-
-          <!-- Bouton rafraîchir -->
-          <button
-            class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-200 hover:bg-gray-50 transition-colors"
-            title="Refresh" @click="refreshInvoices">
-            <RefreshCw class="w-5 h-5 text-gray-600" />
-          </button>
-
+    <!-- Pagination -->
+    <div class="px-6 py-4 border-t bg-gray-50">
+      <div class="flex items-center justify-between">
+        <div class="text-sm text-gray-600">
+          Showing {{ startIndex }} to {{ endIndex }} of {{ filteredInvoices.length }} entries
         </div>
-      </div>
-
-      <!-- État de chargement -->
-      <div v-if="loadingClients" class="flex flex-col items-center justify-center py-16">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mb-4"></div>
-        <p class="text-lg font-semibold text-gray-800">Loading invoices...</p>
-      </div>
-
-      <!-- Table -->
-      <div v-else-if="filteredInvoices.length" class="overflow-x-auto">
-        <table class="w-full">
-          <thead class="bg-gray-50 border-b border-gray-200">
-            <tr>
-              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Invoice No
-              </th>
-              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Customer
-              </th>
-              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Due Date
-              </th>
-              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Amount
-              </th>
-              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Paid
-              </th>
-              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Amount Due
-              </th>
-              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Status
-              </th>
-
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-100 bg-white">
-            <tr title="click to view" v-for="invoice in paginatedInvoices" :key="invoice.id"
-              class="hover:bg-gray-50 transition-colors cursor-pointer" @click="viewInvoice(invoice.id)">
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span class="font-medium text-gray-900">{{ invoice.id }}</span>
-              </td>
-              <td class="px-6 py-1 whitespace-nowrap">
-                <div class="flex items-center gap-3">
-
-                  <span class="font-medium text-gray-900">{{
-                    invoice.client.client_name || 'N/A'
-                    }}</span>
-                </div>
-              </td>
-              <td class="px-6 py-1 whitespace-nowrap text-sm text-gray-900">
-                {{ formatDate(invoice.createdAt) }}
-              </td>
-              <td class="px-6 py-1 text-green-600 whitespace-nowrap text-sm font-medium ">
-                {{ formatPrice(invoice.total) }}
-              </td>
-              <td class="px-6 py-1 whitespace-nowrap text-sm text-gray-900">
-                {{ formatPrice(invoice.status === 'payée' ? invoice.total : 0) }}
-              </td>
-              <td class="px-6 py-1 whitespace-nowrap text-sm text-gray-900">
-                {{ formatPrice(invoice.status !== 'payée' ? invoice.total : 0) }}
-              </td>
-              <td class="px-6 py-1 whitespace-nowrap">
-                <span :class="[
-                  'inline-flex items-center px-3 py-1 rounded-full text-xs font-medium',
-                  getStatusClass(invoice.status),
-                ]">
-                  {{ formatStatus(invoice.status) }}
-                </span>
-              </td>
-
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Empty State -->
-      <div v-else class="flex flex-col items-center justify-center py-16">
-        <FileText class="w-16 h-16 text-gray-300 mb-4" />
-        <h3 class="text-lg font-semibold text-gray-900 mb-2">No invoices found</h3>
-        <p class="text-gray-500">Try modifying your search or create a new invoice</p>
-      </div>
-
-      <!-- Footer with Pagination -->
-      <div class="flex items-center justify-between px-6 py-4 border-t border-gray-100">
         <div class="flex items-center gap-2">
-          <span class="text-sm text-gray-600">Row Per Page</span>
-          <select v-model="pageSize"
-            class="px-2 py-1 border border-gray-200 rounded text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none">
-            <option :value="10">10</option>
-            <option :value="20">20</option>
-            <option :value="50">50</option>
-          </select>
-          <span class="text-sm text-gray-600 ml-4">Entries</span>
-        </div>
+          <n-button size="small" :disabled="currentPage === 1" @click="currentPage = 1">«</n-button>
+          <n-button size="small" :disabled="currentPage === 1" @click="prevPage">‹</n-button>
 
-        <div class="text-sm text-gray-500">2025 © Iventello. All Right Reserved</div>
-
-        <div class="flex items-center gap-2">
-          <button @click="prevPage" :disabled="currentPage === 1"
-            class="w-8 h-8 flex items-center justify-center rounded border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-            <ChevronUp class="w-4 h-4 transform rotate-[-90deg]" />
-          </button>
-          <button v-for="page in visiblePages" :key="page" @click="currentPage = page" :class="[
-            'w-8 h-8 flex items-center justify-center rounded border text-sm font-medium transition-colors',
-            currentPage === page
-              ? 'bg-orange-500 text-white border-orange-500'
-              : 'border-gray-200 hover:bg-gray-50',
-          ]">
+          <n-button v-for="page in visiblePages" :key="page" size="small"
+            :type="page === currentPage ? 'success' : 'default'" @click="currentPage = page">
             {{ page }}
-          </button>
-          <button @click="nextPage" :disabled="currentPage === totalPages"
-            class="w-8 h-8 flex items-center justify-center rounded border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-            <ChevronUp class="w-4 h-4 transform rotate-90" />
-          </button>
+          </n-button>
+
+          <n-button size="small" :disabled="currentPage === totalPages" @click="nextPage">›</n-button>
+          <n-button size="small" :disabled="currentPage === totalPages" @click="currentPage = totalPages">»</n-button>
         </div>
       </div>
     </div>
+  </div>
+</n-spin>
 
-    <!-- Delete Modal -->
+
+    <!-- Modals -->
+    <InvoiceDetailModal v-if="showInvoiceModal" :invoice="selectedInvoice" :entreprise="entreprise"
+      @close="showInvoiceModal = false" />
     <ActionModal v-model="showDeleteModal" title="Delete Invoice"
       message="Are you sure you want to delete this invoice? This action cannot be undone." confirm-text="Delete"
       cancel-text="Cancel" @confirm="confirmDelete" />
-
-    <!-- Invoice Detail Modal -->
-    <InvoiceDetailModal v-if="showInvoiceModal" :invoice="selectedInvoice" :entreprise="entreprise"
-      @close="showInvoiceModal = false" />
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { Search, FileText, RefreshCw, ChevronUp, Settings, Eye, Trash2 } from 'lucide-vue-next'
+import { NButton, NTag, NInput, NSelect } from 'naive-ui'
+import { NSpin, NEmpty } from 'naive-ui'
+
+import { Plus, Search, Filter, MoreVertical, ChevronRight, Minus, Trash2 } from 'lucide-vue-next'
 import { useInvoiceStore } from '@/stores/FactureStore'
-import { useActionMessage } from '@/composable/useActionMessage'
-import ActionModal from '@/components/ui/ActionModal.vue'
-import InvoiceDetailModal from '@/components/invoices/InvoiceDetailModal.vue'
 import { useEntrepriseStore } from '@/stores/entrepriseStore'
-const { showSuccess, showError } = useActionMessage()
+import InvoiceDetailModal from '@/components/invoices/InvoiceDetailModal.vue'
+import ActionModal from '@/components/ui/ActionModal.vue'
+import InvoicePart from '@/assets/icon svg/invoicePart.vue'
+
+// Stores
 const invoiceStore = useInvoiceStore()
+const entrepriseStore = useEntrepriseStore()
+ const loading = ref(true)
+
+// Refs
 const searchQuery = ref('')
-const selectedCustomer = ref(null)
 const selectedStatus = ref(null)
-const sortBy = ref('last7days')
-const showDeleteModal = ref(false)
-const invoiceToDelete = ref(null)
-const showInvoiceModal = ref(false)
-const selectedInvoice = ref(null)
-const loadingClients = ref(true)
 const pageSize = ref(10)
 const currentPage = ref(1)
-const entrepriseStore = useEntrepriseStore()
+const showInvoiceModal = ref(false)
+const selectedInvoice = ref(null)
+const showDeleteModal = ref(false)
+const invoiceToDelete = ref(null)
 
+// Options
+const pageSizeOptions = [
+  { label: '10', value: 10 },
+  { label: '25', value: 25 },
+  { label: '50', value: 50 },
+  { label: '100', value: 100 }
+]
+
+// Computed
 const invoices = computed(() => invoiceStore.invoices || [])
 const entreprise = computed(() => entrepriseStore.activeEntreprise || {})
 
-const customerOptions = computed(() => [
-  ...Array.from(new Set(invoices.value.map((i) => i.client_name)))
-    .filter(Boolean)
-    .map((name) => ({ label: name, value: name })),
-])
+const paidCount = computed(() =>
+  invoices.value.filter(i => i.status === 'payée').length
+)
 
-const statusOptions = [
-  { label: 'Paid', value: 'payée' },
-  { label: 'Unpaid', value: 'en_attente' },
-  { label: 'Overdue', value: 'overdue' },
-]
+const pendingCount = computed(() =>
+  invoices.value.filter(i => i.status === 'en_attente').length
+)
 
-const sortOptions = [
-  { label: 'Sort By : Last 7 Days', value: 'last7days' },
-  { label: 'Sort By : Last 30 Days', value: 'last30days' },
-  { label: 'Sort By : Last 90 Days', value: 'last90days' },
-]
+const overdueCount = computed(() =>
+  invoices.value.filter(i => i.status === 'overdue').length
+)
 
+// Filtering
 const filteredInvoices = computed(() => {
   let result = invoices.value
 
   if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase()
     result = result.filter(
-      (i) =>
-        i.id.toString().toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-        (i.client_name && i.client_name.toLowerCase().includes(searchQuery.value.toLowerCase())) ||
-        (i.client_email && i.client_email.toLowerCase().includes(searchQuery.value.toLowerCase())),
+      i =>
+        i.id.toString().includes(query) ||
+        (i.client.client_name && i.client.client_name.toLowerCase().includes(query)) ||
+        (i.client.email && i.client.email.toLowerCase().includes(query))
     )
   }
 
-  if (selectedCustomer.value) {
-    result = result.filter((i) => i.client_name === selectedCustomer.value)
-  }
-
   if (selectedStatus.value) {
-    result = result.filter((i) => i.status === selectedStatus.value)
+    result = result.filter(i => i.status === selectedStatus.value)
   }
 
   return result
@@ -264,15 +254,24 @@ const totalPages = computed(() => Math.ceil(filteredInvoices.value.length / page
 
 const paginatedInvoices = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value
-  const end = start + pageSize.value
-  return filteredInvoices.value.slice(start, end)
+  return filteredInvoices.value.slice(start, start + pageSize.value)
+})
+
+const startIndex = computed(() => {
+  if (filteredInvoices.value.length === 0) return 0
+  return (currentPage.value - 1) * pageSize.value + 1
+})
+
+const endIndex = computed(() => {
+  const end = currentPage.value * pageSize.value
+  return Math.min(end, filteredInvoices.value.length)
 })
 
 const visiblePages = computed(() => {
   const pages = []
-  const maxVisible = 3
-  let start = Math.max(1, currentPage.value - 1)
-  const end = Math.min(totalPages.value, start + maxVisible - 1)
+  const maxVisible = 5
+  let start = Math.max(1, currentPage.value - Math.floor(maxVisible / 2))
+  let end = Math.min(totalPages.value, start + maxVisible - 1)
 
   if (end - start < maxVisible - 1) {
     start = Math.max(1, end - maxVisible + 1)
@@ -281,147 +280,101 @@ const visiblePages = computed(() => {
   for (let i = start; i <= end; i++) {
     pages.push(i)
   }
+
   return pages
 })
 
+// Pagination
 const prevPage = () => {
-  if (currentPage.value > 1) {
-    currentPage.value--
-  }
+  if (currentPage.value > 1) currentPage.value--
 }
 
 const nextPage = () => {
-  if (currentPage.value < totalPages.value) {
-    currentPage.value++
-  }
+  if (currentPage.value < totalPages.value) currentPage.value++
 }
 
+// Actions
+const addInvoice = () => {
+  // Add invoice functionality
+}
 
+const viewInvoice = (invoice) => {
+  selectedInvoice.value = invoice
+  showInvoiceModal.value = true
+}
+
+const editInvoice = (invoice) => {
+  // Edit invoice functionality
+}
+
+const deleteInvoice = (invoice) => {
+  invoiceToDelete.value = invoice.id
+  showDeleteModal.value = true
+}
 
 const confirmDelete = async () => {
+  if (!invoiceToDelete.value) return
   try {
     await invoiceStore.deleteInvoice(invoiceToDelete.value)
-    showSuccess('Invoice deleted successfully!')
   } catch (error) {
-    console.error('Error deleting invoice:', error)
-    showError('Failed to delete invoice')
+    console.error(error)
   } finally {
     showDeleteModal.value = false
     invoiceToDelete.value = null
   }
 }
 
-const refreshInvoices = async () => {
-  loadingClients.value = true
-  try {
-    await invoiceStore.fetchInvoices()
-    showSuccess('Invoices refreshed successfully!')
-  } catch (error) {
-    console.error('Error loading invoices:', error)
-    showError('Failed to load invoices')
-  } finally {
-    loadingClients.value = false
-  }
+// Helpers
+const formatDate = (date: string | Date) => {
+  if (!date) return 'N/A'
+  const d = new Date(date)
+  return d.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
+const getStatusType = (status: string) => {
+  if (status === 'payée') return 'success'
+  if (status === 'en_attente') return 'warning'
+  if (status === 'overdue') return 'error'
+  return 'default'
+}
+
+const getStatusLabel = (status: string) => {
+  if (status === 'payée') return 'Paid'
+  if (status === 'en_attente') return 'Pending'
+  if (status === 'overdue') return 'Unpaid'
+  return status
+}
+
+// OnMounted
 onMounted(async () => {
-  loadingClients.value = true
-  try {
-    await invoiceStore.fetchInvoices()
-  } catch (error) {
-    console.error('Error loading invoices:', error)
-    showError('Failed to load invoices')
-  } finally {
-    loadingClients.value = false
-  }
+  loading.value = true
+  await invoiceStore.fetchInvoices()
+  loading.value = false
 })
 
-function viewInvoice(id) {
-  selectedInvoice.value = invoices.value.find((inv) => inv.id === id)
-  showInvoiceModal.value = true
-}
-
-const formatPrice = (amount) =>
-  new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  }).format(amount || 0)
-
-const formatDate = (date) => {
-  if (!date) return 'N/A'
-  try {
-    return new Date(date).toLocaleDateString('en-US', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-    })
-  } catch {
-    return 'N/A'
-  }
-}
-
-const formatStatus = (status) => {
-  const statusMap = {
-    payée: 'Paid',
-    en_attente: 'Unpaid',
-    overdue: 'Overdue',
-  }
-  return statusMap[status] || status
-}
-
-const getStatusClass = (status) => {
-  const classMap = {
-    payée: ' text-green-800',
-    en_attente: ' text-red-600',
-    overdue: ' text-yellow-800',
-  }
-  return classMap[status] || 'bg-gray-100 text-gray-800'
-}
-
-const getInitials = (name) => {
-  if (!name) return '?'
-  return name
-    .split(' ')
-    .map((n) => n[0])
-    .join('')
-    .toUpperCase()
-    .slice(0, 2)
-}
-
-const getAvatarColor = (name) => {
-  const colors = [
-    '#18a058',
-    '#2080f0',
-    '#f0a020',
-    '#d03050',
-    '#8a2be2',
-    '#00ced1',
-    '#ff6347',
-    '#32cd32',
-  ]
-  if (!name) return colors[0]
-  const index = name.charCodeAt(0) % colors.length
-  return colors[index]
-}
 </script>
 
 <style scoped>
 /* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
+.overflow-x-auto {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e0 #f7fafc;
+}
+
+.overflow-x-auto::-webkit-scrollbar {
   height: 8px;
 }
 
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
+.overflow-x-auto::-webkit-scrollbar-track {
+  background: #f7fafc;
 }
 
-::-webkit-scrollbar-thumb {
-  background: #888;
+.overflow-x-auto::-webkit-scrollbar-thumb {
+  background-color: #cbd5e0;
   border-radius: 4px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
+.overflow-x-auto::-webkit-scrollbar-thumb:hover {
+  background-color: #a0aec0;
 }
 </style>

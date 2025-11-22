@@ -101,17 +101,13 @@
             {{ error }}
           </div>
 
-          <!-- Button -->
-          <ValidationButton text="Verify and Continue" color="green" size="large" variant="contained" :icon="CheckIcon"
-            :asyncClick="handleVerify" />
-          <button type="submit" :disabled="loading"
-            class="w-full py-3 bg-[#0C333B] text-white font-semibold rounded-full hover:bg-emerald-600 transition disabled:opacity-50">
-            <span v-if="!loading">Create Account</span>
-            <span v-else>Loading…</span>
-          </button>
+          <ValidationButton text="Create Account" loadingText="Loading…" color="#0C333B" size="large" width="100%"
+            :icon="null" :asyncClick="handleRegister" :loading="loading"
+            class="py-3 text-white font-semibold rounded-full hover:bg-emerald-600 transition disabled:opacity-50" />
+
 
           <!-- Already have account -->
-          <p class="text-center text-sm text-gray-600">
+          <p class="text-center mt-6 text-sm text-gray-600">
             Already have an account?
             <router-link to="/login" class="text-emerald-600 font-medium hover:underline">
               Sign in
