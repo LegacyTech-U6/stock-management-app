@@ -116,17 +116,7 @@ db.activities.belongsTo(db.User, {
   foreignKey: "user_id",
   as: "user",
 });
-//un utilisateur peut créer plusieurs produits
-db.User.hasMany(db.Product, { as: "products", foreignKey: "user_id" });
-db.Product.belongsTo(db.User, { foreignKey: "user_id", as: "user" });
 
-//un utilisateur peut créer plusieurs catégories
-db.User.hasMany(db.Category, { as: "categories", foreignKey: "user_id" });
-db.Category.belongsTo(db.User, { foreignKey: "user_id", as: "user" });
-
-//un uilisateur peut avoir plusieur clients
-db.User.hasMany(db.Client, { as: "clients", foreignKey: "user_id" });
-db.Client.belongsTo(db.User, { foreignKey: "user_id", as: "user" });
 
 
 // =======================
