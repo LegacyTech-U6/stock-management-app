@@ -106,7 +106,6 @@ exports.createProduct = async (req, res) => {
         });
       }
     }
-
     // 🔹 Si une image est uploadée, envoyer vers Supabase
     let imageUrl = null;
     if (req.file) {
@@ -129,6 +128,7 @@ exports.createProduct = async (req, res) => {
     const productData = {
       ...req.body,
       entreprise_id,
+      user_id: req.user?.id || null, // <-- enregistre l'auteur/créateur du produit si authentifié
       Prod_image: imageUrl,
     };
 

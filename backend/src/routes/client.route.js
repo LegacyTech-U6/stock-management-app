@@ -11,6 +11,7 @@ const {
 } = require("../controller/client.controller");
 const authenticateUser = require("../middleware/AuthenticatedUser");
 const getActiveEntreprise = require('../middleware/activeEntreprise');
+router.use(authenticateUser)
 router.use(getActiveEntreprise)
 router.get("/", getAllClients);
 router.post("/", upload.single("image"), createClient);

@@ -7,6 +7,10 @@ const {
   getInvoiceById,
 } = require("../controller/facture.controller");
 const getActiveEntreprise = require("../middleware/activeEntreprise");
+const authenticateUser = require("../middleware/AuthenticatedUser");
+
+router.use(authenticateUser);
+// 🔐 Middleware global : ajoute l’entreprise active dans req.entreprise
 
 router.use(getActiveEntreprise);
 

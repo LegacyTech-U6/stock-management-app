@@ -6,6 +6,7 @@ const ProductController = require("../controller/products.controller");
 const validateProduct = require("../middleware/validateProduct");
 const upload = require("../middleware/upload");
 const getActiveEntreprise = require("../middleware/activeEntreprise");
+const authenticateUser = require('../middleware/AuthenticatedUser');
 
 // 🔐 Middleware global : ajoute l’entreprise active dans req.entreprise
 router.use(getActiveEntreprise);
@@ -20,6 +21,7 @@ router.use(getActiveEntreprise);
 // 🆕 Créer un produit (avec image optionnelle)
 router.post(
   "/",
+  authenticateUser,
   upload.single("Prod_image"),
   validateProduct,
   ProductController.createProduct
@@ -52,13 +54,14 @@ router.post("/add",ProductController.addQuantity);
 // ✏️ Mettre à jour un produit (avec ou sans nouvelle image)
 router.put(
   "/:id",
+  authenticateUser,
   upload.single("prod_image"),
   validateProduct,
   ProductController.updateProduct
 );
 
 // 🗑️ Supprimer un produit
-router.delete("/:id", ProductController.deleteProduct);
+router.delete("/:id", authenticateUser, ProductController.deleteProduct);
 
 /* ============================================================
    🏁 Export du routeur
